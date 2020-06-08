@@ -1,0 +1,257 @@
+{% load static %}
+
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card-header bg-blue">
+                    <h5 class="card-title"> 
+                        INVOICE CREATION
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Add Invoice against a Contact</h6>
+                </div>
+                <div class="card-header" style="padding:10px 0px; background-color:#ffffff;">
+                    <p style="padding:10px; border-bottom: 1px solid #000000;"><strong>Select Invoice Template Design</strong></p>
+                    <div class="table">
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <button class="color-button color-button-green" title="Green Template" type="button">1</button>
+                            </div>      
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <button class="color-button color-button-orange" title="Orange Template" type="button">2</button>
+                            </div>      
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <button class="color-button color-button-blue" title="Blue Template" type="button">3</button>
+                            </div>      
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <button class="color-button color-button-white" title="White Template" type="button">4</button>
+                            </div>  
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <button class="color-button color-button-grey" title="Grey Template" type="button">5</button>
+                            </div>         
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table" style="padding:10px 0px;">
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Template Name</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.template_name }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Design</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.design_number }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Is Active</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.is_active }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Logo</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.logo }}
+                            </div>
+                        </div>
+                        <div class="hidden_div" style="padding:10px 0px; display:none">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Header Background Color</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.header_bgcolor }}
+                            </div>
+                        </div>
+                        <div class="hidden_div" style="padding:10px 0px; display:none">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Header Font Color</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.header_fgcolor }}
+                            </div>
+                        </div>
+                        <div class="hidden_div" style="padding:10px 0px; display:none;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Border Color</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.other_design_colors }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Name Display</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.user_display_name }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Custom Name</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.user_custom_name }}
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Phone</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <select class="form-control input-sm" id="id_user_phone" name="user_phone">
+                                    {% for i,v in PHONE_NUMBERS %}
+                                        <option value="{{i}}">{{v}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>     
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Email Address</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <select class="form-control input-sm" id="id_user_email" name="user_email">
+                                    {% for i,v in EMAILS %}
+                                        <option value="{{i}}">{{v}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:0px 10px;">
+                                <label>Billing Address</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                {{ invoice_design_form.billing_address }}
+                            </div>
+                        </div>                    
+                    </div>                    
+                </div>
+                <div class="card-footer text-center">
+                    <button type="reset" class="btn button button-orange">Cancel</button>
+                    <button class="btn button button-blue">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">    
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">    
+            <h4 style="background-color:#000000; color:#ffffff; padding:5px 10px">INVOICE PREVIEW</h4>
+            <div class="card-body" id="invoice_template_body">
+                <div class="card-header template_header">
+                    <div class="row">
+                        <div class="col-4" style="padding:0px 5px">
+                            <img src="{% static 'images/logo3.jpg' %}" class="img-responsive">
+                        </div>
+                        <div class="col-8" style="text-align:right;">
+                            <p id="invoice_username">{{user.first_name|upper}} {{user.last_name|upper}}</p>
+                            <p id="invoice_email">{{EMAILS.0.1}}</p id="invoice_username">
+                            <p id="invoice_phone">{{PHONE_NUMBERS.0.1}}</p id="invoice_username">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body template_body_green" id="template_body">
+                    <div class="col-12">
+                        <h3 style="padding-top:10px">Invoice No.: 00018776</h3>
+                        <h5>16th January, 2020</h5>
+                        <h5>Payment Collected/Due Date: <span style="color:#FF0000">20th January, 2020</span></h5>
+                    </div>
+                    <div class="col-12" style="padding-top:10px">
+                        <table id="address_bar" class="th_green">
+                            <thead>
+                                <th scope="col">From</th>
+                                <th scope="col">To</th>
+                            </thead> 
+                            <tbody>
+                                <tr>
+                                    <td id="invoice_user_billing_address">User Address</td>
+                                    <td>Billing Address & Shipping Address of Contact</td>
+                                </tr>
+                            </tbody>                               
+                        </table>
+                    </div>
+                    <div class="col-12" style="padding-top:30px">
+                        <h5>ITEMS/RECORDS</h5>
+                    </div>
+                    <div class="col-12" style="padding-top:10px">
+                        <table id="data_bar">
+                            <thead>
+                                <th scope="col" width="100px" class="text-center">Sl. No.</th>
+                                <th scope="col" class="text-center">Description</th>
+                                <th scope="col" width="100px" class="text-center">Quantity</th>
+                                <th scope="col" width="150px" class="text-center">Unit Price</th>
+                                <th scope="col" width="150px" class="text-center">Total</th>
+                            </thead> 
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">SUB TOTAL</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">GST</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">CGST</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">IGST</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">SHIPPING</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">DISCOUNT/DEDUCTION</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">PAYMENTS</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">BALANCE</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" style="text-align:right">TOTAL AMOUNT</td>
+                                    <td></td>
+                                </tr>                                    
+                            </tbody>                               
+                        </table>
+                    </div>
+                    <div class="col-12 text-center" style="padding-top:30px">
+                        <p>COMPANY NAME</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,12 @@
+{% extends 'app/base/base.html' %}
+{% load static %}
+
+{% load common_filters %}
+{% load pagination %}
+
+{% load common_components %}
+{% loader_component %}
+
+{% block content %}
+{% include 'app/app_files/contacts/add_contacts_modal.html' %}
+{% endblock %}

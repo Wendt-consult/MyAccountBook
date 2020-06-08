@@ -1,0 +1,25 @@
+
+
+{% if find == "a" %}
+	{% if contact %}
+  		<ul>
+  		{% for contacts in contact %}
+    		<li>{{ contacts.contact_name }}</li>
+  		{% endfor %}
+  		</ul>
+	{% else %}
+  		<p>No Result found.</p>
+	{% endif %}
+{% endif %}
+
+{% if find == "b" %}
+	{% if contact %}
+  		<ul>
+  		{% for contacts in contact %}
+    		<li>{{ contacts.organization_name}}</li>
+  		{% endfor %}
+  		</ul>
+	{% else %}
+  		<p>No Result found.</p>
+	{% endif %}
+{% endif %}

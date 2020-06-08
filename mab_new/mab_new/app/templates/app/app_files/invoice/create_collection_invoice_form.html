@@ -1,0 +1,231 @@
+{% load static %}
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                <div class="card-header bg-blue">
+                    <h5 class="card-title"> 
+                            COLLECTION - INVOICE
+                        </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Invoice against a Collection : C-0000{{collections.id}}</h6>
+                    <p>
+                        <div style="color:#FFFFFF">
+                            <select id="id_template_design" name="template_design" class="form-control col-md-3" style="display:inline-block">
+                                {% for i in invoice_templates %}
+                                    <option value="{{i.id}}">{{i.template_name|upper}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12" style="padding:0px">
+                            <div class="card">    
+                                <div class="card-body" id="invoice_template_body">
+                                    <div class="card-header template_header">
+                                        <div class="row">
+                                            <div class="col-4" style="padding:0px 5px">
+                                                <img src="/media/{{template_logo}}" class="img-responsive">
+                                            </div>
+                                            <div class="col-8" style="text-align:right;">
+                                                <p>{{ template_username}}</p>
+                                                <p>{{ template_email }}</p>
+                                                <p>{{ template_phone }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body template_body_green" id="template_body">
+                                        <div class="col-12">
+                                            <h3 style="padding-top:20px">Invoice No.: 00018776 <small>(sample data)</small></h3>
+                                            <h5>16th January, 2020</h5>
+                                            <h5 style="padding-bottom:20px">Payment Collected/Due Date: <span style="color:#FF0000">20th January, 2020</span></h5 style="padding-top:20px">
+                                        </div>
+                                        <div class="col-12" style="padding-top:10px">
+                                            <table id="address_bar" class="th_green">
+                                                <thead>
+                                                    <th scope="col">From</th>
+                                                    <th scope="col">To</th>
+                                                </thead> 
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>{{template_username}}<br/> {{user_billing_address|safe}}</strong></td>
+                                                        <td>
+                                                            <strong>
+                                                            <p>{{template_contact_name}}<br/>{{ contact_shipping_address|safe }}</p>
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>                               
+                                            </table>
+                                        </div>
+                                        <div class="col-12" style="padding-top:30px">
+                                            <h5>ITEMS</h5>
+                                        </div>
+                                        <div class="col-12" style="padding-top:10px">
+                                            <table id="data_bar">
+                                                <thead>
+                                                    <th scope="col" width="80px" class="text-center">Sl. No.</th>
+                                                    <th scope="col" width="100px" class="text-center">SKU/UID</th>
+                                                    <th scope="col" class="text-center">Description</th>
+                                                    <th scope="col" width="100px" class="text-center">Quantity</th>
+                                                    <th scope="col" width="150px" class="text-center">Unit. Price</th>
+                                                    <th scope="col" width="150px" class="text-center">Discount</th>
+                                                    <th scope="col" width="150px" class="text-center">Amount</th>
+                                                </thead> 
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12" style="padding-top:30px">
+                                            <h5>COLLECTION/PAYMENT HISTORY</h5>
+                                        </div>
+                                        <div class="col-12" style="padding-top:10px">
+                                            <table id="data_bar">
+                                                <thead>
+                                                    <th scope="col" width="80px" class="text-center">Sl. No.</th>
+                                                    <th scope="col" width="100px" class="text-center">C-UID</th>
+                                                    <th scope="col" class="text-center">Due Date</th>
+                                                    <th scope="col" width="100px" class="text-center">Payment Type</th>
+                                                    <th scope="col" width="150px" class="text-center">Status</th>
+                                                    <th scope="col" width="150px" class="text-center">Collection Date</th>
+                                                    <th scope="col" width="150px" class="text-center">Amount</th>
+                                                </thead> 
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center">--</td>
+                                                        <td>C-0000{{collections.id}}</td>
+                                                        <td>{{collections.collection_due_date}}</td>
+                                                        <td>{{collections.get_payment_type_display}}</td>
+                                                        <td>{{collections.get_collection_status_display}}</td>
+                                                        <td>{{collections.collection_date}}</td>
+                                                        <td>{{collections.amount}}</td>
+                                                    </tr>
+                                                    {% for record in partial_collections %}
+                                                        <tr>
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td>P-0000{{record.id}}</td>
+                                                            <td>{{record.collection_due_date}}</td>
+                                                            <td>{{record.get_payment_type_display}}</td>
+                                                            <td>{{record.get_collection_status_display}}</td>
+                                                            <td>{{record.collection_date}}</td>
+                                                            <td>{{record.amount}}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12" style="padding-top:30px">
+                                            <h5></h5>
+                                        </div>       
+                                        <div class="col-12" style="padding-top:10px">
+                                            <table id="data_bar">
+                                                <thead>
+                                                    <th colspan="3" scope="col">TRANSACTION DETAILS</th>
+                                                    <th scope="col" width="100px" class="text-center"></th>
+                                                    <th scope="col" width="150px" class="text-center"></th>
+                                                    <th scope="col" width="150px" class="text-center"></th>
+                                                    <th scope="col" width="150px" class="text-center"></th>
+                                                </thead> 
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SUB TOTAL</td>
+                                                        <td>{{collections.amount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SERVICE PROVIDER STATE CODE</td>
+                                                        <td>{{invoice_form.provider_state_code}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SERVICE RECIPIENT STATE CODE</td>
+                                                        <td>{{invoice_form.recipient_state_code}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SAC CODE</td>
+                                                        <td>{{invoice_form.sac_code}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">GST</td>
+                                                        <td>{{invoice_form.total_gst}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SGST</td>
+                                                        <td>{{invoice_form.sgst}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">CGST</td>
+                                                        <td>{{invoice_form.cgst}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">IGST</td>
+                                                        <td>{{invoice_form.igst}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">SHIPPING</td>
+                                                        <td>{{invoice_form.shipping}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">DISCOUNT/DEDUCTION</td>
+                                                        <td>{{invoice_form.discount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">PAYMENTS</td>
+                                                        <td>{{paid_amount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">BALANCE</td>
+                                                        <td>{{balance_amount}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:right">TOTAL AMOUNT</td>
+                                                        <td>{{total_amount}}</td>
+                                                    </tr>  
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:left; background-color:#000000; color:#FFFFFF; font-weight:bold;">
+                                                            NOTES
+                                                        </td>
+                                                        <td style="text-align:center;background-color:#000000; color:#FFFFFF; font-weight:bold;">
+                                                            SIGNATURE
+                                                        </td>
+                                                    </tr> 
+                                                    <tr>
+                                                        <td colspan="6" style="text-align:left; height:100px;">
+                                                            {{notes}}
+                                                        </td>
+                                                        <td style="text-align:left; height:100px;">
+                                                            {{notes}}
+                                                        </td>
+                                                    </tr>   
+                                                    <tr>
+                                                        <td colspan="7" style="text-align:center; background-color:#000000; color:#FFFFFF">
+                                                            <strong>
+                                                                INVOICE ID - Creation Date
+                                                            </strong>                                                        
+                                                        </td>
+                                                    </tr>                                   
+                                                </tbody>                               
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn button button-green">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

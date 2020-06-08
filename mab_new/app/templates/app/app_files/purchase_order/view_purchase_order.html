@@ -1,0 +1,103 @@
+<style>
+    .creditnote_name:hover{
+    color: white!important;
+    }
+    </style>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">View Purchase Order</h4>
+            </div>
+            <div class="card-body">
+                <div class="table">
+                    <table class=" table-bordered" width="100%" cellspacing="0">
+                        <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
+                           
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 13%">Purchase Order Number</th>
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 8%">Status</th>
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 10%">Total Amount</th>  
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 10%">Delivery Date</th>   
+                            <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
+
+                        </thead>
+                        <tbody>
+                            {% for order in purchase_order %}
+                                <tr>
+                        
+                                    <td align="center">{{order.purchase_order_number}}</td>
+                                    <td align="center">
+                                        {{order.purchase_refrence}}
+                                        <!-- <a class="purchase_order_number" href="#" style="color: #8b92a9;text-decoration: underline;">
+                                            
+                                        </a> -->
+                                    </td>
+                                    
+                                    <td align="center">
+                                        {% if order.save_type == 3 %}
+                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                        {% endif %}
+                                        {{order.vendor}}
+                                    </td>
+                                    
+                                    <td align="center"></td>
+
+                                    <td align="center">{{order.total_amount}}</td>
+                                   
+                                    <td align="center">{{order.purchase_delivery_date|date:"d-m-Y"}}</td>
+                                    <td class="text-center" align="center" > 
+
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Action</button>
+
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_purchase_order' order.id %}" style="padding: 5px 5px;">
+                                                    Edit
+                                                </a>
+
+                                                <a class="dropdown-item" title="Void Purchase Order" href="#" style="padding: 5px 5px;">
+                                                   Void
+                                                </a>    
+
+                                                <a class="dropdown-item" title="Print Purchase Order" href="{% url 'print_purchase_order' order.id %}" target="_black" style="padding: 5px 5px;">
+                                                    Print
+                                                 </a> 
+
+                                                <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_purchase_order' order.id %}" style="padding: 5px 5px;">
+                                                    Make a Copy
+                                                 </a> 
+                                                 <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{order.id}}" style="padding: 5px 5px;">
+                                                    Delete
+                                                 </a>   
+                                            </div> 
+
+                                            <div class="modal " tabindex="-1" role="dialog" id="del{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                                    <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                                        <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                            
+                                                        </div>
+                                                        <div class="modal-body" style="border-top: none;position: bottom;">
+                                                            <h4><b><font color="black">Are you sure you want to delete {{order.purchase_order_number |truncatechars:10 }}. Deleting purchase order will not affect reports or historical transactions.</font></b></h4>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
+                                                            <center><a class="btn btn-success mr-2" href="{% url 'delete_purchase_order' order.id %}" style="align-content: left;">Yes</a></center>
+                                                            <a class="btn btn-warning" href="{% url 'purchase_order' %}">No</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>       
+                                    </td>                   
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>    
+                </div>
+            </div>
+        </div>    
+    </div>     
+</div>
