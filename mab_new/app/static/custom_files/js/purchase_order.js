@@ -302,7 +302,7 @@ $(document).on('click','#select2-purchase_vendor-container',function(){
     $(".purchase_product").hide()
     var a = $('#addcontact').length
         if(a == 0){
-            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -8%;">+ Add Contct</button>');
+            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -8%;">+ Add Contact</button>');
         }
         });
 function add_contact(){
@@ -319,7 +319,7 @@ function add_contact(){
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
+       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
        $( button ).insertBefore("#contact_type_add");
     }
 
@@ -506,7 +506,7 @@ function purchase_contact_form(category){
         alert('Organization name is requried')
         $('#id_organization_name').focus()
         return false
-    }
+    } 
 
     $.post("/contacts/add/",$("#add_purchase_contact_form").serialize(), function(data){
     if(data != '0'){
@@ -719,7 +719,7 @@ function freight_advance_totalamount(){
             total_balance += (parseFloat(total_amount) - parseFloat(advance))
         }
         else{
-            alert('advance must be lesser then total balance')
+            alert('advance must be lesser than total balance')
             $('#advance_value').val('')
             $('#advance').val('')
             total_balance += parseFloat(total_amount)
@@ -1377,22 +1377,20 @@ function save__address(event,category){
   
     event.preventDefault()
 
-    if($('#id_city').val() == ''){
-        alert('City is requried')
-        // $('#id_city').focus()
-        return false
-    }else if($('#id_state').val() == ''){
-        alert('State is requried')
-        // $('#id_state').focus()
-        return false
-    }else if($('#id_country').val() == ''){
-        alert('Country is requried')
-        // $('#id_country').focus()
-        return false
-    }
-
     if(category == 'org'){
-
+        if($('#add_address_organization').find('input[id="id_city"]').val() == ''){
+            alert('City is requried')
+            $('#add_address_organization').find('input[id="id_city"]').focus()
+            return false
+        }else if($('#add_address_organization').find('select[id="id_state"]').val() == ''){
+            alert('State is requried')
+            $('#add_address_organization').find('select[id="id_state"]').focus()
+            return false
+        }else if($('#add_address_organization').find('select[id="id_country"]').val() == ''){
+            alert('Country is requried')
+            $('#add_address_organization').find('select[id="id_country"]').focus()
+            return false
+        }
         $.post("/profile/add_organisation_addres/",$("#add_address_organization").serialize(), function(data){
             if(data != '0'){
                 
@@ -1431,7 +1429,19 @@ function save__address(event,category){
         });
     }
     else if(category == 'cont'){
-
+        if($('#add_address_contact').find('input[id="id_city"]').val() == ''){
+            alert('City is requried')
+            $('#add_address_contact').find('input[id="id_city"]').focus()
+            return false
+        }else if($('#add_address_contact').find('select[id="id_state"]').val() == ''){
+            alert('State is requried')
+            $('#add_address_contact').find('select[id="id_state"]').focus()
+            return false
+        }else if($('#add_address_contact').find('select[id="id_country"]').val() == ''){
+            alert('Country is requried')
+            $('#add_address_contact').find('select[id="id_country"]').focus()
+            return false
+        }
         $.post("/contacts/add_address/",$("#add_address_contact").serialize(), function(data){
             if(data != '0'){
 
