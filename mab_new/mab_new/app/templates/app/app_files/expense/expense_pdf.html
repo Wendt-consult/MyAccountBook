@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <style type="text/css">
+    body{
+      font-weight: 600;
+      color: #6b6b6b;
+    }
+    
+    .compny_name ul li p {
+      margin: 0;
+      padding: 0;
+      font-weight: 600;
+      color: #6b6b6b;
+    }
+
+    .wrapper {
+      width: 100%;
+      float: left;
+    }
+
+    .head {
+      width: 100%;
+      border: 1px solid #525252;
+      float: left;
+    }
+
+    .logo {
+      float: left;
+      margin-right: 15px;
+      padding-left: 15px;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
+    .logo h3 {
+      margin: 0;
+    }
+
+    .compny_name {
+      float: left;
+      padding-top: 15px;
+    }
+
+    .compny_name ul li {
+      list-style: none;
+      padding: 2px;
+    }
+
+    .compny_name ul {
+      display: inline-block;
+      padding: 0;
+    }
+
+    .voucher_main {
+      width: 100%;
+      float: left;
+      border: 1px solid #525252;
+      border-top: 0;
+    }
+
+    .voucher_main .voucher_left {
+      width: 50%;
+      float: left;
+      position: relative;
+      padding: 15px;
+    }
+
+    .voucher_left ul {
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      margin-right: 25px;
+    }
+
+    .voucher_main .voucher_right {
+      width: 50%;
+      float: left;
+      border-left: 1px solid #525252;
+      padding: 15px;
+    }
+
+    .voucher_left ul li {
+      list-style: none;
+    }
+
+    .voucher_left ul li p {
+      margin: 0;
+      padding: 0;
+    }
+
+    .voucher_right ul {
+      padding: 0;
+      display: inline-block;
+      padding-right: 30px;
+      margin: 0;
+    }
+
+    .voucher_right ul li {
+      list-style: none;
+    }
+
+    .payment_details {
+      width: 100%;
+      float: left;
+      border: 1px solid #525252;
+      border-top: 0;
+      border-bottom: 0;
+      padding: 7px;
+      padding-bottom: 5px;
+    }
+
+    .payment_details ul {
+      padding: 0;
+      display: inline-block;
+      margin-right: 30px;
+    }
+
+    .payment_details ul li {
+      list-style: none;
+    }
+
+    .table_main{
+      width: 100%;
+      float: left;
+    }
+
+    .table_main table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    .table_main table th, td {
+      padding: 5px;
+      text-align: left;    
+    }
+
+    .table_main table td {
+      font-weight: normal !important;
+      vertical-align: top;
+    }
+
+    .note_main {
+      width: 100%;
+      float: left;
+      border: 1px solid #525252;
+      border-top: 0;
+      position: relative;
+    }
+
+    .note_main .left_note {
+      width: 48%;
+      float: left;
+      padding: 15px;
+      height: 265px;
+      display: flex;
+      padding-left: 7px;
+    }
+
+    .note_main ul {
+      padding: 0;
+      display: inline-block;
+    }
+
+    .note_main .right_note {
+      width: 52%;
+      float: left;
+      padding: 15px;
+      padding-left: 7px;
+      padding-right: 0px;
+      border-left: 1px solid #525252;
+      height: 265px;
+    }
+    
+    .note_main ul li {
+      list-style: none;
+    }
+
+    .light_p{
+      font-weight: normal !important;
+    }
+
+    .mr-0{
+      margin: 0px;
+    }
+
+    img{
+      height: 100px;
+      width: 100px;
+    }
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+  
+<div class="wrapper">
+
+    <div class="head">
+       <div class="logo">
+			<!-- code modified by Lawrence Gandhar -->
+			<img src="{{logo}}" alt="No Logo">			
+			<!-- end -->
+       </div>
+       <div class="compny_name">
+         <ul>
+           <li> <p> Company Name:  </p>  </li>
+           <li> <p> company Address:  </p>   </li>
+           <li> <p> Company Phone number:  </p>   </li>
+           <li> <p> Email:  </p>  </li>
+         </ul>
+         <ul>
+           <li> <p class="light_p"> {{ org_object1.organisation_name }} </p>  </li>
+           <li> <p class="light_p"> {{ org_object1.flat_no }} {{ org_object1.street }} {{ org_object1.city }} {{ org_object1.state }} {{ org_object1.pincode }} </p>  </li>
+           <li> <p class="light_p"> {{ org_object2.phone }} </p>  </li>
+           <li> <p class="light_p">{{ org_object2.email }} </p>  </li>
+         </ul>
+       </div>
+    </div>
+
+
+    <div class="voucher_main">
+      <div class="voucher_left">
+         <ul>
+           <li> <p> Expense Voucher</p>  </li>
+         </ul>
+      </div>
+      <div class="voucher_right">
+        <ul>
+          <li> <p> Expense Number: </p>  </li>
+          <li> <p class="mr-0">  Expense Date: </p>  </li>
+        </ul>
+        <ul>
+          <li> <p class="light_p">   {{ expense.exp_number }} </p>  </li>
+          <li> <p class="light_p mr-0"> {{ expense.exp_date }} </p>  </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="payment_details">
+      <ul style="margin-bottom: 3px; padding: 0;">
+        <li> <p> Vendor Name: </p>  </li>
+        <li> <p>   Vendor Email: </p>  </li>
+        <li> <p class="mr-0">   Vendor Phone: </p>  </li>
+      </ul>
+      <ul style="margin-bottom: 3px; padding: 0;">
+        <li> <p class="light_p">{{ expense.vendor.contact_name }} </p>  </li>
+        <li> <p class="light_p"> {% if expense.vendor.email %}  {{ expense.vendor.email }} {% else %} &nbsp; {% endif %} </p>  </li>
+        <li> <p class="light_p mr-0">  {% if expense.vendor.phone %} {{ expense.vendor.phone }} {% else %} &nbsp; {% endif %} </p>  </li>
+      </ul>
+    </div>
+
+    <div class="table_main">
+      <table style="width: 100%;">
+        {% for category in exp_category_list  %}
+          <tr>
+            <th style="text-align: center;">Category</th>
+            <th style="text-align: center;" colspan="3">Description</th>
+            <th style="text-align: center;">Amount</th>
+            <th style="text-align: center;">Tax</th>
+            <th style="text-align: center;">Total Amount</th>
+          </tr>
+          <tr>
+            <td class="light_p text-center">{{ category.account_name }}</td>
+            <td class="light_p" colspan="3" style="word-break: break-all;">{{ category.description }}</td>
+            <td class="light_p text-center">{{ category.amount }}</td>
+            <td class="light_p text-center">{% if category.tax %} {{ category.tax }} % {% endif %}</td>
+            <td class="light_p text-center">{{ category.total_amount }}</td>
+          </tr>
+          {% if category.item_list %}
+            <tr>
+              <th style="text-align: center;">Item</th>
+              <th style="text-align: center;">Description</th>
+              <th style="text-align: center;">Quantity</th>
+              <th style="text-align: center;">Rate</th>
+              <th style="text-align: center;">Amount</th>
+              <th style="text-align: center;">Tax</th>
+              <th style="text-align: center;">Total Amount</th>
+            </tr>
+            {% for item in category.item_list %}
+              <tr>
+                <td class="light_p text-center">{{ item.product }}</td>
+                <td class="light_p" style="word-break: break-all;">{{ item.description }}</td>
+                <td class="light_p text-center">{{ item.quantity }}</td>
+                <td class="light_p text-center">{{ item.rate }} </td>
+                <td class="light_p text-center">{{ item.amount }}</td>
+                <td class="light_p text-center">{% if item.tax %} {{ item.tax }} % {% endif %}</td>
+                <td class="light_p text-center">{{ item.total_amount }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+
+<div class="note_main">
+      <div class="left_note">
+        <ul style="margin: 0; padding: 0;">
+          <li><p style="margin: 0; margin-bottom: 5px;">Note :</p></li>
+          <li><p class="light_p" style="word-break: break-all;">{{ expense.notes }}</p></li>
+        </ul>
+      </div>
+    
+      <div class="right_note">
+        <ul style="margin-right: 15px;">
+          <li><p>Subtotal :</p></li>
+  
+          {% if tax_data.5 %}
+            <li><p>Tax 5% :</p></li>
+          {% endif %}
+          
+          {% if tax_data.12 %}
+            <li><p>Tax 12% :</p></li>
+          {% endif %}
+          
+          {% if tax_data.18 %}
+            <li><p>Tax 18% :</p></li>
+          {% endif %}
+          
+          {% if tax_data.28 %}
+            <li><p>Tax 28% :</p></li>
+          {% endif %}
+          
+          <li><p>Total :</p></li>
+          <li><p>For({{ org_object1.organisation_name }}) :</p></li>
+          <li><p>Authorized signatory :</p></li>
+        </ul>
+        
+        <ul style="vertical-align:top; margin: 0;">
+          <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ expense.exp_sub_total }}</p></li>
+          {% if tax_data.5 %}
+            <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ tax_data.5 }}</p></li>
+          {% endif %}
+          {% if tax_data.12 %}
+            <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ tax_data.12 }}</p></li>
+          {% endif %}
+          {% if tax_data.18 %}
+            <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ tax_data.18 }}</p></li>
+          {% endif %}
+          {% if tax_data.28 %}
+            <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ tax_data.28 }}</p></li>
+          {% endif %}
+          <li><p class="light_p"><i class="fa fa-inr" aria-hidden="true"></i> {{ expense.exp_total }}</p></li>
+          <li><p></p></li>
+          <li><p></p></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

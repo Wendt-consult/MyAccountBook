@@ -1,0 +1,33 @@
+{% extends 'app/base/base.html' %}
+{% load static %}
+
+{% load common_filters %}
+{% load pagination %}
+
+{% block content %}
+<div class="row custom-row" style="padding:10px; background: linear-gradient(60deg,#f5700c,#ff9800);">
+    <ul style="list-style:none; margin:0px; color:#FFFFFF; padding:0px;">        
+        <li class="nav-item" style="float:left;padding:0px 10px;">
+            <a href="{% url 'contacts' %}" style="color:#FFFFFF; text-decoration:none; font-size: 20px;" title="View Contacts As List">
+                <i class="material-icons">list</i>
+            </a>
+        </li>
+        <li class="nav-item" style="float:left;padding:0px 10px;">
+            <a href="{% url 'add-contacts' %}" style="color:#FFFFFF; text-decoration:none; font-size: 20px;" title="Add Contact">
+                <i class="material-icons">add_to_queue</i>
+            </a>
+        </li>
+        <li class="nav-item" style="float:left;padding:0px 10px;">
+            <a href="{% url 'contacts-upload' 'views' %}" style="color:#FFFFFF; text-decoration:none; font-size: 20px;" title="Upload Contacts">
+                <i class="material-icons">cloud_upload</i>
+            </a>            
+        </li>
+    </ul>
+</div>
+
+
+<div class="container">
+    {% include included_template %}
+</div>
+
+{% endblock %}

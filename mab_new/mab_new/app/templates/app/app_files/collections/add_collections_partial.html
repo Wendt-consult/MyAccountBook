@@ -1,0 +1,187 @@
+{% load common_components %}
+{% loader_component %}
+
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">              
+            <div class="card-header">
+                <h4>ADD PARTIAL COLLECTION LIST     
+                    {% if record.collection_status < 3 %}           
+                    <button class="btn button button-green pull-right" data-toggle="modal" data-target="#add_partial">New Entry</button>
+                    {% endif %}
+                    <a href="{% url 'create-collection-invoice' record.id %}" class="btn button button-black" style="float:right; color:#FFFFFF; margin-right:10px">Create Invoice</a>
+                </h4>   
+            </div>
+            <div class="card-body">
+                <div class="table">
+                    <table class="table-bordered" width="100%" cellspacing="0" style="color:#000000">
+                        <thead style="background-color: #EEEEEE; color:#000000; font-size:11px">
+                            <th style="padding: 10px;" class="text-center">UID</th>
+                            <th style="padding: 10px;" class="text-center">Contact Name</th>
+                            <th style="padding: 10px;" class="text-center">Total Amount</th>
+                            <th style="padding: 10px;" class="text-center">Currecy Type</th>
+                            <th style="padding: 10px;" class="text-center">Payment Type</th>
+                            <th style="padding: 10px;" class="text-center">Status</th>
+                            <th style="padding: 10px;" class="text-center">Due Date</th>
+                            <th style="padding: 10px;" class="text-center">Collected On Date</th>
+                            <th style="padding: 10px;" class="text-center">Created On Date</th>               
+                            <th style="padding: 10px;" class="text-center">Action</th>                
+                        </thead>
+                        <tbody>                            
+                            <tr
+                                {% if record.collection_status == 1 %}
+                                    style="background-color:#ffa50069"
+                                {% elif record.collection_status == 2 %}   
+                                    style="background-color:rgba(125, 205, 241, 0.5)"
+                                {% else %} 
+                                    style="background-color:rgba(12, 235, 19, 0.5)"
+                                {% endif %}
+                            >
+                                <td>C-0000{{record.id}}</td>
+                                <td>{{record.contact.contact_name}}</td>
+                                <td>{{record.amount|safe}}</td>
+                                <td>{{record.get_currency_type_display|safe}}</td>
+                                <td>{{record.get_payment_type_display|upper}}</td>
+                                <td>{{record.get_collection_status_display|upper}}</td>
+                                <td>{{record.collection_due_date}}</td>
+                                <td>{{record.collection_date}}</td>
+                                <td>{{record.created_on}}</td>                      
+                                <td>
+                                    <a href="{% url 'edit_collections' record.id %}" class="btn btn-primary btn-sm" title="Edit Collection">
+                                        <i class="fas fas-fw fa-pencil-alt"></i>
+                                    </a>
+                                </td>                 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% if partial_collections.count > 0 %}
+                <div class="table" style="padding:10px;">
+                    <h5>PARTIAL COLLECTIONS</h5>
+                    <table class="table-bordered" width="100%" cellspacing="0" style="color:#000000">
+                        <thead style="background-color: #535353; color:#FFFFFF; font-size:11px">
+                            <th style="padding: 10px;" class="text-center">UID</th>
+                            <th style="padding: 10px;" class="text-center">Amount</th>
+                            <th class="text-center">Currency Type</th>
+                            <th class="text-center">Payment Type</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Due Date</th>
+                            <th class="text-center">Collected On Date</th>
+                            <th class="text-center">Created On Date</th>               
+                            <th class="text-center">Action</th>                
+                        </thead>
+                        <tbody>    
+                            {% for p_record in partial_collections %}
+                                <tr
+                                    {% if p_record.collection_status == 1 %}
+                                        style="background-color:#ffa50069"
+                                    {% elif p_record.collection_status == 2 %}    
+                                        style="background-color:rgba(125, 205, 241, 0.5)"
+                                    {% else %}
+                                        style="background-color:rgba(12, 235, 19, 0.5)"
+                                    {% endif %}
+                                >
+                                    <td>P-0000{{p_record.id|safe}}</td>
+                                    <td>{{p_record.amount|safe}}</td>
+                                    <td>{{p_record.get_currency_type_display|safe}}</td>
+                                    <td>{{p_record.get_payment_type_display|upper}}</td>
+                                    <td>{{p_record.get_collection_status_display|upper}}</td>
+                                    <td>{{p_record.collection_due_date}}</td>
+                                    <td>{{p_record.collection_date}}</td>
+                                    <td>{{p_record.created_on}}</td>                      
+                                    <td>
+                                        <a href="{% url 'edit_partial_collection' record.id p_record.id %}" class="btn btn-primary btn-sm" title="Edit Collection">
+                                            <i class="fas fas-fw fa-pencil-alt"></i>
+                                        </a>
+                                    </td>                 
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="table" style="padding:10px;">
+                        <table class="table-responsive">
+                            <tr>
+                                <td> Balance Amount</td>
+                                <td width="100px">{{balance_amount}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="add_partial" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Partial Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="table" style="padding:10px 0px;">
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Amount</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.amount}}
+                            </div>                        
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Currency Type</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.currency_type}}
+                            </div>                        
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Due Date</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.collection_due_date}}
+                            </div>                        
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Mode Of Payment</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.payment_type}}
+                            </div>                        
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Status</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.collection_status}}
+                            </div>                        
+                        </div>
+                        <div class="d-table-row" style="padding:10px 0px;">
+                            <div class="d-table-cell" style="padding:5px 10px;">
+                                <label>Collection Date</label>
+                            </div>
+                            <div class="d-table-cell" style="padding:0px 13px;">
+                                {{collection_form.collection_date}}
+                            </div>                        
+                        </div>
+                    </div>      
+                </div>
+                <div class="modal-footer">
+                    <button class="btn button button-green">Save changes</button>
+                    <button type="button" class="btn button-orange" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>

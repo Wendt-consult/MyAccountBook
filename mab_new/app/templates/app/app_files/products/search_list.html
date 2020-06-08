@@ -1,0 +1,25 @@
+
+
+{% if find == "a" %}
+	{% if products %}
+  		<ul>
+  		{% for product in products %}
+    		<li>{{ product.sku }}</li>
+  		{% endfor %}
+  		</ul>
+	{% else %}
+  		<p>No Result found.</p>
+	{% endif %}
+{% endif %}
+
+{% if find == "b" %}
+	{% if products %}
+  		<ul>
+  		{% for product in product %}
+    		<li>{{ product.product_name}}</li>
+  		{% endfor %}
+  		</ul>
+	{% else %}
+  		<p>No Result found.</p>
+	{% endif %}
+{% endif %}
