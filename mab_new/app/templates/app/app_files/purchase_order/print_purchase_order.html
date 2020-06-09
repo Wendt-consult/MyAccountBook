@@ -216,7 +216,7 @@ footer {
 }
     </style>
   </head>
-  <body>
+  <body style="">
     {% load static %}
     <header class="clearfix">
       <div id="logo">
@@ -325,30 +325,30 @@ footer {
       <table style="table-layout:fixed;">
         <thead>
           <tr >
-            <th class="unit" style="width: 10%;">#</th>
-            <th class="desc" style="width: 20%;">ITEM / DESCRIPTION</th>
+            <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th>
+            <th class="desc" style="text-align: left;width: 20%;border: 1px solid black;">ITEM / DESCRIPTION</th>
             <!-- <th class="type">TYPE</th> -->
-            <th class="unit">PRICE</th>
-            <th class="Unit" >UNIT</th>
-            <th class="qty">QUANTITY</th>
-            <th class="qty">DISCOUNT</th>
-            <th class="qty">TAX</th>
-            <th class="unit">AMOUNT</th>
+            <th class="unit" style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th class="Unit" style="text-align: left;border: 1px solid black;">UNIT</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">QUANTITY</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">DISCOUNT</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">TAX</th>
+            <th class="unit" style="text-align: left;border: 1px solid black;">AMOUNT</th>
             <!-- <th class="total" style="">TOTAL</th> -->
           </tr>
         </thead>
         <tbody>
           {% for item in purchase_item %}
           <tr>
-            <td class="unit" style="text-align: center;">{{forloop.counter}}</td>
-            <td class="desc" style="word-break: break-all;" ><h3>{{item.product}}</h3>{{item.description}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td>
+            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3>{{item.product}}</h3>{{item.description}}</td>
             <!-- <td class="type" style="text-align: center;">{{item.product_type}}</td> -->
-            <td class="unit" style="text-align: center;">₹. {{item.price}}</td>
-            <td class="qty" style="text-align: center;">{{item.unit}}</td>
-            <td class="qty" style="text-align: center;">{{item.quantity}}</td>
-            <td class="qty" style="text-align: center;">{{item.discount}} {% if item.discount %} {{item.discount_type}} {% endif %}</td>
-            <td class="qty" style="text-align: center;">{{item.tax}}</td>
-            <td class="unit" style="text-align: center;">{{item.amount}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.unit}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.discount}} {% if item.discount %} {{item.discount_type}} {% endif %}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">{{item.amount}}</td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
           {% endfor %}

@@ -718,7 +718,7 @@ def credit_note_mailer(request, creditnote = None, contact = None, send_attachme
             except:
                 subject = "Credit Note - {} to {}".format(creditnote.credit_number,contact.contact_name)
         
-            msg_body = ["Dear {},".format(creditnote.credit_number,contact.contact_name)]
+            msg_body = ["Dear {},".format(contact.contact_name)]
             msg_body.append("Please find attached the Credit Note {} for your reference.".format(creditnote.credit_number))
             msg_body.append("<div style='padding:10px; border:1px solid #000000'>")
             msg_body.append("Credit Note - {}".format(creditnote.credit_number))
