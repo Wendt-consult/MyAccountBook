@@ -983,16 +983,20 @@ def print_purchase_order(request, ins):
         data['check'] = '2'
     data["purchase_item"] = purchase_item
     data['organisation'] = organisation
+
     if(len(address) == 1):
         data['org_address'] = address[0]
+        data['state'] = address[0].get_state_display()
+        data['country'] = address[0].get_country_display()
     elif(len(address) == 0):
         org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
         if(len(org_address) != 0):
             data['org_address'] = org_address[0]
+            data['state'] = org_address[0].get_state_display()
+            data['country'] = org_address[0].get_country_display()
     data['organisation_contact'] = organisation_contact
     data['contact'] = contact
-    data['state'] = address[0].get_state_display()
-    data['country'] = address[0].get_country_display()
+    
 
     data['gst'] = vendor_gst.gstin
     if(len(vendor_address) == 1):

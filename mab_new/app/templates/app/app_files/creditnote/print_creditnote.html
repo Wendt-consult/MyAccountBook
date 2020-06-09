@@ -226,8 +226,26 @@ footer {
         <h2 class="name">{{organisation.organisation_name|default_if_none:""}}</h2>
         <div> 
           {% if organisation %}
-          {{organisation.flat_no|default_if_none:""}} {{organisation.street|capfirst|default_if_none:""}}, {{organisation.city|capfirst|default_if_none:""}},<br>
-            Pincode:-{{organisation.pincode|default_if_none:""}},{{state|capfirst|default_if_none:""}},{{country|capfirst|default_if_none:""}}
+
+          {% if org_address.flat_no %}
+          {{org_address.flat_no|default_if_none:""}} 
+          {% endif %}
+          {% if org_address.street %}
+          {{org_address.street|capfirst|default_if_none:""}}, 
+          {% endif %}
+          {% if org_address.city %}
+          {{org_address.city|capfirst|default_if_none:""}},<br>
+          {% endif %}
+          {% if org_address.pincode %}
+          Pincode:-{{org_address.pincode|default_if_none:""}},
+          {% endif %}
+          {% if state %}
+          {{state|capfirst|default_if_none:""}},
+          {% endif %}
+          {% if country %}
+          {{country|capfirst|default_if_none:""}}
+          {% endif %}
+
           {% endif %}
         </div>
         <div>{{organisation_contact.phone}}</div>

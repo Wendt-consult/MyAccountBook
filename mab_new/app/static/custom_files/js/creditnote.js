@@ -903,7 +903,7 @@ $(document).on('click','#select2-customerName-container',function(){
     $(".credit_product").hide()
     var a = $('#addcontact').length
         if(a == 0){
-            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -11%;">+ Add Contct</button>');
+            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -11%;">+ Add Contact</button>');
         }
         });
 function add_contact(){
@@ -1007,6 +1007,34 @@ function creditnote_contact_form(save_type){
         alert('Organization name is requried')
         $('#id_organization_name').focus()
         return false
+    }else if($('#id_user_address_details_set-0-city').val() == ''){
+        alert('City is requried')
+        $('#id_user_address_details_set-0-city').focus()
+        return false
+    }else if($('#id_user_address_details_set-0-state').val() == ''){
+        alert('State is requried')
+        $('#id_user_address_details_set-1-state').focus()
+        return false
+    }else if($('#id_user_address_details_set-0-country').val() == ''){
+        alert('Country is requried')
+        $('#id_user_address_details_set-0-country').focus()
+        return false
+    }
+
+    if($('.address_is_billing_diff').is(':checked')){
+        if($('#id_user_address_details_set-1-city').val() == ''){
+            alert('City is requried')
+            $('#id_user_address_details_set-1-city').focus()
+            return false
+        }else if($('#id_user_address_details_set-1-state').val() == ''){
+            alert('State is requried')
+            $('#id_user_address_details_set-1-state').focus()
+            return false
+        }else if($('#id_user_address_details_set-1-country').val() == ''){
+            alert('Country is requried')
+            $('#id_user_address_details_set-1-country').focus()
+            return false
+        }
     }
 
     $.post("/contacts/add/",$("#add_creditnote_contact_form").serialize(), function(data){

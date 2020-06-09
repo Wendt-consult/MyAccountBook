@@ -506,8 +506,36 @@ function purchase_contact_form(category){
         alert('Organization name is requried')
         $('#id_organization_name').focus()
         return false
-    } 
+    }else if($('#id_user_address_details_set-0-city').val() == ''){
+        alert('City is requried')
+        $('#id_user_address_details_set-0-city').focus()
+        return false
+    }else if($('#id_user_address_details_set-0-state').val() == ''){
+        alert('State is requried')
+        $('#id_user_address_details_set-1-state').focus()
+        return false
+    }else if($('#id_user_address_details_set-0-country').val() == ''){
+        alert('Country is requried')
+        $('#id_user_address_details_set-0-country').focus()
+        return false
+    }
 
+    if($('.address_is_billing_diff').is(':checked')){
+        if($('#id_user_address_details_set-1-city').val() == ''){
+            alert('City is requried')
+            $('#id_user_address_details_set-1-city').focus()
+            return false
+        }else if($('#id_user_address_details_set-1-state').val() == ''){
+            alert('State is requried')
+            $('#id_user_address_details_set-1-state').focus()
+            return false
+        }else if($('#id_user_address_details_set-1-country').val() == ''){
+            alert('Country is requried')
+            $('#id_user_address_details_set-1-country').focus()
+            return false
+        }
+    }
+    
     $.post("/contacts/add/",$("#add_purchase_contact_form").serialize(), function(data){
     if(data != '0'){
         

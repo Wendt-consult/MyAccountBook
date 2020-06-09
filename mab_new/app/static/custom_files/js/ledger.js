@@ -64,7 +64,9 @@ function info(ins,slug){
         dataType: "json",
         success: function(data){
             var info = data.account
-            $("#id_info_message").val(info)
+            // $("#id_info_message").val(info)
+            $('#grouping_info').removeAttr('data-tip')
+            $("#grouping_info").attr('data-tip', info);
         },  
     });
 }

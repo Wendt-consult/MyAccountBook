@@ -654,7 +654,7 @@ def print_credit_note(request, ins):
         creditnote = CreditNode.objects.get(pk = int(ins))
         organisation = Organisations.objects.get(user = request.user)
         organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
-        
+        address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
         
         # contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True))
         # products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True))
@@ -681,8 +681,19 @@ def print_credit_note(request, ins):
     data['organisation'] = organisation
     data['organisation_contact'] = organisation_contact
     
-    data['state'] = organisation.get_state_display()
-    data['country'] = organisation.get_country_display()
+    if(len(address) == 1):
+        data['org_address'] = address[0]
+        data['state'] = address[0].get_state_display()
+        data['country'] = address[0].get_country_display()
+    elif(len(address) == 0):
+        org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
+        if(len(org_address) != 0):
+            data['org_address'] = org_address[0]
+            data['state'] = org_address[0].get_state_display()
+            data['country'] = org_address[0].get_country_display()
+
+    # data['state'] = organisation.get_state_display()
+    # data['country'] = organisation.get_country_display()
     
     return render(request,template_name,data)
    
