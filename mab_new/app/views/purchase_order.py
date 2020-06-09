@@ -881,9 +881,9 @@ def purchase_order_mailer(request, purchase_order = None, contact = None, mail =
 
             try:
                 organisation = Organisations.objects.get(user = request.user)
-                subject = "Purchase Order - {} from {} to {}".format(purchase_order.purchase_order_number, organisation.organisation_name, contact.contact_name)
+                subject = "Purchase Order - {} from {} to {}".format(purchase_order.purchase_order_number, organisation.organisation_name, contact.organization_name)
             except:
-                subject = "Purchase Order - {} to {}".format(purchase_order.purchase_order_number,contact.contact_name)
+                subject = "Purchase Order - {} to {}".format(purchase_order.purchase_order_number,contact.organization_name)
         
             msg_body = ["Dear {},".format(contact.contact_name)]
             # msg_body.append("Please find attached the Credit Note {} for your reference.".format(creditnote.credit_number))
@@ -892,7 +892,7 @@ def purchase_order_mailer(request, purchase_order = None, contact = None, mail =
             msg_body.append("Purchase Order Date - {}".format(purchase_order.purchase_order_date))
             msg_body.append("Amount - {}".format(purchase_order.total_amount)) 
             msg_body.append("</div>")
-            msg_body.append("Please feel free to contact us if you have any questions.")
+            msg_body.append("Please feel free to contact us if you have any queries regarding the order.")
             msg_body.append("Regards,")
 
             if organisation is not None:
