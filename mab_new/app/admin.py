@@ -5,6 +5,7 @@ from app.models.products_model import *
 from app.models.contacts_model import *
 from app.models.users_model import *
 from app.models.purchase_model import *
+from app.models.customize_model import *
 from app.models import *
 
 #
@@ -86,3 +87,7 @@ class PurchaseOrder(admin.ModelAdmin):
 @admin.register(Purchase_Items)
 class Purchase_Items(admin.ModelAdmin):
     model = Purchase_Items
+
+@admin.register(CustomizeModuleName)
+class CustomizeModuleName(admin.ModelAdmin):
+    model = CustomizeModuleName
