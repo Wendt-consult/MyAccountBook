@@ -1,13 +1,103 @@
 <style>
-    .creditnote_name:hover{
+.creditnote_name:hover{
     color: white!important;
     }
-    </style>
+
+    .dropbtn {
+  /* background-color: #4CAF50; */
+  color: rgba(199, 195, 195, 0.815);
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  position: relative;
+  display:block;
+  cursor:pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  right: 0;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropcheck {
+    position: absolute;
+    left: -9999px;
+}
+
+.dropcheck:checked ~ .dropdown-content {
+  display: block;
+}
+.dropdown:hover .dropbtn {color: white;}
+</style>
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header card-header-primary">
-                <h4 class="card-title ">View Credit Notes</h4>
+                <div class="row" style="margin-bottom: -3%;">
+                    <div class="col">
+                        <h4 class="card-title ">View Credit Notes</h4>
+                    </div>
+                    <div class="col-1">
+                        <div class="dropdown" style="margin-top:-10%">
+                            <input id="dropcheck" class="dropcheck" type="checkbox">
+                            <label for="dropcheck" class="dropbtn"><span class="material-icons" style="margin-top: -25%;">settings</span></label>
+                            
+                            <div class="dropdown-content" style="margin-top: -33%;border-radius: 6px;">
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_credit_reference" name="customize_credit_reference">
+                                        Reference Number
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_credit_date" name="customize_credit_date">
+                                        Date
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_credit_amount" name="customize_credit_amount">
+                                        Amount
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>                          
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table">

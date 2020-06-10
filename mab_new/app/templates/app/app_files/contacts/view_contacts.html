@@ -3,19 +3,70 @@
 .contact_name:hover{
 color: white!important;
 }
+
+.dropbtn {
+  /* background-color: #4CAF50; */
+  color: rgba(199, 195, 195, 0.815);
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  position: relative;
+  display:block;
+  cursor:pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  right: 0;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropcheck {
+    position: absolute;
+    left: -9999px;
+}
+
+.dropcheck:checked ~ .dropdown-content {
+  display: block;
+}
+
+/* .dropcheck:checked + .dropbtn {
+  background-color: #3e8e41;
+} */
+.dropdown:hover .dropbtn {color: white;}
 </style>
 
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header card-header-primary" style="padding: 9px 6px 0px 9px;">
-                <div class="row">
+            <div class="row">
                 <div class="col">
                     <h4 class="card-title" style="padding-top: 6px;">View Contacts</h4>
                 </div>
                 <div class="col">
                     <form method="get">
-                        <div class="input-group pull-right" style="width:400px; margin-bottom:10px;">
+                        <div class="input-group" style="width:400px; margin-bottom:10px;">
                     
                         <input name="search" type="text" class="form-control" placeholder="Contact / Organisation Name" style="height: 41px !important">
                         <div class="input-group-append">
@@ -162,7 +213,50 @@ color: white!important;
                         </form>
                 </div>
                     <!-- End filter -->
-                </div>
+                    <div class="col-1">
+                        <div class="dropdown">
+                            <input id="dropcheck" class="dropcheck" type="checkbox">
+                            <label for="dropcheck" class="dropbtn"><span class="material-icons" style="margin-top: -25%;">settings</span></label>
+                            
+                            <div class="dropdown-content" style="margin-top: -33%;border-radius: 6px;">
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_org" name="customize_contact_org">
+                                        Organisation Name
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_mail" name="customize_contact_mail">
+                                        Email
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_phone" name="customize_contact_phone">
+                                        Phone Number
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                              <!-- <a href="#">Link 1</a>
+                              <a href="#">Link 2</a>
+                              <a href="#">Link 3</a> -->
+                            </div>
+                        </div>                          
+                    </div>
+            </div>
+                
             </div>
             <div class="card-body">
                 
