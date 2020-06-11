@@ -1066,16 +1066,6 @@ function clear_row(){
 
 
 /*******************************************************************/
-// CODE BY LAWRENCE GANDHAR
-/*******************************************************************/
-function send_creditnote(id){
-	$.get("/send_creditnote/"+id+"/", function(data){
-		if(data=='1') alert("Credit Note Sent");
-		else alert('Email address not mentioned');
-	});
-}
-
-/*******************************************************************/
 // ATTACHMNET WIDTH
 /*******************************************************************/
 

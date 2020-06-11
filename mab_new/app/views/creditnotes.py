@@ -46,7 +46,7 @@ class CreditView(View):
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/creditnote.js']
+    data["js_files"] = ['custom_files/js/customize_view.js']
 
     data["included_template"] = 'app/app_files/creditnote/view_creditnote.html'
     

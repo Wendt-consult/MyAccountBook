@@ -28,7 +28,10 @@ ORGANIZATION_TYPE = (
     (2, 'Proprietorship'),
     (4, 'Partnership'),
     (5, 'Trust'),
-    (6, 'Government Organisation'),
+    (6, 'Private Limited'),
+    (7, 'Public Limited'),
+    (8, 'Overseas Organisation'),
+    (9, 'Government Organisation'),
 )
 
 #****************************************************************************
