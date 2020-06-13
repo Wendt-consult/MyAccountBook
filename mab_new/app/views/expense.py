@@ -14,20 +14,37 @@ from app.forms.tax_form import *
 from app.forms.inc_fomsets import *
 from app.forms.accounts_ledger_forms import *
 from app.models.users_model import Organisations, Organisation_Contact
+from app.models.customize_model import *
 
 from app.forms.expense_form import ExpenseForm, ExpenseCategoryForm, ExpenseItemForm
 from app.models.expense_model import Expense, ExpenseCategoryLineItem, ExpenseLineItem, PaymentMethod
+
+from django.db.models import Q
 
 @method_decorator(login_required, name='dispatch')
 class ExpenseView(View):
 	template_name = 'app/app_files/expense/expense.html'
 	def get(self, request):
 		all_expense = Expense.objects.filter(user=request.user)
+		# CUSTOMIZE VIEW CODE
+		customize_expense = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 6))
+		print(customize_expense)
+		print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
+		if(len(customize_expense) != 0):
+			view_expense = CustomizeExpenseView.objects.get(customize_view_name = customize_expense[0].id)
+			if(view_expense is not None):
+				customize = view_expense
+			else:
+				customize = 'NA'
+		else:
+				customize = 'NA'
+
 		context = {
 			'all_expense' : all_expense,
 			'expense_id':'', 
 			'breadcrumb_title' : 'EXPENSES',
-			'active_link' : 'Expense'
+			'active_link' : 'Expense',
+			'customize' : customize,
 		}
 		return render(request, self.template_name, context)
 

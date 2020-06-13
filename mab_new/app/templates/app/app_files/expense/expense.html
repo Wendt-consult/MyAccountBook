@@ -5,7 +5,81 @@
 {% load pagination %}
 
 {% block content %}
+<style>
+    .dropbtn {
+  /* background-color: #4CAF50; */
+  color: rgba(199, 195, 195, 0.815);
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  position: relative;
+  display:block;
+  cursor:pointer;
+}
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  right: 0;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropcheck {
+    position: absolute;
+    left: -9999px;
+}
+
+.dropcheck:checked ~ .dropdown-content {
+  display: block;
+}
+
+/* .dropcheck:checked + .dropbtn {
+  background-color: #3e8e41;
+} */
+.dropdown:hover .dropbtn {color: white;}
+
+/* loader */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  margin-left: 42%;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 <div class="row custom-row" style="padding:10px; background: linear-gradient(60deg,#f5700c,#ff9800);">
     <ul style="list-style:none; margin:0px; color:#FFFFFF; padding:0px;">             
         <li class="nav-item" style="float:left;padding:0px 10px;">
@@ -25,25 +99,74 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header card-header-primary">
-                <div class="row">
+                <div class="row" style="margin-bottom: -3%;">
                     <div class="col">
                         <h4>View Expense</h4>
-                    </div>                                
+                    </div> 
+                    <div class="col-1">
+                        <div class="dropdown">
+                            <input id="dropcheck" class="dropcheck" type="checkbox">
+                            <label for="dropcheck" class="dropbtn"><span class="material-icons" style="margin-top: -25%;">settings</span></label>
+                            
+                            <div class="dropdown-content" style="margin-top: -33%;border-radius: 6px;">
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_expense_vendor" name="customize_expense_vendor" {% if customize.expense_vendor == 1 %} checked {% endif %}>
+                                        Vendor
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_expense_amount" name="customize_expense_amount" {% if customize.expense_amount == 1 %} checked {% endif %}>
+                                        Total Amount
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="form-check" style="margin-left: 7%;">
+                                    <label class="form-check-label" style="color: black;">
+                                        <input class="form-check-input" type="checkbox" id="customize_expense_method" name="customize_expense_method" {% if customize.expense_method == 1 %} checked {% endif %}>
+                                        Pyment Method
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(6)" style="float:right;padding-left: 6%;padding-right: 6%;border-radius: 6px;">submit</button>
+                                </div>
+                            </div>
+                        </div>                          
+                    </div>                               
                 </div>
             </div>
             <div class="card-body">
-                
-                <div class="table">
+                <div class="loader" style="display: none;"></div>
+                <div class="table" id="customize_table">
                     <input type="hidden" id="print_expense" value="{{ expense_id }}">
                     <a href="" target="_blank" id="link"><span style="display: none;">click</span></a>
                     <table class="table-bordered" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             <th class="text-center">Expense Voucher</th>
                             <th class="text-center">Expense Date</th>
-                            <th class="text-center">Vendor</th> 
+                            {% if customize.expense_vendor != 1 %}
+                            <th class="text-center customize_vendor">Vendor</th> 
+                            {% endif %}
                             <th class="text-center">Payment Date</th>
-                            <th class="text-center">Payment Method</th>
-                            <th class="text-center">Total Amount</th>
+                            {% if customize.expense_method != 1 %}
+                            <th class="text-center customize_method">Payment Method</th>
+                            {% endif %}
+                            {% if customize.expense_amount != 1 %}
+                            <th class="text-center customize_amount">Total Amount</th>
+                            {% endif %}
                             <th class="text-center">Action</th>                
                         </thead>
                         <tbody>
@@ -51,10 +174,16 @@
                                 <tr>
                                     <td class="text-center">{{ expense.exp_number }}</td>
                                     <td class="text-center">{{ expense.exp_date|date:"d/m/Y" }}</td>
-                                    <td class="text-center">{{ expense.vendor }}</td>
+                                    {% if customize.expense_vendor != 1 %}
+                                    <td class="text-center customize_vendor">{{ expense.vendor }}</td>
+                                    {% endif %}
                                     <td class="text-center">{% if expense.payment_date %} {{ expense.payment_date|date:"d/m/Y" }} {% else %} - {% endif %}</td>
-                                    <td class="text-center">{% if expense.payment_method %} {{ expense.payment_method }} {% else %} - {% endif %}</td>
-                                    <td class="text-center">{{ expense.exp_total }}</td>
+                                    {% if customize.expense_method != 1 %}
+                                    <td class="text-center customize_method">{% if expense.payment_method %} {{ expense.payment_method }} {% else %} - {% endif %}</td>
+                                    {% endif %}
+                                    {% if customize.expense_amount != 1 %}
+                                    <td class="text-center customize_amount">{{ expense.exp_total }}</td>
+                                    {% endif %}
                                     <td class="text-center">
                                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Action</button>
                                         
@@ -82,10 +211,255 @@
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    /*******************************************************************/
+// CUSTOMIZE VIEW LIST
+/*******************************************************************/
+// $(document).ready(function(){
+    csrf_token = '{{csrf_token}}';
 
+    function customize_view(ids){
+    //  var search = $('#search').val();
+    $('#dropcheck').prop('checked', false);
+    data = {}
+    if(ids == 1){
+        if($('#customize_contact_org').is(':checked')){
+            data['org'] = 1
+        }else{
+            data['org'] = 0
+        }
+
+        if($('#customize_contact_mail').is(':checked')){
+            data['mail'] = 1
+        }else{
+            data['mail'] = 0
+        }
+
+        if($('#customize_contact_phone').is(':checked')){
+            data['phone'] = 1
+        }else{
+            data['phone'] = 0
+        }
+
+    }else if(ids == 2){
+
+        if($('#customize_product_hsn').is(':checked')){
+            data['hsn'] = 1
+        }else{
+            data['hsn'] = 0
+        }
+
+        if($('#customize_product_desc').is(':checked')){
+            data['desc'] = 1
+        }else{
+            data['desc'] = 0
+        }
+
+        if($('#customize_product_selling').is(':checked')){
+            data['selling'] = 1
+        }else{
+            data['selling'] = 0
+        }
+
+        if($('#customize_product_purchase').is(':checked')){
+            data['purchase'] = 1
+        }else{
+            data['purchase'] = 0
+        }
+
+    }else if(ids == 3){
+
+        if($('#customize_credit_reference').is(':checked')){
+            data['reference'] = 1
+        }else{
+            data['reference'] = 0
+        }
+
+        if($('#customize_credit_date').is(':checked')){
+            data['date'] = 1
+        }else{
+            data['date'] = 0
+        }
+
+        if($('#customize_credit_amount').is(':checked')){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
+
+    }else if(ids == 4){
+
+        if($('#customize_order_reference').is(':checked')){
+            data['reference'] = 1
+        }else{
+            data['reference'] = 0
+        }
+
+        if($('#customize_order_vendor').is(':checked')){
+            data['vendor'] = 1
+        }else{
+            data['vendor'] = 0
+        }
+
+        if($('#customize_order_total').is(':checked')){
+            data['total'] = 1
+        }else{
+            data['total'] = 0
+        }
+
+    }else if(ids == 5){
+
+    }else if(ids == 6){
+        if($('#customize_expense_vendor').is(':checked')){
+            data['vendor'] = 1
+        }else{
+            data['vendor'] = 0
+        }
+
+        if($('#customize_expense_amount').is(':checked')){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
+
+        if($('#customize_expense_method').is(':checked')){
+            data['method'] = 1
+        }else{
+            data['method'] = 0
+        }
+    }
+     $.ajax({
+      url: '/customize_view/'+ids+'/',
+      type: 'POST',
+      data: {'data':JSON.stringify(data), 'csrfmiddlewaretoken':csrf_token},
+      beforeSend: function(){
+       // Show image container
+       $('#customize_table').hide();
+       $(".loader").show();
+       
+      },
+      success: function(data){
+        if(ids == 1){
+            if($('#customize_contact_org').is(':checked')){
+                $('.customize_org').hide()
+            }else{
+                $('.customize_org').show()
+            }
+    
+            if($('#customize_contact_mail').is(':checked')){
+                $('.customize_mail').hide()
+            }else{
+                $('.customize_mail').show()
+            }
+    
+            if($('#customize_contact_phone').is(':checked')){
+                $('.customize_phone').hide()
+            }else{
+                $('.customize_phone').show()
+            }
+        }else if(ids == 2){
+
+            if($('#customize_product_hsn').is(':checked')){
+                $('.customize_hsn').hide()
+            }else{
+                $('.customize_hsn').show()
+            }
+    
+            if($('#customize_product_desc').is(':checked')){
+                $('.customize_desc').hide()
+            }else{
+                $('.customize_desc').show()
+            }
+    
+            if($('#customize_product_selling').is(':checked')){
+                $('.customize_selling').hide()
+            }else{
+                $('.customize_selling').show()
+            }
+    
+            if($('#customize_product_purchase').is(':checked')){
+                $('.customize_purchase').hide()
+            }else{
+                $('.customize_purchase').show()
+            }
+    
+        }else if(ids == 3){
+    
+            if($('#customize_credit_reference').is(':checked')){
+                $('.customize_reference').hide()
+            }else{
+                $('.customize_reference').show()
+            }
+    
+            if($('#customize_credit_date').is(':checked')){
+                $('.customize_date').hide()
+            }else{
+                $('.customize_date').show()
+            }
+    
+            if($('#customize_credit_amount').is(':checked')){
+                $('.customize_amount').hide()
+            }else{
+                $('.customize_amount').show()
+            }
+    
+        }else if(ids == 4){
+    
+            if($('#customize_order_reference').is(':checked')){
+                $('.customize_reference').hide()
+            }else{
+                $('.customize_reference').show()
+            }
+    
+            if($('#customize_order_vendor').is(':checked')){
+                $('.customize_vendor').hide()
+            }else{
+                $('.customize_vendor').show()
+            }
+    
+            if($('#customize_order_total').is(':checked')){
+                $('.customize_total').hide()
+            }else{
+                $('.customize_total').show()
+            }
+    
+        }else if(ids == 6){
+            if($('#customize_expense_vendor').is(':checked')){
+                $('.customize_vendor').hide()
+            }else{
+                $('.customize_vendor').show()
+            }
+    
+            if($('#customize_expense_amount').is(':checked')){
+                $('.customize_amount').hide()
+            }else{
+                $('.customize_amount').show()
+            }
+    
+            if($('#customize_expense_method').is(':checked')){
+                $('.customize_method').hide()
+            }else{
+                $('.customize_method').show()
+            }
+        }
+      },
+      complete:function(data){
+       // Hide image container
+    //    $("#loader").hide();
+        $(".loader").hide();
+        $('#customize_table').show();
+        
+      }
+     });
+    
+    };
+//    });
+</script>
 {% endblock %}
 
 {% block js %}
+
     <script type="text/javascript">
         $('.delete_expense').on('click', function(){
             if(confirm('You want to delete this expense?')){
@@ -101,5 +475,6 @@
             $('#link').attr('href', url);
             $('#link').find("span").trigger("click");
         }
+
     </script>
 {% endblock %}

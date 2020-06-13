@@ -128,6 +128,13 @@ class PurchaseOrder(models.Model):
         null=True
     )
 
+    country_code = models.CharField(
+        max_length=10,
+        db_index = True,
+        blank = True,
+        null=True
+    )
+    
     contact_number = models.CharField(
         max_length=10,
         db_index = True,

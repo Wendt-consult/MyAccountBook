@@ -8,6 +8,7 @@ from app.models.contacts_model import Contacts
 from app.models.users_model import *
 from app.models.products_model import *
 from app.models.creditnote_model import *
+from app.models.customize_model import *
 
 from app.forms.products_form import * 
 from app.forms.contact_forms import * 
@@ -56,6 +57,18 @@ class CreditView(View):
 
         credit_note = CreditNode.objects.filter(user = request.user)
         self.data['credit_note'] = credit_note
+
+        # CUSTOMIZE VIEW CODE
+        customize_credit = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 3))
+        if(len(customize_credit) != 0):
+            view_credit = CustomizeCreditView.objects.get(customize_view_name = customize_credit[0].id)
+            if(view_credit is not None):
+                self.data['customize'] = view_credit
+            else:
+                self.data['customize'] = 'NA'
+        else:
+                self.data['customize'] = 'NA'
+
         return render(request, self.template_name, self.data)
 
 #=====================================================================================

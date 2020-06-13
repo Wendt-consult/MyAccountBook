@@ -5,6 +5,7 @@ from collections import OrderedDict, defaultdict
 from django.db.models import *
 from app.models import *
 from app.models import products_model 
+from app.models.customize_model import * 
 from app.forms.products_form import * 
 from app.forms import *
 
@@ -45,7 +46,7 @@ def view_products(request, *args, **kwargs):
     data["products"] = {}
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/product.js',]
+    data["js_files"] = ['custom_files/js/customize_view.js']
     data["active_link"] = 'Products'
     data["breadcrumb_title"] = 'PRODUCTS'
 
@@ -73,6 +74,17 @@ def view_products(request, *args, **kwargs):
         products = products.filter(is_active = True)   
 
     data["products"] = products
+
+    # CUSTOMIZE VIEW CODE
+    customize_product = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 2))
+    if(len(customize_product) != 0):
+        view_product = CustomizeProductView.objects.get(customize_view_name = customize_product[0].id)
+        if(view_product is not None):
+            data['customize'] = view_product
+        else:
+            data['customize'] = 'NA'
+    else:
+        data['customize'] = 'NA'
 
     return render(request, template_name, data)    
 

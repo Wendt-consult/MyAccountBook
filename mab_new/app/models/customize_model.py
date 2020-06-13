@@ -224,7 +224,7 @@ class CustomizeExpenseView(models.Model):
         blank = True,
     )
 
-    expeanse_method = models.IntegerField(
+    expense_method = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
         default = 0,

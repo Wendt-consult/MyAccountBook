@@ -9,6 +9,7 @@ from app.models.users_model import *
 from app.models.products_model import *
 from app.models.accounts_model import *
 from app.models.purchase_model import *
+from app.models.customize_model import *
 # from app.models.creditnote_model import *
 
 from app.forms.products_form import * 
@@ -19,6 +20,7 @@ from app.forms.accounts_ledger_forms import *
 
 
 from app.other_constants import creditnote_constant
+from app.other_constants import user_constants
 
 from django.db.models import Q
 import datetime
@@ -49,7 +51,7 @@ class PurchaseOrderView(View):
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = []
+    data["js_files"] = ['custom_files/js/customize_view.js']
 
     data["included_template"] = 'app/app_files/purchase_order/view_purchase_order.html'
     
@@ -59,6 +61,18 @@ class PurchaseOrderView(View):
         
         purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user)
         self.data['purchase_order'] = purchase_order
+
+        # CUSTOMIZE VIEW CODE
+        customize_purchase = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 4))
+        if(len(customize_purchase) != 0):
+            view_purchase = CustomizePurchaseView.objects.get(customize_view_name = customize_purchase[0].id)
+            if(view_purchase is not None):
+                self.data['customize'] = view_purchase
+            else:
+                self.data['customize'] = 'NA'
+        else:
+                self.data['customize'] = 'NA'
+                
         return render(request, self.template_name, self.data)
 
 #=====================================================================================
@@ -115,6 +129,8 @@ def add_purchase_order(request, slug):
     data["contacts"] = contacts
     # data["state"] = creditnote_constant.state
     data['tax'] = creditnote_constant.tax
+    data['country_code'] = user_constants.PHONE_COUNTRY_CODE
+
     # list product name
 
     if( int(slug) == 1):
@@ -407,6 +423,7 @@ def save_purchase_order(request):
         is_cutomer =  request.POST.get("customer_radio" ,"off")
         customer = request.POST.get("choose_customer_address")
         attention = request.POST.get("purchase_attention")
+        country_code = request.POST.get("country_code")
         contact_no = request.POST.get("purchase_contact")
         delivery_address = request.POST.get("purchase_address")
         term_condition = request.POST.get("purchase_MessageOnStatement")
@@ -472,8 +489,8 @@ def save_purchase_order(request):
 
         purchase_order = PurchaseOrder(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
                         save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,contact_number=contact_no,
-                        terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
+                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
+                        contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
                         sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
                         cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
                         total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
@@ -561,6 +578,8 @@ class EditPurchaseOrder(View):
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
 
+    data['country_code'] = user_constants.PHONE_COUNTRY_CODE
+
     def get(self, request, *args, **kwargs):
 
         try:
@@ -642,6 +661,7 @@ class EditPurchaseOrder(View):
             is_cutomer =  request.POST.get("customer_radio" ,"off")
             customer = request.POST.get("choose_customer_address")
             attention = request.POST.get("purchase_attention")
+            country_code = request.POST.get("country_code")
             contact_no = request.POST.get("purchase_contact")
             delivery_address = request.POST.get("purchase_address")
             term_condition = request.POST.get("purchase_MessageOnStatement")
@@ -708,8 +728,8 @@ class EditPurchaseOrder(View):
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(vendor)))
             PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
                         save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,contact_number=contact_no,
-                        terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
+                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
+                        contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
                         sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
                         cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
                         total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
@@ -792,6 +812,8 @@ class ClonePurchaseOrder(View):
 
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
+
+    data['country_code'] = user_constants.PHONE_COUNTRY_CODE
 
     def get(self, request, *args, **kwargs):
             

@@ -91,3 +91,23 @@ class Purchase_Items(admin.ModelAdmin):
 @admin.register(CustomizeModuleName)
 class CustomizeModuleName(admin.ModelAdmin):
     model = CustomizeModuleName
+
+@admin.register(CustomizeContactView)
+class CustomizeContactView(admin.ModelAdmin):
+    model = CustomizeContactView
+
+@admin.register(CustomizeProductView)
+class CustomizeProductView(admin.ModelAdmin):
+    model = CustomizeProductView
+
+@admin.register(CustomizeCreditView)
+class CustomizeCreditView(admin.ModelAdmin):
+    model = CustomizeCreditView
+
+@admin.register(CustomizePurchaseView)
+class CustomizePurchaseView(admin.ModelAdmin):
+    model = CustomizePurchaseView
+
+@admin.register(CustomizeExpenseView)
+class CustomizeExpenseView(admin.ModelAdmin):
+    model = CustomizeExpenseView

@@ -14,6 +14,7 @@ function send_creditnote(id){
  
     function customize_view(ids){
     //  var search = $('#search').val();
+    $('#dropcheck').prop('checked', false);
     data = {}
     if(ids == 1){
         if($('#customize_contact_org').is(':checked')){
@@ -103,9 +104,24 @@ function send_creditnote(id){
     }else if(ids == 5){
 
     }else if(ids == 6){
+        if($('#customize_expense_vendor').is(':checked')){
+            data['vendor'] = 1
+        }else{
+            data['vendor'] = 0
+        }
 
+        if($('#customize_expense_amount').is(':checked')){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
+
+        if($('#customize_expense_method').is(':checked')){
+            data['method'] = 1
+        }else{
+            data['method'] = 0
+        }
     }
-    console.log(data)
      $.ajax({
       url: '/customize_view/'+ids+'/',
       type: 'POST',
@@ -201,6 +217,24 @@ function send_creditnote(id){
                 $('.customize_total').show()
             }
     
+        }else if(ids == 6){
+            if($('#customize_expense_vendor').is(':checked')){
+                $('.customize_vendor').hide()
+            }else{
+                $('.customize_vendor').show()
+            }
+    
+            if($('#customize_expense_amount').is(':checked')){
+                $('.customize_amount').hide()
+            }else{
+                $('.customize_amount').show()
+            }
+    
+            if($('#customize_expense_method').is(':checked')){
+                $('.customize_method').hide()
+            }else{
+                $('.customize_method').show()
+            }
         }
       },
       complete:function(data){

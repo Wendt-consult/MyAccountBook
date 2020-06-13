@@ -1572,7 +1572,7 @@ function check_mail(){
 /*********************************************************************** */
 // MOUSE HOVER
 /*********************************************************************** */
-
+vendor_info()
 function vendor_info(){
     var ins = $('#purchase_vendor').val()
     $.get("/purchase_order/vendor_details/"+ins+"/",function(data){

@@ -47,228 +47,73 @@ td{padding:5px;}
 
 
 </style>
-
-<!-- <form method="post" enctype="multipart/form-data">   
-    <div class="row">
-        <div class="col-lg-8" style="padding:0px">
-            <div class="card">
-                <div class="card-header card-header-primary">
-                    <h5 class="card-title ">Organisation Details {{address_details.4.id}}</h5>
-                </div> 
-                <div class="card-body"> 
-                
-                    {% csrf_token %}                 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Name</label>
-                            {{organisation_form.organisation_name}}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Legal Name</label>
-                            {{organisation_form.organisation_legal_name}}
-                            </div>
-                        </div>   
-                    </div>                    
-                    <div class="row">                        
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Line Of Business</label>
-                            {{organisation_form.line_of_business}}
-                            </div>
-                        </div>  
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Type</label>
-                            {{organisation_form.organisation_type}}
-                            </div>
-                        </div>   
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">CIN</label>
-                            {{organisation_form.organisation_cin}}
-                            </div>
-                        </div>                        
-                    </div>    
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Terms and Condition</label>
-                            {{organisation_form.terms_and_condition}}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">PAN</label>
-                            {{organisation_form.organisation_pan}}
-                            
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <p class="org_error_field" style="color: #FF0000;margin-top: 3%;"></p>
-                        </div>
-                    </div> 
-                    <div class="row">
-                        
-                        <div class="col-md-12">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Description</label>
-                            {{organisation_form.organisation_description}}
-                            </div>
-                        </div>                                            
-                    </div>                                   
-                    <button type="submit" class="btn btn-sm btn-success pull-right org_update">Update</button>
-                    <div class="clearfix"></div>                  
-                </div>            
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card card-profile">
-                <div class="card-avatar" style="margin: 11px auto 0;">
-                    <img class="" style="width:250px;height:175px" src="/media/{{ logo }}">
-                </div>
-                <div class="card-body" id="organisation_form_image_body">
-                    <label for="file-upload" id="custom-file-upload">
-                        Upload/Edit Logo
-                    </label>
-                    {{organisation_form.logo}}
-                </div>
-            </div>
-        </div>
-    </div>
-
-</form> -->
 <form method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card" style="height:270px;width:270px;">
-                <div class="card-profile" style="margin-left:48px;margin-top:8px;">
-                    <img  class="card-avatar"  height="200px;" width="200px" style="border-radius:50%;margin-top:14px;margin-right:35px;border: 1px solid #ccc;" src="/media/{{ logo }}" >
-                     {{organisation_form.logo}}
-                </div>
-                <div class="card-body" id="organisation_form_image_body">
-                    <label for="file-upload" id="custom-file-upload" style="margin-left:48px;">
-                        Upload/Edit Logo
-                    </label>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8" style="padding:0px">
-            <div class="card">
-                <div class="card-header card-header-primary" style="margin-left:1px">
-                    <h5 class="card-title " >Organisation Details {{address_details.4.id}}</h5>
-                </div> 
-                <div class="card-body"> 
-                
-                    {% csrf_token %}                 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Name</label>
-                            {{organisation_form.organisation_name}}
-                            </div>
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Legal Name</label>
-                            {{organisation_form.organisation_legal_name}}
-                            </div>
-                        </div>
-
+    <div class="card">
+        <div class="card-header card-header-primary" style="margin-left:1px">
+            <h5 class="card-title " >Organisation Details {{address_details.4.id}}</h5>
+        </div> 
+        <div class="card-body"> 
+        <div class="row">
+            <div class="col-8">
+                {% csrf_token %}                 
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Name</label>
+                    {{organisation_form.organisation_name}}
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Type</label>
-                            {{organisation_form.organisation_type}}
-                            </div>
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">PAN</label>
-                            {{organisation_form.organisation_pan}}
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Legal Name</label>
+                    {{organisation_form.organisation_legal_name}}
+                    </div>
+                </div>
 
-                            </div>
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">CIN</label>
-                            {{organisation_form.organisation_cin}}
-                            </div>
-                        </div>
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Street</label>-->
-<!--                            {{organisation_form.street}}-->
-<!--                            </div>-->
-<!--                        </div>  -->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">City</label>-->
-<!--                            {{organisation_form.city}}-->
-<!--                            </div>-->
-<!--                        </div>                  -->
-<!--                    </div>-->
-<!--                    <div class="row">                        -->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">State</label>-->
-<!--                            {{organisation_form.state}}-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Country</label>-->
-<!--                            {{organisation_form.country}}-->
-<!--                            </div>-->
-<!--                        </div>  -->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Pincode</label>-->
-<!--                            {{organisation_form.pincode}}-->
-<!--                            </div>-->
-<!--                        </div>                      -->
-<!--                    </div>-->
-<!--                    <div class="row">                        -->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Line Of Business</label>-->
-<!--                            {{organisation_form.line_of_business}}-->
-<!--                            </div>-->
-<!--                        </div>  -->
-<!--                        <div class="col-md-4">-->
-<!--                            -->
-<!--                        </div>   -->
-<!--                        <div class="col-md-4">-->
-<!--                            -->
-<!--                        </div>                        -->
-<!--                    </div>    -->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="form-group bmd-form-group">-->
-<!--                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Terms and Condition</label>-->
-<!--                            {{organisation_form.terms_and_condition}}-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            -->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            <p class="org_error_field" style="color: #FF0000;margin-top: 3%;"></p>-->
-<!--                        </div>-->
-<!--                    </div> -->
-<!--                    <div class="row">-->
-                        
-                        <div class="col-md-12">
-                            <div class="form-group bmd-form-group">
-                            <label class="bmd-label-floating" style="top: -5px; position: relative;">Description</label>
-                            {{organisation_form.organisation_description}}
-                            </div>
-                        </div>                                            
-                    </div>                                   
-                    <button type="submit" class="btn btn-sm btn-success pull-right org_update">Update</button>
-                    <div class="clearfix"></div>                  
-                </div>            
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Type</label>
+                    {{organisation_form.organisation_type}}
+                    </div>
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">PAN</label>
+                    {{organisation_form.organisation_pan}}
+                    <p class="org_error_field" style="color: #FF0000;margin-top: 3%;"></p>
+                    </div>
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">CIN</label>
+                    {{organisation_form.organisation_cin}}
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Description</label>
+                    {{organisation_form.organisation_description}}
+                    </div>
+                </div>                                            
+            </div>                                   
+            <button type="submit" class="btn btn-sm btn-success pull-right org_update">Update</button>
+            <div class="clearfix"></div>  
+            </div>
+
+            <div class="col-4">
+                <div  style="height:270px;width:270px;">
+                    <div style="margin-left:48px;margin-top:8px;">
+                        <img  height="200px;" width="200px" style="border-radius:50%;margin-top:14px;margin-right:35px;border: 1px solid #ccc;" src="/media/{{ logo }}" >
+                         {{organisation_form.logo}}
+                    </div>
+                    <div id="organisation_form_image_body">
+                        <label for="file-upload" id="custom-file-upload" style="margin-left: 82px;margin-top: 5%;">
+                            Upload/Edit Logo
+                        </label>
+    
+                    </div>
+                </div>
             </div>
         </div>
 
+        </div>            
     </div>
 
 </form>

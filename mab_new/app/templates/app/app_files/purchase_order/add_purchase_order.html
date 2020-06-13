@@ -12,6 +12,7 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
 .select{
     width: 213.6px;
+    overflow-x: auto;
 }
 
 select.form-control{padding:0px 10px;}
@@ -21,6 +22,22 @@ select.form-control option{color : #000000; }
     margin-left: 5%;
     
 }
+
+#select2-product_account1-results {
+    overflow-x: hidden;
+}
+
+/* #select2-product_account1-results ul li {
+    overflow-wrap: anywhere !important;
+    font-size: 16px !important;
+} */
+
+
+.select2-results__option {
+    overflow-wrap: anywhere !important;
+    font-size: 16px !important;
+}
+
 .form-control{
     margin-top: -7px;
 }
@@ -440,7 +457,15 @@ optgroup{color :black; }
                                 <div class="col-4">
                                     <label for="purchase_contact">Contact Number</label>
                                 </div>
-                                <div class="col-7 input">
+                                <div class="col-3 input">
+                                    <select class="form-control" id="country_code" name="country_code">
+                                        <option value="">-------</option>
+                                        {% for code in country_code%}
+                                        <option value="{{code.1}}" {% if code.1 == '+91' %} selected {% endif %}>{{code.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-4 input" style="padding-left: 2px;">
                                     <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))">
                                 </div>
 

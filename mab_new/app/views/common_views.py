@@ -14,6 +14,7 @@ from app.models.collects_model import *
 from app.models.products_model import *
 from app.models.users_model import *
 from app.models.contacts_model import *
+from app.models.customize_model import *
 
 from app.forms.invoice_forms import *
 from app.forms.products_form import *
@@ -232,3 +233,51 @@ def add_edit_address(request, ins = None, obj = None):
     return HttpResponse(0)
  
  
+#**********************************************************************************************
+# CUSTOMIZE VIEW LIST
+#**********************************************************************************************
+#
+def customize_view_list(request, ins):
+    
+    data = json.loads(request.POST.get('data'))
+    customize_name = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = int(ins)))
+    if(len(customize_name) != 0):
+        if(ins == 1):
+            CustomizeContactView.objects.filter(customize_view_name = customize_name[0].id).update(contact_org_name = data['org'],contact_email = data['mail'],
+                                                contact_phone = data['phone'])
+        elif(ins == 2):
+            CustomizeProductView.objects.filter(customize_view_name = customize_name[0].id).update(product_hsn = data['hsn'],
+                                                product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
+        elif(ins == 3):
+            CustomizeCreditView.objects.filter(customize_view_name = customize_name[0].id).update(credit_reference = data['reference'],credit_date = data['date'],
+                                                credit_amount = data['amount'])
+        elif(ins == 4):
+            CustomizePurchaseView.objects.filter(customize_view_name = customize_name[0].id).update(purchase_reference = data['reference'],purchase_vendor = data['vendor'],
+                                                purchase_total = data['total'])
+        elif(ins == 6):
+            CustomizeExpenseView.objects.filter(customize_view_name = customize_name[0].id).update(expense_vendor = data['vendor'],expense_amount = data['amount'],
+                                                expense_method = data['method'])
+    elif(len(customize_name) == 0):
+        customize_module_name = CustomizeModuleName(user = request.user, customize_name = int(ins))
+        customize_module_name.save()
+        if(ins == 1):
+            view_contact = CustomizeContactView(customize_view_name = customize_module_name,contact_org_name = data['org'],contact_email = data['mail'],
+                                                contact_phone = data['phone'])
+            view_contact.save()
+        elif(ins == 2):
+            view_product = CustomizeProductView(customize_view_name = customize_module_name,product_hsn = data['hsn'],
+                                                product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
+            view_product.save()
+        elif(ins == 3):
+            view_credit = CustomizeCreditView(customize_view_name = customize_module_name,credit_reference = data['reference'],credit_date = data['date'],
+                                                credit_amount = data['amount'])
+            view_credit.save()
+        elif(ins == 4):
+            view_purchase = CustomizePurchaseView(customize_view_name = customize_module_name,purchase_reference = data['reference'],purchase_vendor = data['vendor'],
+                                                purchase_total = data['total'])
+            view_purchase.save()
+        elif(ins == 6):
+            view_expense = CustomizeExpenseView(customize_view_name = customize_module_name,expense_vendor = data['vendor'],expense_amount = data['amount'],
+                                                expense_method = data['method'])
+            view_expense.save()
+    return JsonResponse(data)

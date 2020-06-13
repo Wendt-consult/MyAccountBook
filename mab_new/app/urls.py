@@ -134,7 +134,9 @@ urlpatterns += [
     path('send_creditnote/<int:ins>/', never_cache(login_required(creditnotes.send_creditnote)), name = 'send_creditnote'),
     path('check_gst_existing/', never_cache(login_required(profile.check_gst_existing)), name = 'check_gst_existing'),
     path('get_gst/', never_cache(login_required(profile.get_gst)), name = 'get_gst'),
-    path('get_state_gst/', never_cache(login_required(profile.get_state_gst)), name = 'get_state_gst'),   
+    path('get_state_gst/', never_cache(login_required(profile.get_state_gst)), name = 'get_state_gst'), 
+    # CUSTOMIZE VIEW  
+    path('customize_view/<int:ins>/', never_cache(login_required(common_views.customize_view_list)), name = 'customize_view_list'),  
 ]
 
 # Credit Notes

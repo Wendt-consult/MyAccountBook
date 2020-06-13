@@ -6,6 +6,8 @@ from django.contrib import messages
 
 from app.models.contacts_model import *
 from app.models.users_model import *
+from app.models.customize_model import *
+
 from app.forms.contact_forms import *
 from app.forms.tax_form import *
 from app.forms.inc_fomsets import *
@@ -41,7 +43,7 @@ class ContactsView(View):
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/contacts.js']
+    data["js_files"] = ['custom_files/js/customize_view.js']
 
     data["included_template"] = 'app/app_files/contacts/view_contacts.html'
     
@@ -74,7 +76,18 @@ class ContactsView(View):
             contacts = contacts.filter(is_active__in = is_active)
         else:
             contacts = contacts.filter(is_active = True)
-            
+
+        # CUSTOMIZE VIEW CODE
+        customize_contact = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 1))
+        if(len(customize_contact) != 0):
+            view_contact = CustomizeContactView.objects.get(customize_view_name = customize_contact[0].id)
+            if(view_contact is not None):
+                self.data['customize'] = view_contact
+            else:
+                self.data['customize'] = 'NA'
+        else:
+                self.data['customize'] = 'NA'
+                
         self.data["contacts"] = contacts
         
         return render(request, self.template_name, self.data)

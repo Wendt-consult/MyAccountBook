@@ -52,6 +52,28 @@
   background-color: #3e8e41;
 } */
 .dropdown:hover .dropbtn {color: white;}
+/* loader */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  margin-left: 42%;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -165,7 +187,7 @@
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_hsn" name="customize_product_hsn">
+                                        <input class="form-check-input" type="checkbox" id="customize_product_hsn" name="customize_product_hsn" {% if customize.product_hsn == 1 %} checked {% endif %}>
                                         HSN/SAC
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -175,7 +197,7 @@
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_desc" name="customize_product_desc">
+                                        <input class="form-check-input" type="checkbox" id="customize_product_desc" name="customize_product_desc" {% if customize.product_description == 1 %} checked {% endif %}>
                                         Description
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -185,7 +207,7 @@
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_selling" name="customize_product_selling">
+                                        <input class="form-check-input" type="checkbox" id="customize_product_selling" name="customize_product_selling" {% if customize.product_selling_price == 1 %} checked {% endif %}>
                                         Selling Price
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -194,21 +216,26 @@
                                 </div>
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_purchase" name="customize_product_purchase">
+                                        <input class="form-check-input" type="checkbox" id="customize_product_purchase" name="customize_product_purchase" {% if customize.product_Purchase_price == 1 %} checked {% endif %}>
                                         Purchase Price
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
                                     </label>
                                 </div>
+
+                                <div>
+                                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(2)" style="float:right;padding-left: 6%;padding-right: 6%;border-radius: 6px;">submit</button>
+                                </div>
+
                             </div>
                         </div>                          
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                
-                <div class="table">
+                <div class="loader" style="display: none;"></div>
+                <div class="table" id="customize_table">
                     <table class="table-bordered" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             <!-- <th class="text-center">SL. No.</th> -->
@@ -216,12 +243,20 @@
                             <th class="text-center" style="width:7%;">SKU Code</th>
                             <th class="text-center" style="width: 8%;">Product Type</th>
                             <th class="text-center" style="width: 16%;">Product Name</th> 
-                            <th class="text-center" style="width: 8%;">HSN/SAC</th>
-                            <th class="text-center">Description</th>
+                            {% if customize.product_hsn != 1 %}
+                            <th class="text-center customize_hsn" style="width: 8%;">HSN/SAC</th>
+                            {% endif %}
+                            {% if customize.product_description != 1 %}
+                            <th class="text-center customize_desc">Description</th>
+                            {% endif %}
                             <!--<th class="text-center">Cost Price</th>
                             <th class="text-center">Marked Price</th> -->
-                            <th class="text-center" style="width: 11%;">Selling Price</th>   
-                            <th class="text-center" style="width: 11%;">Purchase Price</th>             
+                            {% if customize.product_selling_price != 1 %}
+                            <th class="text-center customize_selling" style="width: 11%;">Selling Price</th> 
+                            {% endif %}  
+                            {% if customize.product_Purchase_price != 1 %}
+                            <th class="text-center customize_purchase" style="width: 11%;">Purchase Price</th>  
+                            {% endif %}           
                             <!-- <th class="text-center">Images</th>                -->
                             <th class="text-center" style="width: 10%;">Active</th>
                             <th class="text-center" style="width: 10%;">Action</th>                
@@ -237,18 +272,26 @@
                                             {{ product.product_name|truncatechars:15 }}
                                         </a>
                                     </td>
-                                    <td align="center">{{ product.hsn_code|truncatechars:8 }}</td>
-                                    {% if product.product_description %}
-                                    <td align="center">{{ product.product_description|truncatechars:30  }}</td>
-                                    {% else %}
-                                    <td align="center">None</td>
+                                    {% if customize.product_hsn != 1 %}
+                                    <td align="center" class="customize_hsn">{{ product.hsn_code|truncatechars:8 }}</td>
+                                    {% endif %}
+                                    {% if customize.product_description != 1 %}
+                                        {% if product.product_description %}
+                                        <td align="center" class="customize_desc">{{ product.product_description|truncatechars:30  }}</td>
+                                        {% else %}
+                                        <td align="center" class="customize_desc">None</td>
+                                        {% endif %}
                                     {% endif %}
                                     <!-- <td>{{ product.category }}</td>
                                     
                                     <td>{{ product.cost_price }}</td>
                                     <td>{{ product.marked_price }}</td> -->
-                                    <td align="center">{% if product.selling_price %}₹.{% endif %}  {{ product.selling_price|truncatechars:10 }}</td>
-                                    <td align="center">{% if product.purchase_price %}₹.{% endif %}  {{ product.purchase_price|truncatechars:10 }}</td>
+                                    {% if customize.product_selling_price != 1 %}
+                                    <td align="center" class="customize_selling">{% if product.selling_price %}₹.{% endif %}  {{ product.selling_price|truncatechars:10 }}</td>
+                                    {% endif %}
+                                    {% if customize.product_Purchase_price != 1 %}
+                                    <td align="center" class="customize_purchase">{% if product.purchase_price %}₹.{% endif %}  {{ product.purchase_price|truncatechars:10 }}</td>
+                                    {% endif %}
                                     <td class="text-center" align="center">
                                         {% if product.is_active %}
                                         <a title="Active" data-toggle="modal" data-target="#status{{product.id}}" style="padding:5px 5px;">
@@ -370,3 +413,6 @@
         </div>
     </div>
 </div>
+<script>
+    csrf_token = '{{csrf_token}}';
+</script>

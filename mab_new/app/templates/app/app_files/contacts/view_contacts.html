@@ -54,6 +54,29 @@ color: white!important;
   background-color: #3e8e41;
 } */
 .dropdown:hover .dropbtn {color: white;}
+
+/* loader */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  margin-left: 42%;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 
 <div class="row">
@@ -222,7 +245,7 @@ color: white!important;
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_contact_org" name="customize_contact_org">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_org" name="customize_contact_org" {% if customize.contact_org_name == 1 %} checked {% endif %}>
                                         Organisation Name
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -232,7 +255,7 @@ color: white!important;
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_contact_mail" name="customize_contact_mail">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_mail" name="customize_contact_mail" {% if customize.contact_email == 1 %} checked {% endif %}>
                                         Email
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -242,16 +265,17 @@ color: white!important;
 
                                 <div class="form-check" style="margin-left: 7%;">
                                     <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_contact_phone" name="customize_contact_phone">
+                                        <input class="form-check-input" type="checkbox" id="customize_contact_phone" name="customize_contact_phone" {% if customize.contact_phone == 1 %} checked {% endif %}>
                                         Phone Number
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
                                     </label>
                                 </div>
-                              <!-- <a href="#">Link 1</a>
-                              <a href="#">Link 2</a>
-                              <a href="#">Link 3</a> -->
+
+                                <div>
+                                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(1)" style="float:right;padding-left: 6%;padding-right: 6%;border-radius: 6px;">submit</button>
+                                </div>
                             </div>
                         </div>                          
                     </div>
@@ -259,8 +283,8 @@ color: white!important;
                 
             </div>
             <div class="card-body">
-                
-                <div class="table">
+                <div class="loader" style="display: none;"></div>
+                <div class="table" id="customize_table">
                     <table class=" table-bordered" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             <!-- <th class="text-center" style="color:#000000; font-size:11px;overflow: hidden;width: 5%">SL. No.</th> -->
@@ -270,9 +294,15 @@ color: white!important;
                             <!-- <th class="text-center" style="color:#000000; font-size:11px">Customer Type</th> -->
                             <!-- <th class="text-center" style="color:#000000; font-size:11px">Is Sub Customer</th> -->
                             <!-- <th class="text-center" style="color:#000000; font-size:11px">Organisation Type</th> -->
-                            <th class="text-center" style="color:#000000; font-size:11px;width: 15%">Organisation Name</th>
-                            <th class="text-center" style="color:#000000; font-size:11px;width: 15%">Email</th>
-                            <th class="text-center" style="color:#000000; font-size:11px;width: 10%">Phone</th>
+                            {% if customize.contact_org_name != 1 %}
+                            <th class="text-center customize_org" style="color:#000000; font-size:11px;width: 15%">Organisation Name</th>
+                            {% endif %}
+                            {% if customize.contact_email != 1 %}
+                            <th class="text-center customize_mail" style="color:#000000; font-size:11px;width: 15%">Email</th>
+                            {% endif %}
+                            {% if customize.contact_phone != 1 %}
+                            <th class="text-center customize_phone" style="color:#000000; font-size:11px;width: 10%">Phone</th>
+                            {% endif %}
                             <!-- <th class="text-center" style="color:#000000; font-size:11px;width: 10%">location</th> -->
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%">Active</th>   
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>                
@@ -291,9 +321,15 @@ color: white!important;
                                     <td>{{contact.get_is_sub_customer_display|upper}}</td> -->
                                     
                                     <!-- <td>{{contact.get_organization_type_display|upper}}</td> -->
-                                    <td align="center">{{contact.organization_name|default_if_none:""|upper | truncatechars:25}}</td>
-                                    <td align="center">{{contact.email}}</td>
-                                    <td align="center">{{contact.phone}}</td>
+                                    {% if customize.contact_org_name != 1 %}
+                                    <td align="center" class="customize_org">{{contact.organization_name|default_if_none:""|upper | truncatechars:25}}</td>
+                                    {% endif %}
+                                    {% if customize.contact_email != 1 %}
+                                    <td align="center" class="customize_mail">{{contact.email}}</td>
+                                    {% endif %}
+                                    {% if customize.contact_phone != 1 %}
+                                    <td align="center" class="customize_phone">{{contact.phone}}</td>
+                                    {% endif %}
                                     <!-- <td>{{contact.website}}</td>                         -->
                                     <td class="text-center" align="center">
                                         {% if contact.is_active %}
@@ -419,3 +455,6 @@ color: white!important;
     </div>     
 </div>
 
+<script>
+    csrf_token = '{{csrf_token}}';
+</script>
