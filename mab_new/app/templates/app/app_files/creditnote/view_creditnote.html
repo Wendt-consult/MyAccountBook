@@ -3,53 +3,6 @@
     color: white!important;
     }
 
-    .dropbtn {
-  /* background-color: #4CAF50; */
-  color: rgba(199, 195, 195, 0.815);
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  position: relative;
-  display:block;
-  cursor:pointer;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  right: 0;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-.dropcheck {
-    position: absolute;
-    left: -9999px;
-}
-
-.dropcheck:checked ~ .dropdown-content {
-  display: block;
-}
-.dropdown:hover .dropbtn {color: white;}
-
 /* loader */
 .loader {
   border: 16px solid #f3f3f3;
@@ -72,59 +25,57 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.icons{
+    cursor: default;
+}
+.icons:hover{
+color: white!important;
+}
 
+/* draggable targets */
+[data-draggable="target"]
+{
+    float:left;
+    list-style-type:none;
+    
+    width:48%;
+    height:12.5em;
+    overflow-y:auto;
+    
+    margin:0 0.5em 0.5em 0;
+    padding:0.5em;
+    
+    border:2px solid #888;
+    border-radius:0.2em;
+    
+    background: #202940;
+    color: white;
+}
+
+/* draggable items */
+[data-draggable="item"]
+{
+    display:block;
+    list-style-type:none;
+    
+    margin:0 0 2px 0;
+    padding:0.2em 0.4em;
+    
+    border-radius:0.2em;
+    
+    line-height:1.3;
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header card-header-primary">
-                <div class="row" style="margin-bottom: -3%;">
+                <div class="row" style="margin-bottom: -1%;">
                     <div class="col">
                         <h4 class="card-title ">View Credit Notes</h4>
                     </div>
-                    <div class="col-1 cus">
-                        <div class="dropdown" style="margin-top:-10%">
-                            <input id="dropcheck" class="dropcheck" type="checkbox">
-                            <label for="dropcheck" class="dropbtn"><span class="material-icons" style="margin-top: -25%;">settings</span></label>
-                            
-                            <div class="dropdown-content" style="margin-top: -33%;border-radius: 6px;">
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_credit_reference" name="customize_credit_reference" {% if customize.credit_reference == 1 %} checked {% endif %}>
-                                        Reference Number
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_credit_date" name="customize_credit_date" {% if customize.credit_date == 1 %} checked {% endif %}>
-                                        Date
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_credit_amount" name="customize_credit_amount" {% if customize.credit_amount == 1 %} checked {% endif %}>
-                                        Amount
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(3)" style="float:right;padding-left: 6%;padding-right: 6%;border-radius: 6px;">submit</button>
-                                </div>
-                                
-                            </div>
-                        </div>                          
+                    <div class="col-1">
+                        <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);">settings</span>           
                     </div>
                 </div>
             </div>
@@ -133,16 +84,19 @@
                 <div class="table" id="customize_table">
                     <table class=" table-bordered" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
-                           
-                            <th class="text-center" style="color:#000000; font-size:11px;width: 13%">Credit Note No.</th>
-                            <th class="text-center" style="color:#000000; font-size:11px;width: 15%">Contact Name</th>
-                            {% if customize.credit_reference != 1 %}
+                            {% if customize.credit_note != 0 %}
+                            <th class="text-center customize_note" style="color:#000000; font-size:11px;width: 13%">Credit Note No.</th>
+                            {% endif %}
+                            {% if customize.credit_name != 0 %}
+                            <th class="text-center customize_name" style="color:#000000; font-size:11px;width: 15%">Contact Name</th>
+                            {% endif %}
+                            {% if customize.credit_reference != 0 %}
                             <th class="text-center customize_reference" style="color:#000000; font-size:11px;width: 15%">Reference No.</th>
                             {% endif %}
-                            {% if customize.credit_date != 1 %}
+                            {% if customize.credit_date != 0 %}
                             <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 8%">Date</th>
                             {% endif %}
-                            {% if customize.credit_amount != 1 %}
+                            {% if customize.credit_amount != 0 %}
                             <th class="text-center customize_amount" style="color:#000000; font-size:11px;width: 10%">Amount</th> 
                             {% endif %}  
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
@@ -151,9 +105,11 @@
                         <tbody>
                             {% for note in credit_note %}
                                 <tr>
-                        
-                                    <td align="center" >{{note.credit_number|default_if_none:""}}</td>
-                                    <td align="center" style="text-decoration: underline;">
+                                    {% if customize.credit_note != 0 %}
+                                    <td align="center" class="customize_note">{{note.credit_number|default_if_none:""}}</td>
+                                    {% endif %}
+                                    {% if customize.credit_name != 0 %}
+                                    <td align="center" class="customize_name" style="text-decoration: underline;">
                                         {% if note.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
@@ -161,7 +117,8 @@
                                             {{note.contact_name|default_if_none:""|upper|truncatechars:20 }}
                                         </a>
                                     </td>
-                                    {% if customize.credit_reference != 1 %}
+                                    {% endif %}
+                                    {% if customize.credit_reference != 0 %}
                                         {% if note.invoice_refrence %}
                                         <td align="center" class="customize_reference">{{note.invoice_refrence|default_if_none:""}}</td>
                                         {% else %}
@@ -169,10 +126,10 @@
                                         {% endif %}
                                     {% endif %}
                                     
-                                    {% if customize.credit_date != 1 %}
+                                    {% if customize.credit_date != 0 %}
                                     <td align="center" class="customize_date">{{note.credit_date|date:"d-m-Y"}}</td>
                                     {% endif %}
-                                    {% if customize.credit_amount != 1 %}
+                                    {% if customize.credit_amount != 0 %}
                                     <td align="center" class="customize_amount">{% if note.total %}₹.{% endif %}{{note.total}}</td>
                                     {% endif %}
                                    
@@ -215,6 +172,69 @@
             </div>
         </div>    
     </div>     
+</div>
+<!-- customize view -->
+<div class="modal fade" id="CustomizeViewModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940">
+            <form method="post" style="margin:0px" action="{% url 'edit_tax_details_form' %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Customize View</h5>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    
+                    <ol data-draggable="target" id="first">
+                        <h5>Selected Column</h5>
+                        {% if customize.credit_note != 0 %}
+                        <li data-draggable="item" id="customize_credit_note">Credit Note No.</li>
+                        {% endif %}
+                        {% if customize.credit_name != 0 %}
+                        <li data-draggable="item" id="customize_credit_name">Contact Name</li>
+                        {% endif %}
+                        {% if customize.credit_reference != 0 %}
+                        <li data-draggable="item" id="customize_credit_reference">Reference No.</li>
+                        {% endif %}
+                        {% if customize.credit_date != 0 %}
+                        <li data-draggable="item" id="customize_credit_date">Date</li>
+                        {% endif %}
+                        {% if customize.credit_amount != 0 %}
+                        <li data-draggable="item" id="customize_credit_amount">Amount</li>
+                        {% endif %}
+                        
+                      </ol>
+                      
+                      <ol data-draggable="target" id="seconde">
+                          <h5>Unselected Column</h5>
+                          {% if customize.credit_note == 0 %}
+                          <li data-draggable="item" id="customize_credit_note">Credit Note No.</li>
+                          {% endif %}
+                          {% if customize.credit_name == 0 %}
+                          <li data-draggable="item" id="customize_credit_name">Contact Name</li>
+                          {% endif %}
+                          {% if customize.credit_reference == 0 %}
+                          <li data-draggable="item" id="customize_credit_reference">Reference No.</li>
+                          {% endif %}
+                          {% if customize.credit_date == 0 %}
+                          <li data-draggable="item" id="customize_credit_date">Date</li>
+                          {% endif %}
+                          {% if customize.credit_amount == 0 %}
+                          <li data-draggable="item" id="customize_credit_amount">Amount</li>
+                          {% endif %}
+                      </ol>
+                      
+                      
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(3)">apply</button>
+                    <a class="btn btn-sm btn-danger" href="{% url 'credit_note'  %}" type="reset">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <script>
     csrf_token = '{{csrf_token}}';

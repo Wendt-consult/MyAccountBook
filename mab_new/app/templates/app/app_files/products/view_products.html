@@ -2,56 +2,7 @@
 .product_name:hover{
     color: white!important;
 }
-.dropbtn {
-  /* background-color: #4CAF50; */
-  color: rgba(199, 195, 195, 0.815);
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  position: relative;
-  display:block;
-  cursor:pointer;
-}
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  right: 0;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-.dropcheck {
-    position: absolute;
-    left: -9999px;
-}
-
-.dropcheck:checked ~ .dropdown-content {
-  display: block;
-}
-
-/* .dropcheck:checked + .dropbtn {
-  background-color: #3e8e41;
-} */
-.dropdown:hover .dropbtn {color: white;}
 /* loader */
 .loader {
   border: 16px solid #f3f3f3;
@@ -73,6 +24,45 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.icons{
+    cursor: default;
+}
+.icons:hover{
+color: white!important;
+}
+/* draggable targets */
+[data-draggable="target"]
+{
+    float:left;
+    list-style-type:none;
+    
+    width:48%;
+    height:16.5em;
+    overflow-y:auto;
+    
+    margin:0 0.5em 0.5em 0;
+    padding:0.5em;
+    
+    border:2px solid #888;
+    border-radius:0.2em;
+    
+    background: #202940;
+    color: white;
+}
+
+/* draggable items */
+[data-draggable="item"]
+{
+    display:block;
+    list-style-type:none;
+    
+    margin:0 0 2px 0;
+    padding:0.2em 0.4em;
+    
+    border-radius:0.2em;
+    
+    line-height:1.3;
 }
 </style>
 <div class="row">
@@ -179,57 +169,8 @@
                     </div>
                     <!-- end filter -->
                     <div class="col-1">
-                        <div class="dropdown">
-                            <input id="dropcheck" class="dropcheck" type="checkbox">
-                            <label for="dropcheck" class="dropbtn"><span class="material-icons" style="margin-top: -25%;">settings</span></label>
-                            
-                            <div class="dropdown-content" style="margin-top: -33%;border-radius: 6px;">
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_hsn" name="customize_product_hsn" {% if customize.product_hsn == 1 %} checked {% endif %}>
-                                        HSN/SAC
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_desc" name="customize_product_desc" {% if customize.product_description == 1 %} checked {% endif %}>
-                                        Description
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_selling" name="customize_product_selling" {% if customize.product_selling_price == 1 %} checked {% endif %}>
-                                        Selling Price
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-                                <div class="form-check" style="margin-left: 7%;">
-                                    <label class="form-check-label" style="color: black;">
-                                        <input class="form-check-input" type="checkbox" id="customize_product_purchase" name="customize_product_purchase" {% if customize.product_Purchase_price == 1 %} checked {% endif %}>
-                                        Purchase Price
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(2)" style="float:right;padding-left: 6%;padding-right: 6%;border-radius: 6px;">submit</button>
-                                </div>
-
-                            </div>
-                        </div>                          
+            
+                        <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="margin-top: 13%;color: rgba(190, 186, 186, 0.781);">settings</span>
                     </div>
                 </div>
             </div>
@@ -240,21 +181,27 @@
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             <!-- <th class="text-center">SL. No.</th> -->
                             <!-- <th class="text-center">PID</th> -->
-                            <th class="text-center" style="width:7%;">SKU Code</th>
-                            <th class="text-center" style="width: 8%;">Product Type</th>
-                            <th class="text-center" style="width: 16%;">Product Name</th> 
-                            {% if customize.product_hsn != 1 %}
+                            {% if customize.product_sku != 0 %}
+                            <th class="text-center customize_sku" style="width:7%;">SKU Code</th>
+                            {% endif %}
+                            {% if customize.product_type != 0 %}
+                            <th class="text-center customize_type" style="width: 8%;">Product Type</th>
+                            {% endif %}
+                            {% if customize.product_name != 0 %}
+                            <th class="text-center customize_name" style="width: 16%;">Product Name</th> 
+                            {% endif %}
+                            {% if customize.product_hsn != 0 %}
                             <th class="text-center customize_hsn" style="width: 8%;">HSN/SAC</th>
                             {% endif %}
-                            {% if customize.product_description != 1 %}
+                            {% if customize.product_description != 0 %}
                             <th class="text-center customize_desc">Description</th>
                             {% endif %}
                             <!--<th class="text-center">Cost Price</th>
                             <th class="text-center">Marked Price</th> -->
-                            {% if customize.product_selling_price != 1 %}
+                            {% if customize.product_selling_price != 0 %}
                             <th class="text-center customize_selling" style="width: 11%;">Selling Price</th> 
                             {% endif %}  
-                            {% if customize.product_Purchase_price != 1 %}
+                            {% if customize.product_Purchase_price != 0 %}
                             <th class="text-center customize_purchase" style="width: 11%;">Purchase Price</th>  
                             {% endif %}           
                             <!-- <th class="text-center">Images</th>                -->
@@ -266,16 +213,22 @@
                                 <tr id="t{{product.id}}">
                                     <!-- <td>{{ forloop.counter }}</td> -->
                                     <!-- <td>P-0000{{ product.id }}</td> -->
-                                    <td align="center">{{ product.sku|truncatechars:6 }}</td>
-                                    <td align="center">{{ product.get_product_type_display }}</td>
-                                    <td align="center"><a class="product_name" href="{% url 'edit_product' product.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                    {% if customize.product_sku != 0 %}
+                                    <td align="center" class="customize_sku">{{ product.sku|truncatechars:6 }}</td>
+                                    {% endif %}
+                                    {% if customize.product_type != 0 %}
+                                    <td align="center" class="customize_type">{{ product.get_product_type_display }}</td>
+                                    {% endif %}
+                                    {% if customize.product_name != 0 %}
+                                    <td align="center" class="customize_name"><a class="product_name" href="{% url 'edit_product' product.id %}" style="color: #8b92a9;text-decoration: underline;">
                                             {{ product.product_name|truncatechars:15 }}
                                         </a>
                                     </td>
-                                    {% if customize.product_hsn != 1 %}
+                                    {% endif %}
+                                    {% if customize.product_hsn != 0 %}
                                     <td align="center" class="customize_hsn">{{ product.hsn_code|truncatechars:8 }}</td>
                                     {% endif %}
-                                    {% if customize.product_description != 1 %}
+                                    {% if customize.product_description != 0 %}
                                         {% if product.product_description %}
                                         <td align="center" class="customize_desc">{{ product.product_description|truncatechars:30  }}</td>
                                         {% else %}
@@ -286,10 +239,10 @@
                                     
                                     <td>{{ product.cost_price }}</td>
                                     <td>{{ product.marked_price }}</td> -->
-                                    {% if customize.product_selling_price != 1 %}
+                                    {% if customize.product_selling_price != 0 %}
                                     <td align="center" class="customize_selling">{% if product.selling_price %}₹.{% endif %}  {{ product.selling_price|truncatechars:10 }}</td>
                                     {% endif %}
-                                    {% if customize.product_Purchase_price != 1 %}
+                                    {% if customize.product_Purchase_price != 0 %}
                                     <td align="center" class="customize_purchase">{% if product.purchase_price %}₹.{% endif %}  {{ product.purchase_price|truncatechars:10 }}</td>
                                     {% endif %}
                                     <td class="text-center" align="center">
@@ -410,6 +363,80 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<!-- customize view -->
+<div class="modal fade" id="CustomizeViewModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940">
+            <form method="post" style="margin:0px" action="{% url 'edit_tax_details_form' %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Customize View</h5>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    
+                    <ol data-draggable="target" id="first">
+                        <h5>Selected Column</h5>
+                        {% if customize.product_sku != 0 %}
+                        <li data-draggable="item" id="customize_product_sku">SKU Code</li>
+                        {% endif %}
+                        {% if customize.product_type != 0 %}
+                        <li data-draggable="item" id="customize_product_type">Product Type</li>
+                        {% endif %}
+                        {% if customize.product_name != 0 %}
+                        <li data-draggable="item" id="customize_product_name">Product Name</li>
+                        {% endif %}
+                        {% if customize.product_hsn != 0 %}
+                        <li data-draggable="item" id="customize_product_hsn">HSN/SAC</li>
+                        {% endif %}
+                        {% if customize.product_description != 0 %}
+                        <li data-draggable="item" id="customize_product_desc">Description</li>
+                        {% endif %}
+                        {% if customize.product_selling_price != 0 %}
+                        <li data-draggable="item" id="customize_product_selling">Selling Price</li>
+                        {% endif %}
+                        {% if customize.product_Purchase_price != 0 %}
+                        <li data-draggable="item" id="customize_product_purchase">Purchase Price</li>
+                        {% endif %}
+                      </ol>
+                      
+                      <ol data-draggable="target" id="seconde">
+                        <h5>Unselected Column</h5>
+                        {% if customize.product_sku == 0 %}
+                        <li data-draggable="item" id="customize_product_sku">SKU Code</li>
+                        {% endif %}
+                        {% if customize.product_type == 0 %}
+                        <li data-draggable="item" id="customize_product_type">Product Type</li>
+                        {% endif %}
+                        {% if customize.product_name == 0 %}
+                        <li data-draggable="item" id="customize_product_name">Product Name</li>
+                        {% endif %}
+                        {% if customize.product_hsn == 0 %}
+                        <li data-draggable="item" id="customize_product_hsn">HSN/SAC</li>
+                        {% endif %}
+                        {% if customize.product_description == 0 %}
+                        <li data-draggable="item" id="customize_product_desc">Description</li>
+                        {% endif %}
+                        {% if customize.product_selling_price == 0 %}
+                        <li data-draggable="item" id="customize_product_selling">Selling Price</li>
+                        {% endif %}
+                        {% if customize.product_Purchase_price == 0 %}
+                        <li data-draggable="item" id="customize_product_purchase">Purchase Price</li>
+                        {% endif %}
+                      </ol>
+                      
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(2)">apply</button>
+                    <a class="btn btn-sm btn-danger" href="{% url 'view_products'  %}" type="reset">Cancel</a>
+                    
+                </div>
+            </form>
         </div>
     </div>
 </div>

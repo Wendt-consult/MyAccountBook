@@ -28,8 +28,6 @@ class ExpenseView(View):
 		all_expense = Expense.objects.filter(user=request.user)
 		# CUSTOMIZE VIEW CODE
 		customize_expense = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 6))
-		print(customize_expense)
-		print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
 		if(len(customize_expense) != 0):
 			view_expense = CustomizeExpenseView.objects.get(customize_view_name = customize_expense[0].id)
 			if(view_expense is not None):

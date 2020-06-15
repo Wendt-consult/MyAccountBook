@@ -49,6 +49,14 @@ class CustomizeContactView(models.Model):
         blank = False,
     )
 
+    contact_name = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
     contact_org_name = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
@@ -85,6 +93,30 @@ class CustomizeProductView(models.Model):
         on_delete=models.CASCADE,
         null = False,
         blank = False,
+    )
+
+    product_sku = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    product_type = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    product_name = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
     )
 
     product_hsn = models.IntegerField(
@@ -133,6 +165,22 @@ class CustomizeCreditView(models.Model):
         blank = False,
     )
 
+    credit_note = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    credit_name = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
     credit_reference = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
@@ -171,6 +219,14 @@ class CustomizePurchaseView(models.Model):
         blank = False,
     )
 
+    purchase_number = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
     purchase_reference = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
@@ -187,6 +243,14 @@ class CustomizePurchaseView(models.Model):
         blank = True,
     )
 
+    purchase_status = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
     purchase_total = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
@@ -195,6 +259,13 @@ class CustomizePurchaseView(models.Model):
         blank = True,
     )
 
+    purchase_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
 #=========================================================================================
 # customize purchase order names
 #=========================================================================================
@@ -208,6 +279,23 @@ class CustomizeExpenseView(models.Model):
         blank = False,
     )
 
+    
+    expense_vocher = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    expense_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
     expense_vendor = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
@@ -216,7 +304,7 @@ class CustomizeExpenseView(models.Model):
         blank = True,
     )
 
-    expense_amount = models.IntegerField(
+    expense_payment = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
         default = 0,
@@ -225,6 +313,14 @@ class CustomizeExpenseView(models.Model):
     )
 
     expense_method = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    expense_amount = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
         default = 0,

@@ -243,41 +243,41 @@ def customize_view_list(request, ins):
     customize_name = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = int(ins)))
     if(len(customize_name) != 0):
         if(ins == 1):
-            CustomizeContactView.objects.filter(customize_view_name = customize_name[0].id).update(contact_org_name = data['org'],contact_email = data['mail'],
+            CustomizeContactView.objects.filter(customize_view_name = customize_name[0].id).update(contact_name = data['name'],contact_org_name = data['org'],contact_email = data['mail'],
                                                 contact_phone = data['phone'])
         elif(ins == 2):
-            CustomizeProductView.objects.filter(customize_view_name = customize_name[0].id).update(product_hsn = data['hsn'],
-                                                product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
+            CustomizeProductView.objects.filter(customize_view_name = customize_name[0].id).update(product_sku = data['sku'],product_type = data['type'],product_name = data['name'],
+                                                product_hsn = data['hsn'],product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
         elif(ins == 3):
-            CustomizeCreditView.objects.filter(customize_view_name = customize_name[0].id).update(credit_reference = data['reference'],credit_date = data['date'],
-                                                credit_amount = data['amount'])
+            CustomizeCreditView.objects.filter(customize_view_name = customize_name[0].id).update(credit_note = data['note'],credit_name = data['name'],credit_reference = data['reference'],
+                                                credit_date = data['date'],credit_amount = data['amount'])
         elif(ins == 4):
-            CustomizePurchaseView.objects.filter(customize_view_name = customize_name[0].id).update(purchase_reference = data['reference'],purchase_vendor = data['vendor'],
-                                                purchase_total = data['total'])
+            CustomizePurchaseView.objects.filter(customize_view_name = customize_name[0].id).update(purchase_number = data['number'],purchase_reference = data['reference'],purchase_vendor = data['vendor'],
+                                                purchase_status = data['status'],purchase_total = data['total'],purchase_date = data['date'])
         elif(ins == 6):
-            CustomizeExpenseView.objects.filter(customize_view_name = customize_name[0].id).update(expense_vendor = data['vendor'],expense_amount = data['amount'],
-                                                expense_method = data['method'])
+            CustomizeExpenseView.objects.filter(customize_view_name = customize_name[0].id).update(expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
+                                                expense_method = data['method'],expense_amount = data['amount'])
     elif(len(customize_name) == 0):
         customize_module_name = CustomizeModuleName(user = request.user, customize_name = int(ins))
         customize_module_name.save()
         if(ins == 1):
-            view_contact = CustomizeContactView(customize_view_name = customize_module_name,contact_org_name = data['org'],contact_email = data['mail'],
+            view_contact = CustomizeContactView(customize_view_name = customize_module_name,contact_name = data['name'],contact_org_name = data['org'],contact_email = data['mail'],
                                                 contact_phone = data['phone'])
             view_contact.save()
         elif(ins == 2):
-            view_product = CustomizeProductView(customize_view_name = customize_module_name,product_hsn = data['hsn'],
-                                                product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
+            view_product = CustomizeProductView(customize_view_name = customize_module_name,product_sku = data['sku'],product_type = data['type'],product_name = data['name'],
+                                                product_hsn = data['hsn'],product_description = data['desc'],product_selling_price = data['selling'],product_Purchase_price = data['purchase'])
             view_product.save()
         elif(ins == 3):
-            view_credit = CustomizeCreditView(customize_view_name = customize_module_name,credit_reference = data['reference'],credit_date = data['date'],
-                                                credit_amount = data['amount'])
+            view_credit = CustomizeCreditView(customize_view_name = customize_module_name,credit_note = data['note'],credit_name = data['name'],credit_reference = data['reference'],
+                                            credit_date = data['date'],credit_amount = data['amount'])
             view_credit.save()
         elif(ins == 4):
-            view_purchase = CustomizePurchaseView(customize_view_name = customize_module_name,purchase_reference = data['reference'],purchase_vendor = data['vendor'],
-                                                purchase_total = data['total'])
+            view_purchase = CustomizePurchaseView(customize_view_name = customize_module_name,purchase_number = data['number'],purchase_reference = data['reference'],purchase_vendor = data['vendor'],
+                                                purchase_status = data['status'],purchase_total = data['total'],purchase_date = data['date'])
             view_purchase.save()
         elif(ins == 6):
-            view_expense = CustomizeExpenseView(customize_view_name = customize_module_name,expense_vendor = data['vendor'],expense_amount = data['amount'],
-                                                expense_method = data['method'])
+            view_expense = CustomizeExpenseView(customize_view_name = customize_module_name,expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
+                                                expense_method = data['method'],expense_amount = data['amount'])
             view_expense.save()
     return JsonResponse(data)
