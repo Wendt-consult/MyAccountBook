@@ -7,6 +7,8 @@ from app.models import *
 from app.forms import *
 from app.helpers import *
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 class Profile(View):
 
     # Template 
@@ -68,13 +70,32 @@ class Profile(View):
 
         if organisation_form is not None:
             org_contacts = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
-            self.data["address_details"] = org_contacts
+            cont_paginator = Paginator(org_contacts, 5)
+            cont_page = request.GET.get('page')     
+            try:
+                cont_posts = cont_paginator.page(cont_page)
+            except PageNotAnInteger:
+                cont_posts = cont_paginator.page(1)
+ 
+            except EmptyPage:
+                cont_posts = cont_paginator.page(cont_paginator.num_pages)
+            self.data["address_details"] = cont_posts
+            self.data["cont_page"] = cont_page
 
             # org_address
             org_address = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
-            self.data["org_address_details"] = org_address      
-        
-
+            paginator = Paginator(org_address, 5)
+            page = request.GET.get('page')     
+            try:
+                posts = paginator.page(page)
+            except PageNotAnInteger:
+                posts = paginator.page(1)
+ 
+            except EmptyPage:
+                posts = paginator.page(paginator.num_pages)
+            
+            self.data["org_address_details"] = posts
+            self.data["page"] = page 
         # edit org address
         contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
         c_count = len(contact_address_form)
@@ -371,8 +392,97 @@ def set_state_gst(organisation = None, state = None, gst = None):
         for addr in addresses:
             addr.organisation_tax = gst 
             addr.save()
-            
-            
+ 
+
+#===================================================================================================
+# GST SETTINGS
+#===================================================================================================
+# 
+
+class GSTSettingsView(View):
+    
+    # Template 
+    template_name = 'app/app_files/profile_manager/index.html'
+
+    # Initialize 
+    data = defaultdict()
+    data["view"] = ""
+    data["contacts"] = {}
+    data["active_link"] = 'Profile'
+    data["breadcrumb_title"] = 'GST Settings'
+
+    # Custom CSS/JS Files For Inclusion into template
+    data["css_files"] = []
+    #data["js_files"] = []
+    data["js_files"] = []
+
+    data["included_template"] = 'app/app_files/profile_manager/gst_settings.html'
+
+    #
+    #
+    def get(self, request): 
+        self.data["org_add_form"] = tax_form.OrganisationGSTSettingsForm() 
+        
+        org = users_model.OrganisationGSTSettings.objects.filter(user=request.user)
+        
+        self.data["edit_form"] = []
+        
+        for i in range(org.count()):
+            self.data["edit_form"].append(tax_form.OrganisationGSTSettingsForm(instance = org[i], prefix="form_{}".format(org[i].id))) 
+
+        self.data["org_gst_details"] = org
+    
+        return render(request, self.template_name, self.data)
+ 
+    #
+    #
+    def post(self, request):
+        org_add_form = tax_form.OrganisationGSTSettingsForm(request.POST)
+    
+        if org_add_form.is_valid():
+            org = org_add_form.save(commit=False)
+            org.user = request.user
+            org.save()
+        else:
+            print(org_add_form.errors)
+        return redirect("/profile/gst_settings/", permanent=False)    
+       
+ 
+#===================================================================================================
+# DELETE GST SETTINGS
+#===================================================================================================
+#  
+ 
+def delete_gst_settings(request, ins=None):
+    if ins is not None:
+        org = users_model.OrganisationGSTSettings.objects.filter(user=request.user, pk=int(ins))
+        org.delete()
+        return redirect("/profile/gst_settings/", permanent=False)    
+    return redirect("/unauthorized/", permnent = False)    
+ 
+ 
+#===================================================================================================
+# EDIT GST SETTINGS
+#===================================================================================================
+#  
+ 
+def edit_gst_settings(request):
+
+    if request.POST:
+        keys = [i for i in request.POST.keys() if "-taxname" in i]
+        
+        prefix = keys[0].replace("-taxname", "").replace("form_", "")
+        
+        org = users_model.OrganisationGSTSettings.objects.get(pk=int(prefix))
+        
+        org.taxname = request.POST["form_{}-taxname".format(prefix)]
+        org.taxname_percent = request.POST["form_{}-taxname_percent".format(prefix)]
+        org.save()
+
+        return redirect("/profile/gst_settings/", permanent=False)  
+    return redirect("/unauthorized/", permnent = False) 
+ 
+ 
 #===================================================================================================
 # BLANK PROFILE
 #===================================================================================================

@@ -118,6 +118,7 @@ def add_purchase_order(request, slug):
 
      # list contact name
     contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
+    gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
     default_term_condition = Organisations.objects.filter(user = request.user)
     if(len(default_term_condition) > 0):
@@ -127,8 +128,7 @@ def add_purchase_order(request, slug):
         data['pur_notes'] = purchase_notes
 
     data["contacts"] = contacts
-    # data["state"] = creditnote_constant.state
-    data['tax'] = creditnote_constant.tax
+    data['gst'] = gst 
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
 
     # list product name
@@ -596,6 +596,7 @@ class EditPurchaseOrder(View):
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
             default_term_condition = Organisations.objects.filter(user = request.user)
+            gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
         except:
             return redirect('/unauthorized/', permanent=False)
@@ -607,8 +608,7 @@ class EditPurchaseOrder(View):
             self.data['pur_notes'] = purchase_notes
 
         self.data["contacts"] = contacts
-        # self.data["state"] = creditnote_constant.state
-        self.data['tax'] = creditnote_constant.tax
+        self.data['gst'] = gst
 
         # inactive and delete product or contact
         self.data["intproducts"] = intproducts
@@ -827,6 +827,7 @@ class ClonePurchaseOrder(View):
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
             default_term_condition = Organisations.objects.filter(user = request.user)
             # default = Organisations.objects.filter(user = request.user)
+            gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
         except:
             return redirect('/unauthorized/', permanent=False)
 
@@ -869,7 +870,7 @@ class ClonePurchaseOrder(View):
         
         self.data["contacts"] = contacts
         # self.data["state"] = creditnote_constant.state
-        self.data['tax'] = creditnote_constant.tax
+        self.data['gst'] = gst
         self.data["products"] = products
         self.data["purchase_order"] = purchase_order
         # if(len(a) > 0):

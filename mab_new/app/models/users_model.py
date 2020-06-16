@@ -31,7 +31,12 @@ def create_user_profile(sender, instance, created, **kwargs):
 
         organisation = Organisations.objects.create(user=instance)
         organisation.save()
-
+        
+        for i, j in gst_slab.gst_slab_list:
+            gst_settings = OrganisationGSTSettings.objects.create(user=instance)
+            gst_settings.taxname = i
+            gst_settings.taxname_percent = j
+            gst_settings.save()
 
 #**************************************************************************
 # User Organisation Basic Details
@@ -525,6 +530,27 @@ class User_Tax_Details(models.Model):
         choices = payment_constants.PAYMENT_DAYS,
     )
 
+    is_organisation_gst_register = models.BooleanField(
+        null=True,
+        blank=True,
+        db_index=True,
+        default=False,
+    )
+
+    multiple_gst = models.BooleanField(
+        null=True,
+        blank=True,
+        db_index=True,
+        default=False,
+    )
+
+    composite_gst = models.BooleanField(
+        null=True,
+        blank=True,
+        db_index=True,
+        default=False,
+    )
+    
     class META:
         verbose_name_plural = 'user_tax_details_tbl'
 
@@ -942,3 +968,30 @@ class Organisation_Info(models.Model):
         choices = user_constants.IS_TRUE,
         default = False,
     )
+    
+    
+#**************************************************************************
+# Organisation GST
+#**************************************************************************
+
+class OrganisationGSTSettings(models.Model):
+    user = models.ForeignKey(
+        User,
+        db_index = True,
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True,
+    ) 
+    
+    taxname = models.CharField(
+        blank = True,
+        null = True,
+        max_length = 100,
+    )
+    
+    taxname_percent = models.IntegerField(
+        blank = True,
+        null = True,
+        default = 0,
+    )
+    

@@ -70,7 +70,7 @@ td{padding:5px;}
 
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group bmd-form-group">
                     <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Type</label>
                     {{organisation_form.organisation_type}}
@@ -136,12 +136,12 @@ td{padding:5px;}
                     <tbody style="width:100%; display:inline-table;">
                         <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
                             <td class="text-center" style="width: 15%;border: 1px solid white;">Contact Person</td>
-                            <td class="text-center" style="width: 9%;border: 1px solid white;">Flat/Building No.</td>
-                            <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
+                            <td class="text-center" style="width: 40%;border: 1px solid white;">Address</td>
+                            <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
                             <td class="text-center" style="width: 11%;border: 1px solid white;">City</td>
                             <td class="text-center" style="width: 1%;border: 1px solid white;">Pincode</td>               
                             <td class="text-center" style="width:17%;border: 1px solid white;">State</td>               
-                            <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>  
+                            <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>   -->
                             <td class="text-center" style="border: 1px solid white;">Is Shipping</td>
                             <td class="text-center" style="border: 1px solid white;">Is Billing</td>  
 							<td class="text-center" style="border: 1px solid white;">GSTIN</td>							
@@ -152,8 +152,28 @@ td{padding:5px;}
                                                    
                             <td style="vertical-align: bottom;border: 1px solid white;">
                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
-                            </td>                  
+                            </td>  
                             <td style="vertical-align: bottom;border: 1px solid white;">
+                                {% if i.flat_no %}
+                                {{ i.flat_no|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.street %}
+                                {{ i.street|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.city %}
+                                {{ i.city|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.pincode %}
+                                {{ i.pincode|default_if_none:"" }},
+                                {% endif %}
+                                {% if i.state %}
+                                {{ i.get_state_display|default_if_none:""|truncatechars:20 }},
+                                {% endif %}
+                                {% if i.country %}
+                                {{ i.get_country_display|default_if_none:""|truncatechars:20 }}
+                                {% endif %}
+                            </td>                
+                            <!-- <td style="vertical-align: bottom;border: 1px solid white;">
                                 {{ i.flat_no|default_if_none:""|truncatechars:10 }}
                             </td>  
                             <td style="vertical-align: bottom;border: 1px solid white;">
@@ -170,7 +190,7 @@ td{padding:5px;}
                             </td>  
                             <td style="vertical-align: bottom;border: 1px solid white;">
                                 {{ i.country|default_if_none:""|truncatechars:15 }}
-                            </td> 
+                            </td>  -->
                             <td style="vertical-align: bottom; text-align:center;border: 1px solid white;">                                                                    
                                 {{ i.get_is_shipping_address_display  }}
                             </td>
@@ -207,6 +227,23 @@ td{padding:5px;}
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if org_address_details.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ org_address_details.previous_page_number }}">Previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ org_address_details.number }} of {{ org_address_details.paginator.num_pages }}.
+                        </span>
+                
+                        {% if org_address_details.has_next %}
+                            <a href="?page={{ org_address_details.next_page_number }}">Next</a>
+                            <a href="?page={{ org_address_details.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
             </div>            
         </div>
     </div>
@@ -240,7 +277,6 @@ td{padding:5px;}
                             <td class="text-center" style="width:11%;border: 1px solid white;">Facebook</td>            
                             <td class="text-center" style="border: 1px solid white; width:80px !important">Action</td>                
                         </tr>  
-                        {{address_details.0.id}}
                         {% for i in address_details %}
                         
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
@@ -293,6 +329,23 @@ td{padding:5px;}
                         {% endfor %}    
                     </tbody>
                 </table>
+                <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if address_details.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ address_details.previous_page_number }}">Previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ address_details.number }} of {{ address_details.paginator.num_pages }}.
+                        </span>
+                
+                        {% if address_details.has_next %}
+                            <a href="?page={{ address_details.next_page_number }}">Next</a>
+                            <a href="?page={{ address_details.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
             </div>            
         </div>
     </div>
@@ -550,7 +603,7 @@ td{padding:5px;}
                                     {{ org_address_form.country }}
                                 </td>                                    
                             </tr>
-							<tr class="gst_tr">
+							<!-- <tr class="gst_tr" >
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
                                     GSTIN
                                 </td>
@@ -565,7 +618,7 @@ td{padding:5px;}
                                 <td style="border:0px;">
                                     {{ gst_form.gst_reg_type }}
                                 </td>                                    
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
             </div>

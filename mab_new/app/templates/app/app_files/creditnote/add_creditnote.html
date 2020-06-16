@@ -363,8 +363,8 @@ optgroup{color :black; }
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
                                         <datalist id="tax">
-                                            {% for i in tax %}
-                                            <option value="{{i}}">
+                                            {% for i in gst %}
+                                            <option value="{{i.taxname_percent}}">
                                             {% endfor %}
                                         </datalist>  
                                     </div>

@@ -286,37 +286,6 @@ optgroup{color :black; }
                         </div>
                     </div>
                 </div>
-                <!-- <div class="form-group">
-                    <div class="row" style="width: 265%;">
-                        
-                        
-                    </div>      
-                </div> -->
-
-                <!-- <div class="form-group" style="margin-top: -11px;">
-                    <div class="row" style="width:265%;" id="billing_state">
-                        
-                        
-
-                    </div>
-                </div> -->
-
-                <!-- <div class="form-group">
-                    <div class="row cc" style="width: 265%;">
-                        
-
-                        
-                    </div>
-                </div> -->
-
-                <!-- <div class="form-group">
-                    <div class="row" style="width: 265%;">
-                        
-                        
-                    </div>
-                </div> -->
-
-                <!-- <div class="form-group tbl" style="width: 90%"> -->
                     <table class="table" id="creditnote_table" style="width: 95%;margin-left: 5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
@@ -397,8 +366,8 @@ optgroup{color :black; }
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;">
                                         <datalist id="tax">
-                                            {% for i in tax %}
-                                            <option value="{{i}}">
+                                            {% for i in gst %}
+                                            <option value="{{i.taxname_percent}}">
                                             {% endfor %}
                                         </datalist> 
                                     </div>
@@ -484,8 +453,8 @@ optgroup{color :black; }
                                     <div class="col-8" style="padding-right:3px">
                                         <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
                                         <datalist id="tax">
-                                            {% for i in tax %}
-                                            <option value="{{i}}">
+                                            {% for i in gst %}
+                                            <option value="{{i.taxname_percent}}">
                                             {% endfor %}
                                         </datalist>  
                                     </div>

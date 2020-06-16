@@ -173,6 +173,9 @@ urlpatterns += [
     path('profile/edit_account_details_form/<int:ins>/', never_cache(login_required(profile.edit_org_account_details_form)), name = 'edit_org_account_details_form'),
     path('profile/delete_account/<int:ins>/', never_cache(login_required(profile.delete_org_account)), name = 'delete_org_account'),
     path('profile/blank/', never_cache(login_required(profile.blank)), name = 'blank'),
+    path('profile/gst_settings/', never_cache(login_required(profile.GSTSettingsView.as_view())), name = 'gst_settings'),
+    path('profile/delete_gst_settings/<int:ins>/', never_cache(login_required(profile.delete_gst_settings)), name = 'delete_gst_settings'),
+    path('profile/edit_gst_settings/', never_cache(login_required(profile.edit_gst_settings)), name = 'edit_gst_settings'),
 ]
 
 # Purchase Order

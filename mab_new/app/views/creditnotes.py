@@ -116,7 +116,11 @@ def add_creditnote(request, slug ):
         data['term_msg'] = msg
     data["contacts"] = contacts
     data["state"] = creditnote_constant.state
-    data['tax'] = creditnote_constant.tax
+    # data['tax'] = creditnote_constant.tax
+
+    # gst tax model
+    gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+    data['gst'] = gst 
     # list product name
     if( int(slug) == 1):
         products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
@@ -401,12 +405,15 @@ class EditCreditnote(View):
             products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
             creditnote_item = creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote))
             default = Organisations.objects.filter(user = request.user)
+            gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+    
         except:
             return redirect('/unauthorized/', permanent=False)
 
         self.data["contacts"] = contacts
         self.data["state"] = creditnote_constant.state
-        self.data['tax'] = creditnote_constant.tax
+        # self.data['tax'] = creditnote_constant.tax
+        self.data['gst'] = gst 
 
         # inactive and delete product or contact
         self.data["intproducts"] = intproducts
@@ -591,6 +598,7 @@ class CloneCreditnote(View):
             products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
             creditnote_item = creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote))
             default = Organisations.objects.filter(user = request.user)
+            gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
         except:
             return redirect('/unauthorized/', permanent=False)
 
@@ -618,9 +626,10 @@ class CloneCreditnote(View):
         
         self.data["contacts"] = contacts
         self.data["state"] = creditnote_constant.state
-        self.data['tax'] = creditnote_constant.tax
+        # self.data['tax'] = creditnote_constant.tax
         self.data["products"] = products
         self.data["credit_note"] = creditnote
+        self.data['gst'] = gst 
         # if(len(a) > 0):
         self.data["creditnote_item"] = a
 

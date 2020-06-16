@@ -44,4 +44,17 @@ class OrganisationTaxForm(ModelForm):
             'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'padding-left: 9px; width:50%;', 'onkeyup':'setMessage($(this))', 'onfocusout':'valid_GST($(this))'}), 
             'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))','style':'width:50%;',}, choices = user_constants.GST_REG_TYPE), 
         }        
-        
+   
+
+#
+#
+#
+class OrganisationGSTSettingsForm(ModelForm):
+    class Meta:
+        model = OrganisationGSTSettings
+        fields = ('taxname', 'taxname_percent')
+
+        widgets = {
+            'taxname' : TextInput(attrs = {'class':'form-control input-sm',}), 
+            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm',}),  
+        }     
