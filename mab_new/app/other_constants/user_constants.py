@@ -13,6 +13,15 @@ GST_REG_TYPE = (
     (8, 'Composite GST')
 )
 
+org_GST_REG_TYPE = (
+    (1, 'GST Registered-Regular'),
+    (2, 'GST Registered-Composition'),
+    (4, 'Consumer'),
+    (6, 'SEZ'),
+    (7, 'Deemed Exports -EOU’s, STP’s , EHTP’s etc'),
+    (8, 'Composite GST')
+)
+
 #****************************************************************************
 #   RECORD STATUS CODES
 #****************************************************************************

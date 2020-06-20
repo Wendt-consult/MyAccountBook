@@ -26,6 +26,9 @@ class User_Account_Details(admin.ModelAdmin):
 class User_Address_Details(admin.ModelAdmin):
     model = users_model.User_Address_Details 
 
+@admin.register(users_model.User_Tax_Details)
+class User_Tax_Details(admin.ModelAdmin):
+    model = users_model.User_Tax_Details 
 #
 #
 @admin.register(accounts_model.MajorHeads)

@@ -167,7 +167,26 @@ color: white!important;
                                 </tr>
                             {% endfor %}
                         </tbody>
-                    </table>    
+                    </table>  
+                    {% if credit_note %} 
+                    <div class="pagination" style="float: right;">
+                        <span class="step-links">
+                            {% if credit_note.has_previous %}
+                                <a href="?page=1">&laquo; First</a>
+                                <a href="?page={{ credit_note.previous_page_number }}">Previous</a>
+                            {% endif %}
+                    
+                            <span class="current">
+                                Page {{ credit_note.number }} of {{ credit_note.paginator.num_pages }}.
+                            </span>
+                    
+                            {% if credit_note.has_next %}
+                                <a href="?page={{ credit_note.next_page_number }}">Next</a>
+                                <a href="?page={{ credit_note.paginator.num_pages }}">Last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}  
                 </div>
             </div>
         </div>    
@@ -179,16 +198,16 @@ color: white!important;
         <div class="modal-content" style="background-color:#202940">
             <form method="post" style="margin:0px" action="{% url 'edit_tax_details_form' %}">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Customize View</h5>
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Customize List</h5>
                     <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button> -->
                 </div>
                 <div class="modal-body">
                     {% csrf_token %}
-                    
+                    <h5 style="color: white;text-align: center;margin-bottom: 1%;">Drag and drop be column name you want to show or hide</h5>
                     <ol data-draggable="target" id="first">
-                        <h5>Selected Column</h5>
+                        <h4 style="text-decoration: underline;">Show Column</h4>
                         {% if customize.credit_note != 0 %}
                         <li data-draggable="item" id="customize_credit_note">Credit Note No.</li>
                         {% endif %}
@@ -208,7 +227,7 @@ color: white!important;
                       </ol>
                       
                       <ol data-draggable="target" id="seconde">
-                          <h5>Unselected Column</h5>
+                        <h4 style="text-decoration: underline;">Hide Column</h4>
                           {% if customize.credit_note == 0 %}
                           <li data-draggable="item" id="customize_credit_note">Credit Note No.</li>
                           {% endif %}

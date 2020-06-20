@@ -1,5 +1,5 @@
 <style>
-.contact_name:hover{
+    .creditnote_name:hover{
     color: white!important;
     }
 /* loader */
@@ -71,7 +71,7 @@ color: white!important;
             <div class="card-header card-header-primary">
                 <div class="row" style="margin-bottom: -1%;">
                     <div class="col">
-                        <h4 class="card-title ">View Purchase Order</h4>
+                        <h4 class="card-title ">View Invoice</h4>
                     </div>
                     <div class="col-1">
                         <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);">settings</span>
@@ -120,9 +120,7 @@ color: white!important;
                                         {% if order.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="contact_name" href="{% url 'edit_purchase_order' order.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{order.vendor}}
-                                        </a>
+                                        {{order.vendor}}
                                     </td>
                                     {% endif %}
                                     {% if customize.purchase_status != 0 %}

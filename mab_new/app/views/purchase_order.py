@@ -21,6 +21,7 @@ from app.forms.accounts_ledger_forms import *
 
 from app.other_constants import creditnote_constant
 from app.other_constants import user_constants
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import Q
 import datetime
@@ -60,7 +61,17 @@ class PurchaseOrderView(View):
     def get(self, request):        
         
         purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user)
-        self.data['purchase_order'] = purchase_order
+        purchase_paginator = Paginator(purchase_order, 10)
+        purchase_page = request.GET.get('page')     
+        try:
+            purchase_posts = purchase_paginator.page(purchase_page)
+        except PageNotAnInteger:
+            purchase_posts = purchase_paginator.page(1)
+        except EmptyPage:
+            purchase_posts = purchase_paginator.page(purchase_paginator.num_pages)
+        self.data["purchase_order"] = purchase_posts
+        self.data["purchase_page"] = purchase_page
+        # self.data['purchase_order'] = purchase_order
 
         # CUSTOMIZE VIEW CODE
         customize_purchase = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 4))
@@ -236,7 +247,7 @@ def org_contact_address(request, slug):
         # contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_user = True) & Q(contact_org = organization))
     elif(slug != 'org'):
         contacts = Contacts.objects.get(pk = int(slug))
-        address = users_model.User_Address_Details.objects.filter(Q(is_user = False) & Q(contact = contacts) &Q(is_organisation = False) & Q(is_shipping_address = True)).values('address_tag','contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode' ,'organisation_tax')
+        address = users_model.User_Address_Details.objects.filter(Q(is_user = False) & Q(contact = contacts) & Q(is_organisation = False) & Q(is_shipping_address = True)).values('address_tag','contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode' ,'organisation_tax')
         data['ids'] = contacts.id
         gst = users_model.User_Tax_Details.objects.get(contact = contacts)
         if(gst.gstin is not None):
@@ -247,18 +258,19 @@ def org_contact_address(request, slug):
             add=""
             count = 1
             for j in address[i].values():
-                if( j is not None and count > 1):
+                
+                if( j is not None and count > 2):
                     add+=str(j)+', '
                 elif(count == 1):
                     data['branch'].append(j)
                     count +=1
                 elif(count == 2):
-                    data['contact_person'].append([j])
+                    data['contact_person'].append(j)
                     count +=1
             # print(address[i]['state'])
-        data['state'].append(address[i]['state'])
+            data['state'].append(address[i]['state'])
         
-        data['address'].append(add[0:(len(add))-2])
+            data['address'].append(add[0:(len(add))-2])
     
     return JsonResponse(data)
 

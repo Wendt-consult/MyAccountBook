@@ -65,19 +65,24 @@ urlpatterns += [
 
 # Invoice
 urlpatterns += [
+    # codded by akhil
+    # path('invoice/', never_cache(login_required(invoice.Invoice.as_view())), name = 'invoice'),
+    # path('invoice/invoice_designer/', never_cache(login_required(invoice.InvoiceDesigner.as_view())), name = 'invoice-designer'),
+    # path('invoice/invoice_designer/manage/', never_cache(login_required(invoice.manage_invoice_designs)), name = 'manage-invoice-designs'),
+    # path('invoice/create_invoice/', never_cache(login_required(invoice.CreateInvoice.as_view())), name = 'create-invoice'),
+    # path('invoice/view_invoice/<int:ins>/', never_cache(login_required(invoice.ViewInvoice.as_view())), name = 'view-invoice'),
+    # path('invoice/create_invoice/contacts/<int:ins>/', never_cache(login_required(invoice.CreateContactInvoice.as_view())), name = 'create-contact-invoice'),
+    # path('invoice/create_invoice/collections/<int:ins>/', never_cache(login_required(invoice.CreateCollectionInvoice.as_view())), name = 'create-collection-invoice'),
+
+    # codded by roshan
     path('invoice/', never_cache(login_required(invoice.Invoice.as_view())), name = 'invoice'),
-    path('invoice/invoice_designer/', never_cache(login_required(invoice.InvoiceDesigner.as_view())), name = 'invoice-designer'),
-    path('invoice/invoice_designer/manage/', never_cache(login_required(invoice.manage_invoice_designs)), name = 'manage-invoice-designs'),
-    path('invoice/create_invoice/', never_cache(login_required(invoice.CreateInvoice.as_view())), name = 'create-invoice'),
-    path('invoice/view_invoice/<int:ins>/', never_cache(login_required(invoice.ViewInvoice.as_view())), name = 'view-invoice'),
-    path('invoice/create_invoice/contacts/<int:ins>/', never_cache(login_required(invoice.CreateContactInvoice.as_view())), name = 'create-contact-invoice'),
-    path('invoice/create_invoice/collections/<int:ins>/', never_cache(login_required(invoice.CreateCollectionInvoice.as_view())), name = 'create-collection-invoice'),
+    path('invoice/add/<slug:slug>', never_cache(login_required(invoice.add_invoice)), name = 'add_invoice'),
 ]
 
-urlpatterns +=[
-    path('invoice/get_pdf/<int:ins>/', never_cache(login_required(invoice.get_pdf)), name = 'get_pdf'),
+# urlpatterns +=[
+#     path('invoice/get_pdf/<int:ins>/', never_cache(login_required(invoice.get_pdf)), name = 'get_pdf'),
     
-] 
+# ] 
 
 # Collections
 urlpatterns += [
@@ -91,7 +96,7 @@ urlpatterns += [
 
 # Products
 urlpatterns += [
-    path('products/', never_cache(login_required(products.view_products)), name = 'view_products'),
+    path('products/<int:ins>/', never_cache(login_required(products.view_products)), name = 'view_products'),
     path('products/add/', never_cache(login_required(products.AddProducts.as_view())), name = 'add_products'),
     path('products/edit/<int:ins>/', never_cache(login_required(products.EditProducts.as_view())), name = 'edit_product'),
     path('products/delete/<int:ins>/', never_cache(login_required(products.delete_product)), name='product-delete'),
@@ -175,7 +180,11 @@ urlpatterns += [
     path('profile/blank/', never_cache(login_required(profile.blank)), name = 'blank'),
     path('profile/gst_settings/', never_cache(login_required(profile.GSTSettingsView.as_view())), name = 'gst_settings'),
     path('profile/delete_gst_settings/<int:ins>/', never_cache(login_required(profile.delete_gst_settings)), name = 'delete_gst_settings'),
+    path('profile/delete_composite_gst_settings/<int:ins>/', never_cache(login_required(profile.delete_composite_gst_settings)), name = 'delete_composite_gst_settings'),
     path('profile/edit_gst_settings/', never_cache(login_required(profile.edit_gst_settings)), name = 'edit_gst_settings'),
+    path('profile/edit_composite_gst_settings/', never_cache(login_required(profile.edit_composite_gst_settings)), name = 'edit_composite_gst_settings'),
+    path('profile/gst_configuration/', never_cache(login_required(profile.GSTConfigurationView.as_view())), name = 'gst_configuration'),
+    path('profile/gst_composite_setting/', never_cache(login_required(profile.gst_composite_setting)), name = 'gst_composite_setting'),
 ]
 
 # Purchase Order

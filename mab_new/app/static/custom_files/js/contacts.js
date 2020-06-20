@@ -115,11 +115,13 @@ function valid_GST(elem){
         setLocalStorageValue('form_errors_get', true);
         $(elem).closest("tr").find("td.error_field").empty().append("p").text(ret[1]);
         $(elem).focus();
-        $(".save_button, #editContactModal > .save_button").prop("disabled",true);
+        $('#error_field').text(ret[1]);
+        $(".save_button, #editContactModal > .save_button,#org_single_gst_save").prop("disabled",true);
     }else{
         setLocalStorageValue('form_errors_get', false);
         $(elem).closest("tr").find("td.error_field").empty().append("p").text("");
-        $(".save_button, #editContactModal > .save_button").prop("disabled",false);
+        $('#error_field').text('');
+        $(".save_button, #editContactModal > .save_button,#org_single_gst_save").prop("disabled",false);
     }  
 }
 
@@ -326,6 +328,7 @@ $("#add_more_addresses").on("click",function(){
 function set_shipping_diff(elem,ids){
 
     if($(elem).prop("checked") == true){
+       
         $("select#id_user_address_details_set-"+ids+"-is_shipping_address_diff").val(1);
         $("select#id_user_address_details_set-"+ids+"-is_shipping_address").val(0);
         $("select#id_user_address_details_set-"+ids+"-is_billing_address").val(1);
@@ -337,7 +340,7 @@ function set_shipping_diff(elem,ids){
 			$("select#id_user_address_details_set-"+(parseInt(ids)+1)+"-default_address").val("False");
 		}else{
 			$(".default_address_checkbox").prop("checked",false);
-		}
+        }
 		
     }else{
         $("select#id_user_address_details_set-"+ids+"-is_shipping_address_diff").val(0);
@@ -442,7 +445,8 @@ function openAddressModal(ids, is_billing_address, is_shipping_address, default_
 						
 			$("#editAddressModal-"+ids).find(".tax_id_input").val(data.tax_id);
 			$("#editAddressModal-"+ids).find("#id_gstin").val(data.gstin);
-			$("#editAddressModal-"+ids).find("#gst_reg").val(data.gst_reg_type);
+            $("#editAddressModal-"+ids).find("#gst_reg").val(data.gst_reg_type);
+            $("#editAddressModal-"+ids).find("#org_address_ids").val(address_id);
 		});
 	}
 	

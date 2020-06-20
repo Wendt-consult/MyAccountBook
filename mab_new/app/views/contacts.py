@@ -13,6 +13,8 @@ from app.forms.tax_form import *
 from app.forms.inc_fomsets import *
 from app.helpers import *
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 from django.conf import *
 
@@ -43,13 +45,13 @@ class ContactsView(View):
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/customize_view.js']
+    data["js_files"] = ['custom_files/js/customize_view.js','custom_files/js/contacts.js']
 
     data["included_template"] = 'app/app_files/contacts/view_contacts.html'
     
     #
     #
-    def get(self, request):   
+    def get(self, request, *args, **kwargs):   
     
         search = request.GET.get('search',False)
         
@@ -77,6 +79,18 @@ class ContactsView(View):
         else:
             contacts = contacts.filter(is_active = True)
 
+        # self.data["contacts"] = contacts
+        contact_paginator = Paginator(contacts, 10)
+        contact_page = request.GET.get('page')     
+        try:
+            contact_posts = contact_paginator.page(contact_page)
+        except PageNotAnInteger:
+            contact_posts = contact_paginator.page(1)
+        except EmptyPage:
+            contact_posts = contact_paginator.page(contact_paginator.num_pages)
+        self.data["contacts"] = contact_posts
+        self.data["contact_page"] = contact_page
+
         # CUSTOMIZE VIEW CODE
         customize_contact = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 1))
         if(len(customize_contact) != 0):
@@ -88,7 +102,7 @@ class ContactsView(View):
         else:
                 self.data['customize'] = 'NA'
                 
-        self.data["contacts"] = contacts
+        
         
         return render(request, self.template_name, self.data)
 

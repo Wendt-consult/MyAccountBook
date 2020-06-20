@@ -1294,7 +1294,6 @@ function purchase_cont_address(){
                 url: "/purchase_order/address/"+contact_ids+"/",
                 dataType: "json",
                 success: function(data){
-                    
                     var count = data.address
                     var contact_name = data.contact_person
                     var state = data.state
@@ -1330,11 +1329,10 @@ function purchase_cont_address(){
                     
                             con = "Contact person:- "+contact_name[i]+""
                         }
-                        if( contact_name[i] == null){
+                        if(branch[i] == null){
                     
                             a_branch = ''
-                        }else if(contact_name[i] != null){
-                    
+                        }else if(branch[i] != null){
                             a_branch = branch[i]
                         }
                         var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid white;" align="center">'+(parseInt(i)+1)+'</td>'
@@ -1645,7 +1643,6 @@ function show_advance_info(){
 function add_advance_info(){
     $('#advance').val($('#advance_value').val())
     $('#hidden_advance_date').val($('#advance_date').val())
-    console.log($('#hidden_advance_date').val())
     $('#hidden_advance_method').val($('#advance_method').val()).change();
     $('#hidden_advance_notes').val($('#advance_notes').val())
     $('#advance_info').modal('hide')

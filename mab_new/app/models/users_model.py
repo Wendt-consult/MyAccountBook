@@ -544,12 +544,6 @@ class User_Tax_Details(models.Model):
         default=False,
     )
 
-    composite_gst = models.BooleanField(
-        null=True,
-        blank=True,
-        db_index=True,
-        default=False,
-    )
     
     class META:
         verbose_name_plural = 'user_tax_details_tbl'
@@ -989,9 +983,34 @@ class OrganisationGSTSettings(models.Model):
         max_length = 100,
     )
     
-    taxname_percent = models.IntegerField(
+    taxname_percent = models.CharField(
         blank = True,
         null = True,
         default = 0,
+        max_length=8,
+    )
+#**************************************************************************
+# Organisation  composit GST
+#**************************************************************************
+
+class OrganisationCompositeGSTSettings(models.Model):
+    user = models.ForeignKey(
+        User,
+        db_index = True,
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True,
+    ) 
+    
+    taxname = models.CharField(
+        blank = True,
+        null = True,
+        max_length = 100,
     )
     
+    taxname_percent = models.CharField(
+        blank = True,
+        null = True,
+        default = 0,
+        max_length=8,
+    )

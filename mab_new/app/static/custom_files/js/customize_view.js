@@ -403,3 +403,4 @@ function send_creditnote(id){
     }, false);
 
 })();   
+

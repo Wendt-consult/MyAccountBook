@@ -14,6 +14,7 @@ from app.forms.products_form import *
 from app.forms.contact_forms import * 
 from app.forms.tax_form import *
 from app.forms.inc_fomsets import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import string
 
@@ -56,7 +57,17 @@ class CreditView(View):
     def get(self, request):        
 
         credit_note = CreditNode.objects.filter(user = request.user)
-        self.data['credit_note'] = credit_note
+        credit_paginator = Paginator(credit_note, 10)
+        credit_page = request.GET.get('page')     
+        try:
+            credit_posts = credit_paginator.page(credit_page)
+        except PageNotAnInteger:
+            credit_posts = credit_paginator.page(1)
+        except EmptyPage:
+            credit_posts = credit_paginator.page(credit_paginator.num_pages)
+        self.data["credit_note"] = credit_posts
+        self.data["credit_page"] = credit_page
+        # self.data['credit_note'] = credit_note
 
         # CUSTOMIZE VIEW CODE
         customize_credit = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 3))

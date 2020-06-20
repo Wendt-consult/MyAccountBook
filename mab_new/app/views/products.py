@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
 from django.views import View
+from django.contrib.sessions.models import Session
 from collections import OrderedDict, defaultdict
 from django.db.models import *
 from app.models import *
@@ -9,6 +10,7 @@ from app.models.customize_model import *
 from app.forms.products_form import * 
 from app.forms import *
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 
 import json, shutil
@@ -46,7 +48,7 @@ def view_products(request, *args, **kwargs):
     data["products"] = {}
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/customize_view.js']
+    data["js_files"] = ['custom_files/js/customize_view.js','custom_files/js/product.js']
     data["active_link"] = 'Products'
     data["breadcrumb_title"] = 'PRODUCTS'
 
@@ -56,24 +58,67 @@ def view_products(request, *args, **kwargs):
     # PRODUCT LISTING
     #*****************************************************************************
 
-    search = request.GET.get('search',False)
+    # data['product_search'] = None
 
-    product_type = request.GET.getlist('product_type[]')
-
-    is_active = request.GET.getlist('is_active[]')
     products = ProductsModel.objects.prefetch_related('productphotos_set').filter(Q(user = request.user) & Q(product_delete_status = 0))
-    if search:
-        products = products.filter(Q(sku__contains = search) | Q(product_name__contains = search))
-   
-    if product_type:
-        products = products.filter(product_type__in = product_type)
 
-    if is_active:
-        products = products.filter(is_active__in = is_active)
-    else:
-        products = products.filter(is_active = True)   
+    if(int(kwargs["ins"]) == 0):
+        if request.session.has_key('product_search'):
+            del request.session['product_search']
+        elif request.session.has_key('product_filter_type'):
+            del request.session['product_filter_type']
+        elif request.session.has_key('product_filter_active'):
+            del request.session['product_filter_active']
+        products = products.filter(is_active = True)
 
-    data["products"] = products
+    if(int(kwargs["ins"]) == 1):
+
+        search = request.GET.get('search',False)
+        if search:
+            request.session['product_search'] = search
+            data['product_search'] = search
+            products = products.filter(Q(sku__contains = search) | Q(product_name__contains = search))
+        elif request.session.has_key('product_search'):
+            a = request.session['product_search']
+            products = products.filter(Q(sku__contains = a) | Q(product_name__contains = a))
+
+    if(int(kwargs["ins"]) == 2):
+
+        product_type = request.GET.getlist('product_type[]')
+        is_active = request.GET.getlist('is_active[]')
+
+        if product_type:
+            request.session['product_filter_type'] = product_type
+            data['product_filter_type'] = product_type
+            products = products.filter(product_type__in = product_type)
+        elif request.session.has_key('product_filter_type'):
+            a = request.session['product_filter_type']
+            products = products.filter(product_type__in = a)
+
+        if is_active:
+            request.session['product_filter_active'] = is_active
+            data['product_filter_active'] = is_active
+            products = products.filter(is_active__in = is_active)
+        elif request.session.has_key('product_filter_active'):
+            a = request.session['product_filter_active']
+            products = products.filter(product_type__in = a)
+        # else:
+        #     products = products.filter(is_active = True)
+       
+
+    # data["products"] = products
+
+    # pagination
+    product_paginator = Paginator(products, 10)
+    product_page = request.GET.get('page')     
+    try:
+        product_posts = product_paginator.page(product_page)
+    except PageNotAnInteger:
+        product_posts = product_paginator.page(1)
+    except EmptyPage:
+        product_posts = product_paginator.page(product_paginator.num_pages)
+    data["products"] = product_posts
+    data["product_page"] = product_page
 
     # CUSTOMIZE VIEW CODE
     customize_product = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 2))
@@ -116,6 +161,14 @@ class AddProducts(View):
     #
     #
     def get(self, request, *args, **kwargs):
+
+        if request.session.has_key('product_search'):
+            del request.session['product_search']
+        elif request.session.has_key('product_filter_type'):
+            del request.session['product_filter_type']
+        elif request.session.has_key('product_filter_active'):
+            del request.session['product_filter_active']
+
         self.data["add_product_form"] = ProductForm(request.user)
         return render(request, self.template_name, self.data)
 
@@ -159,7 +212,7 @@ class AddProducts(View):
             except:
                 pass
 
-        return redirect('/products/', permanent = False)
+        return redirect('/products/0', permanent = False)
 
 #=========================================================================================
 # PRODUCT DELETE
@@ -174,7 +227,12 @@ def delete_product(request, ins = None):
 
         product.product_delete_status = 1
         product.save()
-        return redirect('/products/', permanent=False)
+        if request.session.has_key('product_search'):
+            return redirect('/products/1', permanent=False)
+        elif(request.session.has_key('product_filter_type') or request.session.has_key('product_filter_active')):
+            return redirect('/products/0', permanent=False)
+        else:
+            return redirect('/products/0', permanent=False)
     return redirect('/unauthorized/', permanent=False)
 
 
@@ -198,7 +256,12 @@ def status_change(request, slug = None, ins = None):
             return redirect('/unauthorized/', permanent=False)
 
         product.save()
-        return redirect('/products/', permanent=False)
+        if request.session.has_key('product_search'):
+            return redirect('/products/1', permanent=False)
+        elif(request.session.has_key('product_filter_type') or request.session.has_key('product_filter_active')):
+            return redirect('/products/0', permanent=False)
+        else:
+            return redirect('/products/0', permanent=False)
 
     return redirect('/unauthorized/', permanent=False)
 
@@ -230,6 +293,13 @@ class EditProducts(View):
     #
     #
     def get(self, request, *args, **kwargs):
+
+        if request.session.has_key('product_search'):
+            del request.session['product_search']
+        elif request.session.has_key('product_filter_type'):
+            del request.session['product_filter_type']
+        elif request.session.has_key('product_filter_active'):
+            del request.session['product_filter_active']
 
         product = None
         self.data["bundle_products"] = {}
@@ -456,6 +526,13 @@ class CloneProduct(View):
     #
     #
     def get(self, request, *args, **kwargs):
+
+        if request.session.has_key('product_search'):
+            del request.session['product_search']
+        elif request.session.has_key('product_filter_type'):
+            del request.session['product_filter_type']
+        elif request.session.has_key('product_filter_active'):
+            del request.session['product_filter_active']
 
         if kwargs["ins"] is not None:
             product = ProductsModel.objects.get(pk = int(kwargs["ins"]))

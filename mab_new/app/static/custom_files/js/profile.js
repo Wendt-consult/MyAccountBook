@@ -52,38 +52,111 @@ function delete_org_account(ids){
 // check gst state code
 /********************************************************************/
 
-$("#id_state").on("change",function(){
+// $("#id_state").on("change",function(){
 
-	id_state = $(this).val();
+// 	id_state = $(this).val();
 	
-	if(id_state !=""){
-		$.post("/check_gst_existing/",{"state_id":id_state, "organisation_id":organisation_id, 'csrfmiddlewaretoken':csrf_token},
-			function(data){
-				if(parseInt(data)>0){
-					$("tr.gst_tr").hide();
-				}else{
-					$("tr.gst_tr").show();
-				}
-		});
-	}
-});
+// 	if(id_state !=""){
+// 		$.post("/check_gst_existing/",{"state_id":id_state, "organisation_id":organisation_id, 'csrfmiddlewaretoken':csrf_token},
+// 			function(data){
+// 				if(parseInt(data)>0){
+// 					$("tr.gst_tr").hide();
+// 				}else{
+// 					$("tr.gst_tr").show();
+// 				}
+// 		});
+// 	}
+// });
 
 /******************************************************************/
 // STATE SELECT - SET GST
 /******************************************************************/
 
-$("select.state_select").on("change", function(){
-	elem = $(this);
-	ids = $(elem).closest(".modal").attr("id");
-	if($(this).val() !=""){
-		$.post("/get_state_gst/",{'state_id':$(this).val(), 'organisation_id':organisation_id, 'csrfmiddlewaretoken':csrf_token},function(data){
-			if(data.gstin !="" && data.gstin != null){ 
+function check_gst(forloop,address_id,state){
+	// elem = $(this);
+	// ids = $(elem).closest(".modal").attr("id");
+	if(state !=""){
+		$.post("/get_state_gst/",{'state_id':state, 'organisation_id':organisation_id,'address_id':address_id, 'csrfmiddlewaretoken':csrf_token},function(data){
+			
+			// $("#"+ids).find("#id_gstin").val(data.gstin);
+			// $("#"+ids).find("#gst_reg").val(data.gst_reg_type);
+			$("#editAddressModal-"+forloop).find(".tax_id_input").val(data.tax_id);
+			$("#editAddressModal-"+forloop).find("#id_gstin").val(data.gstin);
+            $("#editAddressModal-"+forloop).find("#gst_reg").val(data.gst_reg_type);
+			$("#editAddressModal-"+forloop).find("#org_address_ids").val(address_id);
+			$("#editAddressModal-"+forloop).find("#org_address_state").val(data.state);
+			$("#editAddressModal-"+forloop).modal('show')
+			if(data.gstin !="" && data.gstin != null && data.count == 'yes'){ 
 				alert("Already a GST Number is registered in this state");
 			}
-			$("#"+ids).find("#id_gstin").val(data.gstin);
-			$("#"+ids).find("#gst_reg").val(data.gst_reg_type);
 		});
 	}
+};
+
+/******************************************************************/
+// gst configuration
+/******************************************************************/
+//  is register
+$('#is_orginsation_register').click(function(){
+
+    if($('#is_orginsation_register').is(':checked')){
+        $('#no_orginsation_register').prop('checked',false)
+        $('#gst_multiple').show()
+    }
 });
 
+$('#no_orginsation_register').click(function(){
+    
+    if($('#no_orginsation_register').is(':checked')){
+        $('#is_orginsation_register').prop('checked', false)
+		$('#gst_multiple').hide()
+		$('#gst_configuration_setting').hide()
+		$('#is_single_gst').prop('checked', false)
+		$('#is_multiple_gst').prop('checked', false)
+    }
+});
 
+// multiple gst
+
+$('#is_multiple_gst').click(function(){
+    
+    if($('#is_multiple_gst').is(':checked')){
+        $('#is_single_gst').prop('checked', false)
+		$('#gst_configuration_setting').show()
+		$('.single_gst_field').hide()
+    }
+});
+
+$('#is_single_gst').click(function(){
+    
+    if($('#is_single_gst').is(':checked')){
+        $('#is_multiple_gst').prop('checked', false)
+		$('#gst_configuration_setting').hide()
+		$('.single_gst_field').show()
+    }
+});
+/********************************************************************/
+// INPUT TYPE NUMBER SROLL HIDE
+/********************************************************************/
+// Disable Mouse scrolling
+$('input[type=number]').on('mousewheel',function(e){ $(this).blur(); });
+// Disable keyboard scrolling
+$('input[type=number]').on('keydown',function(e) {
+    var key = e.charCode || e.keyCode;
+    // Disable Up and Down Arrows on Keyboard
+    if(key == 38 || key == 40 || key == 69 || key == 189) {
+	e.preventDefault();
+    } else {
+	return;
+    }
+
+});
+/*code: 48-57 Numbers 8  - Backspace, 35 - home key, 36 - End key 37-40: Arrow keys, 46 - Delete key*/
+    function restrictAlphabets(e){
+		var x=e.which||e.keycode;
+		if((x>=48 && x<=57) || x==8 ||
+			(x>=35 && x<=40)|| x==46)
+			return true;
+		else
+			return false;
+   }
