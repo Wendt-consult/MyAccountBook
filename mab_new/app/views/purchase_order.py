@@ -195,6 +195,7 @@ def fetch_purchase_product(request, slug):
     data['product'] = products.product_type
     data['unit'] = products.get_unit_display()
     data['price'] =  products.purchase_price
+    data['selling'] = products.selling_price
     data['desc'] = products.product_description
     return JsonResponse(data)
 

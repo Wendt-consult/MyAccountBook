@@ -76,7 +76,7 @@ urlpatterns += [
 
     # codded by roshan
     path('invoice/', never_cache(login_required(invoice.Invoice.as_view())), name = 'invoice'),
-    path('invoice/add/<slug:slug>', never_cache(login_required(invoice.add_invoice)), name = 'add_invoice'),
+    path('invoice/add/<slug:slug>/', never_cache(login_required(invoice.add_invoice)), name = 'add_invoice'),
 ]
 
 # urlpatterns +=[

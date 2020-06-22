@@ -133,14 +133,17 @@ def add_invoice(request, slug):
     
     default_term_condition = Organisations.objects.filter(user = request.user)
     if(len(default_term_condition) > 0):
-        msg = default_term_condition[0].purchase_terms_and_condition
-        purchase_notes = default_term_condition[0].purchase_note
+        msg = default_term_condition[0].invoice_terms_and_condition
+        purchase_notes = default_term_condition[0].invoice_note
         data['term_msg'] = msg
         data['pur_notes'] = purchase_notes
 
     data["contacts"] = contacts
     data['gst'] = gst 
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
+    data['payment_terms'] = payment_constants.PAYMENT_DAYS
+    data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
+    data["state"] = creditnote_constant.state
 
     # list product name
 
@@ -178,7 +181,42 @@ def add_invoice(request, slug):
 
         # 
         # for account_ledger details
-        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_income'] = acc_ledger_income
         return render(request, template_name, data)
+#=====================================================================================
+#   CHECK PURCHASE_ORDER UNIQUR AND SET DEFULT
+#=====================================================================================
+#
+
+def unique_invoice_number(request, ins, number):
+    data = defaultdict()
+    if(ins == 0):
+        purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user)
+
+        count = len(purchase_order)
+
+        if(count == 0):
+            data['purchase_number'] = 'PO-0001'
+        else:
+            inc = count+1
+            for i in range(0,count):
+                a = 'PO-000'+str(inc)
+                result = purchase_order.filter(Q(user = request.user) & Q(purchase_order_number__iexact = a)).exists() 
+                if(result == True):
+                    inc += 1
+                elif(result == False):
+                    data['purchase_number'] = 'PO-000'+str(inc)
+                    break
+        
+        return JsonResponse(data)
+    elif (ins == 1):
+        # check credit note number is unquie
+        purchase_order = purchase_model.PurchaseOrder.objects.filter(Q(user = request.user) & Q(purchase_order_number = number))
+        count = len(purchase_order)
+        if(count == 0):
+            data['unique'] = 0
+        else:
+            data['unique'] = 1
+        return JsonResponse(data)

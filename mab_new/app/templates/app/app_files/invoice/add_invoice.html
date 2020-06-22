@@ -229,7 +229,12 @@ optgroup{color :black; }
         width: 10em; 
   }
 }
-
+#select2-invoice_seales_person-container{
+    margin-top: -1%;
+}
+#select2-invoice_customer-container{
+    margin-top: -1%;
+}
 </style>
 
 <form method="post" action="" autocomplete="off" enctype="multipart/form-data">
@@ -271,7 +276,7 @@ optgroup{color :black; }
                                 <div class="col-4">
                                     <label for="invoice_customer">Customer Name</label>
                                 </div>
-                                <div class="col-7 input">
+                                <div class="col-8">
                                     <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required>
                                         <option value="">-------</option>
         
@@ -283,7 +288,7 @@ optgroup{color :black; }
                                     </select>
                                     
                                 </div>
-                                <div class="col-1" style="margin-bottom: -6%;">
+                                <!-- <div class="col-1" style="margin-bottom: -6%;">
 
                                     <p>
                                         <span class="tool" tabindex="1" id="vendor_details">
@@ -291,15 +296,38 @@ optgroup{color :black; }
                                         </span>
                                     </p>
 
-                                </div>
+                                </div> -->
                             </div>
 
-                            <div class="row" style="margin-top: 10px;">
+                            <div class="row">
                                 <div class="col-4">
-                                    <label for="">Reference#</label>
+                                    <label for="invoice_type">Invoice Type</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" id="purchase_reference" name="purchase_reference">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')">
+                                                    One Time
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="recurring_radio" id="recurring_radio" value="on" onclick="invoice_type('recurring')">
+                                                    Recurring
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
         
@@ -329,40 +357,121 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-
+                                    <label for="invoice_purchase_number">Purchase Order</label>
                                 </div>
-                                <div class="col-7">
-
+                                <div class="col-7 input">
+                                    <input class="form-control" id="invoice_purchase_number" name="invoice_purchase_number">
                                 </div>
                             </div>
 
-                            <div class="row" style="margin-top: 10%;">
+                            <div class="row" style="margin-top: 5%;">
                                 <div class="col-4">
-                                    <label for="purchase_date">Purchase Order Date</label>
+                                    <label for="Invoice_date">Invoice Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_date" id="purchase_date" class="form-control" required >
+                                    <input type="text" class="form-control" name="Invoice_date" id="Invoice_date" required>
                                 </div>
-                                <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
-                                    <i class="fa fa-calendar" id="purchase_date_icon"></i>
-                                </div> -->
-                            </div>
-        
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="purchase_delivary_date">Order Delivery Date</label>
-                                </div>
-                                <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control" id="purchase__delivary_date" required>
-                                </div>
-                                <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
-                                    <i class="fa fa-calendar" id="delivary_date_icon"></i>
-                                </div> -->
                             </div>
 
                         </div>
                     </div> 
-                    
+                </div>
+
+                <div class="container" id="one_invoice" style="display: none;">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms">
+                                        {% for i in payment_terms %}
+                                        <option value="{{i.1}}" {% if i.1 == 'Due on Receipt' %} selected {% endif %}>{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_one_due_date">Due Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="Invoice_one_due_date" id="Invoice_one_due_date" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container" id="recurring_invoice" style="display: none;">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_start">Start Date</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" name="Invoice_recurring_start" id="Invoice_recurring_start" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_recurring_Frequency">Frequency</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency">
+                                        {% for i in invoice_frequency %}
+                                        <option value="{{i.1}}" {% if i.0 == 4 %} selected {% endif %}>{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_end">End Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="Invoice_recurring_end" id="Invoice_recurring_end" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_repeat">Repeat</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_advance">Days in Advance</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="Invoice_recurring_advance" id="Invoice_recurring_advance">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div class="container">
@@ -372,118 +481,42 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="pruchase_delivary_address">Delivery Address</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="form-check form-check-radio">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" onclick="ajax_org_address()">
-                                                    Organization
-                                                    <span class="circle">
-                                                        <span class="check"></span>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-check form-check-radio">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" >
-                                                    Customer
-                                                    <span class="circle">
-                                                        <span class="check"></span>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" id="cust_address" style="margin-top: 2%;display: none;">
-                                <div class="col-4">
-                                    <label for="choose_customer_address"></label>
+                                    <label for="">Sales Person</label>
                                 </div>
                                 <div class="col-8">
-                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()">
+                                    <select class="form-control" id="invoice_seales_person" name="invoice_seales_person">
                                         <option value="">-------</option>
-
-                                        {% for contact in contacts %}
-                                        {% if contact.customer_type == 1 or contact.customer_type == 3 %}
-                                        <option value="{{contact.id}}">{{contact}}</option>
-                                        {% endif %}
-                                        {% endfor %}
+            
+                                            {% for contact in contacts %}
+                                            {% if contact.customer_type == 3 %}
+                                            <option value="{{contact.id}}">{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="row" style="display: none;">
-                                <div class="col-4">
-                                    <label for="order_state"></label>
-                                </div>
-                                <div class="col-8">
-                                     <input class="form-control" id="order_state" name='order_state'>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-4">
-                                    
-                                </div>
-                                <div class="col-8 input">
-                                    <textarea id="purchase_address" name="purchase_address" placeholder="delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly></textarea>
-                                </div>
-                            </div>
-
                         </div>
                         <!-- right -->
                         <div class="col">
 
                             <div class="row">
-
                                 <div class="col-4">
-                                    <label for="">Attention</label>
+                                    <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_attention" name="purchase_attention">
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-4">
-                                    <label for="purchase_contact">Contact Number</label>
-                                </div>
-                                <div class="col-3 input">
-                                    <select class="form-control" id="country_code" name="country_code">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply">
                                         <option value="">-------</option>
-                                        {% for code in country_code%}
-                                        <option value="{{code.1}}" {% if code.1 == '+91' %} selected {% endif %}>{{code.1}}</option>
+                                        {% for i in state %}
+                                        <option value="{{i}}">{{i}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-4 input" style="padding-left: 2px;">
-                                    <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))">
-                                </div>
-
                             </div>
-                            <div class="row">
-                                <div class="col-4">
-
-                                </div>
-                                <div class="col-8" id="error_field" style="color: red;">
-                                    
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
 
-                    <table class="table" id="purchase_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
+                    <table class="table" id="invoice_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid white;width: 21%;">Product/Service</th>
@@ -497,10 +530,10 @@ optgroup{color :black; }
                           
                         </thead>
                         <tbody>
-                          <tr id="purchase_row1">
+                          <tr id="invoice_row1">
                             <td style="border:1px solid white;padding-bottom: 0%;">
                                 
-                                <select class="form-control select purchase_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
+                                <select class="form-control select invoice_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
                                     
                                     <option value="">-------</option>
                                     
@@ -513,7 +546,7 @@ optgroup{color :black; }
                                 
                             </td>
                             <td style="border:1px solid white;">
-                                <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" required>
+                                <select class="form-control product_invoice_account"  id="product_account1" name="product_account[]" required>
                                     <option value="">-------</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
@@ -555,7 +588,7 @@ optgroup{color :black; }
                             <td style="border:1px solid white;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required>
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="invoice_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -585,7 +618,7 @@ optgroup{color :black; }
                     </table>
 
                 <div class="form-group">
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="purchase_addRow(0)" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="invoice_addRow(0)" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                 </div>
                
             <div class="container">
@@ -595,13 +628,13 @@ optgroup{color :black; }
 
                         <div class="row">
                             <div class="col">
-                                <label for="purchase_MessageOnStatement">Terms and Conditions</label>
+                                <label for="invoice_MessageOnStatement">Terms and Conditions</label>
                             </div> 
                         </div>
 
                         <div class="row">
                             <div class="col">
-                                <textarea  id="purchase_MessageOnStatement" name="purchase_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
+                                <textarea  id="invoice_MessageOnStatement" name="invoice_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
                             </div>
                         </div>
                         {% if term_msg is None %}
@@ -609,7 +642,7 @@ optgroup{color :black; }
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="purchase_t&c" name="purchase_t&c">
+                                        <input class="form-check-input" type="checkbox" id="invoice_t&c" name="invoice_t&c">
                                         use this as default Terms and Condition
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -622,13 +655,13 @@ optgroup{color :black; }
 
                         <div class="row" style="margin-top: 1%;">
                             <div class="col">
-                                <label for="purchase_notes">Notes</label>
+                                <label for="invoice_notes">Notes</label>
                             </div> 
                         </div>
     
                         <div class="row">
                             <div class="col">
-                                <textarea  id="purchase_notes" name="purchase_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{pur_notes|default_if_none:""}}</textarea>
+                                <textarea  id="invoice_notes" name="invoice_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{pur_notes|default_if_none:""}}</textarea>
                             </div>
                         </div>
                         {% if pur_notes is None %}
@@ -636,7 +669,7 @@ optgroup{color :black; }
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="purchase_default_notes" name="purchase_default_notes">
+                                        <input class="form-check-input" type="checkbox" id="invoice_default_notes" name="invoice_default_notes">
                                         use this as default Notes
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -860,17 +893,17 @@ optgroup{color :black; }
                         </div>
                         <!-- end gst other -->
 
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="col-4">
-                                <label for="adjustment">Adjustment</label>
+                                <label for="shipping_charges">Shipping Charges:</label>
                             </div>
                             <div class="col-1" style="padding-right: 0%;">
                                 <label style="color: white;">₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="adjustment" name="adjustment" onkeypress="return restrictAlphabets(event)">
+                                <input type="text" class="form-control" id="shipping_charges" name="shipping_charges" onkeyup="invoice_shipping_charges()" onkeypress="return restrictAlphabets(event), float_value(event,'shipping_charges')">
                             </div> 
-                        </div>  -->
+                        </div> 
 
                         <div class="row">
                             <div class="col-4">
@@ -884,19 +917,7 @@ optgroup{color :black; }
                             </div> 
                         </div>
 
-                        <div class="row">
-                            <div class="col-4">
-                                <label for="Freight_Charges">Freight Charges:</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="Freight_Charges" name="Freight_Charges" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'Freight_Charges')">
-                            </div> 
-                        </div> 
-
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4">
                                 <label for="advance">Advance:</label>
                             </div>
@@ -909,9 +930,9 @@ optgroup{color :black; }
                             <div class="col-1" style="padding-left: 2px;padding-right: 0%;">
                                 <span class="material-icons note_add" style="color: white;cursor: default;" onclick="show_advance_info()">add_box</a>
                             </div>
-                        </div> 
+                        </div>  -->
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4">
                                 <label for="total_balance">Total Balance:</label>
                             </div>
@@ -921,7 +942,7 @@ optgroup{color :black; }
                             <div class="col-6 input" style="padding-left: 0%;">
                                 <input type="text" class="form-control" id="total_balance" name="total_balance" readonly>
                             </div> 
-                        </div>
+                        </div> -->
 
                         <div class="row" style="display: none;">
                             <div class="col-4">
@@ -1294,7 +1315,7 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm btn-success save_button" type="button" name="purchase_product" onclick="return purchase_product_form(0)">Save</button>
+                    <button class="btn btn-sm btn-success save_button" type="button" name="invoice_product" onclick="return invoice_product_form(0)">Save</button>
                     <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>    
                 </div>
             </form>
@@ -1783,426 +1804,6 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
-<!-- Advance info -->
-<div class="modal fade" id="advance_info" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 81%;margin-left: 20%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Advance Option</h5>
-                </div>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <div class="container">
-                        
-                        <!-- <div class="row">
-                            <div class="col-2">
-                                <label for="advance_payment">Payment Amount</label>
-                            </div>
-                            <div class="col-8 input">
-                                <input type="text" class="form-control" id="advance_payment" name="advance_payment"  readonly>
-                            </div>
-                        </div> -->
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_name">Vendor Name</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_name" name="advance_vendor_name" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_mail">Vendor Email </label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_mail" name="advance_vendor_mail" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_contact">Vendor Contact</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_contact" name="advance_vendor_contact" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_value">Advance</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" name="advance_value" id="advance_value" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_date">Payment Date</label>
-                            </div>
-                            <div class="col-7 input">
-                                <!-- <input type="text" class="form-control" name="advance_date" id="advance_date" class="form-control"> -->
-                                <input class="form-control" type="date" id="advance_date" name="advance_date"> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_method">Payment Method</label>
-                            </div>
-                            <div class="col-7 input">
-                                <select class="form-control" type="date" id="advance_method" name="advance_method">
-                                    <option value="">---------</option>
-                                    <option value="1">Cash</option>
-                                    <option value="2">Card</option>
-                                    <option value="3">Cheque</option>
-                                    <option value="4">Demand Draft</option>
-                                    <option value="5">Net Banking</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_notes">Note</label>
-                            </div>
-                            <div class="col-7 input">
-                                <textarea id="advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm btn-success"  type='button' onclick="add_advance_info()">Save</button>
-                    <button class="btn btn-sm btn-danger" type="button" onclick="clear_advance_info()">Cancel</button>    
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- chosse address model popup -->
-
-<div class="modal fade" id="Purchase_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Choose Address</h5>
-                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button> -->
-                </div>
-                <div class="modal-body">
-                    {% csrf_token %}
-
-                    <table class="table" id="purchase_delivery_address" style="">
-                        <thead class=" text-primary" style="background-color: black;">
-                          
-                            <th scope="col" style="border:1px solid white;width: 15%;">SL No.</th>
-                            <th scope="col" style="border:1px solid white;width: 25%;">Branch</th>
-                            <th scope="col" style="border:1px solid white;">Address</th>
-
-                        </thead>
-
-                        <tbody>
-                          
-                        </tbody>
-
-                    </table>
-                   
-                </div>
-                <div class="modal-footer" id="add_button">
-                    <!-- <button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form()">Save</button> -->
-                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>    
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- add addresses for contact -->
-
-<div class="modal fade" id="newContactAddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940">
-            <form method="post" style="margin:0px" id="add_address_contact" >
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Address Details</h5>
-                    <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <input type="hidden" value="" name="ids_con" id="ids_con">
-                    <table class="table-responsive">
-                        <tbody style=" width: 100%; display: inline-table;">
-                            <tr style="display: none;">
-                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
-                                    Is Shipping Address
-                                </td>
-                                <td style="border:0px; padding:0px">     
-                                    {{ new_address_form.is_shipping_address  }}      
-                                    {{ new_address_form.is_billing_address }}
-                                                                                            
-                                    <label class="switch">                                        
-                                        <input type="checkbox" onclick="set_shipping($(this),'#id_is_shipping_address')" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-
-                                    <span style="margin-left: 40px; position: relative; top: 5px;">
-                                        Is Billing Address
-                                    </span>
-
-                                    <label class="switch" style="margin-left: 20px;">                                        
-                                        <input type="checkbox" onclick="set_billing($(this),'#id_is_billing_address')" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </td>  
-                            </tr>
-                            <tr style="display: none;">
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
-									Set Address As Default
-								</td>
-								<td style="border:0px;">
-									{{new_address_form.default_address}}
-									 <label class="switch" style="margin-left: 20px;">																				
-										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
-										<span class="slider round"></span>
-									</label>   
-								</td>                                    
-							</tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Contact Person
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.contact_person}}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Address Tag
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.address_tag}}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Flat/Building No.
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.flat_no }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Street
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.street }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    City
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.city }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Pincode
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.pincode }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    State
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.state }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Country
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.country }}
-                                </td>                                    
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" type="button" id="add__addres" onclick="return save__address(event,'cont')">Add New</button>
-                    <!-- <button class="btn btn-sm btn-success save_button" onclick="return check()">Add New</button> -->
-                    <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal" id="cancel_add_cont_address" aria-label="Close">Cancel</button>
-                    
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- add addresses for Organization -->
-
-<div class="modal fade" id="newOrgAddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940">
-            <form method="post" style="margin:0px" id="add_address_organization" >
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Address Details</h5>
-                    <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <input type="hidden" value="" name="ids" id="ids">
-                    <table class="table-responsive">
-                        <tbody style=" width: 100%; display: inline-table;">
-                            <tr style="display: none;">
-                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
-                                    Is Shipping Address
-                                </td>
-                                <td style="border:0px; padding:0px">     
-                                    {{ new_address_form.is_shipping_address  }}      
-                                    {{ new_address_form.is_billing_address }}
-                                                                                            
-                                    <label class="switch">                                        
-                                        <input type="checkbox" onclick="set_shipping($(this),'#id_is_shipping_address')" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-
-                                    <span style="margin-left: 40px; position: relative; top: 5px;">
-                                        Is Billing Address
-                                    </span>
-
-                                    <label class="switch" style="margin-left: 20px;">                                        
-                                        <input type="checkbox" onclick="set_billing($(this),'#id_is_billing_address')" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </td>  
-                            </tr>
-							<tr style="display: none;">
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
-									Set Address As Default
-								</td>
-								<td style="border:0px;">
-									{{new_address_form.default_address}}
-									 <label class="switch" style="margin-left: 20px;">																				
-										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
-										<span class="slider round"></span>
-									</label>   
-								</td>                                    
-							</tr>
-							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: #a7a4a4;">
-									Address Tag
-								</td>
-								<td style="border:0px;">
-									{{new_address_form.address_tag}} 
-								</td>                                    
-							</tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Contact Person
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.contact_person}}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Flat/Building No.
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.flat_no }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Street
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.street }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    City
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.city }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Pincode
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.pincode }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    State
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.state }}
-                                </td>                                    
-                            </tr>
-                            <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    Country
-                                </td>
-                                <td style="border:0px;">
-                                    {{ new_address_form.country }}
-                                </td>                                    
-                            </tr>
-							<!-- <tr class="gst_tr">
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    GSTIN
-                                </td>
-                                <td style="border:0px;">
-                                    {{ gst_form.gstin }}
-                                </td>                                    
-                            </tr>
-							<tr class="gst_tr" style="display: none;">
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    GST Reg. Type
-                                </td>
-                                <td style="border:0px;">
-                                    {{ gst_form.gst_reg_type }}
-                                </td>                                    
-                            </tr> -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" type="button" id="add_org_addres" onclick="return save__address(event,'org')">Add New</button>
-                    <!-- <button class="btn btn-sm btn-success save_button" onclick="return check()">Add New</button> -->
-                    <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal" id="cancel_add_cont_address" aria-label="Close">Cancel</button>
-                    
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 
 <!-- modal account_ledger -->
 
@@ -2218,14 +1819,14 @@ optgroup{color :black; }
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" value="2" name="ids" id="major_head_ins">
+                    <input type="hidden" value="1" name="ids" id="major_head_ins">
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
 							<tr>
                                 <td style="border:0px; width:150px;">
                                    <label>Major Head</label> 
                                 </td>
-                                <td style="border:0px;color: white;">Expense</td>
+                                <td style="border:0px;color: white;">Income</td>
                             </tr>
                             <tr>
                                 <td style="border:0px; width:150px;">
@@ -2250,7 +1851,7 @@ optgroup{color :black; }
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" type="button" name="purchase_account_ledger" onclick="return purchase_accoun_ledger_form()">Save</button>
+                    <button class="btn btn-sm btn-success" type="button" name="purchase_account_ledger" onclick="return invoice_account_ledger_form()">Save</button>
                     <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal"aria-label="Close">Cancel</button>
                 </div>
             </form>
