@@ -330,11 +330,21 @@ function add_contact_invoice(){
 
 function invoice_type(type){
     if(type == 'one_time'){
+        $('#recurring_radio').prop('checked',false)
         $('#one_invoice').show()
         $('#recurring_invoice').hide()
+        $('#Invoice_recurring_start').val('')
+        $('#Invoice_recurring_repeat').val('')
+        $('#invoice_recurring_Frequency').val('')
+        $('#Invoice_recurring_end').val('')
+
     }else if(type == 'recurring'){
+        $('#one_radio').prop('checked',false)
         $('#one_invoice').hide()
         $('#recurring_invoice').show()
+        $('#invoice_pay_terms').val('')
+        $('#Invoice_one_due_date').val('')
+        
     }
 }
 
@@ -718,7 +728,7 @@ function invoice_shipping_charges(){
 
 $.ajax({
     type:"GET",
-    url: "/creditnote/state_compare/",
+    url: "/invoice/org_address_state/",
     dataType: "json",
     success: function(data){
         invoice_user_state = data.state
@@ -745,7 +755,7 @@ var igst_28 = 0
 var cgst_other = 0
 var sgst_other = 0
 var igst_other = 0
-if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'none'){
+if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == ''){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1010,4 +1020,172 @@ else if(invoice_user_state.toLowerCase() != state.toLowerCase() ){
         invoice_total = i_total
     }
 }
+}
+/********************************************************************/
+// Date Picker
+/********************************************************************/
+//  NEW INVOICE FOR FIRST TIME 
+$("#Invoice_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
+
+//  REVERSE TRACKING
+$('#Invoice_date').change(function() {
+    if($('#one_radio').is(':checked') & $("#invoice_pay_terms").is(":visible")){
+        invoice_pay_date()
+    }
+});
+//  ON CHANGE TO SET NEW INVOICE DUE DATE
+function invoice_pay_date(){
+    var pay_terms = $('#invoice_pay_terms').val()
+    if(pay_terms == 'On Due Date'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+0d'); 
+        endDate.setDate(endDate.getDate()+0); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '10 Days'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+9d'); 
+        endDate.setDate(endDate.getDate()+9); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '20 Days'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+19d'); 
+        endDate.setDate(endDate.getDate()+19); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '30 Days'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+29d'); 
+        endDate.setDate(endDate.getDate()+29); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '60 Days'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+59d'); 
+        endDate.setDate(endDate.getDate()+59); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '90 Days'){
+        var endDate = $('#Invoice_date').datepicker('getDate', '+89d'); 
+        endDate.setDate(endDate.getDate()+89); 
+        $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == 'Custom'){
+
+    }
+}
+
+// on change in new invoice due date
+
+$('#Invoice_one_due_date').change(function() {
+
+    var start = $('#Invoice_date').datepicker('getDate');
+    var end = $('#Invoice_one_due_date').datepicker('getDate');
+    var days = (end - start)/1000/60/60/24;
+    console.log(days)
+    // $('#hasil').val(days);
+    if(days == 0){
+        $('#invoice_pay_terms').val('On Due Date').change();
+    }else if(days == 9){
+        $('#invoice_pay_terms').val('10 Days').change();
+    }else if(days == 19){
+        $('#invoice_pay_terms').val('20 Days').change();
+    }else if(days == 29){
+        $('#invoice_pay_terms').val('30 Days').change();
+    }else if(days == 59){
+        $('#invoice_pay_terms').val('60 Days').change();
+    }else if(days == 89){
+        $('#invoice_pay_terms').val('90 Days').change();
+    }else {
+        $('#invoice_pay_terms').val('').change();
+    }
+});
+
+//  recurring invoice
+
+$("#Invoice_recurring_start").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()})
+
+//  REVERSE TRACKING FOR RECURRING START DATE
+$('#Invoice_recurring_start').change(function() {
+    if($('#recurring_radio').is(':checked') & $("#recurring_invoice").is(":visible")){
+        invoice_recurring_end()
+    }
+});
+// INVOICE RECURRING REPEAT
+function invoice_recurring_repeat(){
+    if($('#invoice_recurring_Frequency').val() != ''){
+        invoice_recurring_end()
+    }
+}
+
+function invoice_recurring_end(){
+    var frequency = $('#invoice_recurring_Frequency').val()
+    var repeat = $('#Invoice_recurring_repeat').val()
+    if(frequency == 'Weekly'){
+        if(repeat != ''){
+            var invoice_repeat = parseInt(repeat) * 7
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+invoice_repeat); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }else{
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+6d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+7); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }
+    }else if(frequency == 'Monthly'){
+        if(repeat != ''){
+            var invoice_repeat = parseInt(repeat) * 29
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+invoice_repeat); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }else{
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+29d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+29); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }
+        
+    }else if(frequency == 'Quarterly'){
+        if(repeat != ''){
+            var invoice_repeat = parseInt(repeat) * 84
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d');
+            endDate.setTime(endDate.getTime() - (1000*60*60*24)) 
+            endDate.setDate(endDate.getDate()+invoice_repeat); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }else{
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+84d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+84); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }
+        
+    }else if(frequency == ' Half yearly'){
+        if(repeat != ''){
+            var invoice_repeat = parseInt(repeat) * 180
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+invoice_repeat); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }else{
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+180d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+180); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }
+    }else if(frequency == 'Yearly'){
+        if(repeat != ''){
+            var invoice_repeat = parseInt(repeat) * 365
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d'); 
+            endDate.setTime(endDate.getTime() - (1000*60*60*24))
+            endDate.setDate(endDate.getDate()+invoice_repeat); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }else{
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+365d'); 
+            endDate.setDate(endDate.getDate()+365); 
+            $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+            $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
+        }
+    }
 }

@@ -220,3 +220,18 @@ def unique_invoice_number(request, ins, number):
         else:
             data['unique'] = 1
         return JsonResponse(data)
+
+def org_address_state(request):
+    # Initialize 
+    data = defaultdict()
+    data['state'] = None
+    org = users_model.Organisations.objects.get(user = request.user)
+    org_address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org) & Q(default_address = True))
+    if(len(org_address) != 0):
+        data['state'] = org_address[0].get_state_display()
+    else:
+        first_address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org))
+        
+        if(len(first_address) != 0):
+            data['state'] = first_address[0].get_state_display()
+    return JsonResponse(data)
