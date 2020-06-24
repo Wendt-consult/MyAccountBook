@@ -6,6 +6,7 @@ from app.models.contacts_model import *
 from app.models.users_model import *
 from app.models.purchase_model import *
 from app.models.customize_model import *
+from app.models.invoice_model import *
 from app.models import *
 
 #
@@ -114,3 +115,15 @@ class CustomizePurchaseView(admin.ModelAdmin):
 @admin.register(CustomizeExpenseView)
 class CustomizeExpenseView(admin.ModelAdmin):
     model = CustomizeExpenseView
+
+@admin.register(CustomizeInvoiceView)
+class CustomizeInvoiceView(admin.ModelAdmin):
+    model = CustomizeInvoiceView
+
+@admin.register(InvoiceModel)
+class InvoiceModel(admin.ModelAdmin):
+    model = InvoiceModel
+
+@admin.register(Invoice_Line_Items)
+class Invoice_Line_Items(admin.ModelAdmin):
+    model = Invoice_Line_Items

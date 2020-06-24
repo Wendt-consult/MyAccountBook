@@ -327,3 +327,65 @@ class CustomizeExpenseView(models.Model):
         null = True,
         blank = True,
     )
+
+#=========================================================================================
+# customize invoice order names
+#=========================================================================================
+#
+
+class CustomizeInvoiceView(models.Model):
+
+    customize_view_name = models.ForeignKey(
+        CustomizeModuleName,
+        on_delete=models.CASCADE,
+        null = False,
+        blank = False,
+    )
+
+    invoice_number = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    invoice_customer = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    invoice_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    invoice_due_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    invoice_status = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    invoice_amount = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )

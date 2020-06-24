@@ -45,7 +45,6 @@ class PurchaseOrder(models.Model):
         db_index = True,
         blank=True,
         null=True,
-
     ) 
 
     purchase_number_check = models.CharField(

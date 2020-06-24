@@ -147,7 +147,41 @@ function send_creditnote(id){
         }
 
     }else if(ids == 5){
+        console.log('aaaaaaaaaaaaaaaaaa')
+        if($('#first #customize_invoice_number').length){
+            data['number'] = 1
+        }else{
+            data['number'] = 0
+        }
+        if($('#first #customize_invoice_customer').length){
+            data['customer'] = 1
+        }else{
+            data['customer'] = 0
+        }
 
+        if($('#first #customize_invoice_date').length){
+            data['date'] = 1
+        }else{
+            data['date'] = 0
+        }
+
+        if($('#first #customize_invoice_due_date').length){
+            data['due_date'] = 1
+        }else{
+            data['due_date'] = 0
+        }
+
+        if($('#first #customize_invoice_status').length){
+            data['status'] = 1
+        }else{
+            data['status'] = 0
+        }
+
+        if($('#first #customize_invoice_amount').length){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
     }
     
      $.ajax({
@@ -292,6 +326,43 @@ function send_creditnote(id){
                 $('.customize_date').show()
             }else{
                 $('.customize_date').hide()
+            }
+    
+        }else if(ids == 5){
+            if(data['number'] == 1){
+                $('.customize_number').show()
+            }else{
+                $('.customize_number').hide()
+            }
+
+            if(data['customer'] == 1){
+                $('.customize_customer').show()
+            }else{
+                $('.customize_customer').hide()
+            }
+    
+            if(data['date'] == 1){
+                $('.customize_date').show()
+            }else{
+                $('.customize_date').hide()
+            }
+
+            if(data['due_date'] == 1){
+                $('.customize_due_date').show()
+            }else{
+                $('.customize_due_date').hide()
+            }
+
+            if(data['status'] == 1){
+                $('.customize_status').show()
+            }else{
+                $('.customize_status').hide()
+            }
+    
+            if(data['amount'] == 1){
+                $('.customize_total').show()
+            }else{
+                $('.customize_total').hide()
             }
     
         }

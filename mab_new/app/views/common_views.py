@@ -254,6 +254,9 @@ def customize_view_list(request, ins):
         elif(ins == 4):
             CustomizePurchaseView.objects.filter(customize_view_name = customize_name[0].id).update(purchase_number = data['number'],purchase_reference = data['reference'],purchase_vendor = data['vendor'],
                                                 purchase_status = data['status'],purchase_total = data['total'],purchase_date = data['date'])
+        elif(ins == 5):
+            CustomizeInvoiceView.objects.filter(customize_view_name = customize_name[0].id).update(invoice_number = data['number'],invoice_customer = data['customer'],invoice_date = data['date'],
+                                                invoice_due_date = data['due_date'],invoice_status = data['status'],invoice_amount = data['amount'])
         elif(ins == 6):
             CustomizeExpenseView.objects.filter(customize_view_name = customize_name[0].id).update(expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
                                                 expense_method = data['method'],expense_amount = data['amount'])
@@ -276,6 +279,10 @@ def customize_view_list(request, ins):
             view_purchase = CustomizePurchaseView(customize_view_name = customize_module_name,purchase_number = data['number'],purchase_reference = data['reference'],purchase_vendor = data['vendor'],
                                                 purchase_status = data['status'],purchase_total = data['total'],purchase_date = data['date'])
             view_purchase.save()
+        elif(ins == 5):
+            view_invoice = CustomizeInvoiceView(customize_view_name = customize_module_name,invoice_number = data['number'],invoice_customer = data['customer'],invoice_date = data['date'],
+                                                invoice_due_date = data['due_date'],invoice_status = data['status'],invoice_amount = data['amount'])
+            view_invoice.save()
         elif(ins == 6):
             view_expense = CustomizeExpenseView(customize_view_name = customize_module_name,expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
                                                 expense_method = data['method'],expense_amount = data['amount'])

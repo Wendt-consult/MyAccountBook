@@ -237,13 +237,13 @@ optgroup{color :black; }
 }
 </style>
 
-<form method="post" action="" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'save_invoice' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row" style="margin: 0% 4% 6% 4%;">
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Add Invoice</h4>
+                    <h4 class="card-title">Add Invoice</h4>
                 </div>  
             <div style="margin-top: 4%;">
 
@@ -308,7 +308,7 @@ optgroup{color :black; }
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')">
+                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')" checked>
                                                     One Time
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -377,7 +377,7 @@ optgroup{color :black; }
                     </div> 
                 </div>
 
-                <div class="container" id="one_invoice" style="display: none;">
+                <div class="container" id="one_invoice">
                     <div class="row">
                         <!-- left -->
                         <div class="col">
@@ -387,9 +387,10 @@ optgroup{color :black; }
                                     <label for="">Payment Terms</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms">
+                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" required>
+                                        <option value="">-------</option>
                                         {% for i in payment_terms %}
-                                        <option value="{{i.1}}" {% if i.1 == 'Due on Receipt' %} selected {% endif %}>{{i.1}}</option>
+                                        <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -422,7 +423,7 @@ optgroup{color :black; }
                                     <label for="Invoice_recurring_start">Start Date</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" name="Invoice_recurring_start" id="Invoice_recurring_start" required>
+                                    <input type="text" class="form-control" name="Invoice_recurring_start" id="Invoice_recurring_start">
                                 </div>
                             </div>
 
@@ -431,9 +432,10 @@ optgroup{color :black; }
                                     <label for="invoice_recurring_Frequency">Frequency</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()">
+                                        <option value="">-------</option>
                                         {% for i in invoice_frequency %}
-                                        <option value="{{i.1}}" {% if i.0 == 4 %} selected {% endif %}>{{i.1}}</option>
+                                        <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -445,19 +447,28 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="Invoice_recurring_end">End Date</label>
+                                    <label for="Invoice_recurring_repeat">Repeat</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="Invoice_recurring_end" id="Invoice_recurring_end" required>
+                                    <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="Invoice_recurring_repeat">Repeat</label>
+                                    <label for="Invoice_recurring_end">End Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" required>
+                                    <input type="text" class="form-control" name="Invoice_recurring_end" id="Invoice_recurring_end" readonly>
+                                </div>
+                            </div>
+                            <!-- hidden recurring end date -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label>hidden end date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" id="hidden_recurring_end">
                                 </div>
                             </div>
 
@@ -504,7 +515,7 @@ optgroup{color :black; }
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="invoice_tax_cacultion()">
                                         <option value="">-------</option>
                                         {% for i in state %}
                                         <option value="{{i}}">{{i}}</option>
@@ -917,81 +928,13 @@ optgroup{color :black; }
                             </div> 
                         </div>
 
-                        <!-- <div class="row">
-                            <div class="col-4">
-                                <label for="advance">Advance:</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-5 input" style="padding-left: 0%;padding-right: 0%;">
-                                <input type="text" class="form-control" id="advance" name="advance" readonly>
-                            </div> 
-                            <div class="col-1" style="padding-left: 2px;padding-right: 0%;">
-                                <span class="material-icons note_add" style="color: white;cursor: default;" onclick="show_advance_info()">add_box</a>
-                            </div>
-                        </div>  -->
-
-                        <!-- <div class="row">
-                            <div class="col-4">
-                                <label for="total_balance">Total Balance:</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="total_balance" name="total_balance" readonly>
-                            </div> 
-                        </div> -->
-
-                        <div class="row" style="display: none;">
-                            <div class="col-4">
-                                <label for="hidden_advance_date">Payment Date</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <input class="form-control" type="date" id="hidden_advance_date" name="hidden_advance_date"> 
-                            </div> 
-                        </div>
-                        <div class="row" style="display: none;">
-                            <div class="col-4">
-                                <label for="hidden_advance_method">Payment Method</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <select class="form-control" type="date" id="hidden_advance_method" name="hidden_advance_method">
-                                    <option value="">---------</option>
-                                    <option value="1">Cash</option>
-                                    <option value="2">Card</option>
-                                    <option value="3">Cheque</option>
-                                    <option value="4">Demand Draft</option>
-                                    <option value="5">Net Banking</option>
-                                </select>
-                            </div> 
-                        </div>
-                        <div class="row" style="display: none;">
-                            <div class="col-4">
-                                <label for="hidden_advance_notes">Note</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label style="color: white;">₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <textarea id="hidden_advance_notes" name="hidden_advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
-                            </div> 
-                        </div>
-
                     </div>
                 </div>
             </div>
                       
             <div class="card-footer text-center" id="order_buuton" style="justify-content: center;">
                 <div class="btn-group dropup order_button" role="group">
-                    <button class="dropdown-item btn btn-success" name="save_close" id="save" style="padding: 0px 5px 0px 5px;" onclick="return order_check()">
+                    <button class="dropdown-item btn btn-success" name="save_close" id="save" style="padding: 0px 5px 0px 5px;">
                         Save and Close
                     </button>
                     <button type="button" class="btn btn-success dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
@@ -1000,21 +943,21 @@ optgroup{color :black; }
                     </button>
                     
                     <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
-                    <button class="dropdown-item btn btn-success" name="save_send" type="submit" id="send" onclick="return check_mail()" style="margin-bottom: 3%;width: 94%;">
+                    <button class="dropdown-item btn btn-success" name="save_send" type="submit" id="send" style="margin-bottom: 3%;width: 94%;">
                         <i class="material-icons" style="margin: 0px 11px 0px -20px;font-size: 23px;">email</i>Save and Send
                     </button>
                       <!-- <button class="dropdown-item btn btn-success" name="save_close" id="save" style="margin: 0% 0% 4% 4%;width: 93%;">
                         <i class="material-icons" style="margin: 0px 12px 0px -20px;font-size: 23px;">save</i>Save and Close 
                     </button> -->
-                    <button class="dropdown-item btn btn-success" name="save_draft" id="draft" onclick="return order_check()" style="margin: 0% 4% 1% 4%;width: 93%;">
+                    <button class="dropdown-item btn btn-success" name="save_draft" id="draft" style="margin: 0% 4% 1% 4%;width: 93%;">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
                     </button>
-                    <button class="dropdown-item btn btn-success" name="save_print" id="print" onclick="return order_check()" style="margin: 4% 4% 1% 4%;width: 93%;">
+                    <button class="dropdown-item btn btn-success" name="save_print" id="print" style="margin: 4% 4% 1% 4%;width: 93%;">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">print</i>Save and Print
                     </button>
                     </div>
                 </div>
-                  <a class="btn btn-warning" href="{% url 'purchase_order'  %}" type="reset">Cancel</a>
+                  <a class="btn btn-warning" href="{% url 'invoice'  %}" type="reset">Cancel</a>
                 </div>
             </div>
 

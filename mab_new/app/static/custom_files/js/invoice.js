@@ -337,6 +337,11 @@ function invoice_type(type){
         $('#Invoice_recurring_repeat').val('')
         $('#invoice_recurring_Frequency').val('')
         $('#Invoice_recurring_end').val('')
+        $('#Invoice_recurring_start').prop('required',false);
+        $('#Invoice_recurring_repeat').prop('required',false);
+        $('#invoice_recurring_Frequency').prop('required',false);
+        $('#invoice_pay_terms').prop('required',true);
+        $('#Invoice_one_due_date').prop('required',true);
 
     }else if(type == 'recurring'){
         $('#one_radio').prop('checked',false)
@@ -344,6 +349,11 @@ function invoice_type(type){
         $('#recurring_invoice').show()
         $('#invoice_pay_terms').val('')
         $('#Invoice_one_due_date').val('')
+        $('#invoice_pay_terms').prop('required',false);
+        $('#Invoice_one_due_date').prop('required',false);
+        $('#Invoice_recurring_start').prop('required',true);
+        $('#Invoice_recurring_repeat').prop('required',true);
+        $('#invoice_recurring_Frequency').prop('required',true);
         
     }
 }
@@ -365,6 +375,7 @@ function product(a) {
                 $("#Price"+a+"").val(parseFloat(data.selling).toFixed(2))
     
                 $("#Unit"+a+"").val(data.unit)
+                $('#product_account'+a+'').val(4).change();
 
                 $("#Quantity"+a+"").val("")
                 $("#Discount"+a+"").val("")
@@ -379,6 +390,7 @@ function product(a) {
     }
     else{
         $("#desc"+a+"").val("")
+        $('#product_account'+a+'').val('').change();
         // $("#type"+a+"").val("")
         $("#Price"+a+"").val("")
         $("#Unit"+a+"").val("")
@@ -456,10 +468,10 @@ function invoice_product_form(save_type){
         success: function(data) {
             if(data != '0'){
                 $.get("/creditnote/product_fetch/",function(data){
-                    $(".purchase_line_item").each(function(){
+                    $(".invoice_line_item").each(function(){
                         $('<option/>').val(data.ids).html(data.name).appendTo($(this));
                     });
-                    $('#ItemName'+prefill_purchase_product+'').val(data.ids).change(); 
+                    $('#ItemName'+prefill_invoice_product+'').val(data.ids).change(); 
                     // $('.productDropdown .dd-button').text(data.name);
                     // $('#ItemName'+prefill_purchase_product+'').val(data.ids).change(); 
                 });
@@ -731,7 +743,11 @@ $.ajax({
     url: "/invoice/org_address_state/",
     dataType: "json",
     success: function(data){
-        invoice_user_state = data.state
+        if(data.state == null){
+            invoice_user_state = 'NA'
+        }else{
+            invoice_user_state = data.state
+        }
     },  
 });
 
@@ -740,6 +756,9 @@ invoice_tax_cacultion()
 sub_total()
 function invoice_tax_cacultion(){
 var state = $("#invoice_state_supply").val()
+if(state == ''){
+    state = 'NA'
+}
 var cgst_5 = 0
 var sgst_5 = 0
 var igst_5 = 0
@@ -755,7 +774,7 @@ var igst_28 = 0
 var cgst_other = 0
 var sgst_other = 0
 var igst_other = 0
-if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == ''){
+if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1189,3 +1208,45 @@ function invoice_recurring_end(){
         }
     }
 }
+
+/*********************************************************************** */
+// DEFUALT INVOICE AND CHECK INVOICE NUMBER IS UNIQUE
+/*********************************************************************** */
+$("#auto_invoice_number").click(function(){
+    if($(this).is(':checked')){
+        var ins = 0
+        var slug = 'a'
+        $.ajax({
+            type:"GET",
+            url: "/invoice/unique_number/"+ins+"/"+slug+"/",
+            dataType: "json",
+            success: function(data){
+                $('#invoice_number').val(data.invoice_number)
+            },
+            error: function (rs, e) {
+                alert('Sorry, try again.');
+            }
+        });
+    }else{
+        $('#invoice_number').val('')
+    }  
+});
+
+$("#invoice_number").focusout(function(){
+    $("#auto_invoice_number").prop('checked',false);
+    var ins = 1
+    var invoice_number = $("#invoice_number").val()
+    $.ajax({
+        type:"GET",
+        url: "/invoice/unique_number/"+ins+"/"+invoice_number+"/",
+        dataType: "json",
+        success: function(data){
+            if(data.unique != 0){
+                alert('This invoice number is already exits. Please enter the different invoice number.')
+                $('#invoice_number').focus();
+                $('#invoice_number').val('')
+            }
+            
+        },
+    });
+  });
