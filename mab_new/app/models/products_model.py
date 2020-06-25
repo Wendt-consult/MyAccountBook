@@ -291,16 +291,15 @@ class ProductsModel(models.Model):
         choices = user_constants.IS_TRUE,
     )
 
-    
-
     def __str__(self):
         if(self.hsn_code is None):
+            if not self.is_active:
+                return "{} (Inactive)".format(self.product_name)
             return "{}".format(self.product_name) 
         else:
-            return "{} - ({})".format(self.product_name,self.hsn_code) 
-
-   
-
+            if not self.is_active:
+                return "{} - ({}) (Inactive)".format(self.product_name,self.hsn_code) 
+            return "{} - ({})".format(self.product_name,self.hsn_code)
 
     # def __str__(self):
     #     return "{}".format(self.product_name.upper())

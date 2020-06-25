@@ -450,25 +450,23 @@ color: white!important;
 
 })();   
 </script>
-{% endblock %}
 
-{% block js %}
 
-    <script type="text/javascript">
-        $('.delete_expense').on('click', function(){
-            if(confirm('You want to delete this expense?')){
-                var expense_id = $(this).attr('id');
-                url = "{% url 'delete_expense' 0 %}"
-                window.location.href = url.replace('0',expense_id);
-            }
-        });
-
-        if ($("#print_expense").val()){
-            str = "{%url 'generate_pdf' 0 %}"
-            url = str.replace("0", $("#print_expense").val());
-            $('#link').attr('href', url);
-            $('#link').find("span").trigger("click");
+<script type="text/javascript">
+    $('.delete_expense').on('click', function(){
+        if(confirm('You want to delete this expense?')){
+            var expense_id = $(this).attr('id');
+            url = "{% url 'delete_expense' 0 %}"
+            window.location.href = url.replace('0',expense_id);
         }
+    });
 
-    </script>
+    if ($("#print_expense").val()){
+        str = "{%url 'generate_pdf' 0 %}"
+        url = str.replace("0", $("#print_expense").val());
+        $('#link').attr('href', url);
+        $('#link').find("span").trigger("click");
+    }
+
+</script>
 {% endblock %}

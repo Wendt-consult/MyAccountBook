@@ -157,6 +157,7 @@ class AddProducts(View):
     data["add_product_images_form"] = ProductPhotosForm()
     data["ledger_form"] = accounts_ledger_forms.AccLedgerForm()
     data["groups_form"] = accounts_ledger_forms.AccGroupsForm()
+    data['from_expense'] = False ### changes for expense
     #
     #
     #
@@ -211,6 +212,23 @@ class AddProducts(View):
                 obj.save()
             except:
                 pass
+        
+        ### changes for expense start
+
+        if request.POST.get('json_response'):
+            product_name = "{} - ({})".format(ins.product_name.upper(), ins.sku.upper())
+            data = {
+                'success':True, 
+                'product_name':product_name, 
+                'product_id':ins.id, 
+                'product_description' : ins.product_description,
+                'product_rate' : int(float(ins.selling_price)) if ins.selling_price else 0,
+                'product_tax' : int(float(ins.selling_tax)) if ins.selling_tax else 0,
+                'product_unit' : ins.get_unit_display()
+            }
+            return JsonResponse(data)
+
+### changes for expense end
 
         return redirect('/products/0', permanent = False)
 

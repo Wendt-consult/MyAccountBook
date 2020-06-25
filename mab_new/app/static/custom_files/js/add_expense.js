@@ -91,7 +91,9 @@ if (edit_expense == 'True'){
 
             if (clone_expense == 'True' && $('#'+product_id).find(":selected").text().includes('(Inactive)')){
                 alert('Inactive Product Selected')
-                $(this).remove();
+                $(this).find('input[type=checkbox]').prop('checked', true);
+                $(this).hide();
+                $(this).removeClass('item_form_'+item_id);
                 if ($('#id_category-'+form_id+'-tax').val() == null){
                     changeCateAmount(i, form_id);
                 }
@@ -621,6 +623,9 @@ function deleteCategoryForm(element, edit){
                     }
                 });
 
+                $('#id_category-'+id+'-tax').prop('disabled', false);
+                $('#id_category-'+id+'-amount').prop('readonly', false);
+
                 var items_id = table_tag.attr('id').slice(10);
                 $('.item_form_'+items_id).filter(function(){
                     $(this).hide();
@@ -649,6 +654,8 @@ function deleteCategoryForm(element, edit){
                         $(this).val('');
                     }
                 });
+                $('#id_category-'+id+'-tax').prop('disabled', false);
+                $('#id_category-'+id+'-amount').prop('readonly', false);
             }
             else{
                 count = Number($('.table_form').attr('count'));

@@ -139,6 +139,8 @@ def add_contacts(request, slug = None, ins = None):
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
 
+    data['from_expense'] = False   ### changes for expense
+
     #
     # POST REQUEST - FORM SUBMISSION
     #
@@ -258,12 +260,14 @@ def add_contacts(request, slug = None, ins = None):
                             obj.contact = ins
                             obj.save()
                         rownum +=1
-                        
+        
+        ### changes for expense start                  
         if request.POST.get('json_response'):
             success = True if ins.customer_type == 2 else False
             data = {'success':success, 'contact_name':ins.contact_name.upper(), 'contact_id':ins.id}
             return JsonResponse(data)
                 
+        ### changes for expense ends
         return redirect('/contacts/', data)
     return render(request, template_name, data)
 

@@ -87,74 +87,154 @@
                     </div>
                     <br>
                     
-                    {% if edit %}
-                        <div class="table_form" count='{{ total_cate_form }}'>
-                            {% for form in ex_cat_form %}
-                            {% with forloop.counter as outer_counter %}
-                                {{ form.id }}
-                                <input type="hidden" id='cate_tax_{{ forloop.counter }}' value="{{ form.instance.tax }}">
-                                <table class="table table-bordered expense_forms table-responsive" id="cate_form_{{ forloop.counter }}" type='cate'>
-                                    <tr style="background-color: #7b1fa2;">
-                                        <th style="color: white; text-align: center;">Category</th>
-                                        <th style="color: white; text-align: center;">Amount</th>
-                                        <th style="color: white; text-align: center;">Tax</th>
-                                        <th style="color: white; text-align: center;">Total Amount</th>
-                                        <th style="color: white; text-align: center;">Action</th>
-                                    </tr>
-                                    <tr class="ex_cat_form" style="background-color: #0000FF;">
-                                        <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
-                                        <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
-                                        <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
-                                        <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
-                                        <td style="text-align: center;">
-                                            <div class="td">
-                                                <button class="btn btn-sm btn-danger" id='delete_cate_btn_{{ forloop.counter }}' type="button">Delete</button>
-                                                {{ form.reference_id }}
-                                                <span style="display: none;">{{ form.DELETE }}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                {% if edit and not clone %}
+                    <div class="table_form" count='{{ total_cate_form }}'>
+                        {% for form in ex_cat_form %}
+                        {% with forloop.counter as outer_counter %}
+                            {{ form.id }}
+                            <input type="hidden" id='cate_tax_{{ forloop.counter }}' value="{{ form.instance.tax }}">
+                            <table class="table table-bordered expense_forms table-responsive" id="cate_form_{{ forloop.counter }}" type='cate'>
+                                <tr style="background-color: #7b1fa2;">
+                                    <th style="color: white; text-align: center;">Category</th>
+                                    <th style="color: white; text-align: center;">Amount</th>
+                                    <th style="color: white; text-align: center;">Tax</th>
+                                    <th style="color: white; text-align: center;">Total Amount</th>
+                                    <th style="color: white; text-align: center;">Action</th>
+                                </tr>
+                                <tr class="ex_cat_form" style="background-color: #0000FF;">
+                                    <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
+                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
+                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
+                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
+                                    <td style="text-align: center;">
+                                        <div class="td">
+                                            <button class="btn btn-sm btn-danger" id='delete_cate_btn_{{ forloop.counter }}' type="button">Delete</button>
+                                            {{ form.reference_id }}
+                                            <span style="display: none;">{{ form.DELETE }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
 
-                                {% for item_formset in item_formset_list %}
-                                    {% if item_formset.instance == form.instance %}
-                                        {{ item_formset.management_form }}
-                                        {% for item_form in item_formset %}
-                                            {{ item_form.id }}
-                                            <div style="padding-right: 10px; padding-left: 10px;">
-                                                <table class="table table-bordered expense_forms item_form_{{ outer_counter }} table-responsive" type='item'>
-                                                    <tr style="background-color: #7b1fa2;">
-                                                        <th style="color: white; text-align: center;">Item</th>
-                                                        <th style="color: white; text-align: center;">Quantity</th>
-                                                        <th style="color: white; text-align: center;">Rate</th>
-                                                        <th style="color: white; text-align: center;">Amount</th>
-                                                        <th style="color: white; text-align: center;">Tax</th>
-                                                        <th style="color: white; text-align: center;">Total Amount</th>
-                                                        <th style="color: white; text-align: center;">Action</th>
-                                                    </tr>
-                                                    <tr style="background-color: #006666;">
-                                                        <td><div class="td">{{ item_form.product }}<br>{{ item_form.item_description }}</div></td>
-                                                        <td><div class="td" style="padding-top: 20px; display: inline-grid;">{{ item_form.quantity }}<span style="color: white; padding-left: 10px;">({{ item_form.instance.product.get_unit_display }})</span></div></td>
-                                                        <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i>{{ item_form.rate }}</div></td>
-                                                        <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.amount }}</div></td>
-                                                        <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color: white;">%</span></div></td>
-                                                        <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.total_amount }}</div></td>
-                                                        <td style="text-align: center;">
-                                                            <div class="td">
-                                                                <button class="btn btn-sm btn-danger delete_item_btn" type="button">Delete</button>
-                                                                <span>{{ item_form.reference_id }}</span>
-                                                                <span style="display: none;">{{ item_form.DELETE }}</span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        {% endfor %}
+                            {% for item_formset in item_formset_list %}
+                                {% if item_formset.instance == form.instance %}
+                                    {{ item_formset.management_form }}
+                                    {% for item_form in item_formset %}
+                                        {{ item_form.id }}
+                                        <div style="padding-right: 10px; padding-left: 10px;">
+                                            <table class="table table-bordered expense_forms item_form_{{ outer_counter }} table-responsive" type='item'>
+                                                <tr style="background-color: #7b1fa2;">
+                                                    <th style="color: white; text-align: center;">Item</th>
+                                                    <th style="color: white; text-align: center;">Quantity</th>
+                                                    <th style="color: white; text-align: center;">Rate</th>
+                                                    <th style="color: white; text-align: center;">Amount</th>
+                                                    <th style="color: white; text-align: center;">Tax</th>
+                                                    <th style="color: white; text-align: center;">Total Amount</th>
+                                                    <th style="color: white; text-align: center;">Action</th>
+                                                </tr>
+                                                <tr style="background-color: #006666;">
+                                                    <td>
+                                                        <div class="td">
+                                                            {{ item_form.product }}<br>
+                                                            {{ item_form.item_description }}
+                                                        </div>
+                                                    </td>
+                                                    <td><div class="td" style="padding-top: 20px; display: inline-grid;">{{ item_form.quantity }}<span style="color: white; padding-left: 10px;">({{ item_form.instance.product.get_unit_display }})</span></div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i>{{ item_form.rate }}</div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.amount }}</div></td>
+                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color: white;">%</span></div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.total_amount }}</div></td>
+                                                    <td style="text-align: center;">
+                                                        <div class="td">
+                                                            <button class="btn btn-sm btn-danger delete_item_btn" type="button">Delete</button>
+                                                            <span>{{ item_form.reference_id }}</span>
+                                                            <span style="display: none;">{{ item_form.DELETE }}
+                                                            </span>
+                                                            <span>{{ item_form.product_unit }}</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+
+                {% elif edit and clone %}
+                    <div class="table_form" count='{{ total_cate_form }}'>
+                        {% for form in ex_cat_form %}
+                        {% with forloop.counter as outer_counter %}
+                            <input type="hidden" id='cate_tax_{{ forloop.counter }}' value="{{ form.tax.value }}">
+                            <table class="table table-bordered expense_forms table-responsive" id="cate_form_{{ forloop.counter }}" type='cate'>
+                                <tr style="background-color: #7b1fa2;">
+                                    <th style="color: white; text-align: center;">Category</th>
+                                    <th style="color: white; text-align: center;">Amount</th>
+                                    <th style="color: white; text-align: center;">Tax</th>
+                                    <th style="color: white; text-align: center;">Total Amount</th>
+                                    <th style="color: white; text-align: center;">Action</th>
+                                </tr>
+                                <tr class="ex_cat_form" style="background-color: #0000FF;">
+                                    <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
+                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
+                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
+                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
+                                    <td style="text-align: center;">
+                                        <div class="td">
+                                            <button class="btn btn-sm btn-danger" id='delete_cate_btn_{{ forloop.counter }}' type="button">Delete</button>
+                                            {{ form.reference_id }}
+                                            <span style="display: none;">{{ form.DELETE }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            {% for item_formset in item_formset_list %}
+                                {{ item_formset.management_form }}
+                                {% for item_form in item_formset %}
+                                    {% if item_form.reference_id.value == form.reference_id.value %}
+                                        <div style="padding-right: 10px; padding-left: 10px;">
+                                            <table class="table table-bordered expense_forms item_form_{{ outer_counter }} table-responsive" type='item'>
+                                                <tr style="background-color: #7b1fa2;">
+                                                    <th style="color: white; text-align: center;">Item</th>
+                                                    <th style="color: white; text-align: center;">Quantity</th>
+                                                    <th style="color: white; text-align: center;">Rate</th>
+                                                    <th style="color: white; text-align: center;">Amount</th>
+                                                    <th style="color: white; text-align: center;">Tax</th>
+                                                    <th style="color: white; text-align: center;">Total Amount</th>
+                                                    <th style="color: white; text-align: center;">Action</th>
+                                                </tr>
+                                                <tr style="background-color: #006666;">
+                                                    <td>
+                                                        <div class="td">
+                                                            {{ item_form.product }}<br>
+                                                            {{ item_form.item_description }}
+                                                        </div>
+                                                    </td>
+                                                    <td><div class="td" style="padding-top: 20px; display: inline-grid;">{{ item_form.quantity }}<span style="color: white; padding-left: 10px;">({{ item_form.product_unit.value }})</span></div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i>{{ item_form.rate }}</div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.amount }}</div></td>
+                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color: white;">%</span></div></td>
+                                                    <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.total_amount }}</div></td>
+                                                    <td style="text-align: center;">
+                                                        <div class="td">
+                                                            <button class="btn btn-sm btn-danger delete_item_btn" type="button">Delete</button>
+                                                            <span>{{ item_form.reference_id }}</span>
+                                                            <span style="display: none;">{{ item_form.DELETE }}</span>
+                                                            <span>{{ item_form.product_unit }}</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     {% endif %}
                                 {% endfor %}
-                                {% endwith %}
                             {% endfor %}
-                        </div>
+                        {% endwith %}
+                        {% endfor %}
+                    </div>
 
                     {% else %}
                         <div class="table_form" count='1'>
@@ -323,6 +403,7 @@
                 <td style="text-align: center;"><div class="td">
                     <button class="btn btn-sm btn-danger delete_item_btn" type="button">Delete</button>
                     <span>{{ ex_item_form.empty_form.reference_id }}</span>
+                    <span>{{ ex_item_form.empty_form.product_unit }}</span>
                 </div>
                 </td>
             </tr>
@@ -396,15 +477,13 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-
-{% block js %}
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
     var file = "{{ file }}";
 </script>
+{% endblock %}
 
-{%endblock%}
+
+

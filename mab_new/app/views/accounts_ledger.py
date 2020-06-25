@@ -56,6 +56,7 @@ class AccLedger(View):
     data["js_files"] = ['custom_files/js/ledger.js']
 
     data["active_link"] = 'Accounts'
+    data['from_expense'] = False ### changes for expense
     
     #
     #
@@ -75,6 +76,13 @@ class AccLedger(View):
             obj.user = request.user
             obj.save()
 
+### changes for expense
+
+        if request.POST.get('json_response'):
+            success = True if obj.major_heads.id == 2 else False
+            data = {'success':success, 'ledger_name':obj.accounts_name, 'ledger_id':obj.id}
+            return JsonResponse(data)
+### changes for expense
         return redirect('/ledger/add/', permanent = False) 
 
 #

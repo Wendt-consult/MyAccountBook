@@ -88,7 +88,7 @@ function invoice_addRow(a) {
     });
        
         var html = '<tr id="invoice_row'+invoice_number+'">'
-        html +='<td style="border:1px solid white;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
+        html +='<td style="border:1px solid white;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
         html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Describtion" style="width: 213.6px;margin-top:1px;"></textarea></td>'
         html +='<td style="border:1px solid white;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
         html +='<td style="border:1px solid white;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
@@ -672,13 +672,15 @@ function sub_total(){
         $("#SubTotal").val('')
         invoice_tax_cacultion()
         total_discount()
-        // freight_advance_totalamount()
+
     }
     else{
         $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        $("#Total").val($("#SubTotal").val())
         invoice_tax_cacultion()
         total_discount()
-        // freight_advance_totalamount()
+        // invoice_total = $("#SubTotal").val()
+        invoice_shipping_charges()
     }
     
 }
@@ -726,11 +728,23 @@ function invoice_shipping_charges(){
     var shipping_charges = $('#shipping_charges').val()
     var total_amount = $('#Total').val()
     var cal = 0
-    cal  += parseFloat(shipping_charges)+parseFloat(invoice_total)
+    if(shipping_charges != '' & invoice_total != ''){
+        cal  += parseFloat(shipping_charges)+parseFloat(invoice_total)
+    }else if(invoice_total != ''){
+        cal = parseFloat(invoice_total)
+    }
     if(cal.toString() != 'NaN' & cal.toString() !='' & cal != 0.00){
         $('#Total').val(parseFloat(cal).toFixed(2))
-    }else{
-        $('#Total').val(parseFloat(invoice_total).toFixed(2))
+    }else if(cal.toString() == 'NaN'){
+        $('#Total').val('')
+        $('#shipping_charges').val('')
+    }else if($('#SubTotal').val() != ''){
+
+        $('#Total').val(invoice_total)
+    }
+
+    if($('#SubTotal').val() == ''){
+        $('#shipping_charges').val('')
     }
     
 }
@@ -904,9 +918,11 @@ if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
     if(sc_total == 'NaN'){
         $('#Total').val('')
         invoice_total = ''
+        invoice_shipping_charges()
     }else{
         $('#Total').val(sc_total)
         invoice_total = sc_total
+        invoice_shipping_charges()
     }
     
 }
@@ -1033,10 +1049,12 @@ else if(invoice_user_state.toLowerCase() != state.toLowerCase() ){
     if(i_total == 'NaN'){
         $('#Total').val('')
         invoice_total = ''
+        invoice_shipping_charges()
     }
     else{
         $('#Total').val(i_total)
         invoice_total = i_total
+        invoice_shipping_charges()
     }
 }
 }
@@ -1045,7 +1063,7 @@ else if(invoice_user_state.toLowerCase() != state.toLowerCase() ){
 /********************************************************************/
 //  NEW INVOICE FOR FIRST TIME 
 $("#Invoice_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
-
+$("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()})
 //  REVERSE TRACKING
 $('#Invoice_date').change(function() {
     if($('#one_radio').is(':checked') & $("#invoice_pay_terms").is(":visible")){
@@ -1091,7 +1109,6 @@ $('#Invoice_one_due_date').change(function() {
     var start = $('#Invoice_date').datepicker('getDate');
     var end = $('#Invoice_one_due_date').datepicker('getDate');
     var days = (end - start)/1000/60/60/24;
-    console.log(days)
     // $('#hasil').val(days);
     if(days == 0){
         $('#invoice_pay_terms').val('On Due Date').change();

@@ -80,6 +80,7 @@ urlpatterns += [
     path('invoice/org_address_state/', never_cache(login_required(invoice.org_address_state)), name = 'org_address_state'),
     path('invoice/save_invoice/', never_cache(login_required(invoice.save_invoice)), name = 'save_invoice'),
     path('invoice/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(invoice.unique_invoice_number)), name = 'unique_invoice_number'),
+    path('invoice/edit_invoice/<int:ins>/', never_cache(login_required(invoice.EditInvoice.as_view())), name = 'edit_invoice'),
 ]
 
 # urlpatterns +=[
