@@ -41,12 +41,16 @@ class InvoiceModel(models.Model):
         blank = True,
     )
 
-    invoice_customer_mail = models.CharField(
-        max_length = 100,
-        db_index = True,
-        blank=True,
-        null=True,
-    ) 
+    email = models.CharField(
+        max_length = 500,
+        blank = True,
+        null = True,
+    )
+    cc_email =  models.CharField(
+        max_length = 500,
+        blank = True,
+        null = True,
+    )
 
     purchase_order_number = models.CharField(
         max_length = 100,

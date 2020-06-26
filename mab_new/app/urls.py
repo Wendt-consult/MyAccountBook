@@ -39,7 +39,7 @@ urlpatterns += [
 
 # Contacts
 urlpatterns += [
-    path('contacts/', never_cache(login_required(contacts.ContactsView.as_view())), name = 'contacts'),
+    path('contacts/<int:ins>/', never_cache(login_required(contacts.ContactsView.as_view())), name = 'contacts'),
     path('contacts/add/', never_cache(login_required(contacts.add_contacts)), name = 'add-contacts'),
     path('contacts/add_address/', never_cache(login_required(contacts.add_address_details_form)), name = 'add_address_details_form'),
     path('contacts/add_accounts/', never_cache(login_required(contacts.add_accounts_details_form)), name = 'add_accounts_details_form'),
@@ -81,6 +81,7 @@ urlpatterns += [
     path('invoice/save_invoice/', never_cache(login_required(invoice.save_invoice)), name = 'save_invoice'),
     path('invoice/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(invoice.unique_invoice_number)), name = 'unique_invoice_number'),
     path('invoice/edit_invoice/<int:ins>/', never_cache(login_required(invoice.EditInvoice.as_view())), name = 'edit_invoice'),
+    path('send_invoice/<int:ins>/', never_cache(login_required(invoice.send_invoice)), name = 'send_invoice'),
 ]
 
 # urlpatterns +=[

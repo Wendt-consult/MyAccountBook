@@ -78,7 +78,7 @@ function valid_Phone(elem){
 function setMessage(elem){
     var value = $(elem).val();
     if(value.length == 0) {
-        $(".error_field").text('');
+        $(".error_field,.org_error_field").text('');
     }
  
  }

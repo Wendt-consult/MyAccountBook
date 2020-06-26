@@ -244,7 +244,8 @@ def save_invoice(request):
 
     if request.POST:
         invoice_customer = request.POST.get("invoice_customer")
-        invoice_cust_mail = request.POST.get("mail")
+        email = request.POST.get("Email_Address")
+        cc_email = request.POST.get("CC_Email_Address")
         invoice_number = request.POST.get("invoice_number")
         check_invocie_number = request.POST.get("auto_invoice_number","off")
         invoice_date = request.POST.get("Invoice_date")
@@ -333,7 +334,7 @@ def save_invoice(request):
 
         contact = Contacts.objects.get(user = request.user, pk = int(invoice_customer))
 
-        invoice = InvoiceModel(user= request.user, invoice_customer = contact, invoice_customer_mail = invoice_cust_mail, purchase_order_number = invoice_purchae_number,
+        invoice = InvoiceModel(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
                         invoice_number = invoice_number,invoice_check = check_invocie_number,save_type=save_type,invoice_date = in_date,invoice_type_new = invoice_new,
                         invoice_type_recurring = invoice_recurring, invoice_salesperson = invoice_employee,invoice_state_supply = invoice_state_supply,
                         terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
@@ -381,9 +382,8 @@ def save_invoice(request):
         #     return redirect(ins, permanent = False)
             
 
-        # if(save_type == 1):  
-        #     mail = request.POST.get('mail')    
-        #     purchase_order_mailer(request, purchase_order, contact, mail)
+        if(save_type == 1):  
+            invoice_mailer(request, invoice, contact)
 
         return redirect('/invoice/', permanent = False)
 
@@ -526,7 +526,8 @@ class EditInvoice(View):
 
         if request.method == 'POST':
             invoice_customer = request.POST.get("invoice_customer")
-            invoice_cust_mail = request.POST.get("mail")
+            email = request.POST.get("Email_Address")
+            cc_email = request.POST.get("CC_Email_Address")
             invoice_number = request.POST.get("invoice_number")
             check_invocie_number = request.POST.get("auto_invoice_number","off")
             invoice_date = request.POST.get("Invoice_date")
@@ -608,7 +609,7 @@ class EditInvoice(View):
                 save_type = 4
             
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(invoice_customer)))
-            InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, invoice_customer_mail = invoice_cust_mail, purchase_order_number = invoice_purchae_number,
+            InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
                         invoice_number = invoice_number,invoice_check = check_invocie_number,save_type=save_type,invoice_date = in_date,invoice_type_new = invoice_new,
                         invoice_type_recurring = invoice_recurring, invoice_salesperson = invoice_employee,invoice_state_supply = invoice_state_supply,
                         terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
@@ -656,12 +657,92 @@ class EditInvoice(View):
             #     ins = '/purchase_order/print/'+str(kwargs["ins"])+'/'
             #     return redirect(ins, permanent = False)
 
-            # if(save_type == 1):  
-            #     mail = request.POST.get('mail')   
-
-            #     # if attach_check:
-            #         # credit_note_mailer(request, creditnote, contact, send_attachments = True)
-            #     # else:
-            #     purchase_order_mailer(request, purchase_order, contact, mail)
+            if(save_type == 1):  
+                invoice_mailer(request, invoice, contact)
             
         return redirect('/invoice/', permanent = False)
+
+#   
+#****************************************************************************************
+# Code By : roshan maurya
+# Common mailer function for sending invoice mail_send
+# pass request, invoice and contact instances as arguments
+#****************************************************************************************
+
+def invoice_mailer(request, invoice = None, contact = None):
+
+    if invoice is not None and contact is not None: 
+
+        if invoice.email !="":
+    
+            organisation = None
+
+            try:
+                organisation = Organisations.objects.get(user = request.user)
+                subject = "invoice - {} from {} to {}".format(invoice.invoice_number, organisation.organisation_name, contact.contact_name)
+            except:
+                subject = "invoice - {} to {}".format(invoice.invoice_number,contact.contact_name)
+        
+            msg_body = ["Dear {},".format(contact.contact_name)]
+            msg_body.append("Please find attached the invoice {} for your reference.".format(invoice.invoice_number))
+            msg_body.append("<div style='padding:10px; border:1px solid #000000'>")
+            msg_body.append("Invoice - {}".format(invoice.invoice_number))
+
+            if invoice.invoice_new_due_date:
+                msg_body.append("Due Date - {}".format(invoice.invoice_new_due_date))
+            msg_body.append("Amount - {}".format(invoice.total_amount)) 
+            msg_body.append("Invoice To - {}".format(contact.contact_name)) 
+            if invoice.terms_and_condition:
+                msg_body.append("Terms - {}".format(invoice.terms_and_condition)) 
+            msg_body.append("</div>")
+            msg_body.append("Please feel free to contact us if you have any questions.")
+            msg_body.append("Regards,")
+            if organisation.organisation_name:
+                msg_body.append("Company Name{}".format(organisation.organisation_name))
+
+            if organisation is not None:
+                msg_body.append(organisation.organisation_name)
+
+            msg_body = '<br>'.join(msg_body)
+
+            msg_html = "<html><body>"+msg_body+"</body></html>"
+
+            to_list = [email_id for email_id in invoice.email.split(",")]
+            cc_list = [cc_email_id for cc_email_id in invoice.cc_email.split(",")]
+        
+            # attachements = []
+            # if str(creditnote.attachements) !="" and send_attachments:
+            #     attachements = [os.path.join(settings.MEDIA_ROOT,str(creditnote.attachements))]   
+        
+            msg = email_helper.Email_Helper(to=to_list, cc=cc_list, subject=subject, message=msg_html)
+            msg.mail_send()
+            
+            #
+            
+            return True
+        return False
+    return False
+    
+#
+#
+#
+
+def send_invoice(request, ins=None):
+    if request.is_ajax():
+            
+        try:
+            invoice = InvoiceModel.objects.get(pk = int(ins))
+        except:
+            return HttpResponse(0)
+            
+        try:
+            contact = Contacts.objects.get(pk = invoice.invoice_customer_id, user = request.user)
+        except:
+            return HttpResponse(0)   
+            
+            
+         
+        if invoice_mailer(request, invoice, contact):
+            return HttpResponse(1) 
+        return HttpResponse(0) 
+    return HttpResponse(0) 

@@ -7,6 +7,14 @@ function send_creditnote(id){
 		else alert('Email address not mentioned');
 	});
 }
+
+function send_invoice(id){
+    console.log('aaaaaaaaaa')
+	$.get("/send_invoice/"+id+"/", function(data){
+		if(data=='1') alert("Invoice Sent");
+		else alert('Email address not mentioned');
+	});
+}
 /*******************************************************************/
 // CUSTOMIZE VIEW LIST
 /*******************************************************************/

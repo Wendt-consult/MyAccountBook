@@ -310,7 +310,7 @@
                                 <div class="col-4">
                                     <label for="invoice_type">Invoice Type</label>
                                 </div>
-                                <div class="col-8 input">
+                                <div class="col-8">
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
@@ -337,16 +337,7 @@
                                     </div>
                                 </div>
                             </div>
-        
-                            <!-- mail -->
-                            <div class="row" style="display: none;">
-                                <div class="col-4">
-                                    <label for="mail">mail</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <input type="text" class="form-control" id="mail" name="mail">
-                                </div>
-                            </div>
+
                             <!-- gst_type -->
                             <div class="row" style="display: none;">
                                 <div class="col-4">
@@ -633,15 +624,12 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <!-- right -->
-                        <div class="col">
 
                             <div class="row">
                                 <div class="col-4">
                                     <label for="">State of Supply</label>
                                 </div>
-                                <div class="col-7 input">
+                                <div class="col-8 input">
                                     <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="invoice_tax_cacultion()">
                                         <option value="">-------</option>
                                         {% for i in state %}
@@ -650,6 +638,55 @@
                                     </select>
                                 </div>
                             </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="email">Send to Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="email" class="form-control" id="email" name="Email_Address" value="{{invoice.email|default_if_none:''}}" multiple >
+                                    <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding:0%;"><font>Add CC</font></a>
+                                </div>
+                            </div>
+
+                            {% if invoice.cc_email %}
+                            <div class="row ccemail">
+                                <div class="col-4">
+                                    <label for="ccemail" >CC Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <div class="row">
+                                        <div class="col-11" style="padding-right: 0%;">
+                                            <input type="email" class="form-control ccemail" id="ccemail" value="{{invoice.cc_email|default_if_none:''}}" name="CC_Email_Address" multiple >
+                                        </div>
+                                        <div class="col-1" style="padding-left: 2px;">
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;margin-top: -5px;">X</a>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="row ccemail" style="display: none;">
+                                <div class="col-4">
+                                    <label for="ccemail">CC Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <div class="row">
+                                        <div class="col-11" style="padding-right: 0%;">
+                                            <input type="email" class="form-control ccemail" id="ccemail" name="CC_Email_Address" multiple>
+                                        </div>
+                                        <div class="col-1" style="padding-left: 2px;">
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;margin-top: -5px;">X</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
@@ -1293,7 +1330,7 @@
                     </button>
                     
                     <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
-                    <button class="dropdown-item btn btn-success" name="save_send" type="submit" id="send" style="margin-bottom: 3%;width: 94%;">
+                    <button class="dropdown-item btn btn-success" name="save_send" type="submit" id="send" onclick="return sendbtn()" style="margin-bottom: 3%;width: 94%;">
                         <i class="material-icons" style="margin: 0px 11px 0px -20px;font-size: 23px;">email</i>Save and Send
                     </button>
                     <button class="dropdown-item btn btn-success" name="save_draft" id="draft" style="margin: 0% 4% 1% 4%;width: 93%;">

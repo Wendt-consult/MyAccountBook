@@ -77,7 +77,7 @@ color: white!important;
                     <h4 class="card-title" style="padding-top: 6px;">View Contacts</h4>
                 </div>
                 <div class="col">
-                    <form method="get">
+                    <form method="get" action="{% url 'contacts' 1 %}">
                         <div class="input-group" style="width:400px; margin-bottom:10px;">
                     
                         <input name="search" type="text" class="form-control" placeholder="Contact / Organisation Name" style="height: 41px !important">
@@ -93,7 +93,7 @@ color: white!important;
                 <!-- filter -->
                 <!-- filter Cutomer Type -->
                 <div class="col-1" >
-                    <form action="{% url 'contacts' %}" method="get">
+                    <form action="{% url 'contacts' 2 %}" method="get">
                         <div class="dropdown">
                         
                             <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"data-display="static" aria-haspopup="true" aria-expanded="false" style="float: right;padding: 7px 14px 7px 14px;">
@@ -477,7 +477,7 @@ color: white!important;
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-success" type="button" onclick="customize_view(1)">apply</button>
-                    <a class="btn btn-sm btn-danger" href="{% url 'contacts'  %}" type="reset">Cancel</a>
+                    <a class="btn btn-sm btn-danger" href="{% url 'contacts' 0 %}" type="reset">Cancel</a>
                     
                 </div>
             </form>

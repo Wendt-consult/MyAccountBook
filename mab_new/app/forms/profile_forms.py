@@ -44,7 +44,7 @@ class OrganisationForm(ModelForm):
             'terms_and_condition' : Textarea(attrs={"rows":"1",'style':'line-height: 21px !important; width:100%'}),
             'line_of_business' : Select(attrs={'class':'form-control input-sm',}, choices = user_constants.LINE_OF_ORGANISATION),
             'organisation_type' : Select(attrs={'class':'form-control input-sm',}, choices = user_constants.ORGANIZATION_TYPE),
-            'organisation_pan' : TextInput(attrs={'class':'form-control input-sm','onkeyup':'valid_PAN($(this))', 'onfocusout':'valid_PAN($(this))' }),
+            'organisation_pan' : TextInput(attrs={'class':'form-control input-sm','onkeyup':'setMessage($(this))','onfocusout':'valid_PAN($(this))' }),
             'organisation_cin' : TextInput(attrs={'class':'form-control input-sm', }),
             'logo' : FileInput(attrs = {'type':'file', 'accept':'image/jpeg, image/png, image/gif,',})
         }

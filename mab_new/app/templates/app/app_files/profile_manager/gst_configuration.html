@@ -302,7 +302,7 @@ select.form-control option{color : #000000; }
                                 <label for="single_gst_type">GST Reg. Type</label>
                             </div>
                             <div class="col-3">
-                                <select class="" name="single_gst_type" id="single_gst_type" required>
+                                <select class="form-control" name="single_gst_type" id="single_gst_type" required>
                                     <option value="form-control" style="color: #000000;background-color: white;">---------</option>
                                     {% for i in gst_reg_type %}
                                     <option value="{{i.0}}" style="color: #000000;background-color: white;">{{i.1}}</option>

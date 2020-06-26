@@ -769,7 +769,7 @@ var invoice_user_state =''
 invoice_tax_cacultion()
 sub_total()
 function invoice_tax_cacultion(){
-var state = $("#invoice_state_supply").val()
+var state = $('#invoice_state_supply').val()
 if(state == ''){
     state = 'NA'
 }
@@ -788,6 +788,7 @@ var igst_28 = 0
 var cgst_other = 0
 var sgst_other = 0
 var igst_other = 0
+
 if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
@@ -926,7 +927,7 @@ if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
     }
     
 }
-else if(invoice_user_state.toLowerCase() != state.toLowerCase() ){
+else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1267,3 +1268,40 @@ $("#invoice_number").focusout(function(){
         },
     });
   });
+
+/********************************************************************/
+//  SHOW AND HIDE EMAIL CC
+/********************************************************************/
+
+// SHOW EMAIL CC
+function show_cc_mail() {
+    $(".ccemail").show()
+    // $(".cc").css("margin-top","-3%")
+    $('#show_cc').hide()
+    // $('#billing_state').css('margin-top', '4%')
+  }
+
+// HIDE EMAIL CC
+function hide_cc_mail() {
+    $(".ccemail").hide()
+    $("#ccemail").val('')
+    // $(".cc").css("margin-top","0px")
+    $('#show_cc').show()
+    // $('#billing_state').css('margin-top', '0%')
+  }
+
+/********************************************************************/
+//  send mail validation
+/********************************************************************/
+
+function  sendbtn(){
+    var a = $("#email").val()
+    if(a == ''){
+            alert('Please fill email')
+            $("#email").focus()
+            return false
+        }
+        else{
+            return true
+        }
+}

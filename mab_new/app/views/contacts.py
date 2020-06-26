@@ -52,32 +52,70 @@ class ContactsView(View):
     #
     #
     def get(self, request, *args, **kwargs):   
-    
-        search = request.GET.get('search',False)
-        
-        customer_type = request.GET.getlist('customer_type[]')
-        org_type = request.GET.getlist('org_type[]')
-        is_active = request.GET.getlist('is_active[]')
 
         contacts = contacts_model.Contacts.objects.filter(Q(user = request.user) & Q(contact_delete_status = 0))
 
-        if search:
-            contacts = contacts.filter(
-                Q(contact_name__contains = search) | 
-                Q(display_name__contains = search) |
-                Q(organization_name__contains = search)
-            )
-
-        if customer_type:
-            contacts = contacts.filter(customer_type__in = customer_type)
-        
-        if org_type:
-            contacts = contacts.filter(organization_type__in = org_type)
-        
-        if is_active:
-            contacts = contacts.filter(is_active__in = is_active)
-        else:
+        if(int(kwargs["ins"]) == 0):
+            if request.session.has_key('contact_search'):
+                del request.session['contact_search']
+            elif request.session.has_key('contact_filter_type'):
+                del request.session['contact_filter_type']
+            elif request.session.has_key('contact_filter_active'):
+                del request.session['contact_filter_active']
+            elif request.session.has_key('contact_filter_org_type'):
+                del request.session['contact_filter_org_type']
             contacts = contacts.filter(is_active = True)
+
+        if(int(kwargs["ins"]) == 1):
+
+            search = request.GET.get('search',False)
+            if search:
+                request.session['contact_search'] = search
+                self.data['contact_search'] = search
+                contacts = contacts.filter(Q(contact_name__contains = search) | Q(display_name__contains = search) | Q(organization_name__contains = search))
+            elif request.session.has_key('contact_search'):
+                a = request.session['contact_search']
+                contacts = contacts.filter(Q(contact_name__contains = a) | Q(display_name__contains = a) | Q(organization_name__contains = a))
+
+        if(int(kwargs["ins"]) == 2):
+
+            customer_type = request.GET.getlist('customer_type[]')
+            org_type = request.GET.getlist('org_type[]')
+            is_active = request.GET.getlist('is_active[]')
+
+            if customer_type:
+                request.session['contact_filter_type'] = customer_type
+                self.data['contact_filter_type'] = customer_type
+                contacts = contacts.filter(customer_type__in = customer_type)
+            elif request.session.has_key('contact_filter_type'):
+                a = request.session['contact_filter_type']
+                contacts = contacts.filter(customer_type__in = a)
+
+            if org_type:
+                request.session['contact_filter_org_type'] = org_type
+                self.data['contact_filter_org_type'] = org_type
+                contacts = contacts.filter(organization_type__in = org_type)
+            elif request.session.has_key('contact_filter_org_type'):
+                a = request.session['contact_filter_org_type']
+                contacts = contacts.filter(organization_type__in = a)
+
+            if is_active:
+                request.session['contact_filter_active'] = is_active
+                self.data['contact_filter_active'] = is_active
+                contacts = contacts.filter(is_active__in = is_active)
+            elif request.session.has_key('contact_filter_active'):
+                a = request.session['contact_filter_active']
+                contacts = contacts.filter(is_active__in = a)
+            
+        # if customer_type:
+        #     contacts = contacts.filter(customer_type__in = customer_type)
+        
+        
+        
+        # if is_active:
+        #     contacts = contacts.filter(is_active__in = is_active)
+        # else:
+        #     contacts = contacts.filter(is_active = True)
 
         # self.data["contacts"] = contacts
         contact_paginator = Paginator(contacts, 10)
@@ -140,6 +178,15 @@ def add_contacts(request, slug = None, ins = None):
     data["accounts_formset"] = AccountsFormset
 
     data['from_expense'] = False   ### changes for expense
+
+    if request.session.has_key('contact_search'):
+        del request.session['contact_search']
+    elif request.session.has_key('contact_filter_type'):
+        del request.session['contact_filter_type']
+    elif request.session.has_key('contact_filter_active'):
+        del request.session['contact_filter_active']
+    elif request.session.has_key('contact_filter_org_type'):
+        del request.session['contact_filter_org_type']
 
     #
     # POST REQUEST - FORM SUBMISSION
@@ -292,6 +339,15 @@ def edit_contact(request, ins = None):
         # Set link as active in menubar
         data["active_link"] = 'Contacts'
         data["breadcrumb_title"] = 'CONTACTS'
+
+        if request.session.has_key('contact_search'):
+            del request.session['contact_search']
+        elif request.session.has_key('contact_filter_type'):
+            del request.session['contact_filter_type']
+        elif request.session.has_key('contact_filter_active'):
+            del request.session['contact_filter_active']
+        elif request.session.has_key('contact_filter_org_type'):
+            del request.session['contact_filter_org_type']
 
         if ins is not None:
 
@@ -636,7 +692,17 @@ class ContactsFileUploadView(View):
 
     #
     #
-    def get(self, request, a):        
+    def get(self, request, a):    
+
+        if request.session.has_key('contact_search'):
+            del request.session['contact_search']
+        elif request.session.has_key('contact_filter_type'):
+            del request.session['contact_filter_type']
+        elif request.session.has_key('contact_filter_active'):
+            del request.session['contact_filter_active']
+        elif request.session.has_key('contact_filter_org_type'):
+            del request.session['contact_filter_org_type']
+
         self.data["error"] = ""
         self.data["saved_msg"] = '0'
         self.data["error_key_dict"] = {}
@@ -1150,7 +1216,13 @@ def status_change(request, slug = None, ins = None):
             return redirect('/unauthorized/', permanent=False)
 
         contact.save()
-        return redirect('/contacts/', permanent=False)
+        if request.session.has_key('contact_search'):
+            return redirect('/contacts/1', permanent=False)
+        elif(request.session.has_key('contact_filter_type') or request.session.has_key('contact_filter_active') or request.session.has_key('contact_filter_org_type')):
+            return redirect('/contacts/0', permanent=False)
+        else:
+            return redirect('/contacts/0', permanent=False)
+        # return redirect('/contacts/', permanent=False)
 
     return redirect('/unauthorized/', permanent=False)
 
@@ -1169,7 +1241,12 @@ def delete_contact(request, ins = None):
         except:
             return redirect('/unauthorized/', permanent=False)
 
-        return redirect('/contacts/', permanent=False)
+        if request.session.has_key('contact_search'):
+            return redirect('/contacts/1', permanent=False)
+        elif(request.session.has_key('contact_filter_type') or request.session.has_key('contact_filter_active') or request.session.has_key('contact_filter_org_type')):
+            return redirect('/contacts/0', permanent=False)
+        else:
+            return redirect('/contacts/0', permanent=False)
     return redirect('/unauthorized/', permanent=False)
 
         

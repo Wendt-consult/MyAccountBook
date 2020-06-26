@@ -532,7 +532,7 @@ input[type=number]::-webkit-inner-spin-button,
                 {% else %}
                     <div class="card-footer text-center"  style="justify-content: center;">
                         <button class="btn btn-success btn-md save_button" type="submit()" style="width:11%;margin-right: 3px;" onclick="return check()">Save</button>
-                        <a class="btn btn-warning btn-md" href="{%url 'contacts' %}" >Cancel</a>
+                        <a class="btn btn-warning btn-md" href="{%url 'contacts' 0 %}" >Cancel</a>
                     </div>
                 {% endif %}
             </div>
