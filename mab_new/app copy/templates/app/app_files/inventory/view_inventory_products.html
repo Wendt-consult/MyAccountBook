@@ -1,0 +1,192 @@
+{% load common_components %}
+{% loader_component %}
+
+<style>
+select.form-control, input.form-control, textarea.form-control{
+    padding:0px 10px;
+}
+select.form-control option{color : #000000; }
+
+table{
+    font-size:14px;
+    color:#a7a4a4;
+}
+</style>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">
+                    {{inventory_name|upper}}                    
+                    <i data-toggle="modal" data-target="#addInventoryProductModal" class="material-icons pull-right" style="cursor:pointer" title="Add Product To Inventory">add_box</i>
+                </h4>
+                <p class="card-category"><strong>Add/Manage Products In Inventory</strong></p>
+            </div>
+            <div class="card-body">
+                <div class="table">
+                    <table class="table-bordered" width="100%" cellspacing="0">
+                        <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
+                            <th class="text-center">SL. No.</th>
+                            <th class="text-center">UID</th>
+                            <th class="text-center">Product</th>
+                            <th class="text-center">SKU</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Unit</th>
+                            <th class="text-center">Cleared</th>            
+                            <th class="text-center">Action</th>                
+                        </thead>
+                        <tbody>
+                            {% for product in inventory_products %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>P-0000{{product.product_id}}</td>
+                                    <td>{{product.product.product_name}}</td>
+                                    <td>{{product.product.sku}}</td>
+                                    <td>{{product.quantity}}</td>
+                                    <td>{{product.get_unit_display}}</td>
+                                    <td class="text-center">
+                                        {% if product.is_cleared %}
+                                            <i class="material-icons">check</i>
+                                        {% else %}
+                                            <i class="material-icons">clear</i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center" style="width:80px;">
+                                        <a title="Edit Entry" type="button" onclick="open_edit_modal('{{product.id}}')" class="btn btn-primary btn-sm" style="padding:5px 5px;" >
+                                            <i class="material-icons">create</i>
+                                        </a>
+                                        <a title="Delete Entry" href="{% url 'delete_inventory_product' product.id %}" class="btn btn-danger btn-sm" style="padding:5px 5px;">
+                                            <i class="material-icons">delete_forever</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD INVENTORY PRODUCT MODAL -->
+
+<div class="modal fade" id="addInventoryProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:currentcolor">
+            <form method="post" style="margin:0px">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:#000000; font-weight:bold;">Add Product To Inventory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+
+                    <div class="table" style="padding:10px 0px; color:#FFFFFF; width:100%">
+                        <table class="table-responsive">
+                            <tbody style=" width: 100%; display: inline-table;">
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Product</td>
+                                    <td style="border:0px;" colspan="3">{{inventory_product_form.product}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:25%; vertical-align:bottom">Quantity</td>
+                                    <td style="border:0px; width:25%">{{inventory_product_form.quantity}}</td>
+                                    <td style="border:0px; width:25%; vertical-align:bottom; padding-left:10px;">Unit</td>
+                                    <td style="border:0px; width:25%">{{inventory_product_form.unit}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Threshold Limit</td>
+                                    <td style="border:0px;">{{inventory_product_form.threshold}}</td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Enable Notification</td>
+                                    <td style="border:0px;">{{inventory_product_form.notify_on_threshold}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Mininum Hold</td>
+                                    <td style="border:0px;">{{inventory_product_form.stop_at_min_hold}}</td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Enable Notification</td>
+                                    <td style="border:0px;">{{inventory_product_form.notify_on_min_hold}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Threshold Trigger</td>
+                                    <td style="border:0px;">{{inventory_product_form.threshold_notify_trigger}}</td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Minimum Hold Trigger</td>
+                                    <td style="border:0px;">{{inventory_product_form.min_hold_notify_trigger}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: center;">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- EDIT INVENTORY PRODUCT MODAL -->
+
+<div class="modal fade" id="EditInventoryProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:currentcolor">
+            <form method="post" style="margin:0px" action="{% url 'edit_inventory_product' %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:#000000; font-weight:bold;">Edit Product To Inventory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" readonly value="" id="obj_ins" name="obj_ins">
+                    <input type="hidden" readonly value="{{ins}}" name="ins">
+                    <div class="table" style="padding:10px 0px; color:#FFFFFF; width:100%">
+                        <table class="table-responsive">
+                            <tbody style=" width: 100%; display: inline-table;">
+                                <tr>
+                                    <td style="border:0px; width:25%; vertical-align:bottom">Quantity</td>
+                                    <td style="border:0px; width:25%" id="form_element-quantity"></td>
+                                    <td style="border:0px; width:25%; vertical-align:bottom; padding-left:10px;">Unit</td>
+                                    <td style="border:0px; width:25%" id="form_element-unit"></td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Threshold Limit</td>
+                                    <td style="border:0px;" id="form_element-threshold"></td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Enable Notification</td>
+                                    <td style="border:0px;" id="form_element-notify_on_threshold"></td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Mininum Hold</td>
+                                    <td style="border:0px;" id="form_element-stop_at_min_hold"></td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Enable Notification</td>
+                                    <td style="border:0px;" id="form_element-notify_on_min_hold"></td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align:bottom">Threshold Trigger</td>
+                                    <td style="border:0px;" id="form_element-threshold_notify_trigger"></td>
+                                    <td style="border:0px; vertical-align:bottom; padding-left:10px;">Minimum Hold Trigger</td>
+                                    <td style="border:0px;" id="form_element-min_hold_notify_trigger"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: center;">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+ var csrf_token = '{{ csrf_token }}';
+</script>

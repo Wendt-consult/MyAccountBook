@@ -1,0 +1,30 @@
+
+{% load common_components %}
+{% loader_component %}
+
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title ">Invoice Preview</h4>
+            </div> 
+            <div class="card-body">
+                <div class="table">
+                    <table class="table-responsive table-bordered">
+                        <tr style="width:100%">
+                            <td style="border:0px;">INVOICE No.</td>
+                            <td>INV-0000{{invoice_details.id}}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:0px;">CONTACT</td> 
+                            <td>
+                                {{invoice_details.service_recipient.contact_name|title}}
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>                  
