@@ -1,0 +1,9 @@
+{% if products.count > 0 %}
+    {% for product in products %}
+    <li style="color: black;margin-left: -10%;cursor: default;" onclick="ul_remove({{product.id}})" id="{{product.id}}">{{product}}</li>
+    {% endfor %}
+{% else %}
+    {% if search != '' %}
+        <li style="margin-left: -10%;color: black;">No Result Match!!!</li>
+    {% endif %}
+{% endif %}

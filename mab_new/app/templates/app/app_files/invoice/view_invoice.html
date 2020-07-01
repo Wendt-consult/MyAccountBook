@@ -68,7 +68,7 @@ color: white!important;
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-            <div class="card-header card-header-primary">
+            <!-- <div class="card-header card-header-primary">
                 <div class="row" style="margin-bottom: -1%;">
                     <div class="col">
                         <h4 class="card-title ">View Invoice</h4>
@@ -77,7 +77,7 @@ color: white!important;
                         <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);">settings</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="card-body">
                 <div class="loader" style="display: none;"></div>
                 <div class="table" id="customize_table">
@@ -128,7 +128,9 @@ color: white!important;
                                     <td align="center" class="customize_due_date">{{i.invoice_new_due_date|date:"d-m-Y"}}</td>
                                     {% endif %}
                                     {% if customize.invoice_status != 0 %}
-                                    <td align="center" class="customize_status"></td>
+                                    <td align="center" class="customize_status">
+                                        {{i.get_invoice_status_display}}
+                                    </td>
                                     {% endif %}
                                     {% if customize.invoice_amount != 0 %}
                                     <td align="center" class="customize_total">{{i.total_amount}}</td>
@@ -143,6 +145,10 @@ color: white!important;
                                                 <a class="dropdown-item" title="Edit invoice" href="{% url 'edit_invoice' i.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
+
+                                                <a class="dropdown-item" title="Print invoice" href="{% url 'print_invoice' i.id %}" target="_black" style="padding: 5px 5px;">
+                                                    Print
+                                                </a>    
 
                                                 <a class="dropdown-item" title="Void invoice" href="#" style="padding: 5px 5px;">
                                                    Void
@@ -168,8 +174,8 @@ color: white!important;
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                                                            <center><a class="btn btn-success mr-2" href="#" style="align-content: left;">Yes</a></center>
-                                                            <a class="btn btn-warning" href="#">No</a>
+                                                            <center><a class="btn btn-success mr-2" href="{% url 'delete_invoice' i.id %}" style="align-content: left;">Yes</a></center>
+                                                            <a class="btn btn-warning" href="{% url 'invoice' %}">No</a>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -82,6 +82,9 @@ urlpatterns += [
     path('invoice/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(invoice.unique_invoice_number)), name = 'unique_invoice_number'),
     path('invoice/edit_invoice/<int:ins>/', never_cache(login_required(invoice.EditInvoice.as_view())), name = 'edit_invoice'),
     path('send_invoice/<int:ins>/', never_cache(login_required(invoice.send_invoice)), name = 'send_invoice'),
+    path('invoice/print/<int:ins>/', never_cache(login_required(invoice.print_invoice)), name = 'print_invoice'),
+    path('invoice/delete/<int:ins>/', never_cache(login_required(invoice.delete_invoice)), name = 'delete_invoice'),
+    path('invoice/search_engin/', never_cache(login_required(invoice.search_engin_product)), name = 'search_engin_product'),
 ]
 
 # urlpatterns +=[

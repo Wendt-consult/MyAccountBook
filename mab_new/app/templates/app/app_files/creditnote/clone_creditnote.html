@@ -27,8 +27,8 @@ input[type=date]::-webkit-inner-spin-button {
     }
 
 textarea{
-    background-color: #202940;
-    color: white;
+    /* background-color: #202940; */
+    color: black;
 }
 textarea.form-control{
     padding:0px 10px;
@@ -37,20 +37,20 @@ textarea.form-control{
   display: none;
 }
 .select2-selection--single{
-    background-color: #202940!important;
+    /* background-color: #202940!important; */
     border-top-style: hidden!important;
     border-left-style: hidden!important;
     border-right-style: hidden!important;
     border-bottom-left-radius: 0px!important;
     border-bottom-right-radius: 0px!important;
-    border-bottom-color: #d2d2d21a!important;
-    margin-top: -18px!important;
+    border-bottom-color: #a0a0a0a3!important;
+    /* margin-top: -18px!important; */
 }
 .select2-selection__arrow{
     margin-top: -7%;
 }
 .select2-selection__rendered{
-    color: white!important;
+    color: black!important;
     font-weight: 400!important;
 }
 .tbclose{
@@ -90,8 +90,8 @@ textarea.form-control{
 }
 optgroup{color :black; }
 .addrow:hover{
-    border: 1px solid white;
-    color: white;
+    border: 1px solid black;
+    color: black;
 }
 #Attachment {
     width: 90px;
@@ -270,14 +270,14 @@ optgroup{color :black; }
                     <table class="table" id="creditnote_table" style="width: 95%;margin-left: 5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid white;width: 21%;">Product</th>
-                            <th scope="col" style="border:1px solid white;width: 11%;">Type</th>
-                            <th scope="col" style="border:1px solid white;width: 9%;">Price</th>
-                            <th scope="col" style="border:1px solid white;width: 16%;">Unit</th>
-                            <th scope="col" style="border:1px solid white;">Quantity</th>
-                            <th scope="col" style="border:1px solid white;width: 10%;">Discount</th>
-                            <th scope="col" style="border:1px solid white;width: 8%;">Tax</th>
-                            <th scope="col" style="border:1px solid white;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 21%;">Product</th>
+                            <th scope="col" style="border:1px solid black;width: 11%;">Type</th>
+                            <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
+                            <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;">Quantity</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Discount</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Tax</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                           
                         </thead>
                         <tbody>
@@ -285,7 +285,7 @@ optgroup{color :black; }
                         {% for items in creditnote_item %}
                           <tr id="creditnote_row{{forloop.counter}}">
                             
-                            <td style="border:1px solid white;padding-bottom: 0%;">
+                            <td style="border:1px solid black;padding-bottom: 0%;">
                                 
                                 <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="padding-left: 0px;">
                                     
@@ -299,11 +299,11 @@ optgroup{color :black; }
                                 <textarea id="desc{{forloop.counter}}" name="desc[]" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
-                            <td style="border:1px solid white;"><input type="text" class="form-control" value="{{items.product_type}}" id="type{{forloop.counter}}" name="type[]" readonly></td>                  
+                            <td style="border:1px solid black;"><input type="text" class="form-control" value="{{items.product_type}}" id="type{{forloop.counter}}" name="type[]" readonly></td>                  
                             <!-- <td style="border-bottom:1px solid white;padding-left: 3px;padding-right: 0%;width: 4%;">
                                 <input type="text" class="form-control" id="currency{{forloop.counter}}" value="{{items.currency}}" name="currency[]" readonly>
                             </td> -->
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
@@ -313,13 +313,13 @@ optgroup{color :black; }
                                     </div>
                                 </div>   
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
 
                                 <input class="form-control" id="Unit{{forloop.counter}}" name="Unit[]" value="{{items.unit}}" onchange='validation()' style="padding-left: 0px;" readonly>
                                     
                             </td>
-                            <td style="border:1px solid white;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" value="{{items.quantity}}" class="form-control" onkeyup='creditnote_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]"></td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" value="{{items.quantity}}" class="form-control" onkeyup='creditnote_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]"></td>
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
                                         <input type="text" value="{{items.discount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control" onkeyup='creditnote_calculate({{forloop.counter}})' id="Discount{{forloop.counter}}" name="Discount[]">
@@ -332,7 +332,7 @@ optgroup{color :black; }
                                     </div>
                                 </div>   
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;">
@@ -343,11 +343,11 @@ optgroup{color :black; }
                                             </datalist>
                                     </div>
                                     <div class="col" style="padding-right: 0%;padding-left: 0%;">
-                                        <font style="color: white;">%</font>
+                                        <font style="color: black;">%</font>
                                     </div>
                                 </div>  
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
@@ -370,7 +370,7 @@ optgroup{color :black; }
                         {% else %}
                         <tr id="creditnote_row{{forloop.counter}}">
                             
-                            <td style="border:1px solid white;padding-bottom: 0%;">
+                            <td style="border:1px solid black;padding-bottom: 0%;">
                                 
                                 <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;">
                                     
@@ -384,11 +384,11 @@ optgroup{color :black; }
                                 <textarea id="desc1" name="desc[]" value="" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{credit_note.description|default_if_none:""}}</textarea>
                                 
                             </td>
-                            <td style="border:1px solid white;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
+                            <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
                             <!-- <td style="border-bottom: 1px solid white;padding-left: 3px;padding-right: 0%;width: 0%;">
                                 <input type="text" class="form-control" id="currency1" value="" name="currency[]" readonly>
                             </td> -->
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right:0%;">
                                         <label for="Price1">₹</label>
@@ -398,13 +398,13 @@ optgroup{color :black; }
                                     </div>
                                 </div>  
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
 
                                 <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;" readonly>
                                     
                             </td>
-                            <td style="border:1px solid white;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" class="form-control" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]"></td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" class="form-control" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]"></td>
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
                                         <input type="text" value="{{items.discount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control" onkeyup='creditnote_calculate(1)' id="Discount1" name="Discount[]">
@@ -417,7 +417,7 @@ optgroup{color :black; }
                                     </div>
                                 </div> 
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
@@ -428,11 +428,11 @@ optgroup{color :black; }
                                         </datalist>  
                                     </div>
                                     <div class="col" style="padding-right: 0%;padding-left: 0%;">
-                                        <font style="color: white;">%</font>
+                                        <font style="color: black;">%</font>
                                     </div>
                                 </div>
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
@@ -450,9 +450,9 @@ optgroup{color :black; }
                 <!-- </div> -->
                 <div class="container">
                     {% if creditnote_item %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="color: white;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
                     {% else %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="color: white;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
                     {% endif %}
                 </div>
 

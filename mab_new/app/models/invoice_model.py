@@ -9,6 +9,7 @@ from app.models.products_model import *
 from app.models.contacts_model import *
 from app.models.purchase_model import *
 from app.other_constants import payment_constants
+from app.other_constants.user_constants import *
 # from app.models.invoice_model import *
 from uuid import uuid4
 import os
@@ -29,6 +30,7 @@ class InvoiceModel(models.Model):
         (2, 'save_close'),
         (3, 'save_draft'),
         (4, 'save_print'),
+        (5, 'save_new'),
     )
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
@@ -166,6 +168,14 @@ class InvoiceModel(models.Model):
         db_index = True,
         null = True,
         blank = True,
+    )
+
+    invoice_status =  models.IntegerField(
+        default = 0,
+        db_index = True,
+        blank = True,
+        null = True,
+        choices = payment_constants.PAYMENT_STATUS
     )
 
     terms_and_condition = models.CharField(
@@ -338,6 +348,35 @@ class Invoice_Line_Items(models.Model):
         null = True,
         on_delete = models.CASCADE,
     ) 
+
+    is_header = models.BooleanField(
+        db_index = True,
+        choices = user_constants.IS_TRUE,
+        default = True,
+        blank = True,
+        null = True,
+    )
+
+    header_name = models.CharField(
+        db_index = True,
+        max_length=250,
+        blank = True,
+        null=True
+    )
+    
+    header_number_count = models.CharField(
+        db_index = True,
+        max_length=10,
+        blank = True,
+        null=True
+    )
+
+    header_subtotal = models.CharField(
+        db_index = True,
+        max_length=15,
+        blank = True,
+        null=True
+    )
 
     product = models.ForeignKey(
         ProductsModel,

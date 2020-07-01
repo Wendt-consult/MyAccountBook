@@ -315,7 +315,7 @@ def add_contacts(request, slug = None, ins = None):
             return JsonResponse(data)
                 
         ### changes for expense ends
-        return redirect('/contacts/', data)
+        return redirect('/contacts/0/', data)
     return render(request, template_name, data)
 
 

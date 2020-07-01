@@ -333,11 +333,16 @@ function addnewProduct(product_id, desc_id, quantity_id, rate_id, amount_id, tax
             $('#product_form').unbind('submit')
             $('#product_form').submit(function(e){
                 e.preventDefault();
-                var formData = $('#product_form').serializeArray();
+                // var formData = $('#product_form').serializeArray();
+                form_d = $("#product_form")[0];
+                var formData = new FormData(form_d);
                 $.ajax({
                     type : "POST",
                     url : "/products/add/",
                     data : formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
                     success : function(data){
                         if (data['success']){
                             $('.select_product').filter(function(){
@@ -1005,75 +1010,34 @@ $.get("/get_predefined_groups/",{"ids":"2"}, function(data){
     $("#id_acc_group").empty().append(data);
 });
 
-function creditnote_product_form(save_type){
-    form_d = $("#add_creditnote_product_form")[0];
 
-    var formData = new FormData(form_d);
-    if($('#id_product_type').val() == ''){
-        alert('Product type is requried')
-        $('#id_product_type').focus()
-        return false
-    }else if($('#id_sku').val() == ''){
-        alert('sku/product id is requried')
-        $('#id_sku').focus()
-        return false
-    }else if($('#id_product_name').val() == ''){
-        alert('product name is requried')
-        $('#id_product_name').focus()
-        return false
-    }
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
 
-    if($('#id_is_sales').is(":checked")){
-        if($('#id_selling_price').val() == ''){
-            alert('Selling price is requried')
-            $('#id_selling_price').focus()
-            return false
-        }else if($('#id_selling_tax').val() == ''){
-            alert('Tax is requried')
-            $('#id_selling_tax').focus()
-            return false
-        }else if($('#id_sales_account').val() == ''){
-            alert('Selling account is requried')
-            $('#id_sales_account').focus()
-            return false
-        }
-    }
-    
-    if($('#id_is_purchase').is(":checked")){
-        if($('#id_purchase_price').val() == ''){
-            alert('Purchase price is requried')
-            $('#id_purchase_price').focus()
-            return false
-        }else if($('#id_purchase_tax').val() == ''){
-            alert('Tax is requried')
-            $('#id_purchase_tax').focus()
-            return false
-        }else if($('#id_purchase_account').val() == ''){
-            alert('Expense account is requried')
-            $('#id_purchase_account').focus()
-            return false
-        }
-    }
+$("#id_exp_date").on('keypress', function(event){
+    var charCode = (event.which) ? event.which : event.keyCode
+    return (charCode >= 47 && charCode <= 57) ? true : false
+});
 
-    $.ajax({
-        type: 'POST',
-        url: "/products/add/",
-        data:formData,
-        cache:false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
-            if(data != '0'){
-                $.get("/creditnote/product_fetch/",function(data){
-                    $(".credit_note_item").each(function(){
-                        $('<option/>').val(data.ids).html(data.name).appendTo($(this));
-                    });
-                    $('#ItemName'+prefill_creditnote_product+'').val(data.ids).change(); 
-                    // $('.productDropdown .dd-button').text(data.name);
-                    $('#ItemName'+prefill_creditnote_product+'').val(data.ids).change(); 
-                });
-                $("#ProductModal").modal('hide');
-            }
-        },
-    });
+$("#id_payment_date").on('keypress', function(event){
+    var charCode = (event.which) ? event.which : event.keyCode
+    return (charCode >= 47 && charCode <= 57) ? true : false
+});
+
+$("#id_exp_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+$("#id_payment_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+    }
 }

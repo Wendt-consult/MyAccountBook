@@ -192,8 +192,12 @@ class Contacts(models.Model):
     
     def __str__(self):
         if(self.organization_name is None):
+            if not self.is_active:
+                return "{} (Inactive)".format(self.contact_name) 
             return "{}".format(self.contact_name) 
         else:
+            if not self.is_active:
+                return "{} - ({}) (Inactive)".format(self.contact_name,self.organization_name) 
             return "{} - ({})".format(self.contact_name,self.organization_name) 
         return self.contact_name.upper()
 

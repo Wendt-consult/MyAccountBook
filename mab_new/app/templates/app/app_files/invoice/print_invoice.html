@@ -256,75 +256,65 @@ footer {
     
       <div id="details" class="clearfix row">
         <div id="client"  class="col">
-          <h5 class="to" style="color:#0087C3;">PURCHASE ORDER FROM</h5>
+          <h5 class="to" style="color:#0087C3;">Service Recipient's Details</h5>
           <h2 class="name">{{contact_name|default_if_none:""}}</h2>
           <div class="address">
                           
-          {% if vendor_address %}
+          {% if customer_address %}
         
-          {% if vendor_address.flat_no %}
+          {% if customer_address.flat_no %}
         
-          {{vendor_address.flat_no}} 
+          {{customer_address.flat_no}} 
           {% endif %}
 
-          {% if vendor_address.street %}
-          {{vendor_address.street}}, 
+          {% if customer_address.street %}
+          {{customer_address.street}}, 
           {% endif %}
 
-          {% if vendor_address.city %}
-          {{vendor_address.city}},<br>
+          {% if customer_address.city %}
+          {{customer_address.city}},<br>
           {% endif %}
 
-          {% if vendor_address.pincode %}
-          Pincode:-{{vendor_address.pincode}},
+          {% if customer_address.pincode %}
+          Pincode:-{{customer_address.pincode}},
           {% endif %}
 
-          {% if vendor_address.state %}
-          {{vendor_address.get_state_display}},
+          {% if customer_address.state %}
+          {{customer_address.get_state_display}},
           {% endif %}
 
           {% if country %}
-          {{vendor_address.get_country_display|capfirst|default_if_none:""}}
+          {{customer_address.get_country_display|capfirst|default_if_none:""}}
           {% endif %}
 
         {% endif %}
           </div>
           {% if gst %}
-          <div>GST Number:-{{gst}} </div>
+          <div>GST Number:- {{gst}} </div>
+          {% endif %}
+          {% if invoice.invoice_state_supply %}
+          <div>State od Supply:- {{invoice.invoice_state_supply}} </div>
           {% endif %}
           {% if contact.phone %}
-          <div>Contact Number:-{{ contact.phone}}</div>
+          <div>Contact Number:- {{ contact.phone}}</div>
           {% endif %}
           <div class="email"><a href="#">{{contact.email|default_if_none:""}}</a></div>
           
         </div>
-
-        <div id="deliver" class="col">
-          <h5 style="color:#0087C3;" align="center">DELIVERY TO</h5>
-          
-          {% if check == '1' %}
-          <h6>Address:-{{gst_0}}</h6>
-          <h6>Gst Number:-{{gst_1}}</h6>
-          {% elif check == '2'%}
-          <h6>Address:-{{purchase_order.delivery_address}}</h6>
-          {% endif %}
-          <h6>Attention:-{{purchase_order.attention}}</h6>
-        </div>
-
-      
+   
         <div id="invoice" class="col">
-          <h5 style="color:#0087C3;">PURCHASE ORDER# {{purchase_order.purchase_order_number|default_if_none:""}}</h5>
-          <h6>Purchase Order Date:- {{purchase_order.purchase_order_date|default_if_none:""}}</h6>
-          {% if purchase_order.purchase_refrence %}
+          <h5 style="color:#0087C3;">Invoice# {{invoice.invoice_number|default_if_none:""}}</h5>
+          <h6>Invoice Date:- {{invoice.invoice_date|default_if_none:""}}</h6>
+          <!-- {% if purchase_order.purchase_refrence %}
           <h6>Referncer Number:- {{purchase_order.purchase_refrence|default_if_none:""}}</h6>
-          {% endif %}
+          {% endif %} -->
           <!-- <div class="date">Due Date: 30/06/2014</div> -->
         </div>
 
       </div>
       <table style="table-layout:fixed;">
         <thead>
-          <tr >
+          <tr>
             <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th>
             <th class="desc" style="text-align: left;width: 20%;border: 1px solid black;">ITEM / DESCRIPTION</th>
             <!-- <th class="type">TYPE</th> -->
@@ -338,7 +328,8 @@ footer {
           </tr>
         </thead>
         <tbody>
-          {% for item in purchase_item %}
+          {% for item in invoice_item %}
+          {% if item.is_header == False %}
           <tr>
             <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td>
             <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3>{{item.product}}</h3>{{item.description}}</td>
@@ -351,6 +342,13 @@ footer {
             <td class="unit" style="text-align: left;border: 1px solid black;">{{item.amount}}</td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
+          {% elif item.is_header == True %}
+          <tr>
+            <td colspan="6" style="text-align: left;border: 1px solid black;">{{item.header_name}}</td>
+            <td colspan="1" style="text-align: right;border-bottom: 1px solid black;">Sub Total:</td>
+            <td style="text-align: left;border-bottom: 1px solid black;border-right: 1px solid black;">{{item.header_subtotal}}</td>
+          </tr>
+          {% endif %}
           {% endfor %}
         </tbody>
       </table>
@@ -379,7 +377,7 @@ footer {
           <div class="row" style="margin-top: 2%;">
             <div class="col-8">
               <div style="box-sizing: content-box;overflow-wrap: break-word!important;word-break: break-all;">
-                <label id="td1"><h5>{{purchase_order.terms_and_condition}}</h5>
+                <label id="td1"><h5>{{invoice.terms_and_condition}}</h5>
               </div>
             </div>
           </div>
@@ -395,7 +393,7 @@ footer {
             <div class="col-8">
               <div style="box-sizing: content-box;overflow-wrap: break-word!important; word-break: break-all;">
                 <label id="td1" >
-                  <h5>{{purchase_order.Note}}</h5>
+                  <h5>{{invoice.Note}}</h5>
                 </label>
               </div>
             </div>
@@ -412,7 +410,7 @@ footer {
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b>{{purchase_order.sub_total}}</b></h5>
+              <h5><b>{{invoice.sub_total}}</b></h5>
             </div>
           </div>
 
@@ -424,10 +422,10 @@ footer {
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b>{{purchase_order.total_discount}}</b></h5>
+              <h5><b>{{invoice.total_discount}}</b></h5>
             </div>
           </div>
-          {% if purchase_order.cgst_5 and purchase_order.sgst_5 %}
+          {% if invoice.cgst_5 and invoice.sgst_5 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on 2.5</h5>
@@ -436,7 +434,7 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_5}}</h5>
+              <h5>{{invoice.cgst_5}}</h5>
             </div>
           </div>
 
@@ -448,10 +446,10 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_5}}</h5>
+              <h5>{{invoice.sgst_5}}</h5>
             </div>
           </div>
-          {% elif purchase_order.igst_5 %}
+          {% elif invoice.igst_5 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>IGST @ on 5</h5>
@@ -460,12 +458,12 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_5}}</h5>
+              <h5>{{invoice.igst_5}}</h5>
             </div>
           </div>
           {% endif %}
 
-          {%if purchase_order.cgst_12 and purchase_order.sgst_12 %}
+          {%if invoice.cgst_12 and invoice.sgst_12 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on 6</h5>
@@ -474,7 +472,7 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_12}}</h5>
+              <h5>{{invoice.cgst_12}}</h5>
             </div>
           </div>
 
@@ -486,10 +484,10 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_12}}</h5>
+              <h5>{{invoice.sgst_12}}</h5>
             </div>
           </div>
-          {% elif purchase_order.igst_12 %}
+          {% elif invoice.igst_12 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>IGST @ on 12</h5>
@@ -498,12 +496,12 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_12}}</h5>
+              <h5>{{invoice.igst_12}}</h5>
             </div>
           </div>
           {% endif %}
 
-          {% if purchase_order.cgst_18 and purchase_order.sgst_18 %}
+          {% if invoice.cgst_18 and invoice.sgst_18 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on 9</h5>
@@ -512,7 +510,7 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_18}}</h5>
+              <h5>{{invoice.cgst_18}}</h5>
             </div>
           </div>
 
@@ -524,10 +522,10 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_18}}</h5>
+              <h5>{{invoice.sgst_18}}</h5>
             </div>
           </div>
-          {% elif purchase_order.igst_18 %}
+          {% elif invoice.igst_18 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>IGST @ on 18</h5>
@@ -536,12 +534,12 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_18}}</h5>
+              <h5>{{invoice.igst_18}}</h5>
             </div>
           </div>
           {% endif %}
 
-          {% if purchase_order.cgst_28 and purchase_order.sgst_28 %}
+          {% if invoice.cgst_28 and invoice.sgst_28 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on 14</h5>
@@ -550,7 +548,7 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_28}}</h5>
+              <h5>{{invoice.cgst_28}}</h5>
             </div>
           </div>
 
@@ -562,10 +560,10 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_28}}</h5>
+              <h5>{{inoice.sgst_28}}</h5>
             </div>
           </div>
-          {% elif purchase_order.igst_28 %}
+          {% elif invoice.igst_28 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>IGST @ on 28</h5>
@@ -574,12 +572,12 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_28}}</h5>
+              <h5>{{invoice.igst_28}}</h5>
             </div>
           </div>
           {% endif %}
 
-          {% if purchase_order.cgst_other and purchase_order.sgst_other %}
+          {% if invoice.cgst_other and invoice.sgst_other %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on others</h5>
@@ -588,7 +586,7 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_other}}</h5>
+              <h5>{{invoice.cgst_other}}</h5>
             </div>
           </div>
 
@@ -600,10 +598,10 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_other}}</h5>
+              <h5>{{invoice.sgst_other}}</h5>
             </div>
           </div>
-          {% elif purchase_order.igst_other %}
+          {% elif invoice.igst_other %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>IGST @ on others</h5>
@@ -612,10 +610,24 @@ footer {
               <label><h5>₹</h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_other}}</h5>
+              <h5>{{invoice.igst_other}}</h5>
             </div>
           </div>
           {% endif %}
+
+          {% if invoince.shipping_charges %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Shipping Charges:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{invoice.shipping_charges}}</b></h5>
+            </div>
+          </div>
+          {% endif%}
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
@@ -625,44 +637,7 @@ footer {
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.total_amount}}</b></h5>
-            </div>
-          </div>
-          {% if purchase_order.freight_charges %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>Freight Charges:-</b></h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.freight_charges}}</b></h5>
-            </div>
-          </div>
-          {% endif%}
-          {% if purchase_order.advance %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>advance:-</b></h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.advance}}</b></h5>
-            </div>
-          </div>
-          {% endif %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>Total Balance:-</b></h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.total_balance}}</b></h5>
+              <h5><b id="final_total">{{invoice.total_amount}}</b></h5>
             </div>
           </div>
 

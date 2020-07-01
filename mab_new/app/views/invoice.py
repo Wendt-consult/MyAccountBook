@@ -331,6 +331,8 @@ def save_invoice(request):
             save_type = 3
         elif 'save_print' in request.POST:
             save_type = 4
+        elif 'save_new' in request.POST:
+            save_type = 5
 
         contact = Contacts.objects.get(user = request.user, pk = int(invoice_customer))
 
@@ -365,25 +367,44 @@ def save_invoice(request):
         product_amount = request.POST.getlist('Amount[]',None)
 
         count = len(product_name)
+        header_count = 1
+        header = 0
         for i in range(0,count):
 
-            products = ProductsModel.objects.get(pk = int(product_name[i]))
-            account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
-            invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,product = products,description=product_desc[i],
-                                account=account,price=product_price[i],unit=product_unit[i],quantity=product_quantity[i],discount_type = product_discount_type[i],
-                                discount=product_discount[i],tax=product_tax[i],amount=product_amount[i])
+            if(product_quantity[i] != 'header'):
+                if(header == 0):
+                    products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
+                    invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = False,product = products,description=product_desc[i],
+                                    account=account,price=product_price[i],unit=product_unit[i],quantity=product_quantity[i],discount_type = product_discount_type[i],
+                                    discount=product_discount[i],tax=product_tax[i],amount=product_amount[i])
+                else:
+                    products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i-1]))
+                    invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = False,product = products,description=product_desc[i-1],
+                                        account=account,price=product_price[i-1],unit=product_unit[i-1],quantity=product_quantity[i],discount_type = product_discount_type[i-1],
+                                        discount=product_discount[i-1],tax=product_tax[i-1],amount=product_amount[i-1])
+            elif(product_quantity[i] == 'header'):
+                invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = True,header_name = product_name[i],header_subtotal=product_amount[i],
+                                                    header_number_count = header_count)
+                header_count += 1
+                header += 1
 
             invoice_item.save()  
 
 
-        # if(save_type == 4):  
-        #     order = PurchaseOrder.objects.latest('pk')
-        #     ins = '/purchase_order/print/'+str(order.id)+'/'
-        #     return redirect(ins, permanent = False)
+        if(save_type == 4):  
+            invoice = InvoiceModel.objects.latest('pk')
+            ins = '/invoice/print/'+str(invoice.id)+'/'
+            return redirect(ins, permanent = False)
             
 
         if(save_type == 1):  
             invoice_mailer(request, invoice, contact)
+        
+        if(save_type == 5):
+            ins = '/invoice/add/0/'
+            return redirect(ins, permanent = False)
 
         return redirect('/invoice/', permanent = False)
 
@@ -483,6 +504,12 @@ class EditInvoice(View):
         except:
             return redirect('/unauthorized/', permanent=False)
 
+        # invoice item without header
+        invoice_row = invoice_item.filter(is_header = False)
+
+        # invoice item with header
+        invoice_row_header = invoice_item.filter(is_header = True)
+
         if(len(default_term_condition) > 0):
             msg = default_term_condition[0].invoice_terms_and_condition
             invoice_notes = default_term_condition[0].invoice_note
@@ -500,7 +527,8 @@ class EditInvoice(View):
         self.data["invoice"] = invoice
         self.data["invoice_item"] = invoice_item
         self.data['acc_ledger_income'] = acc_ledger_income
-        self.data["item_count"] = len(invoice_item)-1
+        self.data["item_count"] = len(invoice_row)-1
+        self.data['item_header_count'] = len(invoice_row_header)
 
         self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
         self.data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
@@ -607,6 +635,8 @@ class EditInvoice(View):
                 save_type = 3
             elif 'save_print' in request.POST:
                 save_type = 4
+            elif 'save_new' in request.POST:
+                save_type = 5
             
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(invoice_customer)))
             InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
@@ -642,23 +672,43 @@ class EditInvoice(View):
             Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice)).delete()
 
             count = len(product_name)
-            for i in range(0,count):
+            header_count = 1
+            header = 0
+        for i in range(0,count):
 
-                products = ProductsModel.objects.get(pk = int(product_name[i]))
-                account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
-                invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,product = products,description=product_desc[i],
-                                account=account,price=product_price[i],unit=product_unit[i],quantity=product_quantity[i],discount_type = product_discount_type[i],
-                                discount=product_discount[i],tax=product_tax[i],amount=product_amount[i])
-                invoice_item.save()   
+            if(product_quantity[i] != 'header'):
+                if(header == 0):
+                    products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
+                    invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = False,product = products,description=product_desc[i],
+                                    account=account,price=product_price[i],unit=product_unit[i],quantity=product_quantity[i],discount_type = product_discount_type[i],
+                                    discount=product_discount[i],tax=product_tax[i],amount=product_amount[i])
+                else:
+                    products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i-1]))
+                    invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = False,product = products,description=product_desc[i-1],
+                                        account=account,price=product_price[i-1],unit=product_unit[i-1],quantity=product_quantity[i],discount_type = product_discount_type[i-1],
+                                        discount=product_discount[i-1],tax=product_tax[i-1],amount=product_amount[i-1])
+            elif(product_quantity[i] == 'header'):
+                invoice_item = Invoice_Line_Items(user= request.user,invoice_item_list = invoice,is_header = True,header_name = product_name[i],header_subtotal=product_amount[i],
+                                                    header_number_count = header_count)
+                header_count += 1
+                header += 1
+
+            invoice_item.save()  
+
             
-            # if(save_type == 4):  
-            # # order = PurchaseOrder.objects.latest('pk')
-            # # print(order.id)
-            #     ins = '/purchase_order/print/'+str(kwargs["ins"])+'/'
-            #     return redirect(ins, permanent = False)
+            if(save_type == 4):  
+
+                ins = '/invoice/print/'+str(kwargs["ins"])+'/'
+                return redirect(ins, permanent = False)
 
             if(save_type == 1):  
                 invoice_mailer(request, invoice, contact)
+
+            if(save_type == 5):
+                ins = '/invoice/add/0/'
+                return redirect(ins, permanent = False)
             
         return redirect('/invoice/', permanent = False)
 
@@ -746,3 +796,101 @@ def send_invoice(request, ins=None):
             return HttpResponse(1) 
         return HttpResponse(0) 
     return HttpResponse(0) 
+
+
+#=====================================================================================
+#   PRINT PURCHASE ORDER
+#=====================================================================================
+#
+def print_invoice(request, ins):
+
+    template_name = 'app/app_files/invoice/print_invoice.html'
+    # Initialize 
+    data = defaultdict()
+    try:
+        invoice = InvoiceModel.objects.get(pk = int(ins))
+        organisation = Organisations.objects.get(user = request.user)
+        organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
+        
+        invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
+        contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
+        address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
+
+        customer_gst = User_Tax_Details.objects.get(contact = invoice.invoice_customer_id)
+        customer_address = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id) & Q(default_address = True))
+
+            
+    except:
+        return redirect('/unauthorized/', permanent=False)
+
+    
+
+    data["contact_name"] = invoice.invoice_customer
+        
+    data["invoice"] = invoice
+    
+    data["invoice_item"] = invoice_item
+    data['organisation'] = organisation
+
+    if(len(address) == 1):
+        data['org_address'] = address[0]
+        data['state'] = address[0].get_state_display()
+        data['country'] = address[0].get_country_display()
+    elif(len(address) == 0):
+        org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
+        if(len(org_address) != 0):
+            data['org_address'] = org_address[0]
+            data['state'] = org_address[0].get_state_display()
+            data['country'] = org_address[0].get_country_display()
+    data['organisation_contact'] = organisation_contact
+    data['contact'] = contact
+    
+
+    data['gst'] = customer_gst.gstin
+    if(len(customer_address) == 1):
+        data['customer_address'] = customer_address[0]
+    elif(len(customer_address) == 0):
+        address_first = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id))
+        if(len(address_first) != 0):
+            data['customer_address'] = address_first[0]
+    
+    return render(request,template_name,data)
+
+
+#=====================================================================================
+#   DELETE INVOICE
+#=====================================================================================
+#
+
+def delete_invoice(request, ins):
+    if ins is not None:
+        try:
+            invoice = InvoiceModel.objects.get(pk = int(ins))
+        
+        except:
+            return redirect('/unauthorized/', permanent=False)
+
+        Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice)).delete()
+        InvoiceModel.objects.get(pk = int(ins)).delete()
+
+        return redirect('/invoice/', permanent=False)
+    return redirect('/unauthorized/', permanent=False)
+
+#=====================================================================================
+#   SEARCH ENIGN
+#=====================================================================================
+#
+
+def search_engin_product(request):
+
+    data = defaultdict()
+
+    if request.method == 'POST':
+        search_text = request.POST['search_text']
+        if(search_text == ''):
+            data['products'] = []
+        else:
+            product = ProductsModel.objects.filter(Q(product_name__contains = search_text) & Q(is_active = True) & Q(product_delete_status = 0))
+            data['products'] = product
+        data['search'] = search_text
+        return render(request,'app/app_files/invoice/ajax_search.html', data)

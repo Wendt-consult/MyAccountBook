@@ -63,9 +63,18 @@ INVOICE_FREQUENCY = (
     (0, 'Weekly'),
     (1, 'Monthly'),
     (2, 'Quarterly'),
-    (3, ' Half yearly'),
+    (3, 'Half yearly'),
     (4, 'Yearly'),
 )
 
 
+#****************************************************************************
+#   PAYMENT STATUS
+#****************************************************************************
 
+PAYMENT_STATUS = (
+    (0, 'Due'),
+    (1, 'Expired'),
+    (2, 'paid'),
+    (3, 'partially paid'),
+)

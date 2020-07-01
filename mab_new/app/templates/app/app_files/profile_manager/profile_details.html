@@ -24,7 +24,7 @@ table{
     color:#a7a4a4;
 }
 textarea{
-    background-color: #202940;
+    background-color: #fff;
     color: white;
 }
 select.form-control{padding:0px 0px;}
@@ -49,11 +49,12 @@ td{padding:5px;}
 </style>
 <form method="post" enctype="multipart/form-data">
     <div class="card">
-        <div class="card-header card-header-primary" style="margin-left:1px">
+        <!-- <div class="card-header card-header-primary" style="margin-left:1px">
             <h5 class="card-title ">Organisation Details </h5>
-        </div> 
+        </div>  -->
         <div class="card-body"> 
-        <div class="row">
+        <div class="row" style="
+        margin-left: 15px;" >
             <div class="col-8">
                 {% csrf_token %}                 
             <div class="row">
@@ -111,11 +112,11 @@ td{padding:5px;}
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-sm btn-success pull-right org_update">Update</button>
+        <button type="submit" class="btn btn-sm btn-success pull-left org_update;margin-left: 20px;">Update</button>
             <div class="clearfix"></div> 
         </div>            
     </div>
-
+    
 </form>
 <div class="row">
     <div class="col-lg-12" style="padding:0px">
@@ -135,25 +136,25 @@ td{padding:5px;}
                 <table class="table-responsive table-bordered">
                     <tbody style="width:100%; display:inline-table;">
                         <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid white;">Contact Person</td>
-                            <td class="text-center" style="width: 40%;border: 1px solid white;">Address</td>
+                            <td class="text-center" style="width: 15%;border: 1px solid black;">Contact Person</td>
+                            <td class="text-center" style="width: 40%;border: 1px solid black;">Address</td>
                             <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
                             <td class="text-center" style="width: 11%;border: 1px solid white;">City</td>
                             <td class="text-center" style="width: 1%;border: 1px solid white;">Pincode</td>               
                             <td class="text-center" style="width:17%;border: 1px solid white;">State</td>               
                             <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>   -->
-                            <td class="text-center" style="border: 1px solid white;">Is Shipping</td>
-                            <td class="text-center" style="border: 1px solid white;">Is Billing</td>  
-							<td class="text-center" style="border: 1px solid white;">GSTIN</td>							
-                            <td class="text-center" style="border: 1px solid white;">Action</td>                
+                            <td class="text-center" style="border: 1px solid black;">Is Shipping</td>
+                            <td class="text-center" style="border: 1px solid black;">Is Billing</td>  
+							<td class="text-center" style="border: 1px solid black;">GSTIN</td>							
+                            <td class="text-center" style="border: 1px solid black;">Action</td>                
                         </tr> 
                         {% for i in org_address_details %}
                         <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                                    
-                            <td style="vertical-align: bottom;border: 1px solid white;">
+                            <td style="vertical-align: bottom;border: 1px solid black;">
                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
                             </td>  
-                            <td style="vertical-align: bottom;border: 1px solid white;">
+                            <td style="vertical-align: bottom;border: 1px solid black;">
                                 {% if i.flat_no %}
                                 {{ i.flat_no|truncatechars:15 }},
                                 {% endif %}
@@ -191,16 +192,16 @@ td{padding:5px;}
                             <td style="vertical-align: bottom;border: 1px solid white;">
                                 {{ i.country|default_if_none:""|truncatechars:15 }}
                             </td>  -->
-                            <td style="vertical-align: bottom; text-align:center;border: 1px solid white;">                                                                    
+                            <td style="vertical-align: bottom; text-align:center;border: 1px solid black;">                                                                    
                                 {{ i.get_is_shipping_address_display  }}
                             </td>
-                            <td style="vertical-align: bottom; text-align:center;border: 1px solid white;">
+                            <td style="vertical-align: bottom; text-align:center;border: 1px solid black;">
                                 {{ i.get_is_billing_address_display }}
                             </td>
-							<td style="vertical-align: bottom; text-align:center;border: 1px solid white;">
+							<td style="vertical-align: bottom; text-align:center;border: 1px solid black;">
                                 {{ i.organisation_tax.gstin|default_if_none:"" }}
                             </td>
-                            <td style="vertical-align: bottom;border: 1px solid white;">                                                                
+                            <td style="vertical-align: bottom;border: 1px solid black;">                                                                
                                 <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
                                 <i title="Delete" class="material-icons" data-toggle="modal" data-target="#del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
                             
@@ -215,8 +216,8 @@ td{padding:5px;}
                                                 <h4 align="center"><b><font color="black">Are you sure you want to delete {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Deleting address will not affect reports or historical transactions. </font></b></h4>
                                             </div>
                                             
-                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                                                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;">Yes</button></center>
+                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left: 150px;">Yes</button></center>
                                                 <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">No</button>
                                             </div>
                                         </div>
@@ -317,8 +318,8 @@ td{padding:5px;}
                                                 <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting address will not affect reports or historical transactions. </font></b></h4>
                                             </div>
                                             
-                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                                                <center><button onclick="delete_org_account({{i.id}})" class="btn btn-success mr-2" style="align-content: left;">Yes</button></center>
+                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                <center><button onclick="delete_org_account({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left: 150px">Yes</button></center>
                                                 <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">No</button>
                                             </div>
                                         </div>
@@ -365,8 +366,8 @@ td{padding:5px;}
                 <h4 align="center"><b><font color="black">Are you sure you want to delete {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Deleting address will not affect reports or historical transactions. </font></b></h4>
             </div>
             
-            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;">Yes</button></center>
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left: 150px">Yes</button></center>
                 <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">No</button>
             </div>
         </div>
@@ -384,8 +385,8 @@ td{padding:5px;}
                 <h4 align="center"><b><font color="black">Are you sure you want to delete all entries of <span id="title_head"></span></font></b></h4>
             </div>
             
-            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;">Yes</button></center>
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left: 150px">Yes</button></center>
                 <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">No</button>
             </div>
         </div>
@@ -477,8 +478,8 @@ td{padding:5px;}
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                    <button type="submit" class="btn btn-success mr-2 save_button" style="align-content: left;" disabled>Submit</button>                
+                <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                    <button type="submit" class="btn btn-success mr-2 save_button" style="align-content: left;margin-left: 150px" disabled>Submit</button>                
                     <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">Cancel</button>
                 </div>
             </div>
@@ -622,8 +623,8 @@ td{padding:5px;}
                         </tbody>
                     </table>
             </div>
-            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;margin-left: 29%">
-                <center><button class="btn btn-success mr-2" style="align-content: left;">Submit</button></center>
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button class="btn btn-success mr-2" style="align-content: left;margin-left: 250px">Submit</button></center>
                 <button aria-label="Close" data-dismiss="modal" class="btn btn-warning">Cancel</button>
             </div>
 			</form>
@@ -637,7 +638,7 @@ td{padding:5px;}
 
 <div class="modal fade" id="editAddressModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940">
+        <div class="modal-content" style="background-color:#fff">
             <form method="post" style="margin:0px" action="{% url 'edit_org_address_details_form' ids %}">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Edit Address Details </h5>
@@ -784,7 +785,7 @@ td{padding:5px;}
 
 <div class="modal fade" id="editAccountModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940">
+        <div class="modal-content" style="background-color:#fff">
             <form method="post" style="margin:0px" action="{% url 'edit_org_account_details_form' ids %}">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Edit Account Details</h5>

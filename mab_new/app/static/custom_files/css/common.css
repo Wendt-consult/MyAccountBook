@@ -1,4 +1,109 @@
-@media (min-width: 1200px){
+
+/* html {
+  overflow-y: hidden;
+} */
+
+.dark-edition .sidebar .sidebar-background:after, .dark-edition .sidebar {
+  background-color: #fff !important;
+}
+
+.dark-edition .card .card-header-primary .card-icon, .dark-edition .card .card-header-primary .card-text, .dark-edition .card .card-header-primary:not(.card-header-icon):not(.card-header-text), .dark-edition .card.bg-primary, .dark-edition .card.card-rotate.bg-primary .front, .dark-edition .card.card-rotate.bg-primary .back {
+  background: #4682B4 !important;
+}
+
+a:hover {
+  color:#4682B4 !important;
+} 
+
+.contact_name:hover{
+  color: #4682B4 !important;
+  }
+
+.input-sm{
+  border-bottom: 1px solid black; 
+  border: #000;
+}
+
+.element.style {
+  border: groove;
+}
+
+.ps-theme-default {
+  background-image: none !important;
+}
+.td {
+  color: #000 !important;
+}
+.sidebar .nav {
+  background-color: #fff !important;
+}
+
+.custom-row button {
+  border: 1px solid #4682B4 !important;
+  color: #4682B4;
+  font-size: 15px;
+  float: left;
+  width: 75px;
+  border-radius: 5px;
+}
+/* .nav_btns  {
+  padding-top: 8px;
+} */
+
+.contact_name{
+  font-family: Arial !important;
+}
+.td {
+  color: #000 !important;
+  font-family: Arial !important;
+}
+
+
+.simple-text logo-normal {
+  color: #000 !important;
+  font-family: Arial;
+}
+
+.sidebar[data-background-color="black"] .nav .nav-item .nav-link {
+  color: #000 !important;
+}
+
+.custom-row  .btn1{
+  background-color: white;
+  border-radius: 4px;
+  color: white;
+  padding: 1px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 10px;
+  margin-right: -143px;
+  background-color: gray; 
+  border: 1px solid #fff;
+  margin-top: -3px;
+  padding-top: 1px;
+  margin-left: 5px;
+}
+
+/* .nav .active {
+  background-color: #4682B4 !important;
+} */
+
+.dark-edition .sidebar[data-color="purple"] li.active>a {
+  background: linear-gradient(60deg, #4682B4, #4682B4) !important;
+  box-shadow: none;
+}
+
+.navbar-brand{
+  color: #4682B4 !important;
+}
+
+body {
+  background-color: #EBEBEB !important;
+}
+
+@media (min-width: 1200px){ 
     .container{
         width:100% !important;
     }  
@@ -10,7 +115,61 @@
 
 .custom-row{
   padding: 10px; 
-  background: linear-gradient(60deg,#f5700c,#ff9800);
+  background: #4682B4 !important;/*linear-gradient(60deg,#f5700c,#ff9800);*/
+  height: 40px;
+}
+
+.custom-row b {
+  color: #fff;
+}
+.custom-row .rounds {
+  float: right;
+}
+
+
+#customize_table {
+                      height: 500px;
+                      overflow-y: auto;
+}
+
+/* .custom-row .round1{
+  height: 32px;
+  width:32px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  border-color: #fff;
+}
+
+.custom-row .round2{
+  height: 32px;
+  width:32px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  border-color: #fff;
+}
+
+.custom-row .round3{
+  height: 32px;
+  width:32px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  border-color: #fff;
+} */
+
+.custom-row input{
+  color: #000 !important;
+  border-radius: 0px;
+
+  height: 20px !important;
+  border: 1px solid #fff;
+  background-color: #fff;
+}
+
+.custom-row input:focus{
+  border-radius: 0px;
+  background-color: #fff;
+  color:#000;
+  background-image: none !important;
 }
 
 
@@ -20,6 +179,33 @@
 
 .table th, .table td {
   padding: 4px 6px 6px 5px;
+  color: #000 !important;
+  border-color: grey;
+}
+
+.table td a{
+  color: #000 !important;
+}
+
+.card-body {
+  padding:0px !important;
+  border-radius: 1px !important;
+  background-color: #fff !important;
+}
+
+.card {
+  border-radius: 0px;
+  margin-top: 0px;
+}
+
+.col-lg-12 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+thead {
+  background-color: #c3c3c3 !important;
+  color: #fff !important;
 }
 
 
@@ -195,7 +381,10 @@ Background STYLES
   font-weight:bold;
   padding:0px;
 }
-
+.modal-footer{
+  background-color: #598ebb !important;
+  color:#598ebb !important;
+}
 
 #invoice_template_body .card-header img{
   height:100px;
@@ -211,8 +400,18 @@ Background STYLES
   font-family: 'Lucida Sans';
 }
 
+.dark-edition .form-control {
+  background-image: linear-gradient(to top, #4682B4 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, rgba(180, 180, 180, 0.1) 1px, rgba(180, 180, 180, 0) 1px);
+  border-bottom: 1px solid #c3c3c3;
+  padding: 0px;
+  color: #000 !important;
+
 #template_body h3, h4,h5{ 
   margin-bottom: 3px;
+}
+
+.material-icons{
+  color: #000 !important;
 }
 
 #template_body table { 

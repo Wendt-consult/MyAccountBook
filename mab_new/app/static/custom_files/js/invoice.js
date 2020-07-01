@@ -7,7 +7,7 @@ $('input[type=number]').on('mousewheel',function(e){ $(this).blur(); });
 $('input[type=number]').on('keydown',function(e) {
     var key = e.charCode || e.keyCode;
     // Disable Up and Down Arrows on Keyboard
-    if(key == 38 || key == 40 || key == 69 || key == 189) {
+    if(key == 38 || key == 40 || key == 69 || key == 189 || key == 190) {
 	e.preventDefault();
     } else {
 	return;
@@ -54,6 +54,113 @@ function float_value(event, a) {
 };
 
 /************************************************************ */
+// PRODUCT ROW header add/remove
+/************************************************************ */
+var invoice_header_number = 0
+function add_header(a){
+    var check = $('#invoice_table tr:last').attr('id')
+    var last_row = check.substring(check.length - 1, check.length);
+    if(check.substring(0,check.length-1) != 'invoice_row_header'){
+        if(a != 0){
+            invoice_header_number = a
+        }
+        invoice_header_number += 1
+        // start header sub total
+        var rowCount = $('#invoice_table tr').length;
+        var ids = check
+        var header_sub_total = 0
+        for(var i = 1; i < rowCount; i++){
+            if(ids.substring(0,ids.length-1) == 'invoice_row_header'){
+                break;
+            }else{
+                id_number =  ids.substring(ids.length - 1, ids.length);
+                var amount = $('#Amount'+id_number+'').val()
+                if(amount != '' & amount != 'NaN'){
+                    header_sub_total += parseFloat(amount)
+                }
+            }
+            if(ids == 'invoice_row1'){
+                break;
+            }
+            ids = $('#'+ids+'').closest('tr').prev('tr').attr('id');  
+        }
+
+        // end header sub total
+
+        var html = '<tr id="invoice_row_header'+invoice_header_number+'">'
+        html +='<td colspan="5" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
+        html +='<td colspan="3" style="border-bottom:1px solid black; border-right:1px solid black;"><div class="row"><div class="col-lg-4 col-md-5" style="padding-right:0px;"><font style="color:black;">Sub Total:</font></div><div class="col-lg-8 col-md-7" style="padding-left:0px;margin-top:2%;"><input type="text" class="form-control" id="header_SubTotal'+invoice_header_number+'" name="Amount[]" readonly></div></div></td>'
+        html +='<td style="border-top: none;"><span class="tbclose material-icons" id="header'+invoice_header_number+'" name="header'+invoice_header_number+'" onclick="header_remove('+invoice_header_number+'),header_subtotal('+last_row+')" style="cursor: default;">delete_forever</span></td></tr>'
+        $('#invoice_table').append(html)
+        if(header_sub_total != 0){
+            $('#header_SubTotal'+invoice_header_number+'').val(parseFloat(header_sub_total).toFixed(2))
+        }
+    }else{
+        alert("You can't add header before adding row ")
+    }
+}
+
+function header_remove(a){
+    $('#invoice_row_header'+a+'').remove();
+}
+/************************************************************ */
+// header sub total calculation
+/************************************************************ */
+
+function header_subtotal(ids){
+    var rowCount = $('#invoice_table tr').length;
+    var row_name_next = 'invoice_row'+ids+''
+    var row_name_prev = 'invoice_row'+ids+''
+    var next_header_row =''
+    // var prev_header_row =''
+    for(var i = 1; i < rowCount; i++){
+        var next = $('#'+row_name_next+'').closest('tr').next('tr').attr('id');
+        if(next == undefined){
+            break;
+        }
+        row_name_next = next
+        if(row_name_next.substring(0,row_name_next.length-1) == 'invoice_row_header'){
+            next_header_row = row_name_next
+            break;
+        }
+    }
+
+    for(var i = 1; i < rowCount; i++){
+        if(row_name_prev == 'invoice_row1'){
+            break;
+        }
+        var prev = $('#'+row_name_prev+'').closest('tr').prev('tr').attr('id');
+        if(prev.substring(0,prev.length-1) == 'invoice_row_header'){
+            // prev_header_row = row_name_prev
+            break;
+        }else{
+            row_name_prev = prev
+        }
+    }
+    var header_subtotal = 0
+    var id_number =  next_header_row.substring(next_header_row.length - 1, next_header_row.length);
+    for(var i = 1; i < rowCount; i++){
+        amount_number = row_name_prev.substring(row_name_prev.length - 1, row_name_prev.length);
+        if($('#Amount'+amount_number+'').val() != ''){
+            header_subtotal += parseFloat($('#Amount'+amount_number+'').val())
+        }
+        verify_row = $('#'+row_name_prev+'').closest('tr').next('tr').attr('id');
+        if(verify_row == undefined){
+            break;
+        }
+        if(verify_row.substring(0,verify_row.length-1) == 'invoice_row_header'){
+            break;
+        }else{
+            row_name_prev = verify_row
+        }
+    }
+    if(header_subtotal != 0){
+        $('#header_SubTotal'+id_number+'').val(parseFloat(header_subtotal).toFixed(2))
+    }else{
+        $('#header_SubTotal'+id_number+'').val('')
+    }
+}
+/************************************************************ */
 // PRODUCT ROW ADD/REMOVE
 /************************************************************ */
 
@@ -88,20 +195,20 @@ function invoice_addRow(a) {
     });
        
         var html = '<tr id="invoice_row'+invoice_number+'">'
-        html +='<td style="border:1px solid white;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
+        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
         html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Describtion" style="width: 213.6px;margin-top:1px;"></textarea></td>'
-        html +='<td style="border:1px solid white;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
-        html +='<td style="border:1px solid white;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+')" id="Price'+invoice_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
-        html +='<td style="border:1px solid white;"><input class="form-control" id="Unit'+invoice_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
-        html +='<td style="border:1px solid white;"><input type="text" class="form-control" id="Quantity'+invoice_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+')" name="Quantity[]" required></td>'
-        html +='<td style="border:1px solid white;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+')" id="Discount'+invoice_number+'" name="Discount[]"></div>'
+        html +='<td style="border:1px solid black;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
+        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Price'+invoice_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
+        html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+invoice_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
+        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+invoice_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" name="Quantity[]" required></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Discount'+invoice_number+'" name="Discount[]"></div>'
         html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+invoice_number+'" name="Dis[]" onchange="dicount_type('+invoice_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-        html +='<td style="border:1px solid white;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="invoice_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" required><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="invoice_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" required><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
         html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: white;">%</font></div></div></td>'
-        html +='<td style="border:1px solid white;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
         html +='<div class="col"><input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,\'Amount'+invoice_number+'\')" id="Amount'+invoice_number+'" name="Amount[]" style="margin-top:1%;" readonly></div></div></td>'
-        html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+invoice_number+'" name="'+invoice_number+'" onclick="creditnote_removeRow('+invoice_number+')" style="cursor: default;">delete_forever</span></td></tr>'
+        html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+invoice_number+'" name="'+invoice_number+'" onclick=" return creditnote_removeRow('+invoice_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         $('#invoice_table').append(html)
         
         // SELECT PLUGIN
@@ -166,13 +273,53 @@ function invoice_addRow(a) {
 };
 // REMOVE JS TABLE
 function creditnote_removeRow(a) {
+    var next = $('#invoice_row'+a+'').closest('tr').next('tr').attr('id');
+    var prev = $('#invoice_row'+a+'').closest('tr').prev('tr').attr('id');
+    if(next == undefined & (prev.substring(0,prev.length-1) != 'invoice_row_header' || prev.substring(0,prev.length-1) == 'invoice_row_header')){
+        $('#invoice_row'+a+'').remove();
+        $('#'+a+'').remove();
+        sub_total()
+        if(invoice_number > 1){
+            invoice_number -=1
+        }
+    }else if(next.substring(0,next.length-1) == 'invoice_row_header' & prev.substring(0,prev.length-1) == 'invoice_row_header'){
+        alert("can't remove row, because two header can't place sequentially. Please delete header first.")
+        return false
+    }else if(next.substring(0,next.length-1) == 'invoice_row_header' & prev.substring(0,prev.length-1) != 'invoice_row_header'){
+        $('#invoice_row'+a+'').remove();
+        $('#'+a+'').remove();
+        sub_total()
+        if(invoice_number > 1){
+            invoice_number -=1
+        }
+        var prev_ids = prev.substring(prev.length - 1, prev.length);
+        header_subtotal(prev_ids)
+    }else if(next.substring(0,next.length-1) != 'invoice_row_header' & prev.substring(0,prev.length-1) == 'invoice_row_header'){
+        $('#invoice_row'+a+'').remove();
+        $('#'+a+'').remove();
+        sub_total()
+        if(invoice_number > 1){
+            invoice_number -=1
+        }
+        var next_ids = next.substring(next.length - 1, next.length);
+        header_subtotal(next_ids)
+    }else if(next.substring(0,next.length-1) != 'invoice_row_header' & prev.substring(0,prev.length-1) != 'invoice_row_header'){
+        $('#invoice_row'+a+'').remove();
+        $('#'+a+'').remove();
+        sub_total()
+        if(invoice_number > 1){
+            invoice_number -=1
+        }
+        var ids = next.substring(next.length - 1, next.length);
+        header_subtotal(ids)
+    }
 
-$('#invoice_row'+a+'').remove();
-$('#'+a+'').remove();
-sub_total()
-if(invoice_number > 1){
-    invoice_number -=1
-}
+// $('#invoice_row'+a+'').remove();
+// $('#'+a+'').remove();
+// sub_total()
+// if(invoice_number > 1){
+//     invoice_number -=1
+// }
 
 }
 /********************************************************************/
@@ -375,7 +522,7 @@ function product(a) {
                 $("#Price"+a+"").val(parseFloat(data.selling).toFixed(2))
     
                 $("#Unit"+a+"").val(data.unit)
-                $('#product_account'+a+'').val(4).change();
+                // $('#product_account'+a+'').val(4).change();
 
                 $("#Quantity"+a+"").val("")
                 $("#Discount"+a+"").val("")
@@ -1087,8 +1234,8 @@ function invoice_pay_date(){
         endDate.setDate(endDate.getDate()+19); 
         $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '30 Days'){
-        var endDate = $('#Invoice_date').datepicker('getDate', '+29d'); 
-        endDate.setDate(endDate.getDate()+29); 
+        var endDate = $('#Invoice_date').datepicker('getDate', '+31d'); 
+        endDate.setDate(endDate.getDate()+31); 
         $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '60 Days'){
         var endDate = $('#Invoice_date').datepicker('getDate', '+59d'); 
@@ -1112,19 +1259,26 @@ $('#Invoice_one_due_date').change(function() {
     var days = (end - start)/1000/60/60/24;
     // $('#hasil').val(days);
     if(days == 0){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('On Due Date').change();
     }else if(days == 9){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('10 Days').change();
     }else if(days == 19){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('20 Days').change();
-    }else if(days == 29){
+    }else if(days == 31){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('30 Days').change();
     }else if(days == 59){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('60 Days').change();
     }else if(days == 89){
+        $('#invoice_pay_terms').attr('readonly', false);
         $('#invoice_pay_terms').val('90 Days').change();
     }else {
-        $('#invoice_pay_terms').val('').change();
+        console.log('aaaaaaaaaaaaaa')
+        $('#invoice_pay_terms').attr('disable', true);
     }
 });
 
@@ -1165,16 +1319,16 @@ function invoice_recurring_end(){
         }
     }else if(frequency == 'Monthly'){
         if(repeat != ''){
-            var invoice_repeat = parseInt(repeat) * 29
+            var invoice_repeat = parseInt(repeat) * 31
             var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+'+invoice_repeat+'d'); 
             endDate.setTime(endDate.getTime() - (1000*60*60*24))
             endDate.setDate(endDate.getDate()+invoice_repeat); 
             $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
             $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
         }else{
-            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+29d'); 
+            var endDate = $('#Invoice_recurring_start').datepicker('getDate', '+31d'); 
             endDate.setTime(endDate.getTime() - (1000*60*60*24))
-            endDate.setDate(endDate.getDate()+29); 
+            endDate.setDate(endDate.getDate()+31); 
             $("#hidden_recurring_end").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
             $('#Invoice_recurring_end').val($('#hidden_recurring_end').val())
         }
@@ -1304,4 +1458,36 @@ function  sendbtn(){
         else{
             return true
         }
+}
+
+/********************************************************************/
+//  bulk select product
+/********************************************************************/
+
+$(function(){
+    $('#product_search').keyup(function(){
+        $.ajax({
+            type: "POST",
+            url: "/invoice/search_engin/",
+            data: {
+                'search_text' : $('#product_search').val(),
+                'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken").val()
+            },
+            success: searchSuccess,
+            dataType:  'html'
+        });
+    });
+});
+
+function searchSuccess(data, texStatus, jqXHR){
+    $('#search_result').html(data);
+}
+
+function ul_remove(a){
+    console.log('aaaaaaaaaaaa')
+    // $('#product_search').val($('#'+a+'').text())
+    // $('#search_result').empty()
+}
+function hide_bulk_item(){
+    $('#search_result').empty()
 }

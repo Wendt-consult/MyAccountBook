@@ -5,6 +5,8 @@
 }
 select.form-control{padding:0px 10px;}
 select.form-control option{color : #000000; }
+option:hover{background-color : green !important; }
+
 input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -20,7 +22,7 @@ input[type=number]::-webkit-inner-spin-button,
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Add Contact</h4>
+                    <h4 class="card-title ">Add Contacts</h4>
                 </div>                
                 <div class="card-body">                    
                     <div class="table" style="padding:10px 0px; color:#FFFFFF; width:100%">
@@ -149,7 +151,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 </tr>                        -->
                                 <tr>
                                    <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
-                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px; background-color:#556b2f">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px; background-color:#598ebb">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
                                                 aria-selected="true">Address Details</a>
@@ -495,7 +497,7 @@ input[type=number]::-webkit-inner-spin-button,
                                                             </td>
                                                             <td style="width:44%;border:0px;">
                                                                 {{ social_form.attachements }}
-                                                                <font color="white" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
+                                                                <font color="grey" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>
                                                         </tr>
                                                     </tbody>

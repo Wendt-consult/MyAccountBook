@@ -51,10 +51,10 @@
             margin: 0;
         }
     
-    textarea{
-        background-color: #202940;
-        color: white;
-    }
+textarea{
+    /* background-color: #202940; */
+    color: black;
+}
     textarea.form-control{
         padding:0px 10px;
     }
@@ -62,31 +62,21 @@
       display: none;
     }
     .select2-selection--single{
-        background-color: #202940!important;
-        border-top-style: hidden!important;
-        border-left-style: hidden!important;
-        border-right-style: hidden!important;
-        border-bottom-left-radius: 0px!important;
-        border-bottom-right-radius: 0px!important;
-        border-bottom-color: #d2d2d21a!important;
-        /* margin-top: -18px!important; */
-    }
+    /* background-color: #202940!important; */
+    border-top-style: hidden!important;
+    border-left-style: hidden!important;
+    border-right-style: hidden!important;
+    border-bottom-left-radius: 0px!important;
+    border-bottom-right-radius: 0px!important;
+    border-bottom-color: #a0a0a0a3!important;
+    /* margin-top: -18px!important; */
+}
     .select2-selection__arrow{
         /* margin-top: -7%; */
     }
     .select2-selection__rendered{
-        color: white!important;
+        color: black!important;
         font-weight: 400!important;
-    }
-    #supplyPlace1{
-        width: 95%;
-        margin-left: -9%;
-        background-color: #202940;
-        border-top-style: none;
-        border-left-style: none;
-        border-right-style: none;
-        border-bottom-color: #d2d2d21a;
-        color: white;
     }
     .tbclose{
         color:red;
@@ -422,7 +412,7 @@
                                     <label for="">Payment Terms</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()">
+                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}">{{i.1}}</option>
@@ -469,7 +459,7 @@
                                     <label for="invoice_recurring_Frequency">Frequency</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}" {% if invoice.invoice_recurring_frequency == i.1 %} selected {% endif %}>{{i.1}}</option>
@@ -541,7 +531,7 @@
                                     <label for="invoice_recurring_Frequency">Frequency</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}">{{i.1}}</option>
@@ -630,7 +620,7 @@
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="invoice_tax_cacultion()">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="invoice_tax_cacultion()" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in state %}
                                         <option value="{{i}}" {% if invoice.invoice_state_supply == i %} selected {% endif %}>{{i}}</option>
@@ -694,20 +684,21 @@
                     <table class="table" id="invoice_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid white;width: 21%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid white;width: 14%;">Account</th>
-                            <th scope="col" style="border:1px solid white;width: 9%;">Price</th>
-                            <th scope="col" style="border:1px solid white;width: 15%;">Unit</th>
-                            <th scope="col" style="border:1px solid white;width: 8%;">Quantity</th>
-                            <th scope="col" style="border:1px solid white;width: 10%;">Discount</th>
-                            <th scope="col" style="border:1px solid white;width: 8%;">Tax</th>
-                            <th scope="col" style="border:1px solid white;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 21%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 14%;">Account</th>
+                            <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Quantity</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Discount</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Tax</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                           
                         </thead>
                         <tbody>
-                            {% for items in invoice_item %}
+                        {% for items in invoice_item %}
+                        {% if items.is_header == False %}
                           <tr id="purchase_row{{forloop.counter}}">
-                            <td style="border:1px solid white;padding-bottom: 0%;">
+                            <td style="border:1px solid black;padding-bottom: 0%;">
                                 
                                 <select class="form-control select invoice_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}})'  style="padding-left: 0px;" required>
                                     
@@ -730,7 +721,7 @@
                                 <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <select class="form-control product_invoice_account"  id="product_account{{forloop.counter}}" name="product_account[]" required>
                                     <option value="">-------</option>
                                     
@@ -740,7 +731,7 @@
                                 </select>
                             </td>                  
 
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price{{forloop.counter}}">₹</label>
@@ -751,13 +742,13 @@
                                 </div>
                                 
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' id="Quantity{{forloop.counter}}" name="Quantity[]" required>
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
                                         <input type="text" value="{{items.discount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='purchase_calculate({{forloop.counter}})' id="Discount{{forloop.counter}}" name="Discount[]">
@@ -770,7 +761,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" required>
@@ -781,11 +772,11 @@
                                         </datalist>  
                                     </div>
                                     <div class="col" style="padding-left: 0%;padding-right: 0%;">
-                                        <font style="color: white;">%</font>
+                                        <font style="color: black;">%</font>
                                     </div>
                                 </div>  
                             </td>
-                            <td style="border:1px solid white;">
+                            <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Amount{{forloop.counter}}">₹</label>
@@ -803,14 +794,42 @@
                                 <span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}" onclick="creditnote_removeRow({{forloop.counter}})" style="cursor: default;">delete_forever</span>
                                 {% endif %}
                             </td>
-                          </tr>
-                          {% endfor %}
+                        </tr>
+                        {% elif items.is_header == True %}
+                        <tr id="invoice_row_header{{items.header_number_count}}">
+                            <td colspan="5" style="border:1px solid black;">
+                                <input class="form-control" id="prduct_header{{items.header_number_count}}" value="{{items.header_name}}" name="ItemName[]" required>
+                                <input type="text" id="header_quan{{items.header_number_count}}" name="Quantity[]" value="header" style="display:none;">
+                            </td>
+                            <td colspan="3" style="border-bottom:1px solid black; border-right:1px solid black;">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-5" style="padding-right:0px;">
+                                        <font style="color:black;">Sub Total:</font>
+                                    </div>
+                                    <div class="col-lg-8 col-md-7" style="padding-left:0px;margin-top:2%;">
+                                        <input type="text" class="form-control" id="header_SubTotal{{items.header_number_count}}" name="Amount[]" value="{{items.header_subtotal}}" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="border-top: none;">
+                                <span class="tbclose material-icons" id="header{{items.header_number_count}}" name="header{{items.header_number_count}}" onclick="header_remove({{items.header_number_count}}),header_subtotal({{items.header_number_count}})" style="cursor: default;">delete_forever</span></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
                           
                         </tbody>
                     </table>
 
                 <div class="form-group">
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="invoice_addRow({{item_count}})" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    <div class="col-md-12">
+                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: -4px;margin-bottom: 8px;">Add </button>
+                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                            <button type="button" class="dropdown-item " id="addrow" onclick="invoice_addRow({{item_count}})" style="padding:5px 5px;width: 94%">add row</button>
+                            <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%">add item header</button>
+                            <button type="button" class="dropdown-item" id="add_item_btn" style="padding:5px 5px;width: 94%">add item in bulk</button>
+                        </div>
+                    </div>
+                    <!-- <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="invoice_addRow({{item_count}})" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button> -->
                 </div>
                
             <div class="container">
@@ -1338,6 +1357,9 @@
                     </button>
                     <button class="dropdown-item btn btn-success" name="save_print" id="print" style="margin: 4% 4% 1% 4%;width: 93%;">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">print</i>Save and Print
+                    </button>
+                    <button class="dropdown-item btn btn-success" name="save_new" id="save_new" style="margin: 4% 4% 1% 4%;width: 93%;">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">addchart</i>Save and New
                     </button>
                     </div>
                 </div>
