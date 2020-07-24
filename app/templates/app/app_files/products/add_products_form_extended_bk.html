@@ -1,0 +1,365 @@
+{% load common_components %}
+{% loader_component %}
+{% load static %}
+
+
+<style>
+select.form-control, input.form-control, textarea.form-control{
+    padding:0px 10px;
+}
+select.form-control option, optgroup{color : #000000; }
+
+table{
+    font-size:14px;
+    color:#a7a4a4;
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.error{
+    color: white;
+    background-color: red;
+    margin-top:20px;
+    padding-top:10px;
+    margin-left: 320px;
+    font-weight: bold;
+}
+.img-wrap {
+            position: relative;
+            display: inline-block;
+            font-size: 0;
+        }
+
+            .img-wrap .close {
+                position: absolute;
+                top: 2px;
+                right: -30px;
+                z-index: 100;
+                /* background-color: #D0E5F5; */
+                padding: 5px 2px 2px;
+                color: red;
+                font-weight: bolder;
+                cursor: pointer;
+                opacity: .5;
+                font-size: 23px;
+                line-height: 10px;
+                border-radius: 50%;
+                display: none;
+            }
+
+            /* .img-wrap:hover .close {
+                opacity: 1;
+                background-color: #ff0000;
+            } */
+            .close{
+                text-shadow: 0 1px 0 red;
+            }
+</style>
+</style>
+
+
+
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">    
+            <form method="post" enctype="multipart/form-data" id="product_form">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Add Product</h4>
+                </div>  
+                {% if messages %}
+
+                    {% for message in messages %}
+                    <span class="error" {% if message.tags %} {% endif %}>{{ message }}</span>
+                    {% endfor %}
+
+                {% endif %}
+                <div class="card-body" style="margin-left: 13px;">
+                    {% csrf_token %}
+                    <div class="table" style="padding:10px 0px; color:#FFFFFF; width:100%">
+                        <table class="table-responsive">
+                            <tbody style=" width: 100%; display: inline-table;">
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Product Type
+                                    </td>
+                                    <td style="border:0px;width: 56%;" class="disabled_tr">
+                                        {{add_product_form.product_type}}
+                                    </td>  
+                                    <td style="border:0">
+                                        <div class="col" id="img_box" style="float: right;margin-bottom: -84%;">
+                                            <div class="row" style="color: white;margin-left: -13px;margin-bottom: 5px;">
+                                                Product Image
+                                            </div>
+                                            <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                                <span class="close material-icons">delete_forever</span>
+                                                <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
+                                            </div>
+                                       </div>
+                                    </td> 
+                                
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        SKU/Product ID</label>
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.sku}}
+                                    </td>                        
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Product Name
+                                    </td>
+                                    <td style="border:0px;" id="td_product_name">
+                                        {{add_product_form.product_name}}
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Product Description
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.product_description}}
+                                    </td>
+                                </tr>
+                                <tr class="bundle_dont_show">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        HSN/SAC Code
+                                    </td>
+                                    <td style="border:0px;">
+                                        <div style="width:85%; display:inline-block">
+                                            {{add_product_form.hsn_code}}
+                                        </div>
+                                        <a href="{% static 'images/GST_HSN-SAC_CODES.pdf' %}" target="_blank">
+                                            <i class="fa fa-eye"></i>
+                                            <font color="black" style="font-size:x-small;">HSN-SAC</font>
+                                            <!-- <i class="material-icons" style="margin-left:20px; display:inline-block">picture_as_pdf</i> -->
+                                        </a>
+                                    </td>                        
+                                </tr>
+                                <tr class="bundle_dont_show">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Units
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.unit}}
+                                    </td>                        
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Product Description
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.product_description}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        TDS%
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.tax}}
+                                    </td>                        
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        GST%
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.gst}}
+                                    </td>                        
+                                </tr>                                
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom" colspan="2"></td>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        <div id="td1" style="margin-top: -16%;">
+                                            {{add_product_images_form.product_image}}
+                                            <font color="black" style="font-size:x-small;margin-left: 5%;">(File Size Less Than: 1MB)</font>
+                                        </div>
+                                       
+                                    </td>
+                                </tr>     
+                                <tr class="bundle_show" style="display:none">
+                                    <td colspan="3" style="border:0px;background-color:#000000;">
+                                        PRODUCTS IN BUNDLE
+                                    </td>                      
+                                </tr>   
+                                <tr class="bundle_show" style="display:none">
+                                    <td colspan="3">
+                                        <table class="table-responsive" id="table" style="width: 50%;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col" style="width: 20%;color: white;">Product Type</th>
+                                                    <th scope="col" style="width: 26%;padding-left: 6%;color: white;"> Product Name</th>
+                                                    <th scope="col" style="padding-left: 16%;color: white;">Quantity</th>                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr id="row_1">
+                                                    <th scope="row">1</th>
+                                                    <td> 
+                                                        <select class="form-control" name="prod_type" onchange="bundle($(this),'#product_name_1',['#quantity_1'])" style="width: 107% !important;">
+                                                            <option value="-1">------</option>
+                                                            <option value="0">GOODS</option>
+                                                            <option value="1">SERVICES</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-left: 31px !important;width: 142% !important;">
+                                                            <option value="">------</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input id="quantity_1" type="number" class="form-control" name="qty[]"  style="margin-left: 90px !important;width:37% !important;">
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-success" type="button" onclick="addRow()" style="padding-left:7px;padding-right:7px;margin-top:-8px;padding-top:6px;padding-bottom: 6px;">
+                                                            Add 
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="border:0px;background-color:#000000;">
+                                        SALES INFORMATION
+                                    </td>
+                                    <td>
+                                        <span style="margin-left:40px;display: none;">
+                                            {{add_product_form.is_sales}}
+                                        </span>
+                                    </td>                        
+                                </tr>                                
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Selling Price
+                                    </td>
+                                    <td style="border:0px;"> 
+                                        {{add_product_form.preferred_currency}} {{add_product_form.selling_price}}   
+                                    </td>
+                                    <td style="border:0px;">
+                                        <label class="switch" style="padding-top: 5px;">
+                                            <input type="checkbox" id="checked" name="checkbox"  onclick="calculate()">
+                                            <span class="slider round"></span>
+                                          </label><font style="margin-left: 6px;">Inclusive GST</font>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Including GST
+                                    </td>
+                                    <td style="border:0px;"> 
+                                        {{add_product_form.preferred_currency}} {{add_product_form.selling_GST}}   
+                                    </td>
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Discount
+                                    </td>
+                                    <td style="border:0px;">    
+                                        {{add_product_form.discount}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Accounts
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.sales_account}}
+                                    </td>                        
+                                </tr>
+                               
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Accounts
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.purchase_account}}
+                                    </td>
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Product Dimensions
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.product_dimension}}
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Abatement
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.abatement}}
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Marked Price
+                                    </td>
+                                    <td style="border:0px;display: none;">
+                                        {{add_product_form.marked_price}}
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Discount
+                                    </td>
+                                    <td style="border:0px;">    
+                                        {{add_product_form.discount}}
+                                    </td>
+                                </tr>
+                                <tr style="display: none;">
+                                    <td colspan="2" style="border:0px; vertical-align:bottom; background-color:#000000; color:#FFFFFF;">
+                                        PURCHASE INFORMATION
+                                        <span style="margin-left:40px;">
+                                            {{add_product_form.is_purchase}}
+                                        </span>
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Cost Price
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.cost_price}}
+                                    </td>                        
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; width:150px; vertical-align:bottom">
+                                        Accounts
+                                    </td>
+                                    <td style="border:0px;">
+                                        {{add_product_form.purchase_account}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>    
+                    </div>
+                </div>
+                {% if from_expense %}
+                    <input type="hidden" name="json_response" value="True">
+                    <div class="card-footer"  style="justify-content: center;">
+                        <button type="submit" class="btn btn-success" id="add_product" style="width: 11%;">Save</button>
+                        <button class="btn btn-warning btn-md" type="button" id='cancel_product'>Cancel</button>
+                    </div>
+                {% else %}
+                    <div class="card-footer"  style="justify-content: center;">
+                        <button class="btn btn-success" id="add_product" style="width: 11%;">Save</button>
+                        <a class="btn btn-warning" href="{% url 'view_products' %}">Cancel</a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+

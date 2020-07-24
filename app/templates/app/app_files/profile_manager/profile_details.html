@@ -1,0 +1,891 @@
+{% load common_components %}
+{% load common_filters %}
+{% loader_component %}
+
+<style>
+
+.form-control input-sm {
+    display:none! important
+} 
+
+.form-control input-sm billing_address hide{
+    display: none !important;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=date]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button,
+input[type=date]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+
+.tr-header{
+    background-color:#eeeeee;
+    color:#000000;
+    font-weight:bold;
+}
+
+table{
+    font-size:14px;
+    color:#a7a4a4;
+}
+textarea{
+    background-color: #fff;
+    color: white;
+}
+select.form-control{padding:0px 0px;}
+select.form-control option{color : #000000; }
+
+.card-profile .card-avatar{
+    border-radius:50%;
+    max-width:200px;
+    max-height:200px;
+}
+
+#custom-file-upload {
+    border: 1px solid #000000;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-left:12px;
+}
+
+td{padding:5px;}
+
+
+</style>
+<form method="post" enctype="multipart/form-data">
+    <div class="card">
+        <!-- <div class="card-header card-header-primary" style="margin-left:1px">
+            <h5 class="card-title ">Organisation Details </h5>
+        </div>  -->
+        <div class="card-body"> 
+        <div class="row" style="
+        margin-left: 15px;" >
+            <div class="col-8">
+                {% csrf_token %}                 
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Name</label>
+                    {{organisation_form.organisation_name}}
+                    </div>
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Legal Name</label>
+                    {{organisation_form.organisation_legal_name}}
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Organisation Type</label>
+                    {{organisation_form.organisation_type}}
+                    </div>
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">PAN</label>
+                    {{organisation_form.organisation_pan}}
+                    <p class="org_error_field" style="color: #FF0000;margin-top: 3%;"></p>
+                    </div>
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">CIN</label>
+                    {{organisation_form.organisation_cin}}
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating" style="top: -5px; position: relative;">Description</label>
+                    {{organisation_form.organisation_description}}
+                    </div>
+                </div>                                            
+            </div>                                   
+             
+            </div>
+
+            <div class="col-4">
+                <div  style="height:270px;width:270px;">
+                    <div class="card-profile" style="margin-left:48px;margin-top:8px;">
+                    <img  class="card-avatar"  height="300px;" width="300px" style="border-radius:50%;margin-top:14px;margin-right:35px;margin-left:-90px;border: 1px solid #000000;box-shadow:None;" src="/media/{{ logo }}" >
+                     {{organisation_form.logo}}
+                </div>
+                    <div class="card-body" id="organisation_form_image_body">
+                    <label for="file-upload" id="custom-file-upload" style="margin-left:30px;margin-top:10px;">
+                        Upload/Edit Logo
+                    </label>
+
+                </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" style="margin-left:15px;background-color:#598ebb;" class="btn btn-sm pull-left org_update;">Update</button>
+            <div class="clearfix"></div> 
+        </div>            
+    </div>
+    
+</form>
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <div class="card-header card-header-primary">
+                <h4 class="card-title">
+                    Address Details
+                    <span data-toggle="modal" data-target="#accounts_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
+                        <i class="material-icons" style="font-size:20px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">add</i>
+                        </span>
+                        <!-- <span  onclick="del_all_entries(1)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
+                        <i class="material-icons" style="font-size:20px; color: #FF0000; background:#FFFFFF; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">delete_forever</i> -->
+                    </span>
+                </h4>
+            </div> 
+            <div class="card-body"> 
+                <table class="table-responsive table-bordered">
+                    <tbody style="width:100%; display:inline-table;">
+                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <td class="text-center" style="width: 15%;border: 1px solid black;">Contact Person</td>
+                            <td class="text-center" style="width: 40%;border: 1px solid black;">Address</td>
+                            <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
+                            <td class="text-center" style="width: 11%;border: 1px solid white;">City</td>
+                            <td class="text-center" style="width: 1%;border: 1px solid white;">Pincode</td>               
+                            <td class="text-center" style="width:17%;border: 1px solid white;">State</td>               
+                            <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>   -->
+                            <td class="text-center" style="border: 1px solid black;">Is Shipping</td>
+                            <td class="text-center" style="border: 1px solid black;">Is Billing</td>  
+							<td class="text-center" style="border: 1px solid black;">GSTIN</td>							
+                            <td class="text-center" style="border: 1px solid black;">Action</td>                
+                        </tr> 
+                        {% for i in org_address_details %}
+                        <tr id="table-{{forloop.counter}}" style="font-size:12px">
+                                                   
+                            <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                {{ i.contact_person|default_if_none:""|truncatechars:15 }}
+                            </td>  
+                            <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                {% if i.flat_no %}
+                                {{ i.flat_no|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.street %}
+                                {{ i.street|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.city %}
+                                {{ i.city|truncatechars:15 }},
+                                {% endif %}
+                                {% if i.pincode %}
+                                {{ i.pincode|default_if_none:"" }},
+                                {% endif %}
+                                {% if i.state %}
+                                {{ i.get_state_display|default_if_none:""|truncatechars:20 }},
+                                {% endif %}
+                                {% if i.country %}
+                                {{ i.get_country_display|default_if_none:""|truncatechars:20 }}
+                                {% endif %}
+                            </td>                
+                            <!-- <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.flat_no|default_if_none:""|truncatechars:10 }}
+                            </td>  
+                            <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.street|default_if_none:""|truncatechars:10 }}
+                            </td>               
+                            <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.city|default_if_none:""|truncatechars:15 }}
+                            </td>   
+                            <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.pincode|default_if_none:"" }}
+                            </td>      
+                            <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.state|default_if_none:""|truncatechars:15 }}
+                            </td>  
+                            <td style="vertical-align: bottom;border: 1px solid white;">
+                                {{ i.country|default_if_none:""|truncatechars:15 }}
+                            </td>  -->
+                            <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">                                                                    
+                                {{ i.get_is_shipping_address_display  }}
+                            </td>
+                            <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">
+                                {{ i.get_is_billing_address_display }}
+                            </td>
+							<td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">
+                                {{ i.organisation_tax.gstin|default_if_none:"" }}
+                            </td>
+                            <td style="vertical-align: bottom;border: 1px solid black;color: black;">                                                                
+                                <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
+                                <i title="Delete" class="material-icons" data-toggle="modal" data-target="#del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
+                            
+							                                <!-- delete model popup -->
+                                <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                    <div class="modal-dialog" role="document" style="border-top: none;">
+                                        <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                
+                                            </div>
+                                            <div class="modal-body" style="border-top: none;position: bottom;">
+                                                <h4 align="center"><b><font color="black">Are you sure you want to delete {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Deleting address will not affect reports or historical transactions. </font></b></h4>
+                                            </div>
+                                            
+                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                <center><button onclick="delete_address({{i.id}})" class="btn mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
+                                                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>                                   
+                        </tr>  
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if org_address_details.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ org_address_details.previous_page_number }}">Previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ org_address_details.number }} of {{ org_address_details.paginator.num_pages }}.
+                        </span>
+                
+                        {% if org_address_details.has_next %}
+                            <a href="?page={{ org_address_details.next_page_number }}">Next</a>
+                            <a href="?page={{ org_address_details.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <div class="card-header card-header-primary" style="padding-bottom:10px">
+                <h5 class="card-title">
+                    Organisation Contact Details
+                    <span data-toggle="modal" data-target="#org_contact_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
+                        <i class="material-icons" style="font-size:20px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">add</i>
+                    </span>
+                    <!-- <span onclick="del_all_entries(0)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
+                        <i class="material-icons" style="font-size:20px; color: #FF0000; background:#FFFFFF; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">delete_forever</i>
+                    </span> -->
+                </h5>
+            </div> 
+            <div class="card-body"> 
+                <table class="table-responsive table-bordered">
+                    <tbody style="width:100%; display:inline-table;">
+                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <td class="text-center" style="width: 15%;border: 1px solid black;">Phone</td>
+                            <td class="text-center" style="width: 9%;border: 1px solid black;">Email</td>
+                            <td class="text-center" style="width: 10%;border: 1px solid black;">Website</td>
+                            <td class="text-center" style="width: 11%;border: 1px solid black;">Fax</td>
+                            <td class="text-center" style="width: 1%;border: 1px solid black;">Skype</td>               
+                            <td class="text-center" style="width:17%;border: 1px solid black;">Linkedin</td>               
+                            <td class="text-center" style="width:11%;border: 1px solid black;">Facebook</td>            
+                            <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
+                        </tr>  
+                        {% for i in address_details %}
+                        
+                            <tr id="table-{{forloop.counter}}" style="font-size:12px">
+                                
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.phone|default_if_none:""|safe }}
+                                </td>                  
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.email|default_if_none:""|safe }}
+                                </td>  
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.website|default_if_none:""|safe }}
+                                </td>               
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.fax|default_if_none:""|safe }}
+                                </td>   
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.skype|default_if_none:""|safe }}
+                                </td>      
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.linkedin|default_if_none:""|safe }}
+                                </td>  
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.facebook|default_if_none:""|safe }}
+                                </td> 
+                                <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
+                                    <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" data-toggle="modal"  data-target="#editAccountModal-{{forloop.counter}}">create</i>
+                                    <i title="Delete" class="material-icons" data-toggle="modal" data-target="#account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
+                                    
+                                <!-- delete model popup -->
+                                <div class="modal " tabindex="-1" role="dialog" id="account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                    <div class="modal-dialog" role="document" style="border-top: none;">
+                                        <div class="modal-content" style="border-top: none;background:black;position:bottom">
+                                            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                
+                                            </div>
+                                            <div class="modal-body" style="border-top: none;position: bottom;">
+                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting address will not affect reports or historical transactions. </font></b></h4>
+                                            </div>
+                                            
+                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                <center><button onclick="delete_org_account({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
+                                                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </td>                                   
+                            </tr>
+                        {% endfor %}    
+                    </tbody>
+                </table>
+                <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if address_details.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ address_details.previous_page_number }}">Previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ address_details.number }} of {{ address_details.paginator.num_pages }}.
+                        </span>
+                
+                        {% if address_details.has_next %}
+                            <a href="?page={{ address_details.next_page_number }}">Next</a>
+                            <a href="?page={{ address_details.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- delete model popup -->
+<div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+    <div class="modal-dialog" role="document" style="border-top: none;">
+        <div class="modal-content" style="border-top: none;background:black;position:bottom">
+            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                
+            </div>
+            <div class="modal-body" style="border-top: none;position: bottom;">
+                <h4 align="center"><b><font color="black">Are you sure you want to delete {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Deleting address will not affect reports or historical transactions. </font></b></h4>
+            </div>
+            
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
+                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete model popup -->
+<div class="modal " tabindex="-1" role="dialog" id="del_all_modal" style="border-top: none;left: 20%;top:200px;width: 500">
+    <div class="modal-dialog" role="document" style="border-top: none;">
+        <div class="modal-content" style="border-top: none;background:black;position:bottom">
+            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                
+            </div>
+            <div class="modal-body" style="border-top: none;position: bottom;">
+                <h4 align="center"><b><font color="black">Are you sure you want to delete all entries of <span id="title_head"></span></font></b></h4>
+            </div>
+            
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
+                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Organisation Contact popup -->
+<div class="modal " tabindex="-1" role="dialog" id="org_contact_add_modal" style="border-top: none;left: 20%;top:200px;width: 500">
+    <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
+        <form method="post" action="{% url 'add_organisation_contact' %}">
+			<div class="modal-content" style="background-color:currentcolor">            
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">
+                        ADD ORGANISATION CONTACT
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                    {% csrf_token %}
+
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Phone/Mobile
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.phone}}
+                                </td> 
+								<td style="border:0px;" class="error_field"></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Fax
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.fax}}
+                                </td>   
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Email Address
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.email}}
+                                </td>  
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Website
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.website}}
+                                </td> 
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Skype
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.skype}}
+                                </td>          
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    LinkedIn
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.linkedin}}
+                                </td>   
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Facebook
+                                </td>
+                                <td style="border:0px;">
+                                    {{org_contact_form.facebook}}
+                                </td>     
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                    <button type="submit" class="btn  mr-2 save_button" style="align-content: left;margin-left: 150px;background-color:#598ebb;" disabled>Submit</button>
+                    <button aria-label="Close" data-dismiss="modal" class="btn ">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Address popup -->
+<div class="modal" tabindex="-1" role="dialog" id="accounts_add_modal">
+    <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
+        <div class="modal-content" style="border-top: none;background:currentcolor">
+            <form method="post" action="{% url 'add_organisation_addres' %}">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" style="color:#000000; font-weight:bold;">
+                    ADD ADDRESS DETAILS
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <input type="hidden" value="{{ids}}" name="ids">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                    Is Shipping Address
+                                </td>
+                                <td style="border:0px; padding:0px">     
+                                    {{ org_address_form.is_shipping_address  }}      
+                                    {{ org_address_form.is_billing_address }}
+                                                                                            
+                                    <label class="switch">                                        
+                                        <input type="checkbox" onclick="set_shipping($(this),'#id_is_shipping_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                        Is Billing Address
+                                    </span>
+
+                                    <label class="switch" style="margin-left: 20px;">                                        
+                                        <input type="checkbox" onclick="set_billing($(this),'#id_is_billing_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>  
+                            </tr>
+							<tr>
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+									Set Address As Default
+								</td>
+								<td style="border:0px;">
+									{{org_address_form.default_address}}
+									 <label class="switch" style="margin-left: -4px;">
+										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
+										<span class="slider round"></span>
+									</label>   
+								</td>                                    
+							</tr>
+							<tr>
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+									Address Tag
+								</td>
+								<td style="border:0px;">
+									{{org_address_form.address_tag}} 
+								</td>                                    
+							</tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Contact Person
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.contact_person}}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Flat/Building No.
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.flat_no }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Street
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.street }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    City
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.city }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Pincode
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.pincode }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    State
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.state }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Country
+                                </td>
+                                <td style="border:0px;">
+                                    {{ org_address_form.country }}
+                                </td>                                    
+                            </tr>
+							<!-- <tr class="gst_tr" style="display: none;">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GSTIN
+                                </td>
+                                <td style="border:0px;">
+                                    {{ gst_form.gstin }}
+                                </td>                                    
+                            </tr>
+							<tr class="gst_tr" style="display: none;">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GST Reg. Type
+                                </td>
+                                <td style="border:0px;">
+                                    {{ gst_form.gst_reg_type }}
+                                </td>                                    
+                            </tr> -->
+                        </tbody>
+                    </table>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><button class="btn  mr-2" style="align-content: left;margin-left: 250px;background-color:#598ebb;">Submit</button></center>
+                <button aria-label="Close" data-dismiss="modal" class="btn ">Cancel</button>
+            </div>
+			</form>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT ADDRESS MODAL -->
+
+{% for i in contact_address_form %}
+
+<div class="modal fade" id="editAddressModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#fff">
+            <form method="post" style="margin:0px" action="{% url 'edit_org_address_details_form' ids %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Edit Address Details </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{contact_ins}}" name="ids">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                    Is Shipping Address
+                                </td>
+                                <td style="border:0px; padding:0px">   
+                                    {{ i.is_shipping_address  }}      
+                                    {{ i.is_billing_address }}                                                       
+                                    <label class="switch">         
+                                        <input type="checkbox" class="checkbox_shipping" onclick="set_shipping($(this), '.shipping_address')" checked>                               
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                        Is Billing Address
+                                    </span>                                    
+                                    <label class="switch" style="margin-left: 20px;">
+                                        <input type="checkbox" class="checkbox_billing" onclick="set_billing($(this),'.billing_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>  
+                            </tr>
+							<tr>
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+									Set Address As Default
+								</td>
+								<td style="border:0px;">
+									{{i.default_address}}
+									 <label class="switch">																				
+										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
+										<span class="slider round"></span>
+									</label>   
+								</td>                                    
+							</tr>
+							<tr>
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+									Address Tag
+								</td>
+								<td style="border:0px;">
+									{{i.address_tag}} 
+								</td>                                    
+							</tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Contact Person
+                                </td>
+                                <td style="border:0px;" >
+                                    {{ i.contact_person}}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Flat/Building No.
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.flat_no }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Street
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.street }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    City
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.city }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Pincode
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.pincode }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    State
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.state }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Country
+                                </td>
+                                <td style="border:0px;">
+                                    {{ i.country }}
+                                </td>                                    
+                            </tr>
+							<!-- <tr style="display: none;">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GSTIN
+                                </td>
+                                <td style="border:0px;">
+									<input type="hidden" value="" name="tax_id" class="tax_id_input">
+                                    {{ gst_form.gstin }}
+                                </td>                                    
+                            </tr>
+							<tr style="display: none;">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GST Reg. Type
+                                </td>
+                                <td style="border:0px;">
+                                    {{ gst_form.gst_reg_type }}
+                                </td>                                    
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm  save_button" onclick="return check()" style="background-color:#598ebb;">Update</button>
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- EDIT ORGANIZATION ACCOUNT MODAL -->
+
+{% for i in org_account_form %}
+
+<div class="modal fade" id="editAccountModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#fff">
+            <form method="post" style="margin:0px" action="{% url 'edit_org_account_details_form' ids %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Edit Account Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{contact_ins}}" name="ids">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Phone/Mobile
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.phone}}
+                                </td> 
+								<td style="border:0px;" class="error_field"></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Fax
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.fax}}
+                                </td>   
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Email Address
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.email}}
+                                </td>  
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Website
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.website}}
+                                </td> 
+								<td style="border:0px;" class="error_field"></td>								
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Skype
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.skype}}
+                                </td>          
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    LinkedIn
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.linkedin}}
+                                </td>   
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    Facebook
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.facebook}}
+                                </td>     
+								<td style="border:0px;" class="error_field"></td>	
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm  save_button" onclick="return check()" style="background-color:#598ebb;">Update</button>
+                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+organisation_id = {{ids}};
+csrf_token = '{{csrf_token}}';
+</script>

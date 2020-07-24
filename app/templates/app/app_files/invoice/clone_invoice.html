@@ -1,0 +1,2034 @@
+{% extends 'app/base/base.html' %}
+{% load static %}
+
+{% load common_filters %}
+{% load pagination %}
+
+{% load common_components %}
+{% loader_component %}
+
+{% block content %}
+<style>
+    @import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
+    .select{
+        width: 213.6px;
+        overflow-x: auto;
+    }
+    
+    select.form-control{padding:0px 10px;}
+    select.form-control option{color : #000000; }
+    .form-group{
+        width: 35%;
+        margin-left: 5%;
+        
+    }
+    
+    #select2-product_account1-results {
+        overflow-x: hidden;
+    }
+    
+    /* #select2-product_account1-results ul li {
+        overflow-wrap: anywhere !important;
+        font-size: 16px !important;
+    } */
+    
+    
+    .select2-results__option {
+        overflow-wrap: anywhere !important;
+        font-size: 16px !important;
+    }
+    
+    .form-control{
+        margin-top: -7px;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=date]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=date]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+    
+textarea{
+    /* background-color: #202940; */
+    color: black;
+}
+    textarea.form-control{
+        padding:0px 10px;
+    }
+    .tax::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+    .select2-selection--single{
+    /* background-color: #202940!important; */
+    border-top-style: hidden!important;
+    border-left-style: hidden!important;
+    border-right-style: hidden!important;
+    border-bottom-left-radius: 0px!important;
+    border-bottom-right-radius: 0px!important;
+    border-bottom-color: #a0a0a0a3!important;
+    /* margin-top: -18px!important; */
+}
+    .select2-selection__arrow{
+        /* margin-top: -7%; */
+    }
+    .select2-selection__rendered{
+        color: black!important;
+        font-weight: 400!important;
+    }
+    .tbclose{
+        color:red;
+        text-shadow: 0 1px 0 red;
+        margin: -4px 6px 0px 0px;
+    }
+    .tbclose:hover {
+      color: red;
+    }
+    .img-wrap {
+        position: relative;
+        display: inline-block;
+        font-size: 0;
+    }
+    
+    .img-wrap .close {
+        position: absolute;
+        top: 2px;
+        right: -30px;
+        z-index: 100;
+        padding: 5px 2px 2px;
+        color: red;
+        font-weight: bolder;
+        cursor: pointer;
+        opacity: .5;
+        font-size: 23px;
+        line-height: 10px;
+        border-radius: 50%;
+        display: none;
+    }
+    .close{
+        text-shadow: 0 1px 0 red;
+    }
+    #files{
+        padding-top: 1px;
+        width: 75%;
+    }
+    optgroup{color :black; }
+    .addrow:hover{
+        border: 1px solid rgb(255, 255, 255);
+        color: rgb(255, 255, 255);
+    }
+    #id_preferred_currency{
+        width: 5%!important;
+    }
+    #id_selling_GST{
+        padding-top: 5%;
+    }
+    .left2{
+        padding-left: 1px;
+    }
+    .product_heading{
+        background-color:#000000;
+        padding: 1% 0% 1% 1%;
+        margin-bottom: 2%;
+        margin-top: 1%;
+    
+    }
+    #select2-id_sales_account-container {
+        width: 272px;
+        margin-top: -5px;
+    }
+    .container{
+        margin-left: 0%;
+    }
+    .input{
+        padding-top: 8px;
+    }
+    .ui-datepicker{
+        z-index: 3 !important;
+    }
+    
+    /*== start of code for tooltips ==*/
+    .tool {
+        cursor: help;
+        position: relative;
+    }
+    
+    
+    /*== common styles for both parts of tool tip ==*/
+    .tool::before,
+    .tool::after {
+        left: 50%;
+        opacity: 0;
+        position: absolute;
+        z-index: -100;
+    }
+    
+    .tool:hover::before,
+    .tool:focus::before,
+    .tool:hover::after,
+    .tool:focus::after {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        z-index: 100; 
+    }
+    
+    
+    /*== pointer tip ==*/
+    .tool::before {
+        border-style: solid;
+        border-width: 1em 0.75em 0 0.75em;
+        border-color: #3E474F transparent transparent transparent;
+        bottom: 100%;
+        content: "";
+        margin-left: -0.5em;
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
+        transform:  scale(.6) translateY(-90%);
+    } 
+    
+    .tool:hover::before,
+    .tool:focus::before {
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+    }
+    
+    
+    /*== speech bubble ==*/
+    .tool::after {
+        background: #3E474F;
+        border-radius: .25em;
+        bottom: 180%;
+        color: #EDEFF0;
+        content: attr(data-tip);
+        margin-left: -8.75em;
+        padding: 1em;
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+        transform:  scale(.6) translateY(50%);  
+        width: 17.5em;
+    }
+    
+    .tool:hover::after,
+    .tool:focus::after  {
+        transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+    }
+    
+    @media (max-width: 760px) {
+      .tool::after { 
+            font-size: .75em;
+            margin-left: -5em;
+            width: 10em; 
+      }
+    }
+    #select2-invoice_seales_person-container{
+        margin-top: -1%;
+    }
+    #select2-invoice_customer-container{
+        margin-top: -1%;
+    }
+    #Attachment {
+    width: 90px;
+}
+    </style>
+
+<form method="post" action="{% url 'save_invoice' %}" autocomplete="off" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row" style="margin: 0% 5% 6% 7%;">
+        <div class="col-lg-12" style="padding:0px">
+            <div class="card">
+                <div class="card-header card-header-primary">
+                    <h4 class="card-title ">Clone Invoice</h4>
+                </div>  
+            <div style="margin-top: 4%;margin-left: 2%;">
+
+                <div class="container" >
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_number">Invoice Number</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input class="form-control" id="invoice_number" name="invoice_number" required>
+                                    <div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" id="auto_invoice_number" name="auto_invoice_number">
+                                                Auto-Generate Invoice Number
+                                                <span class="form-check-sign">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_customer">Customer Name</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="customer_gst_type()">
+                                        <option value="">-------</option>
+
+                                        {% for contact in contacts %}
+                                            {% if contact.customer_type == 1 %}
+                                            <option value="{{contact.id}}" {% if invoice.invoice_customer|lower == contact|lower %} selected {% endif %}>{{contact}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_type">Invoice Type</label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')" {% if invoice.invoice_type_new == 'on' %} checked {% endif %}>
+                                                    One Time
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="recurring_radio" id="recurring_radio" value="on" onclick="invoice_type('recurring')" {% if invoice.invoice_type_recurring == 'on' %} checked {% endif %}>
+                                                    Recurring
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- gst_type -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label for="gst_type">gst_type</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" id="gst_type" name="gst_type">
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_purchase_number">Reference#</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input class="form-control" value="{{invoice.purchase_order_number}}" id="invoice_purchase_number" name="invoice_purchase_number">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 5%;">
+                                <div class="col-4">
+                                    <label for="Invoice_date">Invoice Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_date|date:'d-m-Y'}}" name="Invoice_date" id="Invoice_date" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div> 
+                </div>
+                {% if invoice.invoice_type_new == 'on' %}
+                <div class="container" id="one_invoice">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" required>
+                                        <option value="">-------</option>
+                                        {% for i in payment_terms %}
+                                        <option value="{{i.1}}" {% if invoice.invoice_new_pay_terms == i.1 %} selected {% endif %}>{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_one_due_date">Due Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_new_due_date|date:'d-m-Y'}}" name="Invoice_one_due_date" id="Invoice_one_due_date">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+
+                <div class="container" id="one_invoice" style="display: none;">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" style="padding-left: 9px;">
+                                        <option value="">-------</option>
+                                        {% for i in payment_terms %}
+                                        <option value="{{i.1}}">{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_one_due_date">Due Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="Invoice_one_due_date" id="Invoice_one_due_date" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if invoice.invoice_type_recurring == 'on' %}
+                <div class="container" id="recurring_invoice">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_start">Start Date</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_recurring_start_date|date:'d-m-Y'}}" name="Invoice_recurring_start" id="Invoice_recurring_start">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_recurring_Frequency">Frequency</label>
+                                </div>
+                                <div class="col-3 input" style="padding-right: 5px;">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
+                                        <option value="">-------</option>
+                                        {% for i in invoice_frequency %}
+                                        <option value="{{i.1}}" {% if invoice.invoice_recurring_frequency == i.1 %} selected {% endif %}>{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3" style="padding-right:2px;padding-left: 3px;">
+                                <label for="Invoice_recurring_repeat">Repeat for</label>
+                            </div>
+                            <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
+                                <input type="number" class="form-control" value="{{invoice.invoice_recurring_repeat}}" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_end">End Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_recurring_end_date|date:'d-m-Y'}}" name="Invoice_recurring_end" id="Invoice_recurring_end" readonly>
+                                </div>
+                            </div>
+                            <!-- hidden recurring end date -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label>hidden end date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" id="hidden_recurring_end">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_advance">Days in Advance</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="number" class="form-control" value="{{invoice.invoice_recurring_advance}}" name="Invoice_recurring_advance" id="Invoice_recurring_advance">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="container" id="recurring_invoice" style="display: none;">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_start">Start Date</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" name="Invoice_recurring_start" id="Invoice_recurring_start">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="invoice_recurring_Frequency">Frequency</label>
+                                </div>
+                                <div class="col-3 input" style="padding-right: 5px;">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
+                                        <option value="">-------</option>
+                                        {% for i in invoice_frequency %}
+                                        <option value="{{i.1}}">{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-3" style="padding-right:2px;padding-left: 3px;">
+                                    <label for="Invoice_recurring_repeat">Repeat for</label>
+                                </div>
+                                <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
+                                    <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_end">End Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="Invoice_recurring_end" id="Invoice_recurring_end" readonly>
+                                </div>
+                            </div>
+                            <!-- hidden recurring end date -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label>hidden end date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" id="hidden_recurring_end">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_advance">Days in Advance</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="number" class="form-control" name="Invoice_recurring_advance" id="Invoice_recurring_advance">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+
+                <div class="container">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Sales Person</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="invoice_seales_person" name="invoice_seales_person">
+                                        <option value="">-------</option>
+
+                                        {% for contact in contacts %}
+                                            {% if contact.customer_type == 3 %}
+                                            <option value="{{contact.id}}" {% if invoice.invoice_salesperson|lower == contact.id|lower %} selected {% endif %}>{{contact}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">State of Supply</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="change_state()"  style="padding-left: 9px;">
+                                        <option value="">-------</option>
+                                        {% for i in state %}
+                                        <option value="{{i}}" {% if invoice.invoice_state_supply == i %} selected {% endif %}>{{i}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="email">Send to Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="email" class="form-control" id="email" name="Email_Address" value="{{invoice.email|default_if_none:''}}" multiple >
+                                    <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding:0%;"><font>Add CC</font></a>
+                                </div>
+                            </div>
+
+                            {% if invoice.cc_email %}
+                            <div class="row ccemail">
+                                <div class="col-4">
+                                    <label for="ccemail" >CC Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <div class="row">
+                                        <div class="col-11" style="padding-right: 0%;">
+                                            <input type="email" class="form-control ccemail" id="ccemail" value="{{invoice.cc_email|default_if_none:''}}" name="CC_Email_Address" multiple >
+                                        </div>
+                                        <div class="col-1" style="padding-left: 2px;">
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;margin-top: -5px;">X</a>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="row ccemail" style="display: none;">
+                                <div class="col-4">
+                                    <label for="ccemail">CC Email</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <div class="row">
+                                        <div class="col-11" style="padding-right: 0%;">
+                                            <input type="email" class="form-control ccemail" id="ccemail" name="CC_Email_Address" multiple>
+                                        </div>
+                                        <div class="col-1" style="padding-left: 2px;">
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;margin-top: -5px;">X</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+                    <table class="table" id="invoice_table" style="width: 100%;margin-left: 0.5%;margin-top: 2%;">
+                        <thead class=" text-primary" style="background-color: black;">
+                          
+                            {% if invoice.is_cs_gst == True %}
+                    
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 5%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 7%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;display: none;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                        {% elif invoice.is_cs_gst == False %} 
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 8%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 6%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 8%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                        {% endif %}
+                          
+                        </thead>
+                        <tbody>
+                            {% for items in invoice_item %}
+                            {% if items.is_header == False %}
+                              <tr id="invoice_row{{items.header_number_count}}">
+                                <td style="border:1px solid black;padding-bottom: 0%;">
+                                    
+                                    <select class="form-control select invoice_line_item" id="ItemName{{items.header_number_count}}" name="ItemName[]" onchange='product({{items.header_number_count}})'  style="padding-left: 0px;" required>
+                                        
+                                        <option value="">-------</option>
+                                        
+                                        {% for product in products %}
+                                            <option value="{{product.id}}" {% if items.product_id|lower == product.id|lower %} selected {% endif %}>{{product}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                    <textarea id="desc{{items.header_number_count}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                    
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <select class="form-control product_invoice_account"  id="product_account{{items.header_number_count}}" name="product_account[]" required>
+                                        <option value="">-------</option>
+                                        
+                                        {% for acc_group in acc_ledger_income %}
+                                            <option value="{{acc_group.id}}" {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>                  
+    
+                                <td style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="Price{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{items.header_number_count}}')" onkeyup='purchase_calculate({{items.header_number_count}}),header_subtotal({{items.header_number_count}})' id="Price{{items.header_number_count}}" name="Price[]" style="margin-top: 1%;" required>
+                                        </div>
+                                    </div>
+                                    
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{items.header_number_count}}')" onkeyup='purchase_calculate({{items.header_number_count}}),header_subtotal({{items.header_number_count}})' id="Quantity{{items.header_number_count}}" name="Quantity[]" required>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <input class="form-control" id="Unit{{items.header_number_count}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-7" style="padding-right: 3px;">
+                                            <input type="text" value="{{items.discount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{items.header_number_count}}')" class="form-control all_discount" onkeyup='purchase_calculate({{items.header_number_count}}),header_subtotal({{items.header_number_count}})' id="Discount{{items.header_number_count}}" name="Discount[]">
+                                        </div>
+                                        <div class="col-5" style="padding-left:1px;">
+                                            <select class="form-control" align="right"  id="Dis{{items.header_number_count}}" name="Dis[]" onchange="dicount_type({{items.header_number_count}})" style="background-color: white;color: black;padding-left: 0%;">
+                                                <option value="%" {% if items.discount_type == '%' %} selected {% endif %}>%</option>
+                                                <option value="₹" {% if items.discount_type == '₹' %} selected {% endif %}>₹</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-8" style="padding-right: 3px;">
+                                            <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{items.header_number_count}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{items.header_number_count}}')" id="tax{{items.header_number_count}}" style="margin-top: -1px;" required>
+                                            <datalist id="tax">
+                                                {% for i in gst %}
+                                                <option value="{{i.taxname_percent}}">
+                                                {% endfor %}
+                                            </datalist>  
+                                        </div>
+                                        <div class="col" style="padding-left: 0%;padding-right: 0%;">
+                                            <font style="color: black;">%</font>
+                                        </div>
+                                    </div>  
+                                </td>
+                                {% if invoice.is_cs_gst == True %}
+                                <td class="row_cs_gst" style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_cgst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_cgst" id="row_cgst{{items.header_number_count}}" name="row_cgst[]" value="{{items.cgst_amount}}" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="row_cs_gst" style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_sgst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_sgst" id="row_sgst{{items.header_number_count}}" name="row_sgst[]" value="{{items.sgst_amount}}" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="row_i_gst" style="border:1px solid black;display: none;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_igst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_igst" id="row_igst{{items.header_number_count}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% elif invoice.is_cs_gst == False %}
+                                <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_cgst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_cgst" id="row_cgst{{items.header_number_count}}" name="row_cgst[]" value="{{items.cgst_amount}}" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_sgst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_sgst" id="row_sgst{{items.header_number_count}}" name="row_sgst[]" value="{{items.sgst_amount}}" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="row_i_gst" style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="row_igst{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control row_igst" id="row_igst{{items.header_number_count}}" name="row_igst[]" value="{{items.igst_amount}}" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% endif %}
+                                <td style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="Amount{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control amount" value="{{items.amount}}" id="Amount{{items.header_number_count}}" name="Amount[]" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-1" style="padding-right: 0%;">
+                                            <label for="Amount_inc{{items.header_number_count}}">₹</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control amount_inc" value="{{items.amount_inc}}" id="Amount_inc{{items.header_number_count}}" name="Amount_inc[]" style="margin-top: 1%;" readonly>
+                                        </div>
+                                    </div>   
+                                </td>
+                                <td style="border-style: none;">
+                                    <span class="tbclose material-icons" id="{{items.header_number_count}}" name="{{items.header_number_count}}" onclick="creditnote_removeRow({{items.header_number_count}})" style="cursor: default;">delete_forever</span>
+                                </td>
+                            </tr>
+                            {% elif items.is_header == True %}
+                            <tr id="invoice_row_header{{items.header_number_count}}">
+                                {% if invoice.is_cs_gst == True %}
+                                <td class="invoice_row_header" colspan="8" style="border:1px solid black;">
+                                    <input class="form-control" id="prduct_header{{items.header_number_count}}" value="{{items.header_name}}" name="ItemName[]" required>
+                                    <input type="text" id="header_quan{{items.header_number_count}}" name="Quantity[]" value="header" style="display:none;">
+                                </td>
+                                {% elif invoice.is_cs_gst == False %}
+                                <td class="invoice_row_header" colspan="7" style="border:1px solid black;">
+                                    <input class="form-control" id="prduct_header{{items.header_number_count}}" value="{{items.header_name}}" name="ItemName[]" required>
+                                    <input type="text" id="header_quan{{items.header_number_count}}" name="Quantity[]" value="header" style="display:none;">
+                                </td>
+                                {% endif %}
+                                <td colspan="3" style="border-bottom:1px solid black; border-right:1px solid black;">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-5" style="padding-right:0px;">
+                                            <font style="color:black;">Sub Total:</font>
+                                        </div>
+                                        <div class="col-lg-8 col-md-7" style="padding-left:0px;margin-top:2%;">
+                                            <input type="text" class="form-control" id="header_SubTotal{{items.header_number_count}}" name="Amount[]" value="{{items.header_subtotal}}" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="border-top: none;">
+                                    <span class="tbclose material-icons" id="header{{items.header_number_count}}" name="header{{items.header_number_count}}" onclick="header_remove({{items.header_number_count}}),header_subtotal({{items.header_number_count}})" style="cursor: default;">delete_forever</span></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                          
+                        </tbody>
+                    </table>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: -4px;margin-bottom: 8px;">Add </button>
+                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                            <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%">add row</button>
+                            <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%">add item header</button>
+                            <button type="button" class="dropdown-item" id="add_item_btn" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%">add item in bulk</button>
+                        </div>
+                    </div>
+                    <!-- <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="invoice_addRow({{item_count}})" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button> -->
+                </div>
+               
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-7">
+
+                        <div class="row">
+                            <div class="col">
+                                <label for="invoice_MessageOnStatement">Terms and Conditions</label>
+                            </div> 
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <textarea  id="invoice_MessageOnStatement" name="invoice_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{invoice.terms_and_condition|default_if_none:""}}</textarea>
+                            </div>
+                        </div>
+                        {% if term_msg is None %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="invoice_t&c" name="invoice_t&c">
+                                        use this as default Terms and Condition
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>   
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="row" style="margin-top: 1%;">
+                            <div class="col">
+                                <label for="invoice_notes">Notes</label>
+                            </div> 
+                        </div>
+    
+                        <div class="row">
+                            <div class="col">
+                                <textarea  id="invoice_notes" name="invoice_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{invoice.Note|default_if_none:""}}</textarea>
+                            </div>
+                        </div>
+                        {% if invoice_notes is None %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="invoice_default_notes" name="invoice_default_notes">
+                                        use this as default Notes
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>   
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="row" style="margin-top: 2%;">
+                            <div class="col-3">
+                               <label for="Attachment">Attachment</label>
+                            </div>
+                            <div class="col" style="margin-top:6px">
+                                <input type="file" class="form-control" id="Attachment" name="Attachment"  style="padding-top: 1px;margin-left: -17px;">
+                                <input type="button"  style="margin-left: 44%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
+                                <font style="font-size:x-small;margin-left: -4%;color: black;">File Size Less Than: 25 MB </font>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="SubTotal">Sub Total:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="SubTotal" value="{{invoice.sub_total}}" name="SubTotal" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="purchase_Discountotal">Total Discount:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="purchase_Discountotal" value="{{invoice.total_discount}}" name="purchase_Discountotal" readonly>
+                            </div>
+                        </div>
+
+                        <!-- 5% GST -->
+                        {% if invoice.cgst and invoice.sgst %}
+                        <div id="cs_gst">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text"value="{{invoice.cgst}}" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{invoice.sgst}}" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% else %}
+                        <div id="cs_gst" style="display: none;">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% endif %}
+                        {% if invoice.igst %}
+                        <div class="row" id="i_gst">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" value="{{invoice.igst}}" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% else %}
+                        <div class="row" id="i_gst" style="display: none;">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% endif%}
+                        <!-- end 5% gst -->
+                       
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="shipping_charges">Shipping Charges:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" value="{{invoice.shipping_charges}}" id="shipping_charges" name="shipping_charges" onkeyup="invoice_shipping_charges()" onkeypress="return restrictAlphabets(event), float_value(event,'shipping_charges')">
+                            </div> 
+                        </div> 
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="total_amount">Total Amount:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="Total" name="Total" value="{{invoice.total_amount|default_if_none:''}}" readonly>
+                            </div> 
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+                      
+            <div class="card-footer text-center" style="justify-content: center;">
+                <div class="btn-group dropup order_button" role="group">
+                    <button class="dropdown-item btn " name="save_close" id="save" style="padding: 0px 5px 0px 5px;background-color:#598ebb;">
+                        Save and Close
+                    </button>
+                    <button type="button" class="btn  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false" style="border-left: 2px solid;margin-right: 3%;background-color:#598ebb;">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    
+                    <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
+                    <button class="dropdown-item btn " name="save_send" type="submit" id="send" onclick="return sendbtn()" style="margin-bottom: 3%;width: 94%;background-color:#598ebb;">
+                        <i class="material-icons" style="margin: 0px 11px 0px -20px;font-size: 23px;">email</i>Save and Send
+                    </button>
+                    <button class="dropdown-item btn " name="save_draft" id="draft" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb;">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
+                    </button>
+                    <button class="dropdown-item btn " name="save_print" id="print" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb;">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">print</i>Save and Print
+                    </button>
+                    <button class="dropdown-item btn " name="save_new" id="save_new" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb;">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">addchart</i>Save and New
+                    </button>
+                    </div>
+                </div>
+                  <a class="btn " href="{% url 'invoice' %}" type="reset">Cancel</a>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- add product model popup -->
+
+<div class="modal fade" id="ProductModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{contact_ins}}" name="ids">
+                    <input type="hidden" value="{{tax_ins}}" name="obj_ins">
+                    <div class="container">
+
+                        <div class="row">
+
+                            <div class="col-8">
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Product Type</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        <select name="product_type" class="form-control input-sm" onchange="show_bundle($(this))" id="id_product_type" required="">
+                                            <option value="">---------</option>
+                                          
+                                            <option value="0" selected="">GOODS</option>
+                                          
+                                            <option value="1">SERVICES</option>
+                                          
+                                            <!-- <option value="2">BUNDLE</option> -->
+                                          
+                                          </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">SKU/Product ID</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.sku}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Product Name</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.product_name}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">HSN/SAC Code</label>
+                                    </div>
+                                    <div class="col-7" style="padding-top:2%;">
+                                        {{add_product_form.hsn_code}}
+                                    </div>
+                                    <div class="col" style="">
+                                        <a href="{% static 'images/GST_HSN-SAC_CODES.pdf' %}" target="_blank">
+                                            <i class="fa fa-eye"></i>
+                                            <font color="black" style="font-size:x-small;">HSN-SAC</font>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Units</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.unit}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Product Description</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.product_description}}
+                                    </div>
+                                </div>
+
+                                <div class="row" id="product_tds">
+                                    <div class="col-3 left2">
+                                        <label for="">TDS%</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.tds}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col right" style="padding-left: 5%;">
+
+                                <div class="row" id="img_box" >
+                                        <label for="">Product Image</label>
+                                </div>
+
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                    <span class="close material-icons">delete_forever</span>
+                                    <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
+                                </div>
+
+                                <div class="row" id="td1" style="margin-top: 4%;">
+                                    {{add_product_images_form.product_image}}
+                                        <font color="black" style="font-size:x-small;margin-left: 5%;">(File Size Less Than: 1MB)</font>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="row product_heading" style="margin-right: -1%;background-color: #c3c3c3;">
+                                    <label class="form-check-label" style="">
+                                        SALES INFORMATION
+                                        {{add_product_form.is_sales}}
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="">Selling Price</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-1" style="padding-right: 0%;">
+                                                <label>₹</label>
+                                            </div>
+                                            <div class="col">
+                                                {{add_product_form.selling_price}}
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <!-- <div class="col" style="padding-right: 0%;">
+                                        <label class="switch" style="padding-top: 5px;">
+                                            <input type="checkbox" id="checked" name="checkbox"  onclick="calculate()">
+                                            <span class="slider round"></span>
+                                          </label><font style="margin-left: 6px;">Inclusive GST</font>
+                                    </div> -->
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+
+                                    </div>
+                                    <div class="col" style="margin-left: 4%;">
+                                        <label class="form-check-label" style="">
+                                            <input class="form-check-input" type="checkbox" id="sales_tax" onclick="calculate()">
+                                                Inclusive Tax
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-top: 1%;">
+                                    <div class="col-4">
+                                        <label for=""> Tax %</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.selling_tax}}
+                                    </div>
+                                </div>
+
+                                <div class="row" style="display: none;">
+                                    <div class="col-4">
+                                        <label>Including GST</label> 
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.inclusive_tax}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label>Income Accounts</label>
+                                    </div> 
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.sales_account}}
+                                    </div>
+                                </div>
+    
+                            </div>
+                            <!-- Purchase -->
+                            <div class="col">
+                                
+                                <div class="row product_heading" style="background-color: #c3c3c3;">
+                                    <label class="form-check-label" style="">
+                                        PURCHASE INFORMATION
+                                        {{add_product_form.is_purchase}}
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+<!-- 
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="">Purchase Price</label>
+                                    </div>
+                                    <div class="col">
+                                        {{add_product_form.cost_price}}
+                                    </div>
+                                </div> -->
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="">Purchase  Price</label>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-1" style="padding-right: 0%;">
+                                                <label>₹</label>
+                                            </div>
+                                            <div class="col">
+                                                {{add_product_form.purchase_price}}
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+
+                                    </div>
+                                    <div class="col" style="margin-left: 4%;">
+                                        <label class="form-check-label" style="">
+                                            <input class="form-check-input" type="checkbox" id="purchase_tax" onclick="calculate_pc()">
+                                                Inclusive Tax
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="margin-top: 1%;">
+                                    <div class="col-4">
+                                        <label for=""> Tax %</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.purchase_tax}}
+                                    </div>
+                                </div>
+
+                                <div class="row" style="display: none;">
+                                    <div class="col-4">
+                                        <label for=""> Inclusive Purchase tax</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.inclusive_purchase_tax}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="">Reverse Charges</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.reverse_charges}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="">Expense Account</label>
+                                    </div>
+                                    <div class="col" style="padding-top:2%;">
+                                        {{add_product_form.purchase_account}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" >
+                    <button class="btn btn-sm  save_button" type="button" name="purchase_product" onclick="return purchase_product_form(0)" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- add contact model popup -->
+
+<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_contact_form">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Contact</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}                   
+                    <div class="table" style="padding:10px 0px; color:#FFFFFF; width:100%">
+                        <table class="table-responsive">
+                            <tbody style=" width: 100%; display: inline-table;">
+                                <tr class="hide-row" id="app_id_input_2">
+                                    <td style="border:0px; vertical-align:bottom; padding: 17px 5px;">
+                                        Use User Details
+                                    </td>
+                                    <td style="width: 44%;border:0px; padding: 17px 5px;">
+                                        {{ contact_form.is_imported_user }}
+                                        {{ contact_form.imported_user }}
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align: bottom;width: 20%;">
+                                        Contact Type
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;" id="con_type">
+                                        <!-- <select name="customer_type" class="form-control input-sm" required="" id="id_customer_type" >
+                                            <option value="">---------</option>
+                                          
+                                            <option value="1" selected="">CUSTOMER</option>
+                                          
+                                            <option value="2" selected>VENDOR</option>
+                                          
+                                            <option value="3">EMPLOYEE</option>
+                                          
+                                          </select> -->
+                                          {{ contact_form.fromwhere.as_hidden }}
+                                    </td>                                    
+                                </tr>
+                                <tr style="display: none;">
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Is Sub Customer
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.is_sub_customer }}
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Contact Name
+                                    </td>
+                                    <td style="border:0px;padding-top: 2%;">
+                                        <div class="row">
+                                            <div class="col-2" style="padding-right: 2px;">
+                                                {{ contact_form.salutation }}
+                                            </div>
+                                            <div class="col" style="padding-left: 0%;">
+                                                {{ contact_form.contact_name }}
+                                            </div>
+                                        </div>
+                                    </td>                                  
+                                </tr>
+                                <!-- <tr>
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Contact
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.contact_name }}
+                                    </td>                                    
+                                </tr> -->
+                                <tr>
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Contact Display Name
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.display_name }}
+                                    </td>                                    
+                                </tr>  
+                                <tr>
+                                    <td style=" width:150px; border:0px; vertical-align: bottom">
+                                        Organisation Type
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.organization_type }}
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Organisation Name
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.organization_name }}
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td style="border:0px; vertical-align: bottom">
+                                        Is MSME Registered
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.is_msme_reg }}
+                                    </td>                                    
+                                </tr>  
+                                <tr>
+                                    <td style=" width:150px; border:0px; vertical-align: bottom">
+                                        Email Address
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        {{ contact_form.email }}
+                                    </td>   
+                                    <td style="border:0px;" class="error_field"></td>                                  
+                                </tr>
+                                <!-- <tr>
+                                    <td>
+
+                                    </td>
+                                    <td style="border:0px;">
+                                        <p id="email_error" style="color: red;margin-bottom: 0px;"></p>
+                                    </td>  
+                                </tr> -->
+                                <tr>
+                                    <td style=" width:150px; border:0px; vertical-align: bottom">
+                                        Phone/Mobile
+                                    </td>
+                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                        <div class="row">
+                                            <div class="col-2" style="padding-right: 1px;">
+                                                {{ contact_form.phone_country_code }} 
+                                            </div>
+                                            <div class="col" style="padding-left: 0%;">
+                                                {{ contact_form.phone }} 
+                                            </div>
+                                        </div>                                     
+                                    </td>   
+                                    <td style="border:0px;" class="error_field"></td>                                  
+                                </tr>     
+
+                                <tr>
+                                    <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px; background-color:#598ebb;">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
+                                                aria-selected="false">Address Details</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
+                                                aria-selected="false">Tax & Payments</a>
+                                            </li>                                            
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
+                                                aria-selected="false">Account Details</a>
+                                            </li>                                              
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="organisation-tab" data-toggle="tab" href="#organisation-form" role="tab" aria-controls="organisation"
+                                                aria-selected="false">Other Details</a>
+                                            </li>    
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="social-tab" data-toggle="tab" href="#social-form" role="tab" aria-controls="social" aria-selected="false">Social Connect & Notes</a>
+                                            </li>                                    
+                                        </ul>
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane fade " id="tax-form" role="tabpanel" aria-labelledby="tax-tab" style="padding:10px 0px;">
+                                                <table class="table-responsive">
+                                                    <tbody style=" width: 100%; display: inline-table;">
+                                                        <tr>
+                                                            <td style=" width:168px; border:0px; vertical-align: bottom">
+                                                                PAN
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ tax_form.pan }}  
+                                                                
+                                                            </td>  
+                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                        </tr>
+                                                      
+                                                        <td style=" width:168px; border:0px; vertical-align: bottom">
+                                                            GST Registration Type
+                                                        </td>
+                                                        <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            {{ tax_form.gst_reg_type }}
+                                                        </td>                                   
+                                                    </tr>
+                                                    <tr id="gst_row" style="display: none;">
+                                                        <td style=" width:168px; border:0px; vertical-align: bottom">
+                                                            GSTIN
+                                                        </td>
+                                                        <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            {{ tax_form.gstin }} 
+                                                        </td> 
+                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="tab-pane fade" id="organisation-form" role="tabpanel" aria-labelledby="organisation-tab" style="padding:10px 0px;">
+                                                <table class="table-responsive">
+                                                    <tbody style=" width: 100%; display: inline-table;">                                                        
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Preferred Currency
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.preferred_currency }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Opening Balance
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.opening_balance }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Payment Method
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.preferred_payment_method }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Preferred Delivery
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.preferred_delivery }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Invoice Terms
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.invoice_terms }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Billing Terms
+                                                            </td>
+                                                            <td style="border:0px;padding-top: 2%;">
+                                                                {{ other_details_form.bills_terms }}
+                                                            </td>                                    
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="tab-pane fade show active" id="address-form" role="tabpanel" aria-labelledby="address-tab" style="padding:10px 0px;">
+                    
+                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right;display: none;" id="add_more_addresses" params="1" type="button">Add Another Address</button>
+                                                
+                                                {{ address_formset.management_form }}
+                                                <table class="table table-bodered" style="background:transparent;" id="address_table">                                                    
+                                                    <tr id="tr-id_user_address_details_set-tr-0">
+                                                        {% for form in address_formset %}   
+                                                        <td>
+                                                            <table class="table-responsive">
+                                                                <tbody style=" width: 100%; display: inline-table;border-top-style: hidden;">    
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: inherit;color: white;">
+                                                                            Shipping Is Different
+                                                                            {{ form.is_shipping_address }}
+                                                                            {{ form.is_shipping_address_diff }}
+                                                                            {{ form.is_billing_address }}
+                                                                            
+                                                                        </td>
+                                                                        <td style="border:0px; padding:0px">  
+                                                                            <label class="switch" style="margin-left: 20px;">
+                                                                                <input type="checkbox" value="False" class="address_is_billing_diff" onclick="set_shipping_diff($(this),0)">
+                                                                                <span class="slider round"></span>
+                                                                            </label>   
+                                                                            <!-- <font id="address_diff" class="address_diff" style="display: none;position: absolute;margin-left: 27%;color: white;margin-top: 6px;"><b>Shipping Address</b></font>   -->
+                                                                        </td>                                  
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Set Address As Default
+                                                                        </td>
+                                                                        <td style="border:0px;">
+																			{{form.default_address}}
+																			 <label class="switch" style="margin-left: 14px;">																				
+																				<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
+                                                                                <span class="slider round"></span>
+                                                                            </label>   
+                                                                        </td>                                    
+                                                                    </tr>
+																	<tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Address Tag
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+																			{{form.address_tag}} 
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Contact Person
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.contact_person}}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Flat/Building No.
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.flat_no }}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Street
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.street }}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            City
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.city }}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Pincode
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.pincode }}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            State
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.state }}
+                                                                        </td>                                    
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: bottom;color: white;">
+                                                                            Country
+                                                                        </td>
+                                                                        <td style="border:0px;padding-top: 2%;">
+                                                                            {{ form.country }}
+                                                                        </td>                                    
+                                                                    </tr> 
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </table>                                                
+                                            </div>
+                                            <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
+                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
+                                                {{ accounts_formset.management_form }}
+                                                <table class="table-responsive">
+                                                    <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
+                                                        {% for formset in accounts_formset %}
+                                                        <tr class="accounts_formset">
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Account Holder
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ formset.account_holder_name }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr class="accounts_formset">
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Account Number
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ formset.account_number }}
+                                                            </td>                                    
+                                                        </tr>                                                        
+                                                        <tr class="accounts_formset">
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                IFSC Code
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ formset.ifsc_code }}
+                                                            </td>      
+                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                        </tr>
+                                                        <tr class="accounts_formset">
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Bank Name
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ formset.bank_name }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        <tr class="accounts_formset">
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Branch Name
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ formset.bank_branch_name }}
+                                                            </td>                                    
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="tab-pane fade" id="social-form" role="tabpanel" aria-labelledby="social-tab" style="padding:10px 0px;">
+                                                <table class="table-responsive">
+                                                    <tbody style=" width: 99%; display: inline-table;">
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Website
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ social_form.website }}
+                                                            </td>
+                                                            <td style="border:0px;" class="error_field"></td>  
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Facebook
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ social_form.facebook }} 
+                                                            </td>
+                                                            <td style="border:0px;" class="error_field"></td>  
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Twitter
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ social_form.twitter }} 
+                                                            </td>
+                                                            <td style="border:0px;" class="error_field"></td>  
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px; vertical-align: bottom">
+                                                                Notes
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ social_form.notes }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" width:150px; border:0px;">
+                                                                Attachments
+                                                            </td>
+                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                                {{ social_form.attachements }}
+                                                                <font color="white" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td> 
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin-top: -3%;">
+                    <!-- <button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form()">Save</button> -->
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="contact_type_add" aria-label="Close" style=" margin-top:16px;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- modal account_ledger -->
+
+<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;margin-left: 11%;margin-top: 25%;">
+            <form method="post" style="margin:0px" id="add_group_form">
+                {% csrf_token %}
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add New Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="2" name="ids" id="major_head_ins">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+							<tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Major Head</label> 
+                                </td>
+                                <td style="border:0px;color: white;">Expense</td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Group Name</label> 
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_name }}
+                                </td>
+                                <td style="border:0px;" >
+                                    <font id="error_name" style="color: red;"></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    <label>Group Info</label>
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_info }}                                
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return purchase_accoun_ledger_form()" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- modal select item in bulk -->
+
+<div class="modal fade" id="add_item_bulk" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="margin-left: 11%;">
+            <form method="post" style="margin:0px" id="add_bulk_form">
+                {% csrf_token %}
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Item in Bulk</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="add" id="bulk_item_type">
+                    <input class="form-control" type="text" id="product_search" name="product_search" placeholder="Search Product here" style="width: 40%;margin-top: 2%;margin-left: 30%;border-style: groove;border: 1px solid grey;">
+                    <ul id="search_result" style="list-style-type: none;background-color: beige;width: 38%;margin-left: 28%;overflow-y: scroll;position: absolute;" ></ul>
+                    <table class="table" id="bulk_prodcut_table" style="width: 65%;margin-left: 17%;margin-top: 2%;">
+                        <thead class=" text-primary" style="background-color: black;">
+                          
+                            <th scope="col" style="border:1px solid black;padding: 0%;">Product</th>
+                            <th scope="col" style="border:1px solid black;width: 27%;padding: 0%;">Quantity</th>
+                            <th scope="col" style="border:1px solid black;width: 17%;padding: 0%;">Action</th>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-primary" type="button" onclick=" return add_bulk_product_item()">add item</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" onclick="hide_bulk_item()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+
+    document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
+    document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
+    //document.getElementById("cancelBtn").style.display = 'none';
+    document.getElementById("add_more_addresses").readonly = true;
+    document.getElementById("add_more_accounts").readonly = true;
+
+    $(document).ready(function(){
+        if('{{invoice_product_status2}}' == 'NO'){
+            alert("can not make a copy some product and contact which is inactive or deleted ")
+        }
+        else if('{{invoice_contact_status2}}' == 'NO'){
+            alert("can not make a copy some product and contact which is inactive or deleted ")
+        }
+        else if('{{check}}' == 'on'){
+            alert("can not make a copy delivery contact address is inactive or deleted ")
+        }
+        sub_total()
+        // change_state()
+    });
+    
+    csrf_token = '{{csrf_token}}';
+    
+</script>
+
+
+{% endblock %}
+
+
+

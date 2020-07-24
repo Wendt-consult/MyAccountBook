@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Vagmi</title>
+    <!-- <link rel="stylesheet" href="style.css" media="all" /> -->
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> -->
+    <style>
+      @font-face {
+  font-family: SourceSansPro;
+  src: url(SourceSansPro-Regular.ttf);
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+a {
+  color: #0087C3;
+  text-decoration: none;
+}
+
+body {
+  position: relative;
+  width: 85%;  
+  height: 29.7cm; 
+  margin: 0 auto; 
+  color: #555555;
+  background: #FFFFFF; 
+  font-family: Arial, sans-serif; 
+  font-size: 14px; 
+  font-family: SourceSansPro;
+}
+
+header {
+  padding: 10px 0;
+  margin-bottom: 20px;
+
+}
+
+#logo {
+  float: left;
+  margin-top: 8px;
+}
+
+#logo img {
+  height: 70px;
+}
+
+#company {
+  float: right;
+  text-align: right;
+}
+
+
+#details {
+  margin-bottom: 50px;
+}
+
+#client {
+  padding-left: 6px;
+  border-left: 6px solid #0087C3;
+  float: left;
+}
+
+#client .to {
+  color: #777777;
+}
+
+h2.name {
+  font-size: 1.4em;
+  font-weight: normal;
+  margin: 0;
+}
+
+#invoice {
+  float: right;
+  text-align: right;
+}
+
+#invoice h1 {
+  color: #0087C3;
+  font-size: 2.4em;
+  line-height: 1em;
+  font-weight: normal;
+  margin: 0  0 10px 0;
+}
+
+#invoice .date {
+  font-size: 1.1em;
+  color: #777777;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  padding: 10px;
+  
+  text-align: center;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+table th {
+  white-space: nowrap;        
+  font-weight: normal;
+}
+
+table td {
+  text-align: right;
+}
+
+table td h3{
+  color: #57B223;
+  font-size: 1.2em;
+  font-weight: normal;
+  margin: 0 0 0.2em 0;
+}
+
+table .no {
+  color: #FFFFFF;
+  font-size: 1.6em;
+  background: #236db2;
+}
+
+table .desc {
+  text-align: left;
+}
+
+table .unit {
+  background: #DDDDDD;
+}
+
+table .qty {
+}
+
+table .total {
+  background: #236db2;
+  color: #FFFFFF;
+}
+
+table td.unit,
+table td.qty,
+table td.total {
+  font-size: 1.2em;
+}
+
+table tbody tr:last-child td {
+  border: none;
+}
+
+table tfoot td {
+  padding: 5px 10px;
+  background: #FFFFFF;
+  border-bottom: none;
+  font-size: 1.2em;
+  white-space: nowrap;
+
+}
+
+table tfoot tr:first-child td {
+  padding:0px;
+  border-top: none;
+}
+
+table tfoot tr:last-child td {
+  color: #57B223;
+  font-size: 1.4em;
+  border-top: 1px solid #57B223;
+
+}
+
+table tfoot tr td:first-child {
+  border: none;
+}
+
+#thanks{
+  font-size: 2em;
+  margin-bottom: 50px;
+}
+
+#notices{
+  padding-left: 6px;
+  border-left: 6px solid #0087C3;  
+}
+
+#notices .notice {
+  font-size: 1.2em;
+}
+/* {
+background: transparent;
+    border: none;
+    border-bottom: 1px solid
+} */
+
+footer {
+  color: #777777;
+  width: 100%;
+  height: 30px;
+  position: absolute;
+  bottom: 0;
+  border-top: 1px solid #AAAAAA;
+  padding: 8px ;
+  text-align: center;
+}
+    </style>
+  </head>
+  <body style="">
+    {% load static %}
+    <header class="clearfix">
+      <div id="logo">
+        <img src="/media/{{ organisation.logo }}">
+      </div>
+      <div id="company">
+        <h2 class="name">{{organisation.organisation_name|default_if_none:""}}</h2>
+        <div> 
+          {% if organisation %}
+
+          {% if org_address.flat_no %}
+          {{org_address.flat_no|default_if_none:""}} 
+          {% endif %}
+          {% if org_address.street %}
+          {{org_address.street|capfirst|default_if_none:""}}, 
+          {% endif %}
+          {% if org_address.city %}
+          {{org_address.city|capfirst|default_if_none:""}},<br>
+          {% endif %}
+          {% if org_address.pincode %}
+          Pincode:-{{org_address.pincode|default_if_none:""}},
+          {% endif %}
+          {% if state %}
+          {{state|capfirst|default_if_none:""}},
+          {% endif %}
+          {% if country %}
+          {{country|capfirst|default_if_none:""}}
+          {% endif %}
+
+          {% endif %}
+        </div>
+        <div>{{organisation_contact.phone|default_if_none:""}}</div>
+        <div><a href="#">{{organisation_contact.email|default_if_none:""}}</a></div>
+      </div>
+      </div>
+    </header>
+    
+      <div id="details" class="clearfix row">
+        <div id="client"  class="col">
+          <h5 class="to" style="color:#0087C3;">PURCHASE ORDER FROM</h5>
+          <h2 class="name">{{contact_name|default_if_none:""}}</h2>
+          <div class="address">
+                          
+          {% if vendor_address %}
+        
+          {% if vendor_address.flat_no %}
+        
+          {{vendor_address.flat_no}} 
+          {% endif %}
+
+          {% if vendor_address.street %}
+          {{vendor_address.street}}, 
+          {% endif %}
+
+          {% if vendor_address.city %}
+          {{vendor_address.city}},<br>
+          {% endif %}
+
+          {% if vendor_address.pincode %}
+          Pincode:-{{vendor_address.pincode}},
+          {% endif %}
+
+          {% if vendor_address.state %}
+          {{vendor_address.get_state_display}},
+          {% endif %}
+
+          {% if country %}
+          {{vendor_address.get_country_display|capfirst|default_if_none:""}}
+          {% endif %}
+
+        {% endif %}
+          </div>
+          {% if gst %}
+          <div>GST Number:-{{gst}} </div>
+          {% endif %}
+          {% if contact.phone %}
+          <div>Contact Number:-{{ contact.phone}}</div>
+          {% endif %}
+          <div class="email"><a href="#">{{contact.email|default_if_none:""}}</a></div>
+          
+        </div>
+
+        <div id="deliver" class="col">
+          <h5 style="color:#0087C3;" align="center">DELIVERY TO</h5>
+          
+          {% if check == '1' %}
+          <h6>Address:-{{gst_0}}</h6>
+          <h6>Gst Number:-{{gst_1}}</h6>
+          {% elif check == '2'%}
+          <h6>Address:-{{purchase_order.delivery_address}}</h6>
+          {% endif %}
+          <h6>Attention:-{{purchase_order.attention}}</h6>
+        </div>
+
+      
+        <div id="invoice" class="col">
+          <h5 style="color:#0087C3;">PURCHASE ORDER# {{purchase_order.purchase_order_number|default_if_none:""}}</h5>
+          <h6>Purchase Order Date:- {{purchase_order.purchase_order_date|default_if_none:""}}</h6>
+          {% if purchase_order.purchase_refrence %}
+          <h6>Referncer Number:- {{purchase_order.purchase_refrence|default_if_none:""}}</h6>
+          {% endif %}
+          <!-- <div class="date">Due Date: 30/06/2014</div> -->
+        </div>
+
+      </div>
+      <table style="table-layout:fixed;">
+        <thead>
+          <tr >
+            <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
+            <th class="desc" style="text-align: left;width: 20%;border: 1px solid black;">ITEM / DESCRIPTION</th>
+            <!-- <th class="type">TYPE</th> -->
+            <th class="unit" style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">QUANTITY</th>
+            <th class="Unit" style="text-align: left;border: 1px solid black;">UNIT</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">DISCOUNT</th>
+            <th class="qty" style="text-align: left;border: 1px solid black;">TAX</th>
+            <th class="unit" style="text-align: left;border: 1px solid black;">AMOUNT</th>
+            <!-- <th class="total" style="">TOTAL</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in purchase_item %}
+          <tr style="background-color: #4682b4;color: black;">
+            <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
+            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3>{{item.product}}</h3>{{item.description}}</td>
+            <!-- <td class="type" style="text-align: center;">{{item.product_type}}</td> -->
+            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.unit}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">
+              {% if item.discount %}
+                {%  if item.discount_type == '₹' %}
+                  {{item.discount_type}}. {{item.discount}}  
+                {% else %}
+                  {{item.discount}}{{item.discount_type}} 
+                {% endif %}
+              {% endif %}
+            </td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">{{item.amount}}</td>
+            <!-- <td class="total">$1,200.00</td> -->
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="row" style="margin-top: 4%;">
+        <div class="col left">
+           <div class="row">
+             <div class="col-3" style="padding-right: 5px;">
+                <label id="td1" >
+                  <h5>Total In Words:</h5>
+                </label>
+             </div>
+              <div class="col" style="padding-left: 0%;overflow-wrap: break-word!important;">
+                <label id="td1" >
+                  <h5 id="amount_in_word"></h5>
+                </label>
+              </div>
+           </div>
+
+           <div class="row" style="margin-top: 2%;">
+            <div class="col">
+               <label id="td1" >
+                 <h5>Terms and Condition:</h5>
+               </label>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 2%;">
+            <div class="col-8">
+              <div style="box-sizing: content-box;overflow-wrap: break-word!important;word-break: break-all;">
+                <label id="td1"><h5>{{purchase_order.terms_and_condition}}</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 2%;">
+            <div class="col">
+               <label id="td1" >
+                 <h5>Notes:</h5>
+               </label>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 2%;">
+            <div class="col-8">
+              <div style="box-sizing: content-box;overflow-wrap: break-word!important; word-break: break-all;">
+                <label id="td1" >
+                  <h5>{{purchase_order.Note}}</h5>
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col right" style="padding-left: 5%;">
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Sub Total:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{purchase_order.sub_total}}</b></h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Total Discount:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{purchase_order.total_discount}}</b></h5>
+            </div>
+          </div>
+          {% if purchase_order.cgst_5 and purchase_order.sgst_5 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>CGST @ on 2.5</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.cgst_5}}</h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>SGST @ on 2.5</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.sgst_5}}</h5>
+            </div>
+          </div>
+          {% elif purchase_order.igst_5 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>IGST @ on 5</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.igst_5}}</h5>
+            </div>
+          </div>
+          {% endif %}
+
+          {%if purchase_order.cgst_12 and purchase_order.sgst_12 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>CGST @ on 6</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.cgst_12}}</h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>SGST @ on 6</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.sgst_12}}</h5>
+            </div>
+          </div>
+          {% elif purchase_order.igst_12 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>IGST @ on 12</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.igst_12}}</h5>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if purchase_order.cgst_18 and purchase_order.sgst_18 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>CGST @ on 9</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.cgst_18}}</h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>SGST @ on 9</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.sgst_18}}</h5>
+            </div>
+          </div>
+          {% elif purchase_order.igst_18 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>IGST @ on 18</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.igst_18}}</h5>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if purchase_order.cgst_28 and purchase_order.sgst_28 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>CGST @ on 14</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.cgst_28}}</h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>SGST @ on 14</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.sgst_28}}</h5>
+            </div>
+          </div>
+          {% elif purchase_order.igst_28 %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>IGST @ on 28</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.igst_28}}</h5>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if purchase_order.cgst_other and purchase_order.sgst_other %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>CGST @ on others</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.cgst_other}}</h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>SGST @ on others</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.sgst_other}}</h5>
+            </div>
+          </div>
+          {% elif purchase_order.igst_other %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5>IGST @ on others</h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5>₹</h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5>{{purchase_order.igst_other}}</h5>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Total:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{purchase_order.total_amount}}</b></h5>
+            </div>
+          </div>
+          {% if purchase_order.freight_charges %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Freight Charges:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{purchase_order.freight_charges}}</b></h5>
+            </div>
+          </div>
+          {% endif%}
+          {% if purchase_order.advance %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>advance:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{purchase_order.advance}}</b></h5>
+            </div>
+          </div>
+          {% endif %}
+          <div class="row" style="margin-left: 38%;">
+            <div class="col">
+              <h5><b>Total Balance:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{purchase_order.total_balance}}</b></h5>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row" style="margin-top:6%;">
+        <div class="col left">
+
+        </div>
+        <div class="col right">
+          <div class="row" style="margin-left: 28%;">
+            <div class="col" style="padding-right: 2px;">
+              <label id="td1" >
+                <h5>
+                  {% if organisation %}
+                  For {{organisation.organisation_name|capfirst|default_if_none:""}}
+                  {% endif %}
+                </h5>
+              </label>
+           </div>
+
+          </div>
+
+          <div class="row" style="margin-left: 28%;margin-top: 10%;">
+            <div class="col" style="padding-right: 5px;">
+              <label id="td1" >
+                <h5>Authorized Signatory:</h5>
+              </label>
+           </div>
+            <div class="col" style="padding-top: 2%;padding-left: 0%;overflow-wrap: break-word!important;">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- </main> -->
+  </body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  var total = $('#final_total').text()
+  
+  var th = ['','thousand','million', 'billion','trillion'];
+  var dg = ['zero','one','two','three','four', 'five','six','seven','eight','nine']; var tn = ['ten','eleven','twelve','thirteen', 'fourteen','fifteen','sixteen', 'seventeen','eighteen','nineteen']; var tw = ['twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety']; function toWords(s){s = s.toString(); s = s.replace(/[\, ]/g,''); if (s != parseFloat(s)) return 'not a number'; var x = s.indexOf('.'); if (x == -1) x = s.length; if (x > 15) return 'too big'; var n = s.split(''); var str = ''; var sk = 0; for (var i=0; i < x; i++) {if ((x-i)%3==2) {if (n[i] == '1') {str += tn[Number(n[i+1])] + ' '; i++; sk=1;} else if (n[i]!=0) {str += tw[n[i]-2] + ' ';sk=1;}} else if (n[i]!=0) {str += dg[n[i]] +' '; if ((x-i)%3==0) str += 'hundred ';sk=1;} if ((x-i)%3==1) {if (sk) str += th[(x-i-1)/3] + ' ';sk=0;}} if (x != s.length) {var y = s.length; str += 'point '; for (var i=x+1; i<y; i++) str += dg[n[i]] +' ';} return str.replace(/\s+/g,' ');}
+  var a = toWords($('#final_total').text())
+  a = a.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+    return letter.toUpperCase();
+});
+  if (a != 'not a number'){
+    $('#amount_in_word').text(a)
+  }
+
+  window.print();
+</script>
