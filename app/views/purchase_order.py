@@ -511,6 +511,10 @@ def save_purchase_order(request):
                         advacne_payment_method = hidden_advance_method,advacne_note= hidden_advance_notes,)
         if(hidden_advance_date != ''):
             purchase_order.advance_payment_date=hidden_advance_date
+
+        if(save_type == 3):  
+            purchase_order.purchase_status=1
+            
         purchase_order.save()               
 
         igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
@@ -769,6 +773,9 @@ class EditPurchaseOrder(View):
             if(hidden_advance_date != ''):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(advance_payment_date = hidden_advance_date)
 
+            if(save_type == 3): 
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=1) 
+
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
             account_ids = request.POST.getlist('product_account[]',None)
@@ -930,7 +937,7 @@ class ClonePurchaseOrder(View):
 def purchase_order_mailer(request, purchase_order = None, contact = None, mail = None):
 
     if purchase_order is not None and contact is not None: 
-
+        PurchaseOrder.objects.filter(pk = int(purchase_order.id)).update(purchase_status = 3)
         if mail is not None:
     
             organisation = None
@@ -1082,3 +1089,16 @@ def delete_purchase_order(request, ins):
 
         return redirect('/view_purchase_order/', permanent=False)
     return redirect('/unauthorized/', permanent=False)
+
+
+#=====================================================================================
+#   INVOICE STATUS CHANGE
+#=====================================================================================
+#
+
+def void_purchase(request, ins):
+    try:
+        PurchaseOrder.objects.filter(pk = int(ins)).update(purchase_status = 2)
+    except:
+        return HttpResponse(0) 
+    return HttpResponse(1) 

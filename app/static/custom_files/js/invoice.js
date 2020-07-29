@@ -75,10 +75,10 @@ function add_header(a){
         }
 
         var html = '<tr id="invoice_row_header'+invoice_header_number+'">'
-        if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
-            html +='<td class="invoice_row_header" colspan="8" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
+        if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''|| global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
+            html +='<td class="invoice_row_header" colspan="8" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
         }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
-            html +='<td class="invoice_row_header" colspan="7" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
+            html +='<td class="invoice_row_header" colspan="7" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
         }
         html +='<td colspan="3" style="border-bottom:1px solid black; border-right:1px solid black;"><div class="row"><div class="col-lg-4 col-md-5" style="padding-right:0px;"><font style="color:black;">Sub Total:</font></div><div class="col-lg-8 col-md-7" style="padding-left:0px;margin-top:2%;"><input type="text" class="form-control" id="header_SubTotal'+invoice_header_number+'" name="Amount[]" readonly></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="header'+invoice_header_number+'" name="header'+invoice_header_number+'" onclick="header_remove('+invoice_header_number+'),header_subtotal('+last_row+')" style="cursor: default;">delete_forever</span></td></tr>'
@@ -195,12 +195,7 @@ $('input[type=number]').on('keydown',function(e) {
 
   
 function product_row_creator(invoice_number){
-    // check vendor state
     var state = $('#invoice_state_supply').val()
-    if(state == ''){
-        state = 'NA'
-    }
-    
     var html = '<tr id="invoice_row'+invoice_number+'">'
     html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
     html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
@@ -211,10 +206,9 @@ function product_row_creator(invoice_number){
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+invoice_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Discount'+invoice_number+'" name="Discount[]"></div>'
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+invoice_number+'" name="Dis[]" onchange="dicount_type('+invoice_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" required><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" required><datalist id="tax" readonly><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
-    
-    if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
+    if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+invoice_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+invoice_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_i_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+invoice_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'
@@ -488,7 +482,7 @@ function add_contact(){
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button " name="invoice_contact" id="add_contact_type" onclick="return invoice_contact_form(\'customer\')" style="margin-top:16px">Save</button>'
+       var button = '<button class="btn btn-sm  save_button " name="invoice_contact" id="add_contact_type" onclick="return invoice_contact_form(\'customer\')" style="margin-top:16px;background-color:#598ebb;">Save</button>'
        $( button ).insertBefore("#contact_type_add");
     }
 
@@ -524,7 +518,7 @@ function add_contact_invoice(){
     $('#con_type').append(html)
 
     $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button" name="invoice_contact" id="add_contact_type" onclick="return invoice_contact_form(\'employee\')" style="margin-top:16px;">Save</button>'
+       var button = '<button class="btn btn-sm  save_button" name="invoice_contact" id="add_contact_type" onclick="return invoice_contact_form(\'employee\')" style="margin-top:16px;background-color:#598ebb;">Save</button>'
        $( button ).insertBefore("#contact_type_add");
 }
 
@@ -956,47 +950,133 @@ function invoice_shipping_charges(){
     
 }
 /********************************************************************/
-// invoice SGST CGST AND IGST CALCULATION 
+// CHECK GST STATUS FOR APPLY
 /********************************************************************/
 
+function check_gst_status(category){
+    var state = $('#invoice_state_supply').val()
+    if(category == 'customer_side'){
+        // customer_side
+        if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'){
+            $('#invoice_table').find('.tax').attr('readonly', true)
+            $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+            alert('Customer not register GST')
+            sub_total()
+        }else if(global_gst_type == '8'){
+            if(invoice_user_state !='' & state != ''){
+                if(invoice_user_state.toLowerCase() == state.toLowerCase()){
+                    $('#invoice_table').find('.tax').attr('readonly', false)
+                    sub_total()
+                }else{
+                    $('#invoice_table').find('.tax').attr('readonly', true)
+                    $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                    sub_total()
+                    alert('Customer is register under composite scheme, it can not choose delivery address of different state.')
+                }
+            }else{
+                $('#invoice_table').find('.tax').attr('readonly', true)
+                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                sub_total()
+                alert('Customer is register under composite scheme, it can not choose delivery address of different state.')
+            }
+        }else{
+            if(global_gst_type == ''){
+                $('#invoice_table').find('.tax').attr('readonly', true)
+                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                sub_total()
+            }else if(invoice_user_state !='' & state != ''){
+                $('#invoice_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
+        }
+    }else if(category == 'delivary_side'){
+        // delivary_side
+        if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'){
+            $('#invoice_table').find('.tax').attr('readonly', true)
+            $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+            sub_total()
+        }else if(global_gst_type == '8'){
+            if(invoice_user_state !='' & state != ''){
+                if(invoice_user_state.toLowerCase() == state.toLowerCase()){
+                    $('#invoice_table').find('.tax').attr('readonly', false)
+                    sub_total()
+                }else{
+                    $('#invoice_table').find('.tax').attr('readonly', true)
+                    $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                    sub_total()
+                }
+            }else{
+                $('#invoice_table').find('.tax').attr('readonly', true)
+                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                sub_total()
+            }
+        }else{
+
+            if(global_gst_type == ''){
+                $('#invoice_table').find('.tax').attr('readonly', true)
+                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                sub_total()
+            }
+            else if(invoice_user_state !='' & state != ''){
+                $('#invoice_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
+        }
+    } 
+}
+/********************************************************************/
+// invoice SGST CGST AND IGST CALCULATION 
+/********************************************************************/
+var invoice_user_state =''
 $.ajax({
     type:"GET",
     url: "/invoice/org_address_state/",
     dataType: "json",
     success: function(data){
         if(data.state == null){
-            invoice_user_state = 'NA'
+            invoice_user_state = ''
         }else{
             invoice_user_state = data.state
         }
     },  
 });
+var global_gst_type = ''
+function customer_gst_type(){
+    console.log('aaaaaaaaaa')
+    var ins = $('#invoice_customer').val()
+    console.log(ins)
+    if(ins != ''){
+        $.get("/invoice/customer_gst/"+ins+"/",function(data){
+            console.log('bbbbbbb')
+            global_gst_type = data.gst_type
+            console.log(global_gst_type)
+            check_gst_status('customer_side')
+        });
+    }else{
+        global_gst_type = ''
+        check_gst_status('customer_side')
+    }
+    console.log(global_gst_type)
+}
 
-var invoice_user_state =''
 // invoice_tax_cacultion()
 // change_state()
 // sub_total()
 function invoice_tax_cacultion(){
-    console.log('aaaaaaaaaaa')
-var state = $('#invoice_state_supply').val()
-if(state == ''){
-    state = 'NA'
-}
-var csgst = 0
-var igst = 0
+    var state = $('#invoice_state_supply').val()
+    var csgst = 0
+    var igst = 0
 
-if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
+if(invoice_user_state.toLowerCase() == state.toLowerCase()){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
-        console.log($('#'+amount_id+'').val())
-        // if($('#'+tax_id+'').val() < parseFloat(100.00)){
 
-            var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
-            var half = (parseFloat(tax_val)/2).toFixed(2);
-            if(half != 'NaN'){
-                csgst += parseFloat(half)
-            }
+        var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
+        var half = (parseFloat(tax_val)/2).toFixed(2);
+        if(half != 'NaN'){
+            csgst += parseFloat(half)
+        }
           
     });
     if(csgst != 0 & csgst != 0.0){
@@ -1070,28 +1150,28 @@ else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
 
 function change_state(){
     var state = $('#invoice_state_supply').val()
-    if(state == ''){
-        state = 'NA'
-    }
-    if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
-        $('#invoice_table').find('.row_i_gst').hide()
-        $('#invoice_table').find('.row_igst').val('')
-        $('#invoice_table').find('.row_cs_gst').show()
-        $('#invoice_table').find('.price_header').css('width','7%')
-        $('#invoice_table').find('.unit_header').css('width','11%')
-        $('#invoice_table').find('.quantity_header').css('width','5%')
-        $('#invoice_table').find('.tax_header').css('width','7%')
-        $('#invoice_table').find('.invoice_row_header').attr('colspan','8')
-    }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
-        $('#invoice_table').find('.row_cs_gst').hide()
-        $('#invoice_table').find('.row_cgst, .row_sgst').val('')
-        $('#invoice_table').find('.row_i_gst').show()
-        $('#invoice_table').find('.price_header').css('width','8%')
-        $('#invoice_table').find('.unit_header').css('width','12%')
-        $('#invoice_table').find('.quantity_header').css('width','6%')
-        $('#invoice_table').find('.tax_header').css('width','8%')
-        $('#invoice_table').find('.invoice_row_header').attr('colspan','7')
-
+    console.log('org,'+invoice_user_state)
+    console.log('state,'+state)
+    if(invoice_user_state != '' & state != ''){
+        if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
+            $('#invoice_table').find('.row_i_gst').hide()
+            $('#invoice_table').find('.row_igst').val('')
+            $('#invoice_table').find('.row_cs_gst').show()
+            $('#invoice_table').find('.price_header').css('width','7%')
+            $('#invoice_table').find('.unit_header').css('width','11%')
+            $('#invoice_table').find('.quantity_header').css('width','5%')
+            $('#invoice_table').find('.tax_header').css('width','7%')
+            $('#invoice_table').find('.invoice_row_header').attr('colspan','8')
+        }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+            $('#invoice_table').find('.row_cs_gst').hide()
+            $('#invoice_table').find('.row_cgst, .row_sgst').val('')
+            $('#invoice_table').find('.row_i_gst').show()
+            $('#invoice_table').find('.price_header').css('width','8%')
+            $('#invoice_table').find('.unit_header').css('width','12%')
+            $('#invoice_table').find('.quantity_header').css('width','6%')
+            $('#invoice_table').find('.tax_header').css('width','8%')
+            $('#invoice_table').find('.invoice_row_header').attr('colspan','7')
+        }
     }
     $(".invoice_line_item").each(function(){
 
@@ -1110,14 +1190,12 @@ function change_state(){
 var single_row_gst_cal = ''
 function row_gst_cal(ids){
     var state = $('#invoice_state_supply').val()
-    if(state == ''){
-        state = 'NA'
-    }
+
     if($('#tax'+ids+'').val() < parseFloat(100.00)){
         var gst =  (parseFloat($('#Amount'+ids+'').val()) * (parseFloat($('#tax'+ids+'').val()) / 100));
         var amount = $('#Amount'+ids+'').val()
         var incl_tax = parseFloat(amount) + parseFloat(gst)
-        if(invoice_user_state.toLowerCase() == state.toLowerCase() || state == 'NA'){
+        if(invoice_user_state.toLowerCase() == state.toLowerCase()){
             var half = (parseFloat(gst)/2).toFixed(2);
 
             if(half != 'NaN' & half != 0 & half != 0 & half != 0.0 & half != 0.0){
@@ -1406,18 +1484,23 @@ function  sendbtn(){
 //  customer on change
 /********************************************************************/
 $('#invoice_customer').change(function(){
-    if($('#one_radio').is(":checked")){
-        var ids = $(this).val()
-        $.get("/invoice/check_invoice_terms/"+ids+"/", function(data){
-    
-            if(data.invoice_terms != '0'){
-                $('#invoice_pay_terms').val(data.invoice_terms).change()
-            }else{
-                $('#invoice_pay_terms').val('').change()
-                $('#Invoice_one_due_date').val('')
-            }
-        });
-    };
+    var ids = $(this).val()
+    if(ids !=''){
+        if($('#one_radio').is(":checked")){
+            $.get("/invoice/check_invoice_terms/"+ids+"/", function(data){
+        
+                if(data.invoice_terms != '0'){
+                    $('#invoice_pay_terms').val(data.invoice_terms).change()
+                }else{
+                    $('#invoice_pay_terms').val('').change()
+                    $('#Invoice_one_due_date').val('')
+                }
+            });
+        };
+    }else{
+        $('#invoice_pay_terms').val('').change()
+        $('#Invoice_one_due_date').val('')
+    }
 });
 
 /********************************************************************/
@@ -1501,22 +1584,4 @@ window.addEventListener('load', function() {
         
     });
   });
-/********************************************************************/
-// CUSTOMER GST CHECK
-/********************************************************************/
-
-function customer_gst_type(){
-    var ins = $('#invoice_customer').val()
-    if(ins != ''){
-        $.get("/invoice/customer_gst/"+ins+"/",function(data){
-            if(data.gst_type == '0' || data.gst_type =='3' || data.gst_type == '5'){
-                alert('Customer not register GST')
-            }
-
-        });
-    }
-}
-customer_gst_type()
-
-
 

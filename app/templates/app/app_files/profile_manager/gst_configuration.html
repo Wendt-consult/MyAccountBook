@@ -292,10 +292,10 @@ select.form-control option{color : #000000; }
                                 <input class="form-control" id="single_gst" value="{{org_address_details.0.organisation_tax.gstin}}" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this)),gst_state_code($(this))" required>
                             </div>
                             <div class="col-3">
-                                <p id="error_field" style="color: red;"></p>
+                                <p id="error_field" style="color: black;"></p>
                             </div>
                         </div>
-                        <div class="row" style="display: none;">
+                        <div class="row single_gst_field" style="display: none;">
                             <div class="col-3">
                                 <label for="single_gst_code">GST Code</label>
                             </div>
@@ -333,11 +333,11 @@ select.form-control option{color : #000000; }
                                 <input class="form-control" id="single_gst" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this)),gst_state_code($(this))" required>
                             </div>
                             <div class="col-3">
-                                <p id="error_field" style="color: red;"></p>
+                                <p id="error_field" style="color: black;"></p>
                             </div>
                         </div>
 
-                        <div class="row" style="display: none;">
+                        <div class="row single_gst_field" style="display: none;">
                             <div class="col-3">
                                 <label for="single_gst_code">GST Code</label>
                             </div>
@@ -357,11 +357,11 @@ select.form-control option{color : #000000; }
                     </div>
                     {% if org_address_details.0.organisation_tax.multiple_gst == False %}
                     <div class="card-footer text-center single_gst_field" style="justify-content: center;">
-                        <button type="submit" class="btn btn-sm btn-success" id="org_single_gst_save">Update</button>
+                        <button type="submit" class="btn btn-sm " id="org_single_gst_save" style="background-color:#598ebb;">Update</button>
                     </div>
                     {% else %}
                     <div class="card-footer text-center single_gst_field" style="justify-content: center;display: none;">
-                        <button type="submit" class="btn btn-sm btn-success" id="org_single_gst_save">Update</button>
+                        <button type="submit" class="btn btn-sm " id="org_single_gst_save" style="background-color:#598ebb;">Update</button>
                     </div>
                     {% endif %}
                     
@@ -399,14 +399,22 @@ select.form-control option{color : #000000; }
                     <input type="hidden" value="" name="org_address_ids" id="org_address_ids">
                     <input type="hidden" value="" class="tax_id_input" name="org_tax_id">
                     <input type="hidden" value="" id="org_address_state" name="org_address_state">
+
+                    <div class="row" style="margin-left: 2%;">
+                        <label class="switch" style="margin-top: -3px;">
+                            <input type="checkbox" id="default_tax" name="default_tax" onclick="set_default_tax($(this))">
+                            <span class="slider round"></span>
+                        </label>
+                        Set Tax As Default
+                    </div>
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                           
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     GST Reg. Type
                                 </td>
-                                <td style="border:0px;">
+                                <td style="border:0px;float: left;">
                                     <select name="gst_reg_type" class="form-control input-sm" id="gst_reg" onchange="hide_gst($(this))" style="padding-left: 9px;width:70%;" required="">
                                         <option value="">---------</option>                                     
                                         <option value="1">GST Registered-Regular</option>                                      
@@ -420,21 +428,21 @@ select.form-control option{color : #000000; }
                             </tr>
 
 							<tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     GSTIN
                                 </td>
-                                <td style="border:0px;">
+                                <td style="border:0px;float: left;">
 									<input type="hidden" value="" name="tax_id" class="tax_id_input">
                                     {{ gst_form.gstin }}
                                 </td>   
-                                <td style="width: 35%;" class="error_field"></td>                                  
+                                <td style="width: 51%;position: absolute;margin-left: 26%;color:black;" class="error_field"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success save_button multiple_update">Update</button>
-                    <button class="btn btn-sm btn-danger mul_cancel_gst" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm save_button multiple_update" style="background-color:#598ebb">Update</button>
+                    <button class="btn btn-sm mul_cancel_gst" type="button" data-dismiss="modal" aria-label="Close" style="">Cancel</button>
                     
                 </div>
             </form>

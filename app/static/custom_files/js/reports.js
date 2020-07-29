@@ -1,30 +1,38 @@
 $(document).ready(function(){
 
     $(".custom_dates_show_month, .custom_dates_show_month_q, .custom_dates_show_month_h").hide();
+    $("#start_date, #end_date, #year, #month, #q_month, #h_month").prop("required", false);
 
     if(start_date || end_date){ 
         $(".custom_dates_show").show();
+        $("#start_date, #end_date").prop("required", true);
     }
 
     if(year_t){ 
         $(".custom_dates_show").hide();
         $(".custom_dates_show_year").show();
+        $("#year").prop("required", true);
     }
 
     if(month_t){
         $(".custom_dates_show").hide();
         $(".custom_dates_show_month").show();
+        $("#year, #month").prop("required", true); 
     }
 
     if(month_tq){
         $(".custom_dates_show").hide();
         $(".custom_dates_show_month_q").show();
+        $("#year, #q_month").prop("required", true);
     }
 
     if(month_th){
         $(".custom_dates_show").hide();
         $(".custom_dates_show_month_h").show();
+        $("#year, #h_month").prop("required", true);
     }
+
+    $("#html_content").val($("#table_content").html());
 
 });
 

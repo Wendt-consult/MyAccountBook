@@ -53,6 +53,7 @@ select.form-control option{color : #000000; }
     margin-left:12px;
 }
 
+
 td{padding:5px;}
 
 
@@ -89,7 +90,7 @@ td{padding:5px;}
                     <div class="form-group bmd-form-group">
                     <label class="bmd-label-floating" style="top: -5px; position: relative;">PAN</label>
                     {{organisation_form.organisation_pan}}
-                    <p class="org_error_field" style="color: #FF0000;margin-top: 3%;"></p>
+                    <p class="org_error_field" style="color: black;;margin-top: 3%;"></p>
                     </div>
                     <div class="form-group bmd-form-group">
                     <label class="bmd-label-floating" style="top: -5px; position: relative;">CIN</label>
@@ -122,7 +123,7 @@ td{padding:5px;}
                 </div>
             </div>
         </div>
-        <button type="submit" style="margin-left:15px;background-color:#598ebb;" class="btn btn-sm pull-left org_update;">Update</button>
+        <button type="submit" class="btn btn-sm  pull-left org_update" style="margin-left:15px;background-color: #598ebb;">Update</button>
             <div class="clearfix"></div> 
         </div>            
     </div>
@@ -146,16 +147,16 @@ td{padding:5px;}
                 <table class="table-responsive table-bordered">
                     <tbody style="width:100%; display:inline-table;">
                         <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid black;">Contact Person</td>
-                            <td class="text-center" style="width: 40%;border: 1px solid black;">Address</td>
+                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Contact Person</td>
+                            <td class="text-center" style="width: 40%;border: 1px solid black;;color: black;">Address</td>
                             <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
                             <td class="text-center" style="width: 11%;border: 1px solid white;">City</td>
                             <td class="text-center" style="width: 1%;border: 1px solid white;">Pincode</td>               
                             <td class="text-center" style="width:17%;border: 1px solid white;">State</td>               
                             <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>   -->
-                            <td class="text-center" style="border: 1px solid black;">Is Shipping</td>
-                            <td class="text-center" style="border: 1px solid black;">Is Billing</td>  
-							<td class="text-center" style="border: 1px solid black;">GSTIN</td>							
+                            <td class="text-center" style="border: 1px solid black;;color: black;">Is Shipping</td>
+                            <td class="text-center" style="border: 1px solid black;;color: black;">Is Billing</td>  
+							<td class="text-center" style="border: 1px solid black;;color: black;">GSTIN</td>							
                             <td class="text-center" style="border: 1px solid black;">Action</td>                
                         </tr> 
                         {% for i in org_address_details %}
@@ -227,8 +228,8 @@ td{padding:5px;}
                                             </div>
                                             
                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                <center><button onclick="delete_address({{i.id}})" class="btn mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
-                                                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                                                <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color: #598ebb;">Yes</button></center>
+                                                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
                                         </div>
                                     </div>
@@ -279,13 +280,13 @@ td{padding:5px;}
                 <table class="table-responsive table-bordered">
                     <tbody style="width:100%; display:inline-table;">
                         <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid black;">Phone</td>
-                            <td class="text-center" style="width: 9%;border: 1px solid black;">Email</td>
-                            <td class="text-center" style="width: 10%;border: 1px solid black;">Website</td>
-                            <td class="text-center" style="width: 11%;border: 1px solid black;">Fax</td>
-                            <td class="text-center" style="width: 1%;border: 1px solid black;">Skype</td>               
-                            <td class="text-center" style="width:17%;border: 1px solid black;">Linkedin</td>               
-                            <td class="text-center" style="width:11%;border: 1px solid black;">Facebook</td>            
+                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Phone</td>
+                            <td class="text-center" style="width: 9%;border: 1px solid black;color: black;">Email</td>
+                            <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">Website</td>
+                            <td class="text-center" style="width: 11%;border: 1px solid black;color: black;">Fax</td>
+                            <td class="text-center" style="width: 1%;border: 1px solid black;color: black;">Skype</td>               
+                            <td class="text-center" style="width:17%;border: 1px solid black;color: black;">Linkedin</td>               
+                            <td class="text-center" style="width:11%;border: 1px solid black;color: black;">Facebook</td>            
                             <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
                         </tr>  
                         {% for i in address_details %}
@@ -320,7 +321,7 @@ td{padding:5px;}
                                 <!-- delete model popup -->
                                 <div class="modal " tabindex="-1" role="dialog" id="account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                     <div class="modal-dialog" role="document" style="border-top: none;">
-                                        <div class="modal-content" style="border-top: none;background:black;position:bottom">
+                                        <div class="modal-content" style="border-top: none;background-color: white;position:bottom">
                                             <div class="modal-header" style="border-bottom: none;padding:5px;">
                                                 
                                             </div>
@@ -329,8 +330,8 @@ td{padding:5px;}
                                             </div>
                                             
                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                <center><button onclick="delete_org_account({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
-                                                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                                                <center><button onclick="delete_org_account({{i.id}})" class="btn mr-2" style="align-content: left;margin-left: 150px;background-color: #598ebb">Yes</button></center>
+                                                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
                                         </div>
                                     </div>
@@ -378,7 +379,7 @@ td{padding:5px;}
             
             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
                 <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
-                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
             </div>
         </div>
     </div>
@@ -397,7 +398,7 @@ td{padding:5px;}
             
             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
                 <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color:#598ebb;">Yes</button></center>
-                <button aria-label="Close" data-dismiss="modal" class="btn ">No</button>
+                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
             </div>
         </div>
     </div>
@@ -407,7 +408,7 @@ td{padding:5px;}
 <div class="modal " tabindex="-1" role="dialog" id="org_contact_add_modal" style="border-top: none;left: 20%;top:200px;width: 500">
     <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
         <form method="post" action="{% url 'add_organisation_contact' %}">
-			<div class="modal-content" style="background-color:currentcolor">            
+			<div class="modal-content" style="background-color:#598ebb;">            
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">
                         ADD ORGANISATION CONTACT
@@ -423,74 +424,74 @@ td{padding:5px;}
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Phone/Mobile
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.phone}}
                                 </td> 
-								<td style="border:0px;" class="error_field"></td>
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Fax
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.fax}}
                                 </td>   
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Email Address
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.email}}
                                 </td>  
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Website
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.website}}
                                 </td> 
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Skype
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.skype}}
                                 </td>          
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="color:black;border:0px;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    LinkedIn
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Linkedin
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.linkedin}}
                                 </td>   
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Facebook
                                 </td>
                                 <td style="border:0px;">
                                     {{org_contact_form.facebook}}
                                 </td>     
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                    <button type="submit" class="btn  mr-2 save_button" style="align-content: left;margin-left: 150px;background-color:#598ebb;" disabled>Submit</button>
-                    <button aria-label="Close" data-dismiss="modal" class="btn ">Cancel</button>
+                    <button type="submit" class="btn mr-2 save_button" style="align-content: left;margin-left:260px;background-color:#598ebb;" disabled>Submit</button>
+                    <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;margin-left: 5px;">Cancel</button>
                 </div>
             </div>
         </form>
@@ -500,7 +501,7 @@ td{padding:5px;}
 <!-- Add Address popup -->
 <div class="modal" tabindex="-1" role="dialog" id="accounts_add_modal">
     <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
-        <div class="modal-content" style="border-top: none;background:currentcolor">
+        <div class="modal-content" style="border-top: none;background-color: #598ebb;">
             <form method="post" action="{% url 'add_organisation_addres' %}">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title" style="color:#000000; font-weight:bold;">
@@ -516,7 +517,7 @@ td{padding:5px;}
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
-                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: black;">
                                     Is Shipping Address
                                 </td>
                                 <td style="border:0px; padding:0px">     
@@ -528,7 +529,7 @@ td{padding:5px;}
                                         <span class="slider round"></span>
                                     </label>
 
-                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                    <span style="margin-left: 40px; position: relative; top: 5px;color: black;">
                                         Is Billing Address
                                     </span>
 
@@ -539,7 +540,7 @@ td{padding:5px;}
                                 </td>  
                             </tr>
 							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:black;">
 									Set Address As Default
 								</td>
 								<td style="border:0px;">
@@ -551,7 +552,7 @@ td{padding:5px;}
 								</td>                                    
 							</tr>
 							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:black;">
 									Address Tag
 								</td>
 								<td style="border:0px;">
@@ -559,7 +560,7 @@ td{padding:5px;}
 								</td>                                    
 							</tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Contact Person
                                 </td>
                                 <td style="border:0px;">
@@ -567,7 +568,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Flat/Building No.
                                 </td>
                                 <td style="border:0px;">
@@ -575,7 +576,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Street
                                 </td>
                                 <td style="border:0px;">
@@ -583,7 +584,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     City
                                 </td>
                                 <td style="border:0px;">
@@ -591,7 +592,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Pincode
                                 </td>
                                 <td style="border:0px;">
@@ -599,7 +600,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     State
                                 </td>
                                 <td style="border:0px;">
@@ -607,7 +608,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Country
                                 </td>
                                 <td style="border:0px;">
@@ -634,8 +635,8 @@ td{padding:5px;}
                     </table>
             </div>
             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                <center><button class="btn  mr-2" style="align-content: left;margin-left: 250px;background-color:#598ebb;">Submit</button></center>
-                <button aria-label="Close" data-dismiss="modal" class="btn ">Cancel</button>
+                <center><button class="btn mr-2" style="align-content: left;margin-left: 250px;background-color:#598ebb;margin-left: 260px;">Submit</button></center>
+                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;margin-left: 5px;">Cancel</button>
             </div>
 			</form>
         </div>
@@ -662,7 +663,7 @@ td{padding:5px;}
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
-                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: black;">
                                     Is Shipping Address
                                 </td>
                                 <td style="border:0px; padding:0px">   
@@ -673,7 +674,7 @@ td{padding:5px;}
                                         <span class="slider round"></span>
                                     </label>
 
-                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                    <span style="margin-left: 40px; position: relative; top: 5px;color: black;">
                                         Is Billing Address
                                     </span>                                    
                                     <label class="switch" style="margin-left: 20px;">
@@ -683,7 +684,7 @@ td{padding:5px;}
                                 </td>  
                             </tr>
 							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:black;">
 									Set Address As Default
 								</td>
 								<td style="border:0px;">
@@ -695,7 +696,7 @@ td{padding:5px;}
 								</td>                                    
 							</tr>
 							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:#a7a4a4;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color:black;">
 									Address Tag
 								</td>
 								<td style="border:0px;">
@@ -703,7 +704,7 @@ td{padding:5px;}
 								</td>                                    
 							</tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Contact Person
                                 </td>
                                 <td style="border:0px;" >
@@ -711,7 +712,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Flat/Building No.
                                 </td>
                                 <td style="border:0px;">
@@ -719,7 +720,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Street
                                 </td>
                                 <td style="border:0px;">
@@ -727,7 +728,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     City
                                 </td>
                                 <td style="border:0px;">
@@ -735,7 +736,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Pincode
                                 </td>
                                 <td style="border:0px;">
@@ -743,7 +744,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     State
                                 </td>
                                 <td style="border:0px;">
@@ -751,7 +752,7 @@ td{padding:5px;}
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Country
                                 </td>
                                 <td style="border:0px;">
@@ -779,8 +780,8 @@ td{padding:5px;}
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm  save_button" onclick="return check()" style="background-color:#598ebb;">Update</button>
-                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm  save_button" onclick="return check()" style="background-color: #598ebb;">Update</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" style="background-color: #9095a2;" aria-label="Close">Cancel</button>
                     
                 </div>
             </form>
@@ -809,74 +810,74 @@ td{padding:5px;}
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Phone/Mobile
                                 </td>
                                 <td style="border:0px;">
                                     {{i.phone}}
                                 </td> 
-								<td style="border:0px;" class="error_field"></td>
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Fax
                                 </td>
                                 <td style="border:0px;">
                                     {{i.fax}}
                                 </td>   
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Email Address
                                 </td>
                                 <td style="border:0px;">
                                     {{i.email}}
                                 </td>  
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Website
                                 </td>
                                 <td style="border:0px;">
                                     {{i.website}}
                                 </td> 
-								<td style="border:0px;" class="error_field"></td>								
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Skype
                                 </td>
                                 <td style="border:0px;">
                                     {{i.skype}}
                                 </td>          
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
-                                    LinkedIn
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Linkedin
                                 </td>
                                 <td style="border:0px;">
                                     {{i.linkedin}}
                                 </td>   
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Facebook
                                 </td>
                                 <td style="border:0px;">
                                     {{i.facebook}}
                                 </td>     
-								<td style="border:0px;" class="error_field"></td>	
+								<td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm  save_button" onclick="return check()" style="background-color:#598ebb;">Update</button>
-                    <button class="btn btn-sm btn-danger" type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm save_button" style="background-color: #598ebb;" onclick="return check()">Update</button>
+                    <button class="btn btn-sm" type="button" style="background-color: #9095a2;" data-dismiss="modal" aria-label="Close">Cancel</button>
                     
                 </div>
             </form>

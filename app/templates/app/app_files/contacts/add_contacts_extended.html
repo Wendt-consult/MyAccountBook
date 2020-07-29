@@ -536,12 +536,12 @@ background-color:#4682B4;
                     <input type="hidden" name="json_response" value="True">
                     <div class="card-footer text-center " style="justify-content: center;margin-left:550px;margin-bottom:-55px;">
                         <button class="btn btn-sm  save_button" id="saveContactBtn" type="submit" style="width:25%;background-color:#598ebb;" onclick="return check()">Save</button>
-                        <button type="button" id="cancelContactBtn" class="btn btn-sm " style="margin-left:5px;">Cancel</button>
+                        <button type="button" id="cancelContactBtn" class="btn btn-sm " style="margin-left:5px;background-color: #9095a2;">Cancel</button>
                     </div>
                 {% else %}
                     <div class="card-footer text-center"  style="justify-content: center;margin-bottom:-55px;">
                         <button class="btn btn-sm  save_button" type="submit()" style="width:11%;background-color:#598ebb;" onclick="return check()">Save</button>
-                        <a class="btn btn-sm " href="{%url 'contacts' 0 %}" >Cancel</a>
+                        <a class="btn btn-sm " href="{%url 'contacts' 0 %}" style="background-color: #9095a2;"" >Cancel</a>
                     </div>
                 {% endif %}
             </div>

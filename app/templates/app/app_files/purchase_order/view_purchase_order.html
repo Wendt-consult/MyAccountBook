@@ -1,8 +1,6 @@
 
 <style>
-.contact_name:hover{
-    color: white!important;
-    }
+
 /* loader */
 .loader {
   border: 16px solid #f3f3f3;
@@ -144,7 +142,7 @@ color: white!important;
                                     </td>
                                     {% endif %}
                                     {% if customize.purchase_status != 0 %}
-                                    <td align="center" class="customize_status"></td>
+                                    <td align="center" class="customize_status" id="status_{{order.id}}">{{order.get_purchase_status_display}}</td>
                                     {% endif %}
                                     {% if customize.purchase_total != 0 %}
                                     <td align="center" class="customize_total">{{order.total_amount}}</td>
@@ -162,7 +160,7 @@ color: white!important;
                                                     Edit
                                                 </a>
 
-                                                <a class="dropdown-item" title="Void Purchase Order" href="#" style="padding: 5px 5px;">
+                                                <a class="dropdown-item" title="Void Purchase Order" data-toggle="modal" data-target="#void{{order.id}}"href="#" style="padding: 5px 5px;">
                                                    Void
                                                 </a>    
 
@@ -189,8 +187,26 @@ color: white!important;
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><a class="btn  mr-2" href="{% url 'delete_purchase_order' order.id %}" style="align-content: left;margin-left:135px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
-                                                            <a class="btn " href="{% url 'purchase_order' %}" style="margin-left:5px;"><font color="white" >No</font></a>
+                                                            <center><a class="btn  mr-2" href="{% url 'delete_purchase_order' order.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                            <a class="btn " href="{% url 'purchase_order' %}" style=""><font color="white" >No</font></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- void status -->
+                                            <div class="modal " tabindex="-1" role="dialog" id="void{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                                    <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                                        <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                            
+                                                        </div>
+                                                        <div class="modal-body" style="border-top: none;position: bottom;">
+                                                            <h4><b><font color="black">Are you sure you want to change status {{order.purchase_order_number |truncatechars:10 }}.</font></b></h4>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                            <center><a class="btn mr-2" onclick="void_status_purchase({{order.id}})" data-dismiss="modal" aria-label="Close" style="align-content:left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                            <a class="btn " data-dismiss="modal" aria-label="Close"  style=""><font color="white">No</font> </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -267,8 +283,8 @@ color: white!important;
                       
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(4)">apply</button>
-                    <a class="btn btn-sm btn-danger" href="{% url 'purchase_order'  %}" type="reset">Cancel</a>
+                    <button class="btn btn-sm " type="button" onclick="customize_view(4)" style="background-color: #598ebb;">apply</button>
+                    <a class="btn btn-sm " href="{% url 'purchase_order'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
                 </div>
             </form>
         </div>

@@ -369,7 +369,7 @@ def get_state_gst(request):
     if request.POST:
         if request.is_ajax():
         
-            data = {'gstin': None, 'gst_reg_type':None, 'count':None}
+            data = {'gstin': None, 'gst_reg_type':None, 'count':None, 'is_deafult':'no'}
             
             addresses = users_model.User_Address_Details.objects.filter(
                             is_user = True, 
@@ -379,7 +379,6 @@ def get_state_gst(request):
                             organisation_tax__isnull = False,
                             )
             data['state'] = request.POST["state_id"]
-            
             for addr in addresses:
                 if addr.organisation_tax.gstin is not None:
                     if(len(addresses) > 1):
@@ -387,6 +386,8 @@ def get_state_gst(request):
                     data['gstin'] = addr.organisation_tax.gstin
                     data['gst_reg_type'] = addr.organisation_tax.gst_reg_type
                     data['tax_id'] = addr.organisation_tax.id
+                    if(addr.organisation_tax.default_gstin == True):
+                        data['is_deafult'] = 'yes'
                     return JsonResponse(data)
             return JsonResponse(data)
             
@@ -596,19 +597,28 @@ class GSTConfigurationView(View):
             is_multiple_gst = request.POST.get("is_multiple_gst","off")
             if(is_multiple_gst == 'on'):
                 gst_form = tax_form.OrganisationTaxForm(request.POST)
+                is_default_gst = request.POST.get("default_tax","off")
+                dafault = False
+                if(is_default_gst == 'on'):
+                    dafault = True
                 if request.POST["org_tax_id"] != '':
                     organisation = users_model.Organisations.objects.get(pk = request.POST["org_id"])
                     gst = users_model.User_Tax_Details(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
-                                            is_organisation_gst_register = True,multiple_gst = True)
+                                            is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault)
                     gst.save()
                     users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation, state = request.POST["org_address_state"]).update(organisation_tax = gst)
                     users_model.User_Tax_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation).update(multiple_gst = True)
+                    users_model.User_Tax_Details.objects.exclude(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
+                                            is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault).update(default_gstin = False)
                 else:
                     organisation = users_model.Organisations.objects.get(pk = request.POST["org_id"])
                     gst = users_model.User_Tax_Details(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
-                                            is_organisation_gst_register = True,multiple_gst = True)
+                                            is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault)
                     gst.save()
                     org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation, state = request.POST["org_address_state"])
+                    
+                    users_model.User_Tax_Details.objects.exclude(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
+                                            is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault).update(default_gstin = False)
                     count = len(org_address)
                     for i in range(0,count):
                         users_model.User_Address_Details.objects.filter(pk = org_address[i].id).update(organisation_tax = gst)

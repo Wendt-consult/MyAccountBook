@@ -302,7 +302,6 @@ table.dataTable td {
 }
 .dataTables_wrapper .dataTables_paginate {
   float: left;
-  text-align: right;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   box-sizing: border-box;

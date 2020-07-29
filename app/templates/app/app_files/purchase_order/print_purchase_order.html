@@ -324,24 +324,24 @@ footer {
       </div>
       <table style="table-layout:fixed;">
         <thead>
-          <tr >
+          <tr style="background-color: #4682b4;color: black;">
             <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
             <th class="desc" style="text-align: left;width: 20%;border: 1px solid black;">ITEM / DESCRIPTION</th>
             <!-- <th class="type">TYPE</th> -->
-            <th class="unit" style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th class="" style="text-align: left;border: 1px solid black;">PRICE</th>
             <th class="qty" style="text-align: left;border: 1px solid black;">QUANTITY</th>
             <th class="Unit" style="text-align: left;border: 1px solid black;">UNIT</th>
             <th class="qty" style="text-align: left;border: 1px solid black;">DISCOUNT</th>
             <th class="qty" style="text-align: left;border: 1px solid black;">TAX</th>
-            <th class="unit" style="text-align: left;border: 1px solid black;">AMOUNT</th>
+            <th class="" style="text-align: left;border: 1px solid black;">AMOUNT</th>
             <!-- <th class="total" style="">TOTAL</th> -->
           </tr>
         </thead>
         <tbody>
           {% for item in purchase_item %}
-          <tr style="background-color: #4682b4;color: black;">
+          <tr>
             <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
-            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3>{{item.product}}</h3>{{item.description}}</td>
+            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3 style="color: #555555;">{{item.product|capfirst}}</h3>{{item.description|capfirst}}</td>
             <!-- <td class="type" style="text-align: center;">{{item.product_type}}</td> -->
             <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
@@ -438,37 +438,37 @@ footer {
           {% if purchase_order.cgst_5 and purchase_order.sgst_5 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on 2.5</h5>
+              <h5><b>CGST @ on 2.5</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_5}}</h5>
+              <h5><b>{{purchase_order.cgst_5}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on 2.5</h5>
+              <h5><b>GST @ on 2.5</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_5}}</h5>
+              <h5><b>{{purchase_order.sgst_5}}</b></h5>
             </div>
           </div>
           {% elif purchase_order.igst_5 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on 5</h5>
+              <h5><b>IGST @ on 5</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_5}}</h5>
+              <h5><b>{{purchase_order.igst_5}}</b></h5>
             </div>
           </div>
           {% endif %}
@@ -476,37 +476,37 @@ footer {
           {%if purchase_order.cgst_12 and purchase_order.sgst_12 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on 6</h5>
+              <h5><b>CGST @ on 6</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_12}}</h5>
+              <h5><b>{{purchase_order.cgst_12}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on 6</h5>
+              <h5><b>SGST @ on 6</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_12}}</h5>
+              <h5><b>{{purchase_order.sgst_12}}</b></h5>
             </div>
           </div>
           {% elif purchase_order.igst_12 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on 12</h5>
+              <h5><b>IGST @ on 12</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_12}}</h5>
+              <h5><b>{{purchase_order.igst_12}}</b></h5>
             </div>
           </div>
           {% endif %}
@@ -514,37 +514,37 @@ footer {
           {% if purchase_order.cgst_18 and purchase_order.sgst_18 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on 9</h5>
+              <h5><b>CGST @ on 9</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_18}}</h5>
+              <h5><b>{{purchase_order.cgst_18}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on 9</b></h5>
+              <h5><b>SGST @ on 9</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_18}}</h5>
+              <h5><b>{{purchase_order.sgst_18}}</b></h5>
             </div>
           </div>
           {% elif purchase_order.igst_18 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on 18</h5>
+              <h5><b>IGST @ on 18</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_18}}</h5>
+              <h5><b>{{purchase_order.igst_18}}</b></h5>
             </div>
           </div>
           {% endif %}
@@ -552,37 +552,37 @@ footer {
           {% if purchase_order.cgst_28 and purchase_order.sgst_28 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on 14</h5>
+              <h5><b>CGST @ on 14</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_28}}</h5>
+              <h5><b>{{purchase_order.cgst_28}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on 14</h5>
+              <h5><b>SGST @ on 14</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_28}}</h5>
+              <h5><b>{{purchase_order.sgst_28}}</b></h5>
             </div>
           </div>
           {% elif purchase_order.igst_28 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on 28</h5>
+              <h5><b>IGST @ on 28</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_28}}</h5>
+              <h5><b>{{purchase_order.igst_28}}</b></h5>
             </div>
           </div>
           {% endif %}
@@ -590,37 +590,37 @@ footer {
           {% if purchase_order.cgst_other and purchase_order.sgst_other %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on others</h5>
+              <h5><b>GST @ on others</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.cgst_other}}</h5>
+              <h5><b>{{purchase_order.cgst_other}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on others</h5>
+              <h5><b>SGST @ on others</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.sgst_other}}</h5>
+              <h5><b>{{purchase_order.sgst_other}}</b></h5>
             </div>
           </div>
           {% elif purchase_order.igst_other %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on others</h5>
+              <h5><b>IGST @ on others</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{purchase_order.igst_other}}</h5>
+              <h5><b>{{purchase_order.igst_other}}</b></h5>
             </div>
           </div>
           {% endif %}

@@ -216,6 +216,7 @@ urlpatterns += [
     path('purchase_order/print/<int:ins>/', never_cache(login_required(purchase_order.print_purchase_order)), name = 'print_purchase_order'),
     path('purchase_order/delete/<int:ins>/', never_cache(login_required(purchase_order.delete_purchase_order)), name = 'delete_purchase_order'),
     path('purchase_order/vendor_details/<int:ins>/', never_cache(login_required(purchase_order.vendor_details)), name = 'vendor_details'),
+    path('purchase_order/void/<int:ins>/', never_cache(login_required(purchase_order.void_purchase)), name = 'void_purchase'),
 ]
 
 # Expense
@@ -236,7 +237,9 @@ urlpatterns += [
 
 # Reports
 urlpatterns += [
-    path('reports/gst_ledger', reports.GSTLedgerReportsView.as_view(), name='gst_ledger_reports'),
+    path('reports/gst_ledger/', reports.GSTLedgerReportsView.as_view(), name='gst_ledger_reports'),
+    path('reports/get_reports_pdf/', reports.get_reports_pdf, name='get_reports_pdf'),
+    path('reports/email/', reports.send_email, name='send_reports_email'),
 ]
 
 

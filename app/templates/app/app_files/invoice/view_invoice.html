@@ -86,21 +86,33 @@ color: white!important;
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             {% if customize.invoice_number != 0 %}
                             <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%">Invoice Number</th>
+                            {% else %}
+                            <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%;display: none;">Invoice Number</th>
                             {% endif %}
                             {% if customize.invoice_customer != 0 %}
                             <th class="text-center customize_customer" style="color:#000000; font-size:11px;width: 15%">Customer</th>
+                            {% else %}
+                            <th class="text-center customize_customer" style="color:#000000; font-size:11px;width: 15%;display: none;">Customer</th>
                             {% endif %}
                             {% if customize.invoice_date != 0 %}
                             <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 15%">Invoice Date</th>
+                            {% else %}
+                            <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 15%;display: none;">Invoice Date</th>
                             {% endif %}
                             {% if customize.invoice_due_date != 0 %}
                             <th class="text-center customize_due_date" style="color:#000000; font-size:11px;width: 8%">Due Date</th>
+                            {% else %}
+                            <th class="text-center customize_due_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Due Date</th>
                             {% endif %}
                             {% if customize.invoice_status != 0 %}
                             <th class="text-center customize_status" style="color:#000000; font-size:11px;width: 8%">Status</th>
+                            {% else %}
+                            <th class="text-center customize_status" style="color:#000000; font-size:11px;width: 8%;display: none;">Status</th>
                             {% endif %}
                             {% if customize.invoice_amount != 0 %}
                             <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%">Total Amount</th>  
+                            {% else %}
+                            <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%;display: none;">Total Amount</th>  
                             {% endif %}
                             
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
@@ -111,9 +123,18 @@ color: white!important;
                                 <tr>
                                     {% if customize.invoice_number != 0 %}
                                     <td align="center" class="customize_number">{{i.invoice_number}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_number" style="display: none;">{{i.invoice_number}}</td>
                                     {% endif %}
                                     {% if customize.invoice_customer != 0 %}
                                     <td align="center" class="customize_customer">
+                                        {% if i.save_type == 3 %}
+                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                        {% endif %}
+                                        {{i.invoice_customer}}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_customer" style="display: none;">
                                         {% if i.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
@@ -124,17 +145,29 @@ color: white!important;
                                     <td align="center" class="customize_date">
                                         {{i.invoice_date|date:"d-m-Y"}}
                                     </td>
+                                    {% else %}
+                                    <td align="center" class="customize_date" style="display: none;">
+                                        {{i.invoice_date|date:"d-m-Y"}}
+                                    </td>
                                     {% endif %}
                                     {% if customize.invoice_due_date != 0 %}
                                     <td align="center" class="customize_due_date">{{i.invoice_new_due_date|date:"d-m-Y"}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_due_date" style="display: none;">{{i.invoice_new_due_date|date:"d-m-Y"}}</td>
                                     {% endif %}
                                     {% if customize.invoice_status != 0 %}
                                     <td align="center" class="customize_status" id="status_{{i.id}}">
                                         {{i.get_invoice_status_display}}
                                     </td>
+                                    {% else %}
+                                    <td align="center" class="customize_status" style="display: none;" id="status_{{i.id}}">
+                                        {{i.get_invoice_status_display}}
+                                    </td>
                                     {% endif %}
                                     {% if customize.invoice_amount != 0 %}
                                     <td align="center" class="customize_total">{{i.total_amount}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_total" style="display: none;">{{i.total_amount}}</td>
                                     {% endif %}
                                     
                                     <td class="text-center" align="center" > 
@@ -181,8 +214,8 @@ color: white!important;
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><a class="btn  mr-2" href="{% url 'delete_invoice' i.id %}" style="align-content: left;margin-left:135px;background-color:#598ebb"><font color="white" >Yes</font></a></center>
-                                                            <a class="btn" href="{% url 'invoice' %}" style="margin-left:5px;"><font color="white"> No</font></a>
+                                                            <center><a class="btn  mr-2" href="{% url 'delete_invoice' i.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white" >Yes</font></a></center>
+                                                            <a class="btn" href="{% url 'invoice' %}" style=""><font color="white"> No</font></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -199,8 +232,8 @@ color: white!important;
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><a class="btn mr-2" onclick="paid_status_invoice({{i.id}})" data-dismiss="modal" aria-label="Close" style="align-content:left;margin-left:135px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
-                                                            <a class="btn " data-dismiss="modal" aria-label="Close"  style="margin-left:5px;"><font color="white">No</font> </a>
+                                                            <center><a class="btn mr-2" onclick="paid_status_invoice({{i.id}})" data-dismiss="modal" aria-label="Close" style="align-content:left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                            <a class="btn " data-dismiss="modal" aria-label="Close"  style=""><font color="white">No</font> </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -211,7 +244,7 @@ color: white!important;
                             {% endfor %}
                         </tbody>
                     </table>   
-                    {% if invoice %} 
+                    
                     <div class="pagination" style="float: right;">
                         <span class="step-links">
                             {% if invoice.has_previous %}
@@ -229,7 +262,7 @@ color: white!important;
                             {% endif %}
                         </span>
                     </div>
-                    {% endif %}
+            
                 </div>
             </div>
         </div>    
@@ -297,8 +330,8 @@ color: white!important;
                       
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-success" type="button" onclick="customize_view(5)">apply</button>
-                    <a class="btn btn-sm btn-danger" href="{% url 'invoice'  %}" type="reset">Cancel</a>
+                    <button class="btn btn-sm " type="button" onclick="customize_view(5)" style="background-color: #598ebb;">apply</button>
+                    <a class="btn btn-sm " href="{% url 'invoice'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
                 </div>
             </form>
         </div>

@@ -92,35 +92,39 @@ function float_value(event, a) {
 
 var purchase_number = 1
 var count = 0
-function purchase_addRow(a) {
+
+// Disable Mouse scrolling
+$('input[type=number]').on('mousewheel',function(e){ $(this).blur(); });
+// Disable keyboard scrolling
+$('input[type=number]').on('keydown',function(e) {
+    var key = e.charCode || e.keyCode;
+    // Disable Up and Down Arrows on Keyboard
+    if(key == 38 || key == 40 || key == 69 || key == 189) {
+        e.preventDefault();
+    } else return true;
+});
+
+function add_single_row(a){
     if(count == 0){
         purchase_number +=a
         count +=1
+    }else{
+        purchase_number += 1
     }
+    run_others();
+}
+function run_others(){
+    acc_group_name_htm = '<option value="">-------</option>';
+    products_htm = '<option value="">-------</option>';
 
-    purchase_number += 1
+    next_id = purchase_number;       
+    html = product_row_creator(next_id);
+    $('#purchase_table').append(html);
+    ret = get_func(next_id,acc_group_name_htm, products_htm);
 
-    $(document).on('click','#select2-ItemName'+purchase_number+'-container',function(){
-
-        for(var i = 1;i <= purchase_number; i++){
-            var a = $('#row_ItemName'+purchase_number+'').length
-            if(a == 0){
-                $('.select2-search').append('<button class="btn btn-link purchase_product" data-toggle="modal" id="row_ItemName'+purchase_number+'" onclick="get_purchase_product_id('+purchase_number+'),c()" data-target="#ProductModal" style="margin-left: -11%;">+ Add New</button>');
-            }  
-        } 
-    });
-
-    $(document).on('click','#select2-product_account'+purchase_number+'-container',function(){
-
-        for(var i = 1;i <= purchase_number; i++){
-            var a = $('#row_account'+purchase_number+'').length
-            if(a == 0){
-                $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+purchase_number+'" onclick="get_purchase_account_id('+purchase_number+'),c()" data-target="#addGroupModal" style="margin-left: -24%;">+ Add New</button>');
-            }  
-        } 
-    });
-       
-        var html = '<tr id="purchase_row'+purchase_number+'">'
+}
+function product_row_creator(purchase_number){
+    var html = '<tr id="purchase_row'+purchase_number+'">'
         html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
         html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 213.6px;margin-top:1px;"></textarea></td>'
         html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
@@ -130,94 +134,95 @@ function purchase_addRow(a) {
         html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+purchase_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
         html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" required><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" required readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
         html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
         html +='<div class="col"><input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,\'Amount'+purchase_number+'\')" id="Amount'+purchase_number+'" name="Amount[]" style="margin-top:1%;" readonly></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+purchase_number+'" name="'+purchase_number+'" onclick="creditnote_removeRow('+purchase_number+')" style="cursor: default;">delete_forever</span></td></tr>'
-        $('#purchase_table').append(html)
-        
-        // SELECT PLUGIN
-        $(function () {
-            $(".select").select2();
-          });
+        return html;
+}
 
-        $(function () {
-            $(".prodduct_purchase_account").select2();
-            $('.select2-container--default').css('padding-bottom','16px')
-        });
-        // 
+function get_func(next_id, acc_group_name_htm, products_htm){
 
-        // Disable Mouse scrolling
-        $('input[type=number]').on('mousewheel',function(e){ $(this).blur(); });
-        // Disable keyboard scrolling
-        $('input[type=number]').on('keydown',function(e) {
-            var key = e.charCode || e.keyCode;
-            // Disable Up and Down Arrows on Keyboard
-            if(key == 38 || key == 40 || key == 69 || key == 189) {
-            e.preventDefault();
-            } else {
-            return;
+    $.get("/purchase_order/add_purchase_order/"+1+"/", function(data){
+        if(data){
+            if(data.acc_group_name.length > 0){  
+                // for account_ledger details
+                var acc_option = data.acc_group_name;
+                var acc_id = data.acc_ids;
+    
+                for(var j = 0; j < acc_option.length; j++){
+                    acc_group_name_htm += '<option value="'+acc_id[j]+'">'+acc_option[j]+'</option>'; 
+                }
             }
-        });
-        
-        //   AJAX TO FETCH PRODUCT
-        $.ajax({
-            type:"GET",
-            url: "/purchase_order/add_purchase_order/"+1+"/",
-            dataType: "json",
-            success: function(data){
-                
-                // for product details
+            
+            if(data.products.length > 0){
                 var option = data.products
                 var id = data.ids
-                for(var i = 0;i < option.length;i++){
-                    $('<option/>').val(id[i]).html(option[i]).appendTo('#ItemName'+purchase_number+'');
-                }
                 
-                // for account_ledger details
-                var acc_option = data.acc_group_name
-                var acc_id = data.acc_ids
-                for(var i = 0;i < acc_option.length;i++){
-                    $('<option/>').val(acc_id[i]).html(acc_option[i]).appendTo('#product_account'+purchase_number+'');
+                for(var j = 0; j < option.length; j++){                        
+                    products_htm += '<option value="'+id[j]+'">'+option[j]+'</option>'; 
                 }
-            },
+            }
 
-        });
-    vendor_gst_type()
-    if(gst == '8'){
-        if(vendor_state != $('#order_state').val()){
-            $('.tax').each(function(){
-                $(this).attr('readonly', true)
+            $("#ItemName"+next_id).empty().append(products_htm);
+            $("#product_account"+next_id).empty().append(acc_group_name_htm);
+
+            if(vendor_state == $('#order_state').val()){
+                $("#tax"+next_id).attr('readonly',false)
+            }
+
+            $(document).on('click','#select2-ItemName'+purchase_number+'-container',function(){
+
+                for(var i = 1;i <= purchase_number; i++){
+                    var a = $('#row_ItemName'+purchase_number+'').length
+                    if(a == 0){
+                        $('.select2-search').append('<button class="btn btn-link purchase_product" data-toggle="modal" id="row_ItemName'+purchase_number+'" onclick="get_purchase_product_id('+purchase_number+'),c()" data-target="#ProductModal" style="margin-left: -11%;">+ Add New</button>');
+                    }  
+                } 
             });
-        }else{
-            $('.tax').each(function(){
-                $(this).attr('readonly', false)
+        
+            $(document).on('click','#select2-product_account'+purchase_number+'-container',function(){
+        
+                for(var i = 1;i <= purchase_number; i++){
+                    var a = $('#row_account'+purchase_number+'').length
+                    if(a == 0){
+                        $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+purchase_number+'" onclick="get_purchase_account_id('+purchase_number+'),c()" data-target="#addGroupModal" style="margin-left: -24%;">+ Add New</button>');
+                    }  
+                } 
             });
+
+            // SELECT PLUGIN
+            $(function () {
+                $(".select").select2();
+            });
+
+            $(function () {
+                $(".prodduct_purchase_account").select2();
+                $('.select2-container--default').css('padding-bottom','16px')
+            });
+            // 
+            check_gst_status('delivary_side')
         }
-    }
-};
+    }); 
+}
+
 // REMOVE JS TABLE
 function creditnote_removeRow(a) {
-
-$('#purchase_row'+a+'').remove();
-$('#'+a+'').remove();
-sub_total()
-if(purchase_number > 1){
-    purchase_number -=1
+    var first_row = $('#purchase_table tbody tr:first').attr('id')
+    if(first_row == 'purchase_row'+a+''){
+        var last_row = $('#purchase_table tbody tr:last').attr('id')
+        if(last_row != 'purchase_row'+a+''){
+            $('#purchase_row'+a+'').remove();
+        }else{
+            $('#ItemName'+a+'').val('').change();
+            $('#product_account'+a+'').val('').change();
+        }
+    }else{
+        $('#purchase_row'+a+'').remove();
+    }
+    sub_total()
 }
-
-}
-/********************************************************************/
-// PURCHASE ORDER ITEM CLEAR FIRST ROW
-/********************************************************************/
-
-function clear_row(){
-    $('#ItemName1').val('').change();
-    $('#product_account1').val('').change();
-
-}
-
 /********************************************************************/
 // PUCHASE LINE ITEMS SEARCH AND BUTTON INSIDE SELECT TAG 
 /********************************************************************/
@@ -319,7 +324,7 @@ function add_contact(){
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
+       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" style="margin-top:16px;" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
        $( button ).insertBefore("#contact_type_add");
     }
 
@@ -356,7 +361,7 @@ function add_contact_delivary(){
     $('#con_type').append(html)
 
     $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form(\'c_e\')">Save</button>'
+       var button = '<button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" style="margin-top:16px;" onclick="return purchase_contact_form(\'c_e\')">Save</button>'
        $( button ).insertBefore("#contact_type_add");
 }
 
@@ -733,9 +738,10 @@ function total_discount(){
 // Freight Charges, advance and total amount calculation
 /********************************************************************/
 
+var advance_count = 0
 function freight_advance_totalamount(){
     var freight_charges = $('#Freight_Charges').val()
-    var advance = $('#advance_value').val()
+    var advance = $('#advance_info').find('#advance_value').val()
     var total_amount = $('#Total').val()
     var total_balance = 0
     if(advance == '' & freight_charges != '' & total_amount != ''){
@@ -762,7 +768,7 @@ function freight_advance_totalamount(){
             alert('advance must be lesser then total balance')
             $('#advance_value').val('')
             $('#advance').val('')
-            // purchase_calculate()
+            purchase_calculate()
             total_balance += (parseFloat(total_amount) + parseFloat(freight_charges))
         }   
     }
@@ -783,11 +789,10 @@ function freight_advance_totalamount(){
         } 
     }
 }
+/********************************************************************/
+// FOR GST
+/********************************************************************/
 
-/********************************************************************/
-// purchase SGST CGST AND IGST CALCULATION 
-/********************************************************************/
-state_compare()
 function state_compare(){
     var ids = $('#purchase_vendor').val()
     if(ids != ''){
@@ -799,351 +804,369 @@ function state_compare(){
                 if(data.mail != null){
                     $('#mail').val(data.mail)
                 }
-                gst = data.gst_type
+                // gst = data.gst_type
                 if(data.gst_type != null){
-                    $('#gst_type').val(gst)
+                    $('#gst_type').val(data.gst_type)
                 }
                 vendor_state = data.vendor_state
-               
-                purchase_tax_cacultion()
-                vendor_count = '1'
-                vendor_gst_type()
-                composite_vendor = '1'
-                delivery_state('_'+$('#order_state').val()+'')
+                check_gst_status('vendor_side')
             },
         });
-    }
-}
-var vendor_count=''
-var composite_vendor = ''
-function vendor_gst_type(){
-    var gst_type = $('#gst_type').val()
-    if(gst_type == '0' || gst_type =='3' || gst_type == '5'){
-        $('.tax').each(function(){
-            $(this).attr('readonly', true)
-            $(this).val('')
-            if(vendor_count == '1'){
-                alert('Vendor not register GST')
-                vendor_count = ''
-            }
-            
-        });
     }else{
-        $('.tax').each(function(){
-            $(this).attr('readonly', false)
-            // alert('Vendor not register GST')
-        });
+        $('#mail').val('')
+        $('#gst_type').val('')
+        $('#purchase_table').find('.tax').attr('readonly', true)
+        $('#purchase_table').find('.tax').val('')
+        vendor_state = ''
+        sub_total()
     }
 }
 
-function delivery_state(state){
-
-    if(gst == '8'){
-        if(vendor_state != state.slice(1)){
-            $('.tax').each(function(){
-                $(this).val('')
-                $(this).attr('readonly', true)
-            });
-            if(composite_vendor == '1'){
+function check_gst_status(category){
+    if(category == 'vendor_side'){
+        // vendor_side
+        if($('#gst_type').val() == '0' || $('#gst_type').val()  =='3' || $('#gst_type').val()  == '5' ){
+            $('#purchase_table').find('.tax').attr('readonly', true)
+            $('#purchase_table').find('.tax').val('')
+            alert('Vendor not register GST')
+            sub_total()
+        }else if($('#gst_type').val()  == '8'){
+            if(vendor_state !='' & $('#order_state').val() != ''){
+                if(vendor_state == $('#order_state').val()){
+                    $('#purchase_table').find('.tax').attr('readonly', false)
+                    sub_total()
+                }else{
+                    $('#purchase_table').find('.tax').attr('readonly', true)
+                    $('#purchase_table').find('.tax').val('')
+                    sub_total()
+                    alert('Vendor is register under composite scheme, it can not choose delivery address of different state.')
+                }
+            }else{
+                $('#purchase_table').find('.tax').attr('readonly', true)
+                $('#purchase_table').find('.tax').val('')
+                sub_total()
                 alert('Vendor is register under composite scheme, it can not choose delivery address of different state.')
-                composite_vendor = ''
             }
-            
         }else{
-            $('.tax').each(function(){
-                $(this).attr('readonly', false)
-            });
+            if(vendor_state !='' & $('#order_state').val() != ''){
+                $('#purchase_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
         }
-    }
+    }else if(category == 'delivary_side'){
+        // delivary_side
+        if($('#gst_type').val() == '0' || $('#gst_type').val()  =='3' || $('#gst_type').val()  == '5' ){
+            $('#purchase_table').find('.tax').attr('readonly', true)
+            $('#purchase_table').find('.tax').val('')
+            sub_total()
+        }else if($('#gst_type').val()  == '8'){
+            if(vendor_state !='' & $('#order_state').val() != ''){
+                if(vendor_state == $('#order_state').val()){
+                    $('#purchase_table').find('.tax').attr('readonly', false)
+                    sub_total()
+                }else{
+                    $('#purchase_table').find('.tax').attr('readonly', true)
+                    $('#purchase_table').find('.tax').val('')
+                    sub_total()
+                }
+            }else{
+                $('#purchase_table').find('.tax').attr('readonly', true)
+                $('#purchase_table').find('.tax').val('')
+                sub_total()
+            }
+        }else{
 
-    $('#order_state').val(state.slice(1))
-    purchase_tax_cacultion()
-    
+            if(vendor_state !='' & $('#order_state').val() != ''){
+                $('#purchase_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
+        }
+    } 
 }
+/********************************************************************/
+// purchase SGST CGST AND IGST CALCULATION 
+/********************************************************************/
 
 var vendor_state =''
-var gst = ''
-// var delivery_address = ''
-purchase_tax_cacultion()
-sub_total()
 function purchase_tax_cacultion(){
-var cgst_5 = 0
-var sgst_5 = 0
-var igst_5 = 0
-var cgst_12 = 0
-var sgst_12 = 0
-var igst_12 = 0
-var cgst_18 = 0
-var sgst_18 = 0
-var igst_18 = 0
-var cgst_28 = 0
-var sgst_28 = 0
-var igst_28 = 0
-var cgst_other = 0
-var sgst_other = 0
-var igst_other = 0
-if(vendor_state == $('#order_state').val()){
-    $(".tax").each(function(){
-        var tax_id = $(this).attr('id');
-        var amount_id = 'Amount'+tax_id.slice(3)+''
-
-        if($('#'+tax_id+'').val() < parseFloat(100.00)){
-
-            var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
-            var half = (parseFloat(tax_val)/2).toFixed(2);
-            if($('#'+tax_id+'').val() == '5' & half != 'NaN'){
-                cgst_5 += parseFloat(half)
-                sgst_5 += parseFloat(half)
+    var cgst_5 = 0
+    var sgst_5 = 0
+    var igst_5 = 0
+    var cgst_12 = 0
+    var sgst_12 = 0
+    var igst_12 = 0
+    var cgst_18 = 0
+    var sgst_18 = 0
+    var igst_18 = 0
+    var cgst_28 = 0
+    var sgst_28 = 0
+    var igst_28 = 0
+    var cgst_other = 0
+    var sgst_other = 0
+    var igst_other = 0
+    
+    if(vendor_state == $('#order_state').val()){
+        $(".tax").each(function(){
+            var tax_id = $(this).attr('id');
+            var amount_id = 'Amount'+tax_id.slice(3)+''
+    
+            if($('#'+tax_id+'').val() < parseFloat(100.00)){
+    
+                var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
+                var half = (parseFloat(tax_val)/2).toFixed(2);
+                if($('#'+tax_id+'').val() == '5' & half != 'NaN'){
+                    cgst_5 += parseFloat(half)
+                    sgst_5 += parseFloat(half)
+                }
+                else if($('#'+tax_id+'').val() == '12' & half != 'NaN'){
+                    cgst_12 += parseFloat(half)
+                    sgst_12 += parseFloat(half)
+                }
+                else if($('#'+tax_id+'').val() == '18' & half != 'NaN'){
+                    cgst_18 += parseFloat(half)
+                    sgst_18 += parseFloat(half)
+                }
+                else if($('#'+tax_id+'').val() == '28' & half != 'NaN'){
+                    cgst_28 += parseFloat(half)
+                    sgst_28 += parseFloat(half)
+                }
+                else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & half != 'NaN' ){
+                    cgst_other += parseFloat(half)
+                    sgst_other += parseFloat(half)
+                }
+            }else{
+                alert('Please enter valid Tax value')
+                $('#'+tax_id+'').val('')
             }
-            else if($('#'+tax_id+'').val() == '12' & half != 'NaN'){
-                cgst_12 += parseFloat(half)
-                sgst_12 += parseFloat(half)
-            }
-            else if($('#'+tax_id+'').val() == '18' & half != 'NaN'){
-                cgst_18 += parseFloat(half)
-                sgst_18 += parseFloat(half)
-            }
-            else if($('#'+tax_id+'').val() == '28' & half != 'NaN'){
-                cgst_28 += parseFloat(half)
-                sgst_28 += parseFloat(half)
-            }
-            else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & half != 'NaN' ){
-                cgst_other += parseFloat(half)
-                sgst_other += parseFloat(half)
-            }
+            
+        });
+        if(cgst_5 != 0 & sgst_5 != 0 & cgst_5 != 0.0 & sgst_5 != 0.0 ){
+            $('#CGST_5').val(cgst_5)
+            $('#SGST_5').val(sgst_5)
+            $('#gst_5').show()
         }else{
-            alert('Please enter valid Tax value')
-            $('#'+tax_id+'').val('')
+            $('#gst_5').hide()
+        }
+        if(cgst_12 != 0 & sgst_12 != 0 & cgst_12 != 0.0 & sgst_12 != 0.0){
+            $('#CGST_12').val(cgst_12)
+            $('#SGST_12').val(sgst_12)
+            $('#gst_12').show()
+    
+        }else{
+            $('#gst_12').hide()
+        }
+        if(cgst_18 != 0 & sgst_18 != 0 & cgst_18 != 0.0 & sgst_18 != 0.0){
+            $('#CGST_18').val(cgst_18)
+            $('#SGST_18').val(sgst_18)
+            $('#gst_18').show()
+    
+        }else{
+            $('#gst_18').hide()
+        }
+        if(cgst_28 != 0 & sgst_28 != 0 & cgst_28 != 0.0 & sgst_28 != 0.0){
+            $('#CGST_28').val(cgst_28)
+            $('#SGST_28').val(sgst_28)
+            $('#gst_28').show()
+    
+        }else{
+            $('#gst_28').hide()
+        }
+        if(cgst_other != 0 & sgst_other != 0 & cgst_other != 0.0 & sgst_other != 0.0){
+            $('#CGST_other').val(cgst_other)
+            $('#SGST_other').val(sgst_other)
+            $('#gst_other').show()
+    
+        }else{
+            $('#gst_other').hide()
+        }
+    
+        if($("#gst_5").is(":visible")){
+            var a = '0'
+        }else{
+            $('#CGST_5').val('')
+            $('#SGST_5').val('')
+        }
+    
+        if($("#gst_12").is(":visible")){
+            var a = '0'
+        }else{
+            $('#CGST_12').val('')
+            $('#SGST_12').val('')
+        }
+    
+        if($("#gst_18").is(":visible")){
+            var a = '0'
+        }else{
+            $('#CGST_18').val('')
+            $('#SGST_18').val('')
+        }
+    
+        if($("#gst_28").is(":visible")){
+            var a = '0'
+        }else{
+            $('#CGST_28').val('')
+            $('#SGST_28').val('')
+        }
+    
+        if($("#gst_other").is(":visible")){
+            var a = '0'
+        }else{
+            $('#CGST_other').val('')
+            $('#SGST_other').val('')
+        }
+        $('#igst_5').hide()
+        $('#igst_5').val('')
+    
+        $('#igst_12').hide()
+        $('#igst_12').val('')
+    
+        $('#igst_18').hide()
+        $('#igst_18').val('')
+    
+        $('#igst_28').hide()
+        $('#igst_28').val('')
+    
+        $('#igst_other').hide()
+        $('#igst_other').val('')
+    
+        var sub_total = $('#SubTotal').val()
+        
+        var sc_total = (parseFloat(sub_total) + parseFloat(cgst_5) + parseFloat(sgst_5) + parseFloat(cgst_12) + parseFloat(sgst_12) + parseFloat(cgst_18) + parseFloat(sgst_18) + parseFloat(cgst_28) + parseFloat(sgst_28) +parseFloat(cgst_other) + parseFloat(sgst_other)).toFixed(2)
+        if(sc_total == 'NaN'){
+            $('#Total').val('')
+        }else{
+            $('#Total').val(sc_total)
         }
         
-    });
-    if(cgst_5 != 0 & sgst_5 != 0 & cgst_5 != 0.0 & sgst_5 != 0.0 ){
-        $('#CGST_5').val(cgst_5)
-        $('#SGST_5').val(sgst_5)
-        $('#gst_5').show()
-    }else{
-        $('#gst_5').hide()
     }
-    if(cgst_12 != 0 & sgst_12 != 0 & cgst_12 != 0.0 & sgst_12 != 0.0){
-        $('#CGST_12').val(cgst_12)
-        $('#SGST_12').val(sgst_12)
-        $('#gst_12').show()
-
-    }else{
-        $('#gst_12').hide()
-    }
-    if(cgst_18 != 0 & sgst_18 != 0 & cgst_18 != 0.0 & sgst_18 != 0.0){
-        $('#CGST_18').val(cgst_18)
-        $('#SGST_18').val(sgst_18)
-        $('#gst_18').show()
-
-    }else{
-        $('#gst_18').hide()
-    }
-    if(cgst_28 != 0 & sgst_28 != 0 & cgst_28 != 0.0 & sgst_28 != 0.0){
-        $('#CGST_28').val(cgst_28)
-        $('#SGST_28').val(sgst_28)
-        $('#gst_28').show()
-
-    }else{
-        $('#gst_28').hide()
-    }
-    if(cgst_other != 0 & sgst_other != 0 & cgst_other != 0.0 & sgst_other != 0.0){
-        $('#CGST_other').val(cgst_other)
-        $('#SGST_other').val(sgst_other)
-        $('#gst_other').show()
-
-    }else{
-        $('#gst_other').hide()
-    }
-
-    if($("#gst_5").is(":visible")){
-        var a = '0'
-    }else{
-        $('#CGST_5').val('')
-        $('#SGST_5').val('')
-    }
-
-    if($("#gst_12").is(":visible")){
-        var a = '0'
-    }else{
-        $('#CGST_12').val('')
-        $('#SGST_12').val('')
-    }
-
-    if($("#gst_18").is(":visible")){
-        var a = '0'
-    }else{
-        $('#CGST_18').val('')
-        $('#SGST_18').val('')
-    }
-
-    if($("#gst_28").is(":visible")){
-        var a = '0'
-    }else{
-        $('#CGST_28').val('')
-        $('#SGST_28').val('')
-    }
-
-    if($("#gst_other").is(":visible")){
-        var a = '0'
-    }else{
-        $('#CGST_other').val('')
-        $('#SGST_other').val('')
-    }
-    $('#igst_5').hide()
-    $('#igst_5').val('')
-
-    $('#igst_12').hide()
-    $('#igst_12').val('')
-
-    $('#igst_18').hide()
-    $('#igst_18').val('')
-
-    $('#igst_28').hide()
-    $('#igst_28').val('')
-
-    $('#igst_other').hide()
-    $('#igst_other').val('')
-
-    var sub_total = $('#SubTotal').val()
+    else if(vendor_state != $('#order_state').val()){
+        $(".tax").each(function(){
+            var tax_id = $(this).attr('id');
+            var amount_id = 'Amount'+tax_id.slice(3)+''
     
-    var sc_total = (parseFloat(sub_total) + parseFloat(cgst_5) + parseFloat(sgst_5) + parseFloat(cgst_12) + parseFloat(sgst_12) + parseFloat(cgst_18) + parseFloat(sgst_18) + parseFloat(cgst_28) + parseFloat(sgst_28) +parseFloat(cgst_other) + parseFloat(sgst_other)).toFixed(2)
-    if(sc_total == 'NaN'){
-        $('#Total').val('')
-    }else{
-        $('#Total').val(sc_total)
-    }
+            if($('#'+tax_id+'').val() < parseFloat(100.00)){
     
-}
-else if(vendor_state != $('#order_state').val()){
-    $(".tax").each(function(){
-        var tax_id = $(this).attr('id');
-        var amount_id = 'Amount'+tax_id.slice(3)+''
-
-        if($('#'+tax_id+'').val() < parseFloat(100.00)){
-
-            var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
-            if($('#'+tax_id+'').val() == '5' & tax_val != 'NaN' ){
-                igst_5 += parseFloat(tax_val)
+                var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
+                if($('#'+tax_id+'').val() == '5' & tax_val != 'NaN' ){
+                    igst_5 += parseFloat(tax_val)
+                }
+                else if($('#'+tax_id+'').val() == '12' & tax_val != 'NaN'){
+                    igst_12 += parseFloat(tax_val)
+                }
+                else if($('#'+tax_id+'').val() == '18' & tax_val != 'NaN'){
+                    igst_18 += parseFloat(tax_val)
+                }
+                else if($('#'+tax_id+'').val() == '28' & tax_val != 'NaN'){
+                    igst_28 += parseFloat(tax_val)
+                }else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & tax_val != 'NaN'){
+                    igst_other += parseFloat(tax_val)
+                }
+            }else{
+                alert('Please enter valid Tax value')
+                $('#'+tax_id+'').val('')
             }
-            else if($('#'+tax_id+'').val() == '12' & tax_val != 'NaN'){
-                igst_12 += parseFloat(tax_val)
-            }
-            else if($('#'+tax_id+'').val() == '18' & tax_val != 'NaN'){
-                igst_18 += parseFloat(tax_val)
-            }
-            else if($('#'+tax_id+'').val() == '28' & tax_val != 'NaN'){
-                igst_28 += parseFloat(tax_val)
-            }else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & tax_val != 'NaN'){
-                igst_other += parseFloat(tax_val)
-            }
+        
+        });
+        if(igst_5 != 0 & igst_5 != 0.0){
+            $('#IGST_5').val(igst_5)
+            $('#igst_5').show()
+    
         }else{
-            alert('Please enter valid Tax value')
-            $('#'+tax_id+'').val('')
+            $('#igst_5').hide()
+        }
+        if(igst_12 != 0 & igst_12 != 0.0){
+            $('#IGST_12').val(igst_12)
+            $('#igst_12').show()
+    
+        }else{
+            $('#igst_12').hide()
+        }
+        if(igst_18 != 0 & igst_18 != 0.0){
+            $('#IGST_18').val(igst_18)
+            $('#igst_18').show()
+    
+        }else{
+            $('#igst_18').hide()
+        }
+        if(igst_28 != 0 & igst_28 != 0.0){
+            $('#IGST_28').val(igst_28)
+            $('#igst_28').show()
+    
+        }else{
+            $('#igst_28').hide()
+        }
+        if(igst_other != 0 & igst_other != 0.0 ){
+            $('#IGST_other').val(igst_other)
+            $('#igst_other').show()
+    
+        }else{
+            $('#igst_other').hide()
         }
     
-    });
-    if(igst_5 != 0 & igst_5 != 0.0){
-        $('#IGST_5').val(igst_5)
-        $('#igst_5').show()
-
-    }else{
-        $('#igst_5').hide()
+        if($("#igst_5").is(":visible")){
+            var a = '0'
+        }else{
+            $('#IGST_5').val('')
+    
+        }
+    
+        if($("#igst_12").is(":visible")){
+            var a = '0'
+        }else{
+            $('#IGST_12').val('')
+    
+        }
+    
+        if($("#igst_18").is(":visible")){
+            var a = '0'
+        }else{
+            $('#IGST_18').val('')
+    
+        }
+    
+        if($("#igst_28").is(":visible")){
+            var a = '0'
+        }else{
+            $('#IGST_28').val('')
+    
+        }
+    
+        if($("#igst_other").is(":visible")){
+            var a = '0'
+        }else{
+            $('#IGST_other').val('')
+    
+        }
+        $('#gst_5').hide()
+        $('#CGST_5').val('')
+        $('#SGST_5').val('')
+    
+        $('#gst_12').hide()
+        $('#CGST_12').val('')
+        $('#SGST_12').val('')
+    
+        $('#gst_18').hide()
+        $('#CGST_18').val('')
+        $('#SGST_18').val('')
+    
+        $('#gst_28').hide()
+        $('#CGST_28').val('')
+        $('#SGST_28').val('')
+    
+        $('#gst_other').hide()
+        $('#CGST_other').val('')
+        $('#SGST_other').val('')
+    
+        var sub_total = $('#SubTotal').val()
+        var i_total = (parseFloat(sub_total) + parseFloat(igst_5) + parseFloat(igst_12) + parseFloat(igst_18) + parseFloat(igst_28) + parseFloat(igst_other)).toFixed(2)
+        if(i_total == 'NaN'){
+            $('#Total').val('')
+        }
+        else{
+            $('#Total').val(i_total)
+        }
     }
-    if(igst_12 != 0 & igst_12 != 0.0){
-        $('#IGST_12').val(igst_12)
-        $('#igst_12').show()
-
-    }else{
-        $('#igst_12').hide()
-    }
-    if(igst_18 != 0 & igst_18 != 0.0){
-        $('#IGST_18').val(igst_18)
-        $('#igst_18').show()
-
-    }else{
-        $('#igst_18').hide()
-    }
-    if(igst_28 != 0 & igst_28 != 0.0){
-        $('#IGST_28').val(igst_28)
-        $('#igst_28').show()
-
-    }else{
-        $('#igst_28').hide()
-    }
-    if(igst_other != 0 & igst_other != 0.0 ){
-        $('#IGST_other').val(igst_other)
-        $('#igst_other').show()
-
-    }else{
-        $('#igst_other').hide()
-    }
-
-    if($("#igst_5").is(":visible")){
-        var a = '0'
-    }else{
-        $('#IGST_5').val('')
-
-    }
-
-    if($("#igst_12").is(":visible")){
-        var a = '0'
-    }else{
-        $('#IGST_12').val('')
-
-    }
-
-    if($("#igst_18").is(":visible")){
-        var a = '0'
-    }else{
-        $('#IGST_18').val('')
-
-    }
-
-    if($("#igst_28").is(":visible")){
-        var a = '0'
-    }else{
-        $('#IGST_28').val('')
-
-    }
-
-    if($("#igst_other").is(":visible")){
-        var a = '0'
-    }else{
-        $('#IGST_other').val('')
-
-    }
-    $('#gst_5').hide()
-    $('#CGST_5').val('')
-    $('#SGST_5').val('')
-
-    $('#gst_12').hide()
-    $('#CGST_12').val('')
-    $('#SGST_12').val('')
-
-    $('#gst_18').hide()
-    $('#CGST_18').val('')
-    $('#SGST_18').val('')
-
-    $('#gst_28').hide()
-    $('#CGST_28').val('')
-    $('#SGST_28').val('')
-
-    $('#gst_other').hide()
-    $('#CGST_other').val('')
-    $('#SGST_other').val('')
-
-    var sub_total = $('#SubTotal').val()
-    var i_total = (parseFloat(sub_total) + parseFloat(igst_5) + parseFloat(igst_12) + parseFloat(igst_18) + parseFloat(igst_28) + parseFloat(igst_other)).toFixed(2)
-    if(i_total == 'NaN'){
-        $('#Total').val('')
-    }
-    else{
-        $('#Total').val(i_total)
-    }
-}
-freight_advance_totalamount()
+    freight_advance_totalamount()
 }
 /********************************************************************/
 // product table validation
@@ -1188,6 +1211,7 @@ $('#org_radio').click(function(){
         $('#choose_customer_address').val('-------').change();
         $('#purchase_address').text('')
         $('#purchase_attention').val('')
+        $('#order_state').val('')
     }
 });
 
@@ -1198,7 +1222,8 @@ $('#customer_radio').click(function(){
         $('#cust_address').show()
         $('#purchase_address').text('')
         $('#purchase_attention').val('')
-        $('.select2-container--default').css('width','100%')
+        // $('.select2-container--default').css('width','100%')
+        $('#order_state').val('')
     }
 });
 
@@ -1227,7 +1252,7 @@ function ajax_org_address(){
                 organisation_id = data.ids
                 // pass organization id
                 $('#button_add').remove()
-                var add = '<button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form('+data.ids+',\'org\')">Add</button>'
+                var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'org\')">Add New</button>'
                 $( add ).insertBefore( "#table_close" );
                 
                 // empty table
@@ -1239,7 +1264,6 @@ function ajax_org_address(){
                 var con
                 var a_branch
                 var a_gst
-                Organization_address_list.length = 0;
                 for(var i = 0;i < count.length;i++){
 
                     if( contact_name[i] == null){
@@ -1267,14 +1291,16 @@ function ajax_org_address(){
                 
                         a_branch = branch[i]
                     }
-                    var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid white;" align="center">'+(parseInt(i)+1)+'</td>'
-                        html +='<td style="border:1px solid white;"><a href="#" id="branch_'+i+'" onclick="prefill('+i+',\'org\'),delivery_state(\'_'+state[i]+'\')">'+a_branch+'</a></td>'
-                        html +='<td style="border:1px solid white;"><div class="row" style="margin-left:0px;margin-right:0px;"><a href="#" onclick="prefill('+i+',\'org\'),delivery_state(\'_'+state[i]+'\')">'+con+'</a></div>'
-                        html +='<div class="row" style="margin-left:0px;margin-right:0px;"><a href="#" id="address_'+i+'" onclick="prefill('+i+',\'org\'),delivery_state(\'_'+state[i]+'\')">'+count[i]+' <br> '+a_gst+' </a></div></td></tr>'
-                        // html +='<div class="row" style="margin-left:0px;margin-right:0px;"><a href="#" id="address_'+i+'" onclick="prefill('+i+',\'org\'),delivery_state(\'_'+state[i]+'\')">'+a_gst+'</a></div></td></tr>'
-                    
+                    var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
+                        html+='<input class="form-check-input choose_address" type="radio" name="radio" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
+                        html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
+                        html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
+                        html +='<div class="row" id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
+                        html +='<div class="row" id="p_state'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;display:none">'+state[i]+'</div>'
+                        html +='<div class="row" id="address_gst'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+a_gst+'</a></div></td></tr>'
+
                         $('#purchase_delivery_address').append(html)
-                        Organization_address_list.push(contact_name[i])
+                        
                 }
 
             },
@@ -1286,7 +1312,7 @@ function ajax_org_address(){
 //  CONTACT ADDRESS
 function purchase_cont_address(){
     var contact_ids = $('#choose_customer_address option').filter(':selected').val()
-    if(contact_ids != '-------'){
+    if(contact_ids != ''){
         if($('#customer_radio').is(':checked')){
             //   AJAX TO FETCH  CONTACT ADDRESS
             $.ajax({
@@ -1302,7 +1328,7 @@ function purchase_cont_address(){
     
                     // pass organization id
                     $('#button_add').remove()
-                    var add = '<button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form('+data.ids+',\'cont\')">Add</button>'
+                    var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'cont\')">Add New</button>'
                     $( add ).insertBefore( "#table_close" );
                     // empty table
                     $(".address_row").each(function(){
@@ -1313,8 +1339,6 @@ function purchase_cont_address(){
                     var con
                     var a_branch
                     var a_gst
-                    contact_person_list.length = 0;
-
                     if(gst[0] == null){
                         a_gst =''
     
@@ -1335,44 +1359,79 @@ function purchase_cont_address(){
                         }else if(branch[i] != null){
                             a_branch = branch[i]
                         }
-                        var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid white;" align="center">'+(parseInt(i)+1)+'</td>'
-                            html +='<td style="border:1px solid white;"><a href="#" id="branch_'+i+'" onclick="prefill('+i+',\'cont\'),delivery_state(\'_'+state[i]+'\')">'+a_branch+'</a></td>'
-                            html +='<td style="border:1px solid white;"><div class="row" style="margin-left:0px;margin-right:0px;"><a href="#" onclick="prefill('+i+',\'cont\'),delivery_state(\'_'+state[i]+'\')">'+con+'</a></div>'
-                            html +='<div class="row" style="margin-left:0px;margin-right:0px;"><a href="#" id="address_'+i+'" onclick="prefill('+i+',\'cont\'),delivery_state(\'_'+state[i]+'\')">'+count[i]+' <br> '+a_gst+'</a></div></td></tr>'
+                        var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
+                            html+='<input class="form-check-input choose_address" type="radio" name="radio" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
+                            html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
+                            html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
+                            html +='<div class="row"  id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
+                            html +='<div class="row" id="p_state'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;display:none">'+state[i]+'</div>'
+                            html +='<div class="row" id="address_gst'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+a_gst+'</a></div></td></tr>'
                         
                             $('#purchase_delivery_address').append(html)
-                            contact_person_list.push(contact_name[i])
                     }
                 },
             });
             $('#Purchase_order_AddressModal').modal('show')
         }
+    }else{
+        $('#purchase_address').text('')
+        $('#purchase_attention').val('')
+        $('#order_state').val('')
+        check_gst_status('delivary_side')
     }
     
 }
-var Organization_address_list= []
-var contact_person_list =[]
+/********************************************************************/
+// chosse address
+/********************************************************************/
+var global_parson = ''
+var global_address =''
+var global_gst = ''
+var global_delivery_state = ''
+function radio_click(elem){
+    var names = $(elem).attr('id')
+    global_parson = $('#con_person'+names.substring(names.length - 1, names.length)).text()
+    global_address = $('#p_address'+names.substring(names.length - 1, names.length)).text()
+    global_gst = $('#address_gst'+names.substring(names.length - 1, names.length)).text()
+    global_delivery_state = $('#p_state'+names.substring(names.length - 1, names.length)).text()
+};
 /********************************************************************/
 // ORGNIZATION AND CUSTOMER RADIO BUTTON
 /********************************************************************/
 
-function prefill(ids,category){
-    
-    $('#purchase_address').text($('#address_'+ids+'').text())
-    if(category == 'org'){
-        $('#purchase_attention').val(Organization_address_list[ids])
-    }else if(category == 'cont'){
-        $('#purchase_attention').val(contact_person_list[ids])
+function prefill(){
+    var checkbox_count = 0
+    $('.choose_address').each(function(){
+        if($(this).prop("checked") == true){
+            checkbox_count +=1
+        }
+    })
+    if(checkbox_count == 0){
+        alert('Please first choose the address')
+        return false
     }
+    var address = ''
+    if(global_parson == ''){
+        address = ''+global_address+''+'\n'+''+global_gst+''
+    }else{
+        address = ''+global_parson+''+'\n'+''+global_address+''+'\n'+''+global_gst+''
+    }
+            
+    $('#purchase_address').text(address)
+    $('#purchase_attention').val(global_parson.substring(16,global_parson.length))
+    $('#order_state').val(global_delivery_state)
+    check_gst_status('delivary_side')
     
     $('#Purchase_order_AddressModal').modal('hide')
 }
 
 $('#table_close').click(function(){
+    $('#order_state').val('')
     $('#org_radio').prop('checked', false)
     $('#customer_radio').prop('checked', false)
     $('#cust_address').hide()
     $('#choose_customer_address').val('').change();
+    check_gst_status('delivary_side')
 });
 
 /********************************************************************/
@@ -1442,13 +1501,18 @@ function save__address(event,category){
                         common_address += data.pincode +','
                     }
                     var count = common_address.length
-                    var state = "_"+data.state+""
-                    delivery_state(state)
-                    $('#purchase_address').text(common_address.slice(0,(parseInt(count)-parseInt(1))))
-
+                    // var state = "_"+data.state+""
+                    var address = ''
                     if(data.contact_person != null){
                         $('#purchase_attention').val(data.contact_person)
+                        address += 'Contact person:-'+data.contact_person+''+'\n'+''+common_address.slice(0,(parseInt(count)-parseInt(1)))+''
+                    }else{
+                        address += common_address.slice(0,(parseInt(count)-parseInt(1)))
                     }
+                    
+                    $('#purchase_address').text(address)
+                    $('#order_state').val(data.state)
+                    check_gst_status('delivary_side')
                 });
                $('#newOrgAddressModal').modal('hide');
             }
@@ -1493,14 +1557,20 @@ function save__address(event,category){
                         common_address += data.pincode +','
                     }
                     var count = common_address.length
-                    var state = "_"+data.state+""
-                    delivery_state(state)
-
-                    $('#purchase_address').text(common_address.slice(0,(parseInt(count)-parseInt(1))))
-
+                    // var state = "_"+data.state+""
+                    // delivery_state(state)
+                    var address = ''
                     if(data.contact_person != null){
                         $('#purchase_attention').val(data.contact_person)
+                        address += 'Contact person:-'+data.contact_person+''+'\n'+''+common_address.slice(0,(parseInt(count)-parseInt(1)))+''
+                    }else{
+                        address += common_address.slice(0,(parseInt(count)-parseInt(1)))
                     }
+
+                    $('#purchase_address').text(address)
+                    $('#order_state').val(data.state)
+                    check_gst_status('delivary_side')
+
                 });
                $('#newContactAddressModal').modal('hide');
             }
@@ -1573,52 +1643,57 @@ function check_mail(){
 vendor_info()
 function vendor_info(){
     var ins = $('#purchase_vendor').val()
-    $.get("/purchase_order/vendor_details/"+ins+"/",function(data){
-        var name 
-        var organization
-        var mail
-        var number
-        var address
-       
-        if(data.name == null){
-            name = ''
-        }
-        else if(data.name != null){
-            name = data.name
-        }
-
-        if(data.oganization_name == null){
-            organization = ''
-        }
-        else if(data.oganization_name != null){
-            organization = data.oganization_name
-        }
-        if(data.mail == null){
-            mail = ''
-        }
-        else if(data.mail != null){
-            mail = data.mail
-        }
-        if(data.number == null){
-            number = ''
-        }
-        else if(data.number != null){
-            number = data.number   
-        }
-
-        if(data.address == null){
-            address = ''
-        }
-        else if(data.address != null){
-            address = data.address
-        }
-            
-
-        var html2 = ''
+    if(ins != ''){
+        $.get("/purchase_order/vendor_details/"+ins+"/",function(data){
+            var name 
+            var organization
+            var mail
+            var number
+            var address
         
-        html2 +='Name:- '+name+''+'\n'+ 'Organisation Name:-'+'\n'+organization+''+'\n'+'Email:-'+mail+''+'\n'+'Number:-'+number+''+'\n'+'Address:-'+address+'';
-        $("#vendor_details").attr('data-tip', html2);
-    });
+            if(data.name == null){
+                name = ''
+            }
+            else if(data.name != null){
+                name = data.name
+            }
+
+            if(data.oganization_name == null){
+                organization = ''
+            }
+            else if(data.oganization_name != null){
+                organization = data.oganization_name
+            }
+            if(data.mail == null){
+                mail = ''
+            }
+            else if(data.mail != null){
+                mail = data.mail
+            }
+            if(data.number == null){
+                number = ''
+            }
+            else if(data.number != null){
+                number = data.number   
+            }
+
+            if(data.address == null){
+                address = ''
+            }
+            else if(data.address != null){
+                address = data.address
+            }
+                
+
+            var html2 = ''
+            
+            html2 +='Name:- '+name+''+'\n'+ 'Organisation Name:-'+'\n'+organization+''+'\n'+'Email:-'+mail+''+'\n'+'Number:-'+number+''+'\n'+'Address:-'+address+'';
+            $("#vendor_details").attr('data-tip', html2);
+        });
+    }else{
+        $("#vendor_details").attr('data-tip', '');
+    }
+    
 }
 /*********************************************************************** */
 // ADVANCE INFO
@@ -1668,3 +1743,8 @@ function order_check(){
         return false
     }
 }
+
+
+$('#purchase_delivary_date,#purchase_date,#purchase_edit_date').keypress(function(event) {
+        event.preventDefault();
+});

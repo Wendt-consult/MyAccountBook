@@ -27,6 +27,13 @@ function paid_status_invoice(id){
 		// else alert('Email address not mentioned');
 	});
 }
+function void_status_purchase(id){
+	$.get("/purchase_order/void/"+id+"/", function(data){
+		if(data=='1'){
+            $("#status_"+id+"").text('Cancelled')
+        }
+	});
+}
 /*******************************************************************/
 // CUSTOMIZE VIEW LIST
 /*******************************************************************/

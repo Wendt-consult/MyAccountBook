@@ -447,6 +447,14 @@ class User_Tax_Details(models.Model):
         null = True,
     )
 
+    default_gstin = models.BooleanField(
+        db_index = True,
+        default = False,
+        choices = user_constants.IS_TRUE,
+        blank = True,
+        null = True,
+    )
+
     gstin = models.CharField(
         max_length = 100,
         db_index = True,

@@ -282,21 +282,11 @@ def save_invoice(request):
         subtotal = request.POST.get("SubTotal")
         distotal = request.POST.get("purchase_Discountotal")
         # subtotal = request.POST.get("SubTotal")
-        cgst_5 = request.POST.get("CGST_5")
-        sgst_5 = request.POST.get("SGST_5")
-        igst_5 = request.POST.get("IGST_5")
-        cgst_12 = request.POST.get("CGST_12")
-        sgst_12 = request.POST.get("SGST_12")
-        igst_12 = request.POST.get("IGST_12")
-        cgst_18 = request.POST.get("CGST_18")
-        sgst_18 = request.POST.get("SGST_18")
-        igst_18 = request.POST.get("IGST_18")
-        cgst_28 = request.POST.get("CGST_28")
-        sgst_28 = request.POST.get("SGST_28")
-        igst_28 = request.POST.get("IGST_28")
-        cgst_other = request.POST.get("CGST_other")
-        sgst_other = request.POST.get("SGST_other")
-        igst_other = request.POST.get("IGST_other")
+        cgst = request.POST.get("CGST")
+        print(cgst)
+        sgst = request.POST.get("SGST")
+        igst = request.POST.get("IGST")
+
         shipping_charges = request.POST.get("shipping_charges")
         total_amount = request.POST.get("Total")
 
@@ -352,25 +342,13 @@ def save_invoice(request):
             attachements=attachement,
             sub_total = subtotal,
             total_discount = distotal,
-            cgst_5 = cgst_5 ,
-            igst_5 = igst_5,
-            sgst_5 = sgst_5,
-            cgst_12 = cgst_12,
-            igst_12 = igst_12,
-            sgst_12 = sgst_12,
-            cgst_18 = cgst_18,
-            igst_18 = igst_18,
-            sgst_18 = sgst_18,
-            cgst_28 = cgst_28,
-            igst_28 = igst_28,
-            sgst_28 = sgst_28,
-            cgst_other = cgst_other,
-            igst_other = igst_other,
-            sgst_other = sgst_other,
             total_amount = total_amount,
-            shipping_charges = shipping_charges            
+            shipping_charges = shipping_charges,     
+            cgst = cgst,
+            sgst = sgst,
+            igst = igst,       
        )
-        if(cgst_5 != '' or cgst_12 != '' or cgst_18 !='' or cgst_18 or cgst_other != ''):
+        if(cgst != '' or sgst != ''):
             invoice.is_cs_gst = True
         else:
             invoice.is_cs_gst = False
@@ -404,6 +382,7 @@ def save_invoice(request):
         product_sgst = request.POST.getlist('row_sgst[]',None)
         product_igst = request.POST.getlist('row_igst[]',None)
         product_amount = request.POST.getlist('Amount[]',None)
+        product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
         count = len(product_name)
         header_count = 1
@@ -433,6 +412,7 @@ def save_invoice(request):
                         sgst_amount = product_sgst[i],
                         igst_amount = product_igst[i],
                         amount=product_amount[i],
+                        amount_inc = product_amount_inc[i],
                         header_number_count = row_count,
                         # tax_amount = (float(product_tax[i])/100)*float(product_amount[i]), 
                         # igst_amount = float(igst[i]) if len(igst) > 0 else 0,
@@ -460,6 +440,7 @@ def save_invoice(request):
                         sgst_amount = product_sgst[i-header],
                         igst_amount = product_igst[i-header],
                         amount=product_amount[i],
+                        amount_inc = product_amount_inc[i-header],
                         # header_number_count = row_count,
                         # tax_amount = (float(product_tax[i-header])/100)*float(product_amount[i]), 
                         # igst_amount = float(igst[i]) if len(igst) > 0 else 0,
@@ -681,21 +662,9 @@ class EditInvoice(View):
             subtotal = request.POST.get("SubTotal")
             distotal = request.POST.get("purchase_Discountotal")
             # subtotal = request.POST.get("SubTotal")
-            cgst_5 = request.POST.get("CGST_5")
-            sgst_5 = request.POST.get("SGST_5")
-            igst_5 = request.POST.get("IGST_5")
-            cgst_12 = request.POST.get("CGST_12")
-            sgst_12 = request.POST.get("SGST_12")
-            igst_12 = request.POST.get("IGST_12")
-            cgst_18 = request.POST.get("CGST_18")
-            sgst_18 = request.POST.get("SGST_18")
-            igst_18 = request.POST.get("IGST_18")
-            cgst_28 = request.POST.get("CGST_28")
-            sgst_28 = request.POST.get("SGST_28")
-            igst_28 = request.POST.get("IGST_28")
-            cgst_other = request.POST.get("CGST_other")
-            sgst_other = request.POST.get("SGST_other")
-            igst_other = request.POST.get("IGST_other")
+            cgst_amount = request.POST.get("CGST")
+            sgst_amount = request.POST.get("SGST")
+            igst_amount = request.POST.get("IGST")
             shipping_charges = request.POST.get("shipping_charges")
             total_amount = request.POST.get("Total")
             is_tc = request.POST.get('invoice_t&c','off')
@@ -732,12 +701,10 @@ class EditInvoice(View):
             InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
                         invoice_number = invoice_number,invoice_check = check_invocie_number,save_type=save_type,invoice_date = in_date,invoice_type_new = invoice_new,
                         invoice_type_recurring = invoice_recurring, invoice_salesperson = invoice_employee,invoice_state_supply = invoice_state_supply,
-                        terms_and_condition = term_condition, Note=message,attachements=attachement,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
-                        sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
-                        cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
-                        total_amount = total_amount,shipping_charges=shipping_charges)
+                        terms_and_condition = term_condition, Note=message,attachements=attachement,sub_total=subtotal,total_discount=distotal,cgst = cgst_amount,
+                        sgst = sgst_amount,igst = igst_amount,total_amount = total_amount,shipping_charges=shipping_charges)
             
-            if(cgst_5 != '' or cgst_12 != '' or cgst_18 !='' or cgst_18 or cgst_other != ''):
+            if(cgst_amount != '' or sgst_amount != ''):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
             else:
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = False)
@@ -770,6 +737,7 @@ class EditInvoice(View):
             product_sgst = request.POST.getlist('row_sgst[]',None)
             product_igst = request.POST.getlist('row_igst[]',None)
             product_amount = request.POST.getlist('Amount[]',None)
+            product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
             Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice)).delete()
 
@@ -800,6 +768,7 @@ class EditInvoice(View):
                         sgst_amount = product_sgst[i],
                         igst_amount = product_igst[i],
                         amount=product_amount[i],
+                        amount_inc = product_amount_inc[i],
                         header_number_count = row_count,
                         # tax_amount = (float(product_tax[i])/100)*float(product_amount[i]), 
                         # igst_amount = float(igst[i]) if len(igst) > 0 else 0,
@@ -826,6 +795,7 @@ class EditInvoice(View):
                         sgst_amount = product_sgst[i-header],
                         igst_amount = product_igst[i-header],
                         amount=product_amount[i],
+                        amount_inc = product_amount_inc[i-header],
                         header_number_count = row_count,
                         # tax_amount = (float(product_tax[i-header])/100)*float(product_amount[i]), 
                         # igst_amount = float(igst[i]) if len(igst) > 0 else 0,
@@ -965,7 +935,10 @@ class CloneInvoice(View):
 
         self.data["invoice_item"] = a
         self.data['acc_ledger_income'] = acc_ledger_income
-        self.data["item_count"] = len(invoice_row)-1
+        if(len(a) == 0):
+            self.data["item_count"] = 0
+        else:
+            self.data["item_count"] = len(a)-1
         self.data['item_header_count'] = len(invoice_row_header)
 
         self.data['payment_terms'] = payment_constants.PAYMENT_DAYS

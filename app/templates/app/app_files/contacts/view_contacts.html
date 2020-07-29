@@ -189,8 +189,8 @@
                                                             </div>
                                                             
                                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px; ">
-                                                                <center><button onclick="remove({{contact.id}})" class="btn btn-success mr-2" style="align-content: center;margin-left:135px;">Yes</button></center>
-                                                                <button id="{{contact.id}}" onclick="can({{contact.id}})" class="btn " style="margin-left:5px;">No</button>
+                                                                <center><button onclick="remove({{contact.id}})" class="btn  mr-2" style="align-content:left;margin-left:150px;background-color:#598ebb;">Yes</button></center>
+                                                                <center><button id="{{contact.id}}" onclick="can({{contact.id}})" class="btn " style="">No</button></center>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -209,8 +209,8 @@
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><button onclick="status({{contact.id}},'{{contact.display_name}}')" class="btn  mr-2" style="align-content: center;margin-left:135px;background-color:#598ebb;">Yes</button>
-                                                            <button id="{{product.id}}" onclick="nodeactive({{contact.id}})" class="btn " style="margin-left:5px;">No</button></center>
+                                                            <center><button onclick="status({{contact.id}},'{{contact.display_name}}')" class="btn  mr-2" style="align-content:left;margin-left:150px;background-color:#598ebb;">Yes</button>
+                                                            <button id="{{product.id}}" onclick="nodeactive({{contact.id}})" class="btn " style="">No</button></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -228,8 +228,8 @@
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><button onclick="status({{contact.id}},'{{contact.display_name}}')" class="btn  mr-2" style="align-content: center;background-color:#598ebb;margin-left:135px;">Yes</button>
-                                                            <button id="{{contact.id}}" onclick="noactive({{contact.id}})" class="btn " style="margin-left:5px;">No</button></center>
+                                                            <center><button onclick="status({{contact.id}},'{{contact.display_name}}')" class="btn  mr-2" style="align-content: center;background-color:#598ebb;margin-left:150px;">Yes</button>
+                                                            <button id="{{contact.id}}" onclick="noactive({{contact.id}})" class="btn " style="">No</button></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -316,8 +316,8 @@
                           
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-sm btn-success" type="button" onclick="customize_view(1)">apply</button>
-                        <a class="btn btn-sm btn-danger" href="{% url 'contacts' 0 %}" type="reset">Cancel</a>
+                        <button class="btn btn-sm " type="button" onclick="customize_view(1)" style="background-color: #598ebb;">apply</button>
+                        <a class="btn btn-sm " href="{% url 'contacts' 0 %}" type="reset" style="background-color: #9095a2;">Cancel</a>
                         
                     </div>
                 </form>

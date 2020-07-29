@@ -487,7 +487,7 @@ optgroup{color :black; }
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="change_state()" style="padding-left: 9px;">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in state %}
                                         <option value="{{i}}">{{i}}</option>
@@ -608,7 +608,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required>
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -677,9 +677,10 @@ optgroup{color :black; }
                           
                         </tbody>
                     </table>
-
-                <div class="form-group">
-                    <div class="col-md-12">
+               
+            <div class="container">
+                <div class="row">
+                    <div class="col">
                         <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: -4px;margin-bottom: 8px;">Add </button>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                             <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row(0)" style="padding:5px 5px;width: 94%">add row</button>
@@ -687,10 +688,7 @@ optgroup{color :black; }
                             <button type="button" class="dropdown-item" id="add_item_btn" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%">add item in bulk</button>
                         </div>
                     </div>
-                    <!-- <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="invoice_addRow(0)" style="text-decoration: underline;color: white;margin-top: -4px;margin-bottom: 8px;">Add Row</button> -->
                 </div>
-               
-            <div class="container">
                 <div class="row">
 
                     <div class="col-7">
@@ -893,7 +891,7 @@ optgroup{color :black; }
 
 <div class="modal fade" id="ProductModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
+        <div class="modal-content" style="background-color:#202940;width: 118%;">
             <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Product</h5>
@@ -1181,8 +1179,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return invoice_product_form(0)" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return invoice_product_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
                 </div>
             </form>
         </div>
@@ -1194,7 +1192,7 @@ optgroup{color :black; }
 
 <div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
+        <div class="modal-content" style="background-color:#202940;width: 118%;">
             <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_contact_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Contact</h5>
@@ -1664,7 +1662,7 @@ optgroup{color :black; }
                 </div>
                 <div class="modal-footer" style="margin-top: -3%;">
                     <!-- <button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form()">Save</button> -->
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="contact_type_add" aria-label="Close" style=" margin-top:16px;">Cancel</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="contact_type_add" aria-label="Close" style=" margin-top:16px;background-color: #9095a2;">Cancel</button>
                 </div>
             </form>
         </div>
@@ -1692,7 +1690,7 @@ optgroup{color :black; }
                                 <td style="border:0px; width:150px;">
                                    <label>Major Head</label> 
                                 </td>
-                                <td style="border:0px;color: #c3c3c3;">Income</td>
+                                <td style="border:0px;color:black;">Income</td>
                             </tr>
                             <tr>
                                 <td style="border:0px; width:150px;">
@@ -1717,8 +1715,8 @@ optgroup{color :black; }
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return invoice_account_ledger_form()" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return invoice_account_ledger_form()" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" style="background-color: #9095a2;">Cancel</button>
                 </div>
             </form>
         </div>
@@ -1753,7 +1751,7 @@ optgroup{color :black; }
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-primary" type="button" onclick=" return add_bulk_product_item()">add item</button>
-                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" onclick="hide_bulk_item()">Cancel</button>
+                    <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal"aria-label="Close" onclick="hide_bulk_item()">Cancel</button>
                 </div>
             </form>
         </div>

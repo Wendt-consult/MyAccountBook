@@ -345,7 +345,7 @@ optgroup{color :black; }
                                     <label for="purchase_delivary_date">Order Delivery Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control" id="purchase__delivary_date" required>
+                                    <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control">
                                 </div>
                                 <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
                                     <i class="fa fa-calendar" id="delivary_date_icon"></i>
@@ -399,7 +399,7 @@ optgroup{color :black; }
                                     <label for="choose_customer_address"></label>
                                 </div>
                                 <div class="col-8">
-                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()">
+                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()" style="width: 100%;">
                                         <option value="">-------</option>
 
                                         {% for contact in contacts %}
@@ -410,7 +410,7 @@ optgroup{color :black; }
                                     </select>
                                 </div>
                             </div>
-
+                            <!-- hidden delivary state -->
                             <div class="row" style="display: none;">
                                 <div class="col-4">
                                     <label for="order_state"></label>
@@ -425,7 +425,7 @@ optgroup{color :black; }
                                     
                                 </div>
                                 <div class="col-8 input">
-                                    <textarea id="purchase_address" name="purchase_address" placeholder="delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly></textarea>
+                                    <textarea id="purchase_address" name="purchase_address" placeholder="Delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly></textarea>
                                 </div>
                             </div>
 
@@ -484,7 +484,7 @@ optgroup{color :black; }
                             <th scope="col" style="border:1px solid black;width: 8%;">Quantity</th>
                             <th scope="col" style="border:1px solid black;width: 15%;">Unit</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Discount</th>
-                            <th scope="col" style="border:1px solid black;width: 8%;">Tax</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Tax(In %)</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                           
                         </thead>
@@ -547,7 +547,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required>
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -565,22 +565,23 @@ optgroup{color :black; }
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,'Amount1')" onkeyup="balnk_credit()" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control amount" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                                 
                             </td>
-                            <td><span class="tbclose material-icons" id="clear_row" name="Clear_row"  onclick="clear_row()" style="cursor: default;">delete_forever</span></td>
+                            <td><span class="tbclose material-icons" id="1" name="1" onclick="creditnote_removeRow(1)" style="cursor: default;">delete_forever</span></td>
                           </tr>
                           
                         </tbody>
                     </table>
-
-                <div class="form-group">
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="purchase_addRow(0)" style="text-decoration: underline;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
-                </div>
                
             <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    </div>
+                </div>
                 <div class="row">
 
                     <div class="col-7">
@@ -602,7 +603,7 @@ optgroup{color :black; }
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="purchase_t&c" name="purchase_t&c">
-                                        use this as default Terms and Condition
+                                        Use this as default terms and conditions
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
@@ -629,7 +630,7 @@ optgroup{color :black; }
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="purchase_default_notes" name="purchase_default_notes">
-                                        use this as default Notes
+                                        Use this as default notes
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
@@ -899,7 +900,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="advance" name="advance" readonly>
                             </div> 
                             <div class="col-1" style="padding-left: 2px;padding-right: 0%;">
-                                <span class="material-icons note_add" style="color: white;cursor: default;" onclick="show_advance_info()">add_box</a>
+                                <span class="material-icons note_add" style="color: black;cursor: default;" onclick="show_advance_info()">add_box</a>
                             </div>
                         </div> 
 
@@ -1439,7 +1440,7 @@ optgroup{color :black; }
 
                                 <tr>
                                     <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
-                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#4682B4;">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#598ebb;">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
                                                 aria-selected="false">Address Details</a>
@@ -1779,7 +1780,7 @@ optgroup{color :black; }
 <div class="modal fade" id="advance_info" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 81%;margin-left: 20%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Advance Option</h5>
                 </div>
@@ -1884,7 +1885,7 @@ optgroup{color :black; }
 <div class="modal fade" id="Purchase_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Choose Address</h5>
                     <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1894,12 +1895,12 @@ optgroup{color :black; }
                 <div class="modal-body">
                     {% csrf_token %}
 
-                    <table class="table" id="purchase_delivery_address" style="">
+                    <table class="table" id="purchase_delivery_address">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid white;width: 15%;">SL No.</th>
-                            <th scope="col" style="border:1px solid white;width: 25%;">Branch</th>
-                            <th scope="col" style="border:1px solid white;">Address</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Choose</th>
+                            <th scope="col" style="border:1px solid black;width: 25%;">Branch</th>
+                            <th scope="col" style="border:1px solid black;">Address</th>
 
                         </thead>
 
@@ -1911,6 +1912,7 @@ optgroup{color :black; }
                    
                 </div>
                 <div class="modal-footer" id="add_button">
+                    <button class="btm btn-sm" type="button" name="select_address" id="select_address" onclick="return prefill()">Submit</button>
                     <!-- <button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form()">Save</button> -->
                     <button class="btn btn-sm " type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>
                 </div>
@@ -1971,7 +1973,7 @@ optgroup{color :black; }
 								</td>                                    
 							</tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Contact Person
                                 </td>
                                 <td style="border:0px;">
@@ -1979,7 +1981,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Address Tag
                                 </td>
                                 <td style="border:0px;">
@@ -1987,7 +1989,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Flat/Building No.
                                 </td>
                                 <td style="border:0px;">
@@ -1995,7 +1997,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Street
                                 </td>
                                 <td style="border:0px;">
@@ -2003,7 +2005,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     City
                                 </td>
                                 <td style="border:0px;">
@@ -2011,7 +2013,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Pincode
                                 </td>
                                 <td style="border:0px;">
@@ -2019,7 +2021,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     State
                                 </td>
                                 <td style="border:0px;">
@@ -2027,7 +2029,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Country
                                 </td>
                                 <td style="border:0px;">
@@ -2066,7 +2068,7 @@ optgroup{color :black; }
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr style="display: none;">
-                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: black;">
                                     Is Shipping Address
                                 </td>
                                 <td style="border:0px; padding:0px">     
@@ -2078,7 +2080,7 @@ optgroup{color :black; }
                                         <span class="slider round"></span>
                                     </label>
 
-                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                    <span style="margin-left: 40px; position: relative; top: 5px;color: black;">
                                         Is Billing Address
                                     </span>
 
@@ -2089,7 +2091,7 @@ optgroup{color :black; }
                                 </td>  
                             </tr>
 							<tr style="display: none;">
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: black;;">
 									Set Address As Default
 								</td>
 								<td style="border:0px;">
@@ -2101,7 +2103,7 @@ optgroup{color :black; }
 								</td>                                    
 							</tr>
 							<tr>
-								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: #a7a4a4;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: black;">
 									Address Tag
 								</td>
 								<td style="border:0px;">
@@ -2109,7 +2111,7 @@ optgroup{color :black; }
 								</td>                                    
 							</tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Contact Person
                                 </td>
                                 <td style="border:0px;">
@@ -2117,7 +2119,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Flat/Building No.
                                 </td>
                                 <td style="border:0px;">
@@ -2125,7 +2127,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Street
                                 </td>
                                 <td style="border:0px;">
@@ -2133,7 +2135,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     City
                                 </td>
                                 <td style="border:0px;">
@@ -2141,7 +2143,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Pincode
                                 </td>
                                 <td style="border:0px;">
@@ -2149,7 +2151,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     State
                                 </td>
                                 <td style="border:0px;">
@@ -2157,7 +2159,7 @@ optgroup{color :black; }
                                 </td>                                    
                             </tr>
                             <tr>
-                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
                                     Country
                                 </td>
                                 <td style="border:0px;">
@@ -2217,7 +2219,7 @@ optgroup{color :black; }
                                 <td style="border:0px; width:150px;">
                                    <label>Major Head</label> 
                                 </td>
-                                <td style="border:0px;color: #c3c3c3;;">Expense</td>
+                                <td style="border:0px;color:black;">Expense</td>
                             </tr>
                             <tr>
                                 <td style="border:0px; width:150px;">

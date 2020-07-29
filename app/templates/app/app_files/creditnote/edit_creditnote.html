@@ -533,7 +533,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col" style="margin-top:6px">
                                     <input type="file" class="form-control" id="Attachment" value="{{credit_note.attachements}}" name="Attachment"  style="padding-top: 1px;margin-left: -17px;">
-                                    <p id="creditnote_filename" style="color: white;position: absolute;margin-top: -5%;margin-left: 23%;">{{credit_note.attachements|truncatechars:15}}</p>
+                                    <p id="creditnote_filename" style="color: black;position: absolute;margin-top: -5%;margin-left: 23%;">{{credit_note.attachements|truncatechars:15}}</p>
                                     <input type="button"  style="margin-left: 62%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
                                     <font color="black" style="font-size:x-small;margin-left: -4%;">File Size Less Than: 20 MB </font><br>
                                    
@@ -1322,8 +1322,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick="return creditnote_product_form(0)" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick="return creditnote_product_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm" type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
                 </div>
             </form>
         </div>
@@ -1465,7 +1465,7 @@ optgroup{color :black; }
 
                                 <tr>
                                     <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
-                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px; background-color:#556b2f">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#598ebb">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
                                                 aria-selected="true">Address Details</a>
@@ -1686,7 +1686,7 @@ optgroup{color :black; }
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
+                                                <button class="btn btn-sm pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -1794,8 +1794,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" style="margin-top: -3%;">
-                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick=" return creditnote_contact_form(0)" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick=" return creditnote_contact_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm" type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>
                 </div>
             </form>
         </div>

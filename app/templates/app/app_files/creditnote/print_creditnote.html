@@ -291,7 +291,7 @@ footer {
           {% for item in creditnote_item %}
           <tr>
             <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
-            <td class="desc" style="word-break: break-all;text-align: left;border: 1px solid black;" ><h3>{{item.product|capfirst}}</h3>{{item.description|capfirst}}</td>
+            <td class="desc" style="word-break: break-all;text-align: left;border: 1px solid black;" ><h3 style="color: #555555;">{{item.product|capfirst}}</h3>{{item.description|capfirst}}</td>
             <td class="type" style="text-align: left;border: 1px solid black;">{{item.product_type}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>

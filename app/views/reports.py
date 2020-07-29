@@ -7,12 +7,29 @@ from app.models import *
 from app.forms import *
 from app.helpers import *
 from app.other_constants import user_constants
-from django.utils import timezone
+from django.utils import timezone, safestring
 from django.contrib.auth.models import User
 
-import openpyxl, calendar
+from django.conf import settings
+
+import os
+import calendar
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+import openpyxl
+from openpyxl.styles.borders import Border, Side, BORDER_THICK, BORDER_THIN
+from openpyxl.styles.fills import Fill, PatternFill 
+from openpyxl.styles.fonts import Font
+
+from easy_pdf.rendering import render_to_pdf_response
+
+
+def get_reports_pdf(request):
+    template_name = 'app/app_files/reports/pdf_report.html'
+    context = {'html_data': request.POST["html_content"]} 
+    return render_to_pdf_response(request,template_name,context)
+
 
 
 class GSTLedgerReportsView(View):
@@ -30,7 +47,6 @@ class GSTLedgerReportsView(View):
 
     data["included_template"] = 'app/app_files/reports/gst_ledger_reports.html'
 
-
     #****************************************************************************
     #
     #****************************************************************************
@@ -40,6 +56,19 @@ class GSTLedgerReportsView(View):
         ws = wb.active
         ws.title = "Reports"
 
+        thick_border = Border(left=Side(style=BORDER_THICK), 
+                     right=Side(style=BORDER_THICK), 
+                     top=Side(style=BORDER_THICK), 
+                     bottom=Side(style=BORDER_THICK))
+
+        thin_border = Border(left=Side(style=BORDER_THIN), 
+                     right=Side(style=BORDER_THIN), 
+                     top=Side(style=BORDER_THIN), 
+                     bottom=Side(style=BORDER_THIN))
+
+        header_fill = PatternFill(fgColor='363231', fill_type = 'solid')
+
+        header_font = Font(size=12, color='FFFFFF', bold=True)
 
         if personal_data is not None:
             ws.cell(row=1, column=1).value = "Name"
@@ -65,6 +94,9 @@ class GSTLedgerReportsView(View):
 
         for head in range(1, len(headers)+1):
             ws.cell(row=9, column=head).value = headers[head-1]
+            ws.cell(row=9, column=head).border = thick_border
+            ws.cell(row=9, column=head).fill = header_fill
+            ws.cell(row=9, column=head).font = header_font
 
         index_col = None
         if "Month" in headers:
@@ -95,17 +127,31 @@ class GSTLedgerReportsView(View):
                     else:
                         ws.cell(row=row, column=col).value = query_dict[row-10][col-1]
         
+                ws.cell(row=row, column=col).border = thin_border
+                
+
+
         chrr = chr(col+65-1)
         head_crr = chr(col+65-2)
 
         try:
             ws[head_crr+str(row+1)] = "TOTAL"
+            ws[head_crr+str(row+1)].border = thick_border
+            ws[head_crr+str(row+1)].fill = header_fill
+            ws[head_crr+str(row+1)].font = header_font
+
             ws[chrr+str(row+1)] = '= SUM('+chrr+'10:'+chrr+str(row)+')'
+            ws[chrr+str(row+1)].border = thick_border
+            ws[chrr+str(row+1)].fill = header_fill
+            ws[chrr+str(row+1)].font = header_font
+
         except:
             pass
         
+        print(os.path.join(settings.REPORTS,filename))
         try:
-            wb.save(filename)
+            
+            wb.save(os.path.join(settings.REPORTS,filename))
         except:
             pass
 
@@ -116,7 +162,6 @@ class GSTLedgerReportsView(View):
     def get(self, request, *args, **kwargs):
 
         save_btn = request.GET.get("save_btn", False)
-
         #
         #
 
@@ -133,7 +178,13 @@ class GSTLedgerReportsView(View):
         year_xx = timezone.now().year
         self.data["year_list"] = [year for year in range(year_xx - 10, year_xx+1)]
 
+        self.data["gst_reports_show"] = False
+        self.data["pdf_btn"] = False
+
         if save_btn:
+
+            self.data["gst_reports_show"] = True
+            self.data["pdf_btn"] = True
 
             start_date = request.GET.get("start_date", "")
             end_date = request.GET.get("end_date", "")
@@ -471,8 +522,6 @@ class GSTLedgerReportsView(View):
 
             self.data["gst_reports"] = gst_reports
 
-            print(gst_reports.query)
-
             #
             #
             main_tax = 0
@@ -490,6 +539,39 @@ class GSTLedgerReportsView(View):
                     if g_type == 'igst':
                         main_tax += float(row["igst_amount"])
 
-            self.data["main_tax"] = main_tax
+            self.data["main_tax"] = '{0:.2f}'.format(main_tax)
+            self.data["filename"] = filename
+
+            try:
+                org = users_model.Organisations.objects.get(user = request.user)
+
+                org_info = users_model.Organisation_Info.objects.get(organisation = org)
+
+                self.data["org_email"] = org_info.email
+            except:
+                self.data["org_email"] = ""
 
         return render(request, self.template_name, self.data)
+
+
+#
+#
+#        
+def send_email(request):
+    if request.POST:
+        
+        subject = "Reports Mail"
+        msg_body = 'test'
+
+        msg_html = "<html><body>"+msg_body+"</body></html>"
+
+        to_list = [request.POST["email_address"]]
+        cc_list = []
+    
+        attachements = []
+        attachements = [os.path.join(settings.REPORTS,request.POST["file_name"])]   
+    
+        msg = email_helper.Email_Helper(to=to_list, cc=cc_list, subject=subject, message=msg_html, attachment=attachements)
+        msg.mail_send()
+
+    return redirect("/reports/gst_ledger/")

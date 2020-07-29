@@ -87,6 +87,11 @@ function check_gst(forloop,address_id,state){
             $("#editAddressModal-"+forloop).find("#gst_reg").val(data.gst_reg_type);
 			$("#editAddressModal-"+forloop).find("#org_address_ids").val(address_id);
 			$("#editAddressModal-"+forloop).find("#org_address_state").val(data.state);
+			if(data.is_deafult == 'yes'){
+				$("#editAddressModal-"+forloop).find("#default_tax").prop('checked',true);
+			}else{
+				$("#editAddressModal-"+forloop).find("#default_tax").prop('checked',false);
+			}
 			$("#editAddressModal-"+forloop).modal('show')
 			if(data.gstin !="" && data.gstin != null && data.count == 'yes'){ 
 				alert("Already a GST Number is registered in this state");
@@ -113,6 +118,7 @@ $('#no_orginsation_register').click(function(){
         $('#is_orginsation_register').prop('checked', false)
 		$('#gst_multiple').hide()
 		$('#gst_configuration_setting').hide()
+		$('.single_gst_field').hide()
 		$('#is_single_gst').prop('checked', false)
 		$('#is_multiple_gst').prop('checked', false)
     }
@@ -175,21 +181,21 @@ function gst_state_code(elem){
 			var org_id = $('#org_id').val()
 			$.post("/org/gst_state_code/",{'state':state, 'org_id':org_id,'csrfmiddlewaretoken':csrf_token},function(data){
 				if(data == 0){
-					$('#error_field').text('GST state code not match with existing address state') 
+					$('#error_field').text('GST state code not matching with existing address state') 
 					$('#org_single_gst_save').prop('disabled', true)
 				}else{
 					$('#gst_state').val($("#single_gst_code option[value="+str+"]").text())
 				}
 			});
 		}else{
-			$('#error_field').text('GST state code not match with existing address state') 
+			$('#error_field').text('GST state code not matching with existing address state') 
 			$('#org_single_gst_save').prop('disabled', true)
 		}
 	}
 }
 
 function multiple_state_code(elem){
-	if(($('.error_field').text() == '' || $('.error_field').text() == 'GST state code not match with existing address state' ) & $(elem).val() != ''){
+	if(($('.error_field').text() == '' || $('.error_field').text() == 'GST state code not matching with existing address state' ) & $(elem).val() != ''){
 		var str = $(elem).val()
 		str = str.substring(0,2)
 		if($("#single_gst_code option[value="+str+"]").length > 0){
@@ -197,12 +203,12 @@ function multiple_state_code(elem){
 			var ids = $(modal_id).find("#org_address_state").val();
 			console.log(state,ids)
 			if(state != ids){
-				$('.error_field').text('GST state code not match with existing address state') 
+				$('.error_field').text('GST state code not matching with existing address state') 
 				$('.multiple_update').prop('disabled', true)
 			}
 			
 		}else{
-			$('.error_field').text('GST state code not match with existing address state') 
+			$('.error_field').text('GST state code not matching with existing address state') 
 			$('.multiple_update').prop('disabled', true)
 		}
 	}
@@ -212,3 +218,31 @@ $('.mul_cancel_gst').click(function(){
 	$('.error_field').text('') 
 	$('.multiple_update').prop('disabled', false)
 })
+
+/********************************************************************/
+// SET DEFAULT GST
+/********************************************************************/
+
+function set_default_tax(elem){
+	
+	if($(elem).prop("checked")){
+		c_box = confirm('Do you really want to set this gst as a default');
+	
+		if(c_box){
+
+			$(elem).prop("checked",true);
+		}else{
+			$(elem).prop("checked",false);
+		}
+	}else{
+		c_box = confirm('Do you really want to remove this gst from default');
+		if(c_box){
+			$(elem).prop("checked",false);
+					
+		}else{
+			$(elem).prop("checked",true);
+		}
+	}
+	
+	
+}

@@ -78,6 +78,14 @@ class PurchaseOrder(models.Model):
         null= False,
     )
 
+    purchase_status =  models.IntegerField(
+        default = 0,
+        db_index = True,
+        blank = True,
+        null = True,
+        choices = payment_constants.purchse_status
+    )
+
     purchase_refrence = models.CharField(
         db_index = True,
         max_length=100,

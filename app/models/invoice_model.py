@@ -150,7 +150,8 @@ class InvoiceModel(models.Model):
         null=True,
     ) 
 
-    invoice_recurring_advance = models.IntegerField(
+    invoice_recurring_advance = models.CharField(
+        max_length=15,
         db_index = True,
         blank=True,
         null=True,
