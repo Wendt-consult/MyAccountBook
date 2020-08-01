@@ -1,0 +1,36 @@
+<div class="modal fade" id="invoice_multi_gst" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="width: 80%;">
+            <form method="post" style="margin:0px" enctype="multipart/form-data">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Choose GST</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+
+                    <table class="table" id="GST_table" style="width: 55%;" align="center">
+                        <thead class=" text-primary" style="background-color: black;">
+                          
+                            <th scope="col" style="border:1px solid black;width: 15%;">Choose</th>
+                            <th scope="col" style="border:1px solid black;width: 35%;">GST Number</th>
+
+                        </thead>
+
+                        <tbody>
+                          
+                        </tbody>
+
+                    </table>
+                   
+                </div>
+                <div class="modal-footer" id="add_button">
+                    <button class="btn btn-sm" type="button" name="add_address"data-dismiss="modal"aria-label="Close" id="button_add" onclick="button_click('multiple')" style="background-color: #598ebb;">Update</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

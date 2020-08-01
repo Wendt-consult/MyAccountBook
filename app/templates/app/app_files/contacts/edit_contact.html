@@ -248,8 +248,8 @@ input[type=number]::-webkit-inner-spin-button,
                                                                     </div>
                                                                     
                                                                     <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                                        <center><button onclick="delete_address({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left:135px;">Yes</button></center>
-                                                                        <button aria-label="Close" data-dismiss="modal" class="btn btn-warning" style="margin-left:5px;">No</button>
+                                                                        <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left:135px;background-color:#598ebb">Yes</button></center>
+                                                                        <button aria-label="Close" data-dismiss="modal" class="btn" style="margin-left:5px;">No</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -287,7 +287,7 @@ input[type=number]::-webkit-inner-spin-button,
                                             <td class="text-center" style="width:15%;border: 1px solid black;">IFSC Code</td>
                                             <td class="text-center" style="width: 16%;border: 1px solid black;">Bank Name</td>
                                             <td class="text-center" style="width:17%;border: 1px solid black;">Branch Name</td>              
-                                            <td class="text-center" width="60px;border: 1px solid black;">Action</td>                
+                                            <td class="text-center" style="width:60px;border: 1px solid black;">Action</td>
                                         </tr>   
                                         {% for i in contact_accounts %}
                                             <tr>
@@ -323,8 +323,8 @@ input[type=number]::-webkit-inner-spin-button,
                                                             </div>
                                                             
                                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                                <center><button onclick="delete_accounts({{i.id}})" class="btn btn-success mr-2" style="align-content: left;margin-left:135px;">Yes</button></center>
-                                                                <button aria-label="Close" data-dismiss="modal" class="btn btn-warning" style="margin-left:5px;">No</button>
+                                                                <center><button onclick="delete_accounts({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left:135px;background-color:#598ebb">Yes</button></center>
+                                                                <button aria-label="Close" data-dismiss="modal" class="btn " style="margin-left:5px;">No</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -538,7 +538,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="width:40%;border:0px;">
                                     {{ contact_form.email }}
                                 </td>  
-                                <td style="border:0px;" class="error_field"></td>                                   
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                             <tr>
@@ -556,7 +556,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     </div>
                                     
                                 </td>    
-                                <td style="border:0px;" class="error_field"></td>                                   
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -596,7 +596,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="width: 45%;border:0px;">
                                     {{ tax_form.pan }}
                                 </td>    
-                                <td style="border:0px;" class="error_field"></td>                                 
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style=" width:170px; border:0px; vertical-align: bottom; color:#000">
@@ -614,7 +614,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     {{ tax_form.gstin }}
                                      
                                 </td> 
-                                <td style="border:0px;" class="error_field"></td>  
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <!--
                             <tr>
@@ -955,7 +955,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="border:0px;">
                                     {{ i.ifsc_code }}
                                 </td>   
-                                <td style="border:0px;width: 36%;" class="error_field"></td>                                  
+                                <td style="border:0px;width: 36%;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="padding:0px 0px 0px 10px;border:0px; vertical-align: bottom; color:#000">
@@ -1027,7 +1027,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="border:0px;width: 40%;">
                                     {{ new_accounts_form.ifsc_code }}
                                 </td>                 
-                                <td style="border:0px;" class="error_field"></td>                    
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#000">
@@ -1163,7 +1163,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     {{ social_form.website }}
                                      
                                 </td>
-                                <td style="border:0px;" class="error_field"></td>  
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             
                             <tr>
@@ -1173,7 +1173,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="border:0px;">
                                     {{ social_form.facebook }}
                                 </td>
-                                <td style="border:0px;" class="error_field"></td>  
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="border:0px; vertical-align: bottom">
@@ -1182,7 +1182,7 @@ input[type=number]::-webkit-inner-spin-button,
                                 <td style="border:0px;">
                                     {{ social_form.twitter }}
                                 </td>
-                                <td style="border:0px;" class="error_field"></td>  
+                                <td style="border:0px;color:black;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="border:0px; vertical-align: bottom">
@@ -1203,7 +1203,7 @@ input[type=number]::-webkit-inner-spin-button,
                             </tr>
                         </tbody>
                     </table>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="margin-left:-16px;margin-right:-16px;margin-bottom:-16px;">
                         <button class="btn btn-sm  save_button" onclick="return check()" style="background-color:#598ebb">Update</button>
                         <button class="btn btn-sm" type="reset" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>
                     </div>

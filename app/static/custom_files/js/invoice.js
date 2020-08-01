@@ -70,14 +70,12 @@ function add_header(a){
 
         // check vendor state
         var state = $('#invoice_state_supply').val()
-        if(state == ''){
-            state = 'NA'
-        }
+        var org_state = $('#single_gst_code option:selected').text()
 
         var html = '<tr id="invoice_row_header'+invoice_header_number+'">'
-        if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''|| global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
+        if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
             html +='<td class="invoice_row_header" colspan="8" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
-        }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+        }else if(org_state.toLowerCase() != state.toLowerCase()){
             html +='<td class="invoice_row_header" colspan="7" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
         }
         html +='<td colspan="3" style="border-bottom:1px solid black; border-right:1px solid black;"><div class="row"><div class="col-lg-4 col-md-5" style="padding-right:0px;"><font style="color:black;">Sub Total:</font></div><div class="col-lg-8 col-md-7" style="padding-left:0px;margin-top:2%;"><input type="text" class="form-control" id="header_SubTotal'+invoice_header_number+'" name="Amount[]" readonly></div></div></td>'
@@ -196,6 +194,7 @@ $('input[type=number]').on('keydown',function(e) {
   
 function product_row_creator(invoice_number){
     var state = $('#invoice_state_supply').val()
+    var org_state = $('#single_gst_code option:selected').text()
     var html = '<tr id="invoice_row'+invoice_number+'">'
     html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
     html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
@@ -208,11 +207,11 @@ function product_row_creator(invoice_number){
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+invoice_number+'" name="Dis[]" onchange="dicount_type('+invoice_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" required><datalist id="tax" readonly><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
-    if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
+    if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+invoice_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+invoice_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_i_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+invoice_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'
-    }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+    }else if(org_state.toLowerCase() != state.toLowerCase()){
         html += '<td class="row_cs_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+invoice_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_cs_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+invoice_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_i_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+invoice_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'    
@@ -577,7 +576,12 @@ function product(a) {
 
                 $("#Quantity"+a+"").val("")
                 $("#Discount"+a+"").val("")
-                $("#tax"+a+"").val("")
+                // include tax
+                if(data.is_check_selling == 'no' || $("#tax"+a+"").is('[readonly]') ){
+                    $("#tax"+a+"").val("")
+                }else{
+                    $("#tax"+a+"").val(data.selling_tax)
+                }
                 $("#Amount"+a+"").val("")
                 sub_total()
             },
@@ -947,116 +951,78 @@ function invoice_shipping_charges(){
     if($('#SubTotal').val() == ''){
         $('#shipping_charges').val('')
     }
-    
+  
 }
 /********************************************************************/
 // CHECK GST STATUS FOR APPLY
 /********************************************************************/
 
-function check_gst_status(category){
+function check_gst_status(){
     var state = $('#invoice_state_supply').val()
-    if(category == 'customer_side'){
-        // customer_side
-        if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'){
+    var org_state = $('#single_gst_code option:selected').text()
+        // org gst not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '' ){
             $('#invoice_table').find('.tax').attr('readonly', true)
             $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-            alert('Customer not register GST')
             sub_total()
-        }else if(global_gst_type == '8'){
-            if(invoice_user_state !='' & state != ''){
-                if(invoice_user_state.toLowerCase() == state.toLowerCase()){
-                    $('#invoice_table').find('.tax').attr('readonly', false)
-                    sub_total()
-                }else{
-                    $('#invoice_table').find('.tax').attr('readonly', true)
-                    $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-                    sub_total()
-                    alert('Customer is register under composite scheme, it can not choose delivery address of different state.')
-                }
+            if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+                alert('tax not apply beacuse customer not select or customer is not gst register')
             }else{
-                $('#invoice_table').find('.tax').attr('readonly', true)
-                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-                sub_total()
-                alert('Customer is register under composite scheme, it can not choose delivery address of different state.')
+                alert('Organization not register GST')
             }
-        }else{
-            if(global_gst_type == ''){
-                $('#invoice_table').find('.tax').attr('readonly', true)
-                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-                sub_total()
-            }else if(invoice_user_state !='' & state != ''){
+        // org gst register
+        }else if(($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7') & global_gst_type != ''){
+            if(org_state !='' & state != ''){
                 $('#invoice_table').find('.tax').attr('readonly', false)
                 sub_total()
             }
-        }
-    }else if(category == 'delivary_side'){
-        // delivary_side
-        if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'){
-            $('#invoice_table').find('.tax').attr('readonly', true)
-            $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-            sub_total()
-        }else if(global_gst_type == '8'){
-            if(invoice_user_state !='' & state != ''){
-                if(invoice_user_state.toLowerCase() == state.toLowerCase()){
-                    $('#invoice_table').find('.tax').attr('readonly', false)
-                    sub_total()
-                }else{
-                    $('#invoice_table').find('.tax').attr('readonly', true)
-                    $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-                    sub_total()
-                }
-            }else{
+            else{
                 $('#invoice_table').find('.tax').attr('readonly', true)
                 $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
                 sub_total()
             }
-        }else{
+        // org in composite
+        }else if($('#org_gst_reg_type').val()  == '8'){
+            if( org_state !='' & state != '' & org_state.toLowerCase() == state.toLowerCase()){
+                $('#invoice_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }else{
+                $('#invoice_table').find('.tax').attr('readonly', true)
+                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
+                sub_total()
+                alert('Organization is register under composite scheme,is you choose different state of state tax will not be calculated.')
+            }
+        }
 
-            if(global_gst_type == ''){
-                $('#invoice_table').find('.tax').attr('readonly', true)
-                $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
-                sub_total()
-            }
-            else if(invoice_user_state !='' & state != ''){
-                $('#invoice_table').find('.tax').attr('readonly', false)
-                sub_total()
-            }
-        }
-    } 
 }
 /********************************************************************/
 // invoice SGST CGST AND IGST CALCULATION 
 /********************************************************************/
-var invoice_user_state =''
-$.ajax({
-    type:"GET",
-    url: "/invoice/org_address_state/",
-    dataType: "json",
-    success: function(data){
-        if(data.state == null){
-            invoice_user_state = ''
-        }else{
-            invoice_user_state = data.state
-        }
-    },  
-});
+// var invoice_user_state =''
+// $.ajax({
+//     type:"GET",
+//     url: "/invoice/org_address_state/",
+//     dataType: "json",
+//     success: function(data){
+//         if(data.state == null){
+//             invoice_user_state = ''
+//         }else{
+//             invoice_user_state = data.state
+//         }
+//     },  
+// });
 var global_gst_type = ''
 function customer_gst_type(){
-    console.log('aaaaaaaaaa')
     var ins = $('#invoice_customer').val()
-    console.log(ins)
     if(ins != ''){
         $.get("/invoice/customer_gst/"+ins+"/",function(data){
-            console.log('bbbbbbb')
             global_gst_type = data.gst_type
-            console.log(global_gst_type)
-            check_gst_status('customer_side')
+            check_gst_status()
         });
     }else{
         global_gst_type = ''
-        check_gst_status('customer_side')
+        check_gst_status()
     }
-    console.log(global_gst_type)
 }
 
 // invoice_tax_cacultion()
@@ -1064,10 +1030,11 @@ function customer_gst_type(){
 // sub_total()
 function invoice_tax_cacultion(){
     var state = $('#invoice_state_supply').val()
+    var org_state = $('#single_gst_code option:selected').text()
     var csgst = 0
     var igst = 0
 
-if(invoice_user_state.toLowerCase() == state.toLowerCase()){
+if(org_state.toLowerCase() == state.toLowerCase()){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1105,7 +1072,7 @@ if(invoice_user_state.toLowerCase() == state.toLowerCase()){
     }
     
 }
-else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+else if(org_state.toLowerCase() != state.toLowerCase()){
     $(".tax").each(function(){
         var tax_id = $(this).attr('id');
         var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1150,10 +1117,9 @@ else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
 
 function change_state(){
     var state = $('#invoice_state_supply').val()
-    console.log('org,'+invoice_user_state)
-    console.log('state,'+state)
-    if(invoice_user_state != '' & state != ''){
-        if(invoice_user_state.toLowerCase() == state.toLowerCase() || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
+    var org_state = $('#single_gst_code option:selected').text()
+    if(org_state != '' & state != ''){
+        if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5' || global_gst_type == '8'||global_gst_type == ''){
             $('#invoice_table').find('.row_i_gst').hide()
             $('#invoice_table').find('.row_igst').val('')
             $('#invoice_table').find('.row_cs_gst').show()
@@ -1162,7 +1128,7 @@ function change_state(){
             $('#invoice_table').find('.quantity_header').css('width','5%')
             $('#invoice_table').find('.tax_header').css('width','7%')
             $('#invoice_table').find('.invoice_row_header').attr('colspan','8')
-        }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+        }else if(org_state.toLowerCase() != state.toLowerCase()){
             $('#invoice_table').find('.row_cs_gst').hide()
             $('#invoice_table').find('.row_cgst, .row_sgst').val('')
             $('#invoice_table').find('.row_i_gst').show()
@@ -1190,12 +1156,12 @@ function change_state(){
 var single_row_gst_cal = ''
 function row_gst_cal(ids){
     var state = $('#invoice_state_supply').val()
-
+    var org_state = $('#single_gst_code option:selected').text()
     if($('#tax'+ids+'').val() < parseFloat(100.00)){
         var gst =  (parseFloat($('#Amount'+ids+'').val()) * (parseFloat($('#tax'+ids+'').val()) / 100));
         var amount = $('#Amount'+ids+'').val()
         var incl_tax = parseFloat(amount) + parseFloat(gst)
-        if(invoice_user_state.toLowerCase() == state.toLowerCase()){
+        if(org_state.toLowerCase() == state.toLowerCase()){
             var half = (parseFloat(gst)/2).toFixed(2);
 
             if(half != 'NaN' & half != 0 & half != 0 & half != 0.0 & half != 0.0){
@@ -1206,7 +1172,7 @@ function row_gst_cal(ids){
                 $('#row_cgst'+ids+'').val('')
                 $('#row_sgst'+ids+'').val('')
             }
-        }else if(invoice_user_state.toLowerCase() != state.toLowerCase()){
+        }else if(org_state.toLowerCase() != state.toLowerCase()){
             if(gst.toString() != 'NaN' & gst != 0 & gst != 0 & gst != 0.0 & gst != 0.0){
                 $('#row_igst'+ids+'').val((parseFloat(gst)).toFixed(2))
             }else{
@@ -1585,3 +1551,104 @@ window.addEventListener('load', function() {
     });
   });
 
+/********************************************************************/
+// INVOICE GST CHANGES
+/********************************************************************/
+$('#multiple_gst_link').click(function(){
+
+    $.get("/gst_number/", function(data){
+        $(".gst_row").each(function(){
+                        
+            $(this).remove()
+        });
+        for(var i = 0;i < data.gst_number.length;i++){
+            var html = '<tr class="gst_row" id="choose_gst_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label" style="margin-left:27%;">'
+                html+='<input class="form-check-input choose_gst" type="radio" name="radio" id="choose_gst_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                html +='<td style="border:1px solid black;" id="c_gst_number'+(parseInt(i)+1)+'" align="center">'+data.gst_number[i]+'</td>'
+                html +='<td style="border:1px solid black;display:none;" id="c_gst_type'+(parseInt(i)+1)+'" align="center">'+data.gst_type[i]+'</td>'
+                $('#GST_table').append(html)
+        }
+        $('#invoice_multi_gst').modal('show')
+    });
+});
+
+/********************************************************************/
+// choose GST
+/********************************************************************/
+
+function radio_click(elem){
+    var names = $(elem).attr('id')
+    names = names.substring(names.length-1,names.length)
+    $('#org_gst_number').val($('#c_gst_number'+names).text())
+    $('#org_gst_reg_type').val($('#c_gst_type'+names).text())
+};
+
+
+function button_click(category){
+    if(category = 'multiple'){
+        var gst = $('#org_gst_number').val()
+        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to change gst number.")
+        gst = gst.substring(0,2)
+		if($("#single_gst_code option[value="+gst+"]").length > 0){
+
+            $('#single_gst_code').val(gst).change()
+        }
+        check_gst_status()
+    }
+}
+$(document).ready(function(){
+    if($('#org_gst_reg_type') == '8'){
+        alert('Organization is register under composite scheme, it can not choose delivery address of different state.')
+    }
+});
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function gst_state_code(elem){
+	if($('#error_field').text() == '' & $(elem).val() != ''){
+		var str = $(elem).val()
+		str = str.substring(0,2)
+		if($("#single_gst_code option[value="+str+"]").length > 0){
+			var state = $("#single_gst_code option[value="+str+"]").text()
+			var org_id = $('#org_id').val()
+			$.post("/org/gst_state_code/",{'state':state, 'org_id':org_id,'csrfmiddlewaretoken':csrf_token},function(data){
+				if(data == 0){
+					$('#error_field').text('GST state code not matching with existing address state') 
+					$('#org_single_gst_save').prop('disabled', true)
+				}else{
+                    $('#gst_state').val($("#single_gst_code option[value="+str+"]").text())
+                    $('#single_gst_code').val(str).change()
+				}
+			});
+		}else{
+			$('#error_field').text('GST state code not matching with existing address state') 
+			$('#org_single_gst_save').prop('disabled', true)
+		}
+	}
+}
+
+$('.mul_cancel_gst').click(function(){
+	$('#error_field').text('') 
+	$('.multiple_update').prop('disabled', false)
+})
+
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function update_single_gst(){
+    event.preventDefault()
+    $.post("/profile/gst_configuration/",$("#org_gst_update").serialize(), function(data){
+        if(data != '0'){
+            var gst_num = $('#single_gst').val()
+            $('#org_gst_reg_type').val($('#single_gst_type').val())
+            $('#replace_change_update').find('h6').text('Your default Organization gst number:-'+gst_num+'.')
+            $('#change_update_gst').hide()
+            $('#replace_change_update').show()
+            $('#org_gst_number').val(gst_num)
+            $('#add_gst_number').modal('hide')
+            check_gst_status()
+        }
+    });
+}

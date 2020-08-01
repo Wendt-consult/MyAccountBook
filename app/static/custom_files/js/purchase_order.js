@@ -324,7 +324,7 @@ function add_contact(){
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" style="margin-top:16px;" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
+       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" style="margin-top:16px;background-color: #598ebb;" onclick="return purchase_contact_form(\'vendor\')">Save</button>'
        $( button ).insertBefore("#contact_type_add");
     }
 
@@ -361,7 +361,7 @@ function add_contact_delivary(){
     $('#con_type').append(html)
 
     $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" style="margin-top:16px;" onclick="return purchase_contact_form(\'c_e\')">Save</button>'
+       var button = '<button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" style="margin-top:16px;background-color: #598ebb;" onclick="return purchase_contact_form(\'c_e\')">Save</button>'
        $( button ).insertBefore("#contact_type_add");
 }
 
@@ -394,7 +394,12 @@ function product(a) {
 
                 $("#Quantity"+a+"").val("")
                 $("#Discount"+a+"").val("")
+               // include tax
+               if(data.is_check_purchase == 'no' || $("#tax"+a+"").is('[readonly]') ){
                 $("#tax"+a+"").val("")
+                }else{
+                $("#tax"+a+"").val(data.purchase_tax)
+                }
                 $("#Amount"+a+"").val("")
                 sub_total()
             },

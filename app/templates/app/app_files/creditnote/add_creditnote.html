@@ -138,8 +138,35 @@ optgroup{color :black; }
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Add Credit Note</h4>
                 </div>  
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    {% if is_gst != 'no' %}
+                        {% if is_signle_gst == 'yes' %}
+                            <h6 style="color: white;">Your default Organization gst number:-{{is_gst}}.</h6>
+                        {% else %}
+                        <div class="row" style="margin-left: 0px;">
+                            <h6 style="color: white;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}.Do you want to create this invoice with another GST number</h6>&nbsp;
+                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;">YES</a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="row" style="margin-left: 0px;" id="change_update_gst">
+                        <h6 style="color: white;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
+                        <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
+                    </div>
+                    <div style="display: none;" id="replace_change_update">
+                        <h6 style="color: white;"></h6>
+                    </div>
+                    {% endif %}
+                </div>
             <div style="margin-top: 4%;">
-
+                <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
                 <div class="container">
                     <div class="row">
                         <!-- left -->
@@ -150,7 +177,7 @@ optgroup{color :black; }
                                     <label for="customerName1">Contact Name</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control select1" id="customerName" name="customerName" onchange=data($(this))  required> 
+                                    <select class="form-control select1" id="customerName" name="customerName" onchange=data($(this),customer_gst_type())  required> 
                                         <option value="-------">-------</option>
                                         {% for contact in contacts %}
                                         <option value="{{contact.id}}">{{contact}}</option>
@@ -230,7 +257,7 @@ optgroup{color :black; }
                                     <select class="form-control" name="supplyPlace" id="supplyPlace1"  onchange="creditnote_tax_cacultion()">
                                         <option value="none"></option>
                                         {% for i in state %}
-                                            <option value="{{i}}">{{i}}</option>
+                                            <option value="{{i.0}}">{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -1480,7 +1507,11 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+<!-- chosse GST model popup -->
+{% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
 
+<!-- UPDATE GST NUMBER -->
+{% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
 
 <script>
 
@@ -1490,7 +1521,7 @@ optgroup{color :black; }
     document.getElementById("add_more_addresses").disabled = true;
     document.getElementById("add_more_accounts").disabled = true;
     
-
+    csrf_token = '{{csrf_token}}';
 </script>
 
 

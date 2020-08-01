@@ -236,7 +236,7 @@ optgroup{color :black; }
                                     <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="creditnote_tax_cacultion()">
                                         <option value="none" ></option>
                                         {% for i in state %}
-                                            <option value="{{i}}" {% if credit_note.state_supply == i %} selected {% endif %}>{{i}}</option>
+                                            <option value="{{i.0}}" {% if credit_note.state_supply == i. %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

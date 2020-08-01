@@ -107,19 +107,21 @@ class GST_Ledger(models.Model):
 
 @receiver(post_save, sender=invoice_model.InvoiceModel)
 def create_gstlegder_invoice(sender, instance, created, **kwargs):
+
     if created:
         gst_ledger = GST_Ledger.objects.create(invoice=instance)
-        
+    
+
         invoice = invoice_model.InvoiceModel.objects.get(pk = instance.pk)
 
-        igst_amount = list(filter(None, [invoice.igst_5, invoice.igst_12, invoice.igst_18, invoice.igst_28, invoice.igst_other]))
-        cgst_amount = list(filter(None, [invoice.cgst_5, invoice.cgst_12, invoice.cgst_18, invoice.cgst_28, invoice.cgst_other]))
-        sgst_amount = list(filter(None, [invoice.sgst_5, invoice.sgst_12, invoice.sgst_18, invoice.sgst_28, invoice.sgst_other]))
+        igst_amount = float(invoice.igst) if invoice.igst !="" else 0
+        cgst_amount = float(invoice.cgst) if invoice.cgst !="" else 0
+        sgst_amount = float(invoice.sgst) if invoice.sgst !="" else 0
         #print(igst, cgst, sgst)
 
-        gst_ledger.cgst_amount = sum([float(i) for i in cgst_amount]) if len(cgst_amount) > 0  else 0
-        gst_ledger.sgst_amount = sum([float(i) for i in sgst_amount]) if len(sgst_amount) > 0  else 0
-        gst_ledger.igst_amount = sum([float(i) for i in igst_amount]) if len(igst_amount) > 0  else 0
+        gst_ledger.cgst_amount = cgst_amount
+        gst_ledger.sgst_amount = sgst_amount
+        gst_ledger.igst_amount = igst_amount
         gst_ledger.is_invoice = True
         gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
 
@@ -127,6 +129,7 @@ def create_gstlegder_invoice(sender, instance, created, **kwargs):
 
     else:
         pass
+
 
 #==================================================================
 # Create instances on Credit Creation
@@ -156,12 +159,39 @@ def create_gstlegder_creditnote(sender, instance, created, **kwargs):
 
     else:
         pass  
+#==================================================================
+# Create instances on Expense Creation
+#==================================================================
+#
 
+
+@receiver(post_save, sender=expense_model.Expense)
+def create_gstlegder_expense(sender, instance, created, **kwargs):
+    if created:
+        gst_ledger = GST_Ledger.objects.create(expense=instance)
+        
+        ins = expense_model.Expense.objects.get(pk = instance.pk)
+
+        igst_amount = list(filter(None, [ins.igst_5, ins.igst_12, ins.igst_18, ins.igst_28]))
+        cgst_amount = list(filter(None, [ins.cgst_5, ins.cgst_12, ins.cgst_18, ins.cgst_28]))
+        sgst_amount = list(filter(None, [ins.sgst_5, ins.sgst_12, ins.sgst_18, ins.sgst_28]))
+        #print(igst, cgst, sgst)
+
+        gst_ledger.cgst_amount = sum([float(i) for i in cgst_amount]) if len(cgst_amount) > 0  else 0
+        gst_ledger.sgst_amount = sum([float(i) for i in sgst_amount]) if len(sgst_amount) > 0  else 0
+        gst_ledger.igst_amount = sum([float(i) for i in igst_amount]) if len(igst_amount) > 0  else 0
+        gst_ledger.is_expense = True
+        gst_ledger.input_tab = True
+        gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+        gst_ledger.save()
+
+    else:
+        pass  
 #==================================================================
 # Create instances on Purchase Order Creation
 #==================================================================
 #
-
+"""
 @receiver(post_save, sender=purchase_model.PurchaseOrder)
 def create_gstlegder_purchaseorder(sender, instance, created, **kwargs):
     if created:
@@ -184,3 +214,6 @@ def create_gstlegder_purchaseorder(sender, instance, created, **kwargs):
 
     else:
         pass        
+"""
+
+

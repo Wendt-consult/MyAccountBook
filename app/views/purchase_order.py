@@ -193,11 +193,19 @@ def fetch_purchase_product(request, slug):
     # Initialize 
     data = defaultdict()
     products = ProductsModel.objects.get(pk = int(slug))
+    data['is_check_purchase'] = 'no'
+    data['is_check_selling'] = 'no'
     data['product'] = products.product_type
     data['unit'] = products.get_unit_display()
     data['price'] =  products.purchase_price
     data['selling'] = products.selling_price
     data['desc'] = products.product_description
+    data['selling_tax'] = products.selling_tax
+    data['purchase_tax'] = products.purchase_tax
+    if(products.inclusive_tax is not None):
+        data['is_check_selling'] = 'yes'
+    if(products.inclusive_purchase_tax is not None):
+        data['is_check_purchase'] = 'yes'
     return JsonResponse(data)
 
 #=====================================================================================

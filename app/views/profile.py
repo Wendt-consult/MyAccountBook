@@ -603,10 +603,7 @@ class GSTConfigurationView(View):
                     dafault = True
                 if request.POST["org_tax_id"] != '':
                     organisation = users_model.Organisations.objects.get(pk = request.POST["org_id"])
-                    gst = users_model.User_Tax_Details(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
-                                            is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault)
-                    gst.save()
-                    users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation, state = request.POST["org_address_state"]).update(organisation_tax = gst)
+                    gst =  users_model.User_Tax_Details.objects.filter(pk = int(request.POST["org_tax_id"])).update(gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],default_gstin = dafault)
                     users_model.User_Tax_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation).update(multiple_gst = True)
                     users_model.User_Tax_Details.objects.exclude(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = gst_form.data["gstin"],gst_reg_type = gst_form.data["gst_reg_type"],
                                             is_organisation_gst_register = True,multiple_gst = True,default_gstin = dafault).update(default_gstin = False)
@@ -627,11 +624,20 @@ class GSTConfigurationView(View):
                 single_gst_type = request.POST.get("single_gst_type")
                 single_gst = request.POST.get("single_gst")
                 gst_state = request.POST.get("gst_state")
+
                 organisation = users_model.Organisations.objects.get(pk = request.POST["org_id"])
-                gst = users_model.User_Tax_Details(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = single_gst,gst_reg_type = single_gst_type,
+
+                org_address = users_model.User_Address_Details.objects.filter(organisation = organisation,state = gst_state)
+                tax_id = None
+                if(org_address[0].organisation_tax is not None):
+                    tax_id = org_address[0].organisation_tax.id
+                if(tax_id is not None):
+                    gst = users_model.User_Tax_Details.objects.filter(pk = int(tax_id)).update(gstin = single_gst,gst_reg_type = single_gst_type)
+                else:
+                    gst = users_model.User_Tax_Details(is_user = True,user = request.user,is_organisation = True,organisation = organisation,gstin = single_gst,gst_reg_type = single_gst_type,
                                             is_organisation_gst_register = True,multiple_gst = False)
-                gst.save()
-                org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation,state = gst_state).update(organisation_tax = gst)
+                    gst.save()
+                    org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = organisation,state = gst_state).update(organisation_tax = gst)
 
                     # User_Tax_Details.objects.filter(pk = request.POST["org_tax_id"]).update(gstin = gst_form.data["gstin"], gst_reg_type = gst_form.data["gst_reg_type"])
 

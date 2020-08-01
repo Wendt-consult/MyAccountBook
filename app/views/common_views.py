@@ -288,3 +288,20 @@ def customize_view_list(request, ins):
                                                 expense_method = data['method'],expense_amount = data['amount'])
             view_expense.save()
     return JsonResponse(data)
+
+#**********************************************************************************************
+#  GET GST NUMBER OF CGST SGST AND IGST
+#**********************************************************************************************
+#
+
+def get_gst_number(request):
+    # Initialize 
+    data = defaultdict()
+    data['gst_number'] = []
+    data['gst_type'] = []
+    org = Organisations.objects.get(user = request.user)
+    org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+    for i in range(0,len(org_gst_num)):
+        data['gst_number'].append(org_gst_num[i].gstin)
+        data['gst_type'].append(org_gst_num[i].gst_reg_type)
+    return JsonResponse(data)

@@ -114,7 +114,7 @@ select.form-control option{color : #000000; }
                                         <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Contact Person</td> -->
                                         <td class="text-center" style="width: 30%;border: 1px solid black;color: black;">address</td>
                                         <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">GSTIN</td>
-                                        <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">GST Registration Type</td>
+                                        <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">GST Type</td>
                                         <!-- <td class="text-center" style="width: 7%;border: 1px solid white;">Verify</td> -->
                                         <td class="text-center" style="width: 5%;border: 1px solid black;color: black;">Action</td>
                                     </tr>
@@ -195,7 +195,7 @@ select.form-control option{color : #000000; }
                                         <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Contact Person</td> -->
                                         <td class="text-center" style="width: 30%;border: 1px solid black;">address</td>
                                         <td class="text-center" style="width: 10%;border: 1px solid black;">GSTIN</td>
-                                        <td class="text-center" style="width: 10%;border: 1px solid black;">GST Registration Type</td>
+                                        <td class="text-center" style="width: 10%;border: 1px solid black;">GST Type</td>
                                         <!-- <td class="text-center" style="width: 7%;border: 1px solid white;">Verify</td> -->
                                         <td class="text-center" style="width: 5%;border: 1px solid black;">Action</td>
                                     </tr>
@@ -272,7 +272,7 @@ select.form-control option{color : #000000; }
                         {% if org_address_details.0.organisation_tax.multiple_gst == False %}
                         <div class="row single_gst_field">
                             <div class="col-3">
-                                <label for="single_gst_type">GST Reg. Type</label>
+                                <label for="single_gst_type">GST Type</label>
                             </div>
                             <div class="col-3">
                                 <select class="form-control" name="single_gst_type" id="single_gst_type" required>
@@ -295,7 +295,7 @@ select.form-control option{color : #000000; }
                                 <p id="error_field" style="color: black;"></p>
                             </div>
                         </div>
-                        <div class="row single_gst_field" style="display: none;">
+                        <div class="row" style="display:none;">
                             <div class="col-3">
                                 <label for="single_gst_code">GST Code</label>
                             </div>
@@ -308,12 +308,13 @@ select.form-control option{color : #000000; }
                                 </select>
                             </div>
                         </div>
-                        <input type="hidden" name="gst_state" id="gst_state">
+                        <input type="hidden" name="gst_state" id="gst_state" value="{{org_address_details.0.state}}">
                         <input type="hidden" value="{{ids}}" name="org_id" id="org_id">
                         {% else%}
+
                         <div class="row single_gst_field" style="display: none;">
                             <div class="col-3">
-                                <label for="single_gst_type">GST Reg. Type</label>
+                                <label for="single_gst_type">GST Type</label>
                             </div>
                             <div class="col-3">
                                 <select class="form-control" name="single_gst_type" id="single_gst_type" required>
@@ -400,8 +401,8 @@ select.form-control option{color : #000000; }
                     <input type="hidden" value="" class="tax_id_input" name="org_tax_id">
                     <input type="hidden" value="" id="org_address_state" name="org_address_state">
 
-                    <div class="row" style="margin-left: 2%;">
-                        <label class="switch" style="margin-top: -3px;">
+                    <div class="row" style="margin-left: 1%;">
+                        <label class="switch" style="margin-top: -3px;margin-right:17px;">
                             <input type="checkbox" id="default_tax" name="default_tax" onclick="set_default_tax($(this))">
                             <span class="slider round"></span>
                         </label>
@@ -412,7 +413,7 @@ select.form-control option{color : #000000; }
                           
                             <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
-                                    GST Reg. Type
+                                    GST Type
                                 </td>
                                 <td style="border:0px;float: left;">
                                     <select name="gst_reg_type" class="form-control input-sm" id="gst_reg" onchange="hide_gst($(this))" style="padding-left: 9px;width:70%;" required="">

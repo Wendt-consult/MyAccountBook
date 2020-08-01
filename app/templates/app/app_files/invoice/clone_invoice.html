@@ -597,7 +597,7 @@ textarea{
                                     <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in state %}
-                                        <option value="{{i}}" {% if invoice.invoice_state_supply == i %} selected {% endif %}>{{i}}</option>
+                                        <option value="{{i.0}}" {% if invoice.invoice_state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -883,7 +883,7 @@ textarea{
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: -4px;margin-bottom: 8px;">Add </button>
+                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;background-color: #598ebb;margin-top: -4px;margin-bottom: 8px;">Add </button>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                             <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%">add row</button>
                             <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%">add item header</button>

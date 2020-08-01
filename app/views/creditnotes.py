@@ -119,7 +119,8 @@ def add_creditnote(request, slug ):
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
 
-
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
     # list contact name
     contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
     
@@ -128,7 +129,7 @@ def add_creditnote(request, slug ):
         msg = default[0].terms_and_condition
         data['term_msg'] = msg
     data["contacts"] = contacts
-    data["state"] = creditnote_constant.state
+    data["state"] = country_list.STATE_LIST_CHOICES
     # data['tax'] = creditnote_constant.tax
 
     # gst tax model
@@ -457,6 +458,9 @@ class EditCreditnote(View):
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+
     def get(self, request, *args, **kwargs):
 
         try:
@@ -476,7 +480,7 @@ class EditCreditnote(View):
             return redirect('/unauthorized/', permanent=False)
 
         self.data["contacts"] = contacts
-        self.data["state"] = creditnote_constant.state
+        self.data["state"] = country_list.STATE_LIST_CHOICES
         # self.data['tax'] = creditnote_constant.tax
         self.data['gst'] = gst 
 
@@ -656,6 +660,9 @@ class CloneCreditnote(View):
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+
     def get(self, request, *args, **kwargs):
             
         try:
@@ -691,7 +698,7 @@ class CloneCreditnote(View):
             self.data['creditnote_product_status2'] = 'YES'
         
         self.data["contacts"] = contacts
-        self.data["state"] = creditnote_constant.state
+        self.data["state"] = country_list.STATE_LIST_CHOICES
         # self.data['tax'] = creditnote_constant.tax
         self.data["products"] = products
         self.data["credit_note"] = creditnote

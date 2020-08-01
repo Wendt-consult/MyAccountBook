@@ -155,6 +155,7 @@ urlpatterns += [
     path('org/gst_state_code/', never_cache(login_required(profile.gst_state_code)), name = 'gst_state_code'), 
     # CUSTOMIZE VIEW  
     path('customize_view/<int:ins>/', never_cache(login_required(common_views.customize_view_list)), name = 'customize_view_list'),  
+    path('gst_number/', never_cache(login_required(common_views.get_gst_number)), name = 'get_gst_number'),
 ]
 
 # Credit Notes

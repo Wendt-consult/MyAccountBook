@@ -238,8 +238,18 @@ textarea{
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Edit Invoice</h4>
                 </div>  
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    <h6 style="color: white;">Your default Organization gst number:-{{invoice.invoice_org_gst_num}}.</h6>
+                </div>
             <div style="margin-top: 4%;margin-left: 2%;">
-
+                <input class="form-control" type="hidden" value="{{invoice.invoice_org_gst_num}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{invoice.invoice_org_gst_type}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if invoice.invoice_org_gst_state == i.0 %} selected {% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
                 <div class="container" >
                     <div class="row">
                         <!-- left -->
@@ -612,10 +622,10 @@ textarea{
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;" required>
                                         <option value="">-------</option>
                                         {% for i in state %}
-                                        <option value="{{i}}" {% if invoice.invoice_state_supply == i %} selected {% endif %}>{{i}}</option>
+                                        <option value="{{i.0}}" {% if invoice.invoice_state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -909,7 +919,7 @@ textarea{
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: -4px;margin-bottom: 8px;">Add </button>
+                        <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;background-color: #598ebb;margin-top: -4px;margin-bottom: 8px;">Add </button>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                             <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%">add row</button>
                             <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%">add item header</button>

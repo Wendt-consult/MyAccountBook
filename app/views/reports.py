@@ -12,6 +12,9 @@ from django.contrib.auth.models import User
 
 from django.conf import settings
 
+# import datetime
+from datetime import datetime
+
 import os
 import calendar
 
@@ -50,7 +53,7 @@ class GSTLedgerReportsView(View):
     #****************************************************************************
     #
     #****************************************************************************
-    def create_xls(self, query_dict = None, filename="reports.xlsx", headers=[], personal_data = None):
+    def create_xls(self, query_dict = None, filename="reports.xlsx", headers=[], personal_data = None, time_period = False, start_date = "", end_date = ""):
 
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -86,11 +89,22 @@ class GSTLedgerReportsView(View):
             ws.cell(row=5, column=1).value = "Ledger Generation Date"
             ws.cell(row=5, column=2).value = timezone.now().strftime("%Y-%m-%d")
 
-            ws.cell(row=6, column=1).value = "Start Date"
-            ws.cell(row=6, column=2).value = timezone.now().strftime("%Y-%m-%d")
+            #
+            #
+            if time_period is False:
 
-            ws.cell(row=7, column=1).value = "End Date"
-            ws.cell(row=7, column=2).value = timezone.now().strftime("%Y-%m-%d")
+                ws.cell(row=6, column=1).value = "Start Date"
+                ws.cell(row=6, column=2).value = start_date
+
+                ws.cell(row=7, column=1).value = "End Date"
+                ws.cell(row=7, column=2).value = end_date
+
+            else:
+                ws.cell(row=6, column=1).value = "Report Type"
+
+                time_dict = {'1':"Monthly", '2': "Quaterly", '3':"Half Yearly", '4': "Yearly"}
+                ws.cell(row=6, column=2).value = time_dict[time_period]
+
 
         for head in range(1, len(headers)+1):
             ws.cell(row=9, column=head).value = headers[head-1]
@@ -117,6 +131,8 @@ class GSTLedgerReportsView(View):
 
         for row in range(10, len(query_dict)+10):
             for col in range(1, len(query_dict[row-10])+1):
+
+
                 if index_col is not None and col == index_col+1:                  
                     ws.cell(row=row, column=col).value = calendar.month_name[query_dict[row-10][col-1]]
                 elif date_col is not None and col == date_col+1:
@@ -129,8 +145,6 @@ class GSTLedgerReportsView(View):
         
                 ws.cell(row=row, column=col).border = thin_border
                 
-
-
         chrr = chr(col+65-1)
         head_crr = chr(col+65-2)
 
@@ -147,8 +161,7 @@ class GSTLedgerReportsView(View):
 
         except:
             pass
-        
-        print(os.path.join(settings.REPORTS,filename))
+
         try:
             
             wb.save(os.path.join(settings.REPORTS,filename))
@@ -166,14 +179,33 @@ class GSTLedgerReportsView(View):
         #
 
         user = User.objects.get(pk = request.user.id)
-
         organisation = users_model.Organisations.objects.get(user = user)
-
-        name = user.first_name.upper()+" "+user.last_name.upper()
+        name = user.username
         organisation_name = organisation.organisation_name
 
-        personal_data = [name, organisation_name]
+        try:
+            organ_addr = users_model.User_Address_Details.objects.get(
+                is_organisation = True, default_address = True, organisation = organisation
+            )
+            self.data["organ_addr"] = organ_addr
+            if(organ_addr.organisation_tax is not None):
+                self.data["gst_number"] = organ_addr.organisation_tax.gstin
+        except:
+            organ_addr = users_model.User_Address_Details.objects.filter(
+                is_organisation = True, organisation = organisation
+            )
+            self.data["organ_addr"] = organ_addr[0]
+            if(organ_addr[0].organisation_tax is not None):
+                self.data["gst_number"] = organ_addr[0].organisation_tax.gstin
+            # self.data["address"] = ""
 
+        self.data["user_name"] = user
+        self.data["organisation_name"] = organisation_name
+    
+        # self.data["gst_number"] = "aaaa"
+        self.data["ledger_date"] = timezone.now().strftime("%Y-%m-%d")
+
+        personal_data = [name, organisation_name]  
 
         year_xx = timezone.now().year
         self.data["year_list"] = [year for year in range(year_xx - 10, year_xx+1)]
@@ -187,7 +219,11 @@ class GSTLedgerReportsView(View):
             self.data["pdf_btn"] = True
 
             start_date = request.GET.get("start_date", "")
+            # change start date formate
+            # start_date = datetime.strptime(str(s_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             end_date = request.GET.get("end_date", "")
+            # change end date formate
+            # end_date = datetime.strptime(str(e_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             account_type = request.GET.get("account_type", None)
             time_period = request.GET.get("time_period", False)
             year_t = request.GET.get("year", None)
@@ -204,6 +240,8 @@ class GSTLedgerReportsView(View):
             self.data["month_tq"] = month_tq
             self.data["month_th"] = month_th
 
+            filename = "Reports.xlsx"
+
             if time_period == '0':
                 time_period = False
 
@@ -214,16 +252,18 @@ class GSTLedgerReportsView(View):
             if month_th:
                 month_th_l = {'1':[4,5,6,7,8,9],'2':[1,2,3,10,11,12]}
 
+              
+
             g_type = None
             #
             #
             gst_reports = gst_ledger_model.GST_Ledger.objects
 
-            if time_period !="0" and (start_date !="" and start_date!= False):
+            if time_period is False and (start_date !="" and start_date!= False):
                 #print("run start")
                 gst_reports = gst_reports.filter(created_on__gte = start_date)
 
-            if time_period !="0" and (end_date !="" and end_date!= False):
+            if time_period is False and (end_date !="" and end_date!= False):
                 #print("run end")
                 gst_reports = gst_reports.filter(created_on__lte = end_date)
 
@@ -266,32 +306,39 @@ class GSTLedgerReportsView(View):
 
                 if len(gst_reports) > 0:  
 
-                    xls_reports = gst_reports.values_list('is_purchase_order','is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','purchase_order__vendor__contact_name','purchase_order__purchase_order_number','total_tax')
-                    
+                    # xls_reports = gst_reports.values_list('is_purchase_order','is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','purchase_order__vendor__contact_name','purchase_order__purchase_order_number','total_tax')
+                    # xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax')
+                    xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax','is_expense','expense__vendor__contact_name','expense__exp_number')
+                    # print(xls_reports[])
+                
                     main = []
                     for i in range(0,len(xls_reports)):
                         new_data = ['','','','','']
 
+                        if xls_reports[i][5]:
+                            new_data[3] = "EXPENSE"
+                            new_data[1] = xls_reports[i][6]
+                            new_data[2] = xls_reports[i][7]
                         if xls_reports[i][0]:
-                            new_data[2] = "PURCHASE ORDER"
-                            new_data[1] = xls_reports[i][5]
-                            new_data[3] = xls_reports[i][6]
-                        if xls_reports[i][1]:
-                            new_data[2] = "CREDITNOTE"
-                            new_data[1] = xls_reports[i][3]
-                            new_data[3] = xls_reports[i][4]
+                            new_data[3] = "CREDITNOTE"
+                            new_data[1] = xls_reports[i][2]
+                            new_data[2] = xls_reports[i][3]
                         
-                        new_data[0] = xls_reports[i][2]
-                        new_data[4] = xls_reports[i][7]
+                        new_data[0] = xls_reports[i][1]
+                        new_data[4] = xls_reports[i][4]
 
                         main.append(new_data)
+
 
                     headers = ["Created On","Particulars","Voucher","Voucher Type","Debit"]
                     self.create_xls(
                         main,
                         filename,
                         headers,
-                        personal_data
+                        personal_data,
+                        time_period,
+                        self.data["start_date"],
+                        self.data["end_date"],
                     )
 
             #
@@ -321,7 +368,7 @@ class GSTLedgerReportsView(View):
                 # Yearly - ALL 1
                 if time_period == '4':
                     gst_reports = gst_reports.filter(created_on__year = year_xx).order_by('created_on__month') 
-                    filename = "All_Input_Yearly.xlsx",
+                    filename = "All_Input_Yearly.xlsx"
                     
                 if len(gst_reports) > 0:  
                     xls_reports = gst_reports.values_list('created_on','invoice__invoice_customer__contact_name','invoice__invoice_number','total_tax')
@@ -343,7 +390,10 @@ class GSTLedgerReportsView(View):
                         main,
                         filename,
                         headers,
-                        personal_data
+                        personal_data,
+                        time_period,
+                        self.data["start_date"],
+                        self.data["end_date"],
                     )
 
             elif not time_period or time_period == '0':
@@ -352,23 +402,33 @@ class GSTLedgerReportsView(View):
 
                     gst_reports = gst_reports.filter(input_tab = True) 
 
-                    xls_reports = gst_reports.values_list('is_purchase_order','is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','purchase_order__vendor__contact_name','purchase_order__purchase_order_number','total_tax')
-                        
+                    #xls_reports = gst_reports.values_list('is_purchase_order','is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','purchase_order__vendor__contact_name','purchase_order__purchase_order_number','total_tax')
+                    # xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax')
+                    xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax','is_expense','expense__vendor__contact_name','expense__exp_number')
+
                     main = []
                     for i in range(0,len(xls_reports)):
                         new_data = ['','','','','']
 
+                        if xls_reports[i][5]:
+                            new_data[3] = "EXPENSE"
+                            new_data[1] = xls_reports[i][6]
+                            new_data[2] = xls_reports[i][7]
                         if xls_reports[i][0]:
-                            new_data[2] = "PURCHASE ORDER"
-                            new_data[1] = xls_reports[i][5]
-                            new_data[3] = xls_reports[i][6]
-                        if xls_reports[i][1]:
-                            new_data[2] = "CREDITNOTE"
-                            new_data[1] = xls_reports[i][3]
-                            new_data[3] = xls_reports[i][4]
+                            new_data[3] = "CREDITNOTE"
+                            new_data[1] = xls_reports[i][2]
+                            new_data[2] = xls_reports[i][3]
                         
-                        new_data[0] = xls_reports[i][2]
-                        new_data[4] = xls_reports[i][7]
+                        new_data[0] = xls_reports[i][1]
+                        new_data[4] = xls_reports[i][4]
+
+                        """if xls_reports[i][0]:
+                            new_data[3] = "CREDITNOTE"
+                            new_data[1] = xls_reports[i][2]
+                            new_data[2] = xls_reports[i][3]
+                        
+                        new_data[0] = xls_reports[i][1]
+                        new_data[4] = xls_reports[i][4]"""
 
                         main.append(new_data)
 
@@ -402,7 +462,10 @@ class GSTLedgerReportsView(View):
                         main,
                         "All_Input.xlsx",
                         headers,
-                        personal_data
+                        personal_data,
+                        time_period,
+                        self.data["start_date"],
+                        self.data["end_date"],
                     )
             else:
 
@@ -440,23 +503,24 @@ class GSTLedgerReportsView(View):
                     if time_period == '4':
                         gst_reports = gst_reports.filter(created_on__year = year_t)    
 
-                    xls_reports = gst_reports.values_list('is_purchase_order','is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','purchase_order__vendor__contact_name','purchase_order__purchase_order_number','igst_amount')
-                        
+                    xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax','is_expense','expense__vendor__contact_name','expense__exp_number')
+
+
                     main = []
                     for i in range(0,len(xls_reports)):
                         new_data = ['','','','','']
 
+                        if xls_reports[i][5]:
+                            new_data[3] = "EXPENSE"
+                            new_data[1] = xls_reports[i][6]
+                            new_data[2] = xls_reports[i][7]
                         if xls_reports[i][0]:
-                            new_data[2] = "PURCHASE ORDER"
-                            new_data[1] = xls_reports[i][5]
-                            new_data[3] = xls_reports[i][6]
-                        if xls_reports[i][1]:
-                            new_data[2] = "CREDITNOTE"
-                            new_data[1] = xls_reports[i][3]
-                            new_data[3] = xls_reports[i][4]
+                            new_data[3] = "CREDITNOTE"
+                            new_data[1] = xls_reports[i][2]
+                            new_data[2] = xls_reports[i][3]
                         
-                        new_data[0] = xls_reports[i][2]
-                        new_data[4] = xls_reports[i][7]
+                        new_data[0] = xls_reports[i][1]
+                        new_data[4] = xls_reports[i][4]
 
                         main.append(new_data)  
 
@@ -465,7 +529,10 @@ class GSTLedgerReportsView(View):
                         main,
                         filename,
                         headers,
-                        personal_data
+                        personal_data,
+                        time_period,
+                        self.data["start_date"],
+                        self.data["end_date"],
                     )       
 
                 if splitr[0] == '1': 
@@ -515,7 +582,10 @@ class GSTLedgerReportsView(View):
                         main,
                         filename,
                         headers,
-                        personal_data
+                        personal_data,
+                        time_period,
+                        self.data["start_date"],
+                        self.data["end_date"],
                     )
 
             self.data["g_type"] = g_type
@@ -545,7 +615,7 @@ class GSTLedgerReportsView(View):
             try:
                 org = users_model.Organisations.objects.get(user = request.user)
 
-                org_info = users_model.Organisation_Info.objects.get(organisation = org)
+                org_info = users_model.Organisation_Contact.objects.get(organisation = org)
 
                 self.data["org_email"] = org_info.email
             except:

@@ -201,7 +201,6 @@ function multiple_state_code(elem){
 		if($("#single_gst_code option[value="+str+"]").length > 0){
 			var state = $("#single_gst_code option[value="+str+"]").text()
 			var ids = $(modal_id).find("#org_address_state").val();
-			console.log(state,ids)
 			if(state != ids){
 				$('.error_field').text('GST state code not matching with existing address state') 
 				$('.multiple_update').prop('disabled', true)

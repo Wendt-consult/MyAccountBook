@@ -7,6 +7,7 @@ from app.models.users_model import *
 from app.models.purchase_model import *
 from app.models.customize_model import *
 from app.models.invoice_model import *
+from app.models.expense_model import *
 from app.models import *
 
 #
@@ -127,3 +128,7 @@ class InvoiceModel(admin.ModelAdmin):
 @admin.register(Invoice_Line_Items)
 class Invoice_Line_Items(admin.ModelAdmin):
     model = Invoice_Line_Items
+
+@admin.register(Expense)
+class Expense(admin.ModelAdmin):
+    model = Expense

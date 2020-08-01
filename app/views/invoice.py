@@ -20,7 +20,7 @@ from app.forms.accounts_ledger_forms import *
 
 
 from app.other_constants import creditnote_constant
-from app.other_constants import user_constants
+from app.other_constants import user_constants,country_list
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import Q
@@ -127,6 +127,8 @@ def add_invoice(request, slug):
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
      # list contact name
     contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
     gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -143,7 +145,8 @@ def add_invoice(request, slug):
     # data['country_code'] = user_constants.PHONE_COUNTRY_CODE
     data['payment_terms'] = payment_constants.PAYMENT_DAYS
     data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
-    data["state"] = creditnote_constant.state
+    data["state"] = country_list.STATE_LIST_CHOICES
+    data['gst_r_type'] = user_constants.org_GST_REG_TYPE
 
     # list product name
 
@@ -183,6 +186,29 @@ def add_invoice(request, slug):
         # for account_ledger details
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        
+        # org gst number
+        data['is_gst'] = 'no'
+        data['is_signle_gst']  = 'no'
+        data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
+
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+
+        data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            data['is_signle_gst'] = 'yes'
+            data['is_gst'] = org_gst_num[0].gstin
+            data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                data['is_gst'] = default[0].gstin
+                data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                data['is_gst'] = org_gst_num[0].gstin
+                data['org_gst_type'] = org_gst_num[0].gst_reg_type
+
         data['acc_ledger_income'] = acc_ledger_income
         return render(request, template_name, data)
 #=====================================================================================
@@ -283,16 +309,19 @@ def save_invoice(request):
         distotal = request.POST.get("purchase_Discountotal")
         # subtotal = request.POST.get("SubTotal")
         cgst = request.POST.get("CGST")
-        print(cgst)
         sgst = request.POST.get("SGST")
         igst = request.POST.get("IGST")
+
+        # for invoice gst number and type
+        org_gst_number = request.POST.get("org_gst_number")
+        org_gst_reg_type = request.POST.get("org_gst_reg_type")
+        single_gst_code = request.POST.get("single_gst_code")
 
         shipping_charges = request.POST.get("shipping_charges")
         total_amount = request.POST.get("Total")
 
         is_tc = request.POST.get('invoice_t&c','off')
         is_notes = request.POST.get('invoice_default_notes','off')
-
 
         if(is_tc == 'on'):
             org = Organisations.objects.get(user = request.user)
@@ -346,7 +375,10 @@ def save_invoice(request):
             shipping_charges = shipping_charges,     
             cgst = cgst,
             sgst = sgst,
-            igst = igst,       
+            igst = igst,
+            invoice_org_gst_num = org_gst_number,
+            invoice_org_gst_type = org_gst_reg_type,
+            invoice_org_gst_state = single_gst_code,
        )
         if(cgst != '' or sgst != ''):
             invoice.is_cs_gst = True
@@ -554,6 +586,9 @@ class EditInvoice(View):
 
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+
     def get(self, request, *args, **kwargs):
 
         try:
@@ -603,7 +638,7 @@ class EditInvoice(View):
 
         self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
         self.data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
-        self.data["state"] = creditnote_constant.state
+        self.data["state"] = country_list.STATE_LIST_CHOICES
 
         # Product form
         self.data["add_product_images_form"] = ProductPhotosForm()
@@ -662,9 +697,9 @@ class EditInvoice(View):
             subtotal = request.POST.get("SubTotal")
             distotal = request.POST.get("purchase_Discountotal")
             # subtotal = request.POST.get("SubTotal")
-            cgst_amount = request.POST.get("CGST")
-            sgst_amount = request.POST.get("SGST")
-            igst_amount = request.POST.get("IGST")
+            cgst = request.POST.get("CGST")
+            sgst = request.POST.get("SGST")
+            igst = request.POST.get("IGST")
             shipping_charges = request.POST.get("shipping_charges")
             total_amount = request.POST.get("Total")
             is_tc = request.POST.get('invoice_t&c','off')
@@ -701,8 +736,9 @@ class EditInvoice(View):
             InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
                         invoice_number = invoice_number,invoice_check = check_invocie_number,save_type=save_type,invoice_date = in_date,invoice_type_new = invoice_new,
                         invoice_type_recurring = invoice_recurring, invoice_salesperson = invoice_employee,invoice_state_supply = invoice_state_supply,
-                        terms_and_condition = term_condition, Note=message,attachements=attachement,sub_total=subtotal,total_discount=distotal,cgst = cgst_amount,
-                        sgst = sgst_amount,igst = igst_amount,total_amount = total_amount,shipping_charges=shipping_charges)
+                        terms_and_condition = term_condition, Note=message,attachements=attachement,sub_total=subtotal,total_discount=distotal,
+                        cgst = cgst,sgst = sgst,igst = igst,total_amount = total_amount,shipping_charges=shipping_charges,
+                        invoice_org_gst_num = org_gst_number,invoice_org_gst_type = org_gst_reg_type,invoice_org_gst_state = single_gst_code,)
             
             if(cgst_amount != '' or sgst_amount != ''):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
@@ -943,7 +979,7 @@ class CloneInvoice(View):
 
         self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
         self.data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
-        self.data["state"] = creditnote_constant.state
+        self.data["state"] = country_list.STATE_LIST_CHOICES
 
 
         # Product form

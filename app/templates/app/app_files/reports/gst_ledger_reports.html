@@ -1,6 +1,8 @@
+{% load static %}
 {% load common_components %}
 {% load common_filters %}
 {% loader_component %}
+
 
 <style>
     select.form-control{padding:0px 10px;}
@@ -14,6 +16,7 @@
 
 
 <div class="row">
+    
     <div class="col-lg-12" style="padding:0px">
         <div class="card">
             <div class="card-body"> 
@@ -35,7 +38,7 @@
                                 <optgroup label="Output GST">
                                     <option value="1" {% if account_type == '1'%} selected {% endif %}>All Output GST</option>
                                     <option value="1-sgst" {% if account_type == '1-sgst'%} selected {% endif %}>SGST</option>
-                                    <option value="1-cgst" {% if account_type == '1-cgst'%} selected {% endif %}>CGT</option>
+                                    <option value="1-cgst" {% if account_type == '1-cgst'%} selected {% endif %}>CGST</option>
                                     <option value="1-igst" {% if account_type == '1-igst'%} selected {% endif %}>IGST</option>
                                 </optgroup>
                             </select>
@@ -109,16 +112,16 @@
                             <label style="font-size:90%">Start Date</label>
                         </div>
                         <div class="col-2 custom_dates_show" >
-                            <input id="start_date" type="date" name="start_date" value="{{start_date}}" class="form-control report_dates">
+                            <input id="start_date" type="text" name="start_date" value="{{start_date}}" class="form-control report_dates">
                         </div>
                         <div class="col-1 custom_dates_show">
                             <label style="font-size:90%">End Date</label>
                         </div>
                         <div class="col-2 custom_dates_show" >
-                            <input id="end_date" type="date" name="end_date" value="{{end_date}}" class="form-control report_dates">
+                            <input id="end_date" type="text" name="end_date" value="{{end_date}}" class="form-control report_dates">
                         </div>
                         <div class="col-2" style="margin-left:380px;">
-                            <input type="submit" name="save_btn" class="btn btn-sm btn-primary" value="Submit">
+                            <input type="submit" name="save_btn" class="btn btn-sm btn-primary" value="Submit" style="color:white;background-color:#9095a2;">
                         </div>
                     </div>  
                     </form> 
@@ -132,18 +135,26 @@
 
 
 <div class="row">
+    
     <div class="col-lg-12" style="padding:0px">
         <div class="card">
             <form action="{% url 'get_reports_pdf' %}" method="post">
-                <div class="card-body"> 
-                    {% csrf_token %}
+                {% csrf_token %}
+            <div class="card-body" >
+                <div align="center">
                     <textarea name="html_content" id="html_content" style="display:none;"></textarea>
-                    <input type="submit" name="pdf_btn" class="btn  pull-right" value="GET PDF" style="background-color:#c3c3c3;color:black;">
 
-                    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#send_mail">
+                    <a download href="{% get_media_prefix %}reports/{{filename}}" class="btn btn-primary" style="padding:10px;width:100px;color:white;background-color:#9095a2;">
+                        Download
+                    </a>
+                    <input type="submit" name="pdf_print" class="btn" value="PRINT" style="background-color:#9095a2;color:white;;padding:10px;width:100px;">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#send_mail" style="padding:10px;width:100px;color:white;background-color:#9095a2;">
                         Mail Report
                     </button>
+                    
+                    <input type="submit" name="pdf_btn" class="btn" value="GET PDF" style="background-color:#9095a2;color:white;;padding:10px;width:100px;">
                 </div>
+            </div>
             </form>
         </div>
     </div>
@@ -155,88 +166,88 @@
             <div class="card-body"> 
                 <table class="table-bordered table-hover table-striped" style="border:1px solid white;width: 100%;">
                     <tr style="background: #c3c3c3;border:1px solid #888;">
-                        <th style="border:1px solid #888;color:black;font-size:11px;">Sl.No</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 9%;">Date</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 13%;">Particulars</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;">Voucher type</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;">Voucher number</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 17%;">Debit</th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;">Credit</th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;"><center>Sl.No</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;width: 9%;"><center>Date</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;width: 13%;"><center>Particulars</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;"><center>Voucher type</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;"><center>Voucher number</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;width: 17%;"><center>Debit</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:11px;"><center>Credit</center></th>
                     </tr>
 
                     {% for row in gst_reports %}
                     <tr>
-                        <td style="border:1px solid #888;color:black;font-weight:normal">{{forloop.counter}}</td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal">{{row.created_on|date:'d M,Y'}}</td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal"><center>{{forloop.counter}}</center></td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal"><center>{{row.created_on|date:'d M,Y'}}</center></td>
                         <td style="border:1px solid #888;color:black;font-weight:normal">
                             {% if row.is_invoice %} 
-                                {{row.invoice.invoice_customer}}                         
+                            <center>{{row.invoice.invoice_customer}}</center>
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                                {{row.creditnote.contact_name}}                         
+                            <center>{{row.creditnote.contact_name}}</center>
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                                {{row.purchase_order.vendor}}                         
+                            <center>{{row.purchase_order.vendor}}</center>
                             {% endif %}
 
                             {% if row.is_expense %} 
-                                {{row.expense.exp_number}}                         
+                            <center>{{row.expense.exp_number}}</center>
                             {% endif %}
                         </td>
                         <td style="border:1px solid #888;color:black;font-weight:normal">
                             {% if row.is_invoice %} 
-                                   INVOICE                    
+                            <center>INVOICE</center>
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                                CREDIT NOTE                        
+                            <center>CREDIT NOTE</center>
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                                PURCHASE ORDER                       
+                            <center>PURCHASE ORDER</center>
                             {% endif %}
 
                             {% if row.is_expense %} 
-                                EXPENSE                       
+                            <center>EXPENSE</center>
                             {% endif %}
                         </td>
                         <td style="border:1px solid #888;color:black;font-weight:normal">
                             {% if row.is_invoice %} 
-                                {{row.invoice.invoice_number}}                         
+                            <center>{{row.invoice.invoice_number}}</center>
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                                {{row.creditnote.credit_number}}                         
+                            <center>{{row.creditnote.credit_number}}</center>
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                                {{row.purchase_order.purchase_order_number}}                         
+                            <center>{{row.purchase_order.purchase_order_number}}</center>
                             {% endif %}
 
                             {% if row.is_expense %} 
-                                {{row.expense.exp_number}}                         
+                            <center>{{row.expense.exp_number}}</center>
                             {% endif %}
 
                         </td>                        
                         <td style="border:1px solid #888;color:black;font-weight:normal">
                             {% if row.input_tab %}                                 
-                                {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %} {{row.cgst_amount|floatformat:2}} 
-                                {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}} 
-                                {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} 
+                            <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %} {{row.cgst_amount|floatformat:2}}</center>
+                                <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
+                               <center> {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} </center>
                                 {% else %} 
-                                    {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}                                    
+                                   <center> {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}  </center>
                                 {% endif %}
                             {% endif%}
                          </td>
                          <td style="border:1px solid #888;color:black;font-weight:normal">
                             {% if not row.input_tab %}  
-                                {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %}{{row.cgst_amount|floatformat:2}} 
-                                {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}} 
-                                {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} 
+                                <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %}{{row.cgst_amount|floatformat:2}} </center>
+                                <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
+                                <center>{% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} </center>
                                 {% else %}
-                                {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}                                    
+                                <center>{% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}   </center>
                                 {% endif %}
                             {% endif%}
                         </td>
@@ -246,10 +257,11 @@
                         <td colspan="5" style="border:1px solid #888;color:black;font-weight:normal"><center>By Closing Balance</center></td>
                         <td colspan="2" class="text-center" style="border:1px solid #888;color:black;font-weight:normal">
                             
-                            {% if not total_idt%}  
-                                CR {{row.input_tab|safe}}
+                            
+                            {% if total_idt %}  
+                                DR {{row.input_tab|safe}}
                             {% else %}
-                                DR
+                                CR
                             {% endif %}
                             &nbsp;&#8377; 
                             {{main_tax}}
@@ -262,91 +274,146 @@
 </div>
 
 
-<div id="table_content" style="display:none"> 
+<div id="table_content" style="display: none;"> 
+
+    <div>
+        <p>
+            <label style="background: #c3c3c3;width:100; font-weight:bold;">Name</label>
+            <span style="padding-left:10px; width:500">{{user_name|safe}}</span>
+        </p>
+        <p>
+            <label style="background: #c3c3c3; font-weight:bold;font-weight:bold;">Organisation Name</label>
+            <span style="padding-left:10px;">{{organisation_name|safe}}</span>
+        </p>
+        <p>
+            <label style="background: #c3c3c3;font-weight:bold;">Address</label>
+            <span style="padding-left:10px;">
+                {% if organ_addr.flat_no %}
+                {{ organ_addr.flat_no|truncatechars:15 }},
+                {% endif %}
+                {% if organ_addr.street %}
+                {{ organ_addr.street|truncatechars:15 }},
+                {% endif %}
+                {% if organ_addr.city %}
+                {{ organ_addr.city|truncatechars:15 }},
+                {% endif %}
+                {% if organ_addr.pincode %}
+                {{ organ_addr.pincode|default_if_none:"" }},
+                {% endif %}
+                {% if organ_addr.state %}
+                {{ organ_addr.get_state_display|default_if_none:""|truncatechars:20 }},
+                {% endif %}
+                {% if organ_addr.country %}
+                {{ organ_addr.get_country_display|default_if_none:""|truncatechars:20 }}
+                {% endif %}
+            </span>
+        </p>
+        <p>
+            <label style="background: #635d5d;font-weight:bold;">GST Number</label>
+            <span style="padding-left:10px;">{{gst_number|safe}}</span>
+        </p>
+        <p>
+            <label style="background: #c3c3c3;font-weight:bold;">Ledger Generation Date</label>
+            <span style="padding-left:10px;">{{ledger_date|safe}}</span>
+        </p>
+
+        {% if not time_period %}
+
+        <p>
+            <label style="background: #c3c3c3;border:1px solid #888;font-weight:bold;">Start Date</label>
+            <span style="padding-left:10px;">{{start_date|safe}}</span>
+        </p>
+        <p>
+            <label style="background: #c3c3c3;border:1px solid #888;font-weight:bold;">End Date</label>
+            <span style="padding-left:10px;">{{end_date|safe}}</span>
+        </p>
+        {% endif %}
+    </div>
+
     <table class="table-bordered table-hover table-striped" style="border:1px solid white;width: 100%;">
         <tr style="background: #c3c3c3;border:1px solid #888;">
-            <th style="border:1px solid #888;color:black;font-size:11px; padding:5px 5px;">Sl.No</th>
-            <th style="border:1px solid #888;color:black;font-size:11px;width: 9%; padding:5px 5px;">Date</th>
-            <th style="border:1px solid #888;color:black;font-size:11px;width: 13%; padding:5px 5px;">Particulars</th>
-            <th style="border:1px solid #888;color:black;font-size:11px;width: 15%; padding:5px 5px;">Voucher type</th>
-            <th style="border:1px solid #888;color:black;font-size:11px;width: 15%; padding:5px 5px;">Voucher number</th>
-            <th style="border:1px solid #888;color:black;font-size:11px;width: 17%; padding:5px 5px;">Debit</th>
-            <th style="border:1px solid #888;color:black;font-size:11px; padding:5px 5px;">Credit</th>
+            <th style="border:1px solid #888;color:black;font-size:11px; padding:5px 5px;"><center>Sl.No</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px;width: 9%; padding:5px 5px;"><center>Date</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px;width: 13%; padding:5px 5px;"><center>Particulars</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px;width: 15%; padding:5px 5px;"><center>Voucher type</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px;width: 15%; padding:5px 5px;"><center>Voucher number</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px;width: 17%; padding:5px 5px;"><center>Debit</center></th>
+            <th style="border:1px solid #888;color:black;font-size:11px; padding:5px 5px;"><center>Credit</center></th>
         </tr>
 
         {% for row in gst_reports %}
         <tr>
-            <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">{{forloop.counter}}</td>
-            <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">{{row.created_on|date:'d M,Y'}}</td>
+            <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;"><center>{{forloop.counter}}</center></td>
+            <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;"><center>{{row.created_on|date:'d M,Y'}}</center></td>
             <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 {% if row.is_invoice %} 
-                    {{row.invoice.invoice_customer}}                         
+                    <center>{{row.invoice.invoice_customer}}</center>
                 {% endif %}
 
                 {% if row.is_creditnote %} 
-                    {{row.creditnote.contact_name}}                         
+                    <center>{{row.creditnote.contact_name}} </center>
                 {% endif %}
 
                 {% if row.is_purchase_order %} 
-                    {{row.purchase_order.vendor}}                         
+                    <center>{{row.purchase_order.vendor}} </center>
                 {% endif %}
 
                 {% if row.is_expense %} 
-                    {{row.expense.exp_number}}                         
+                    <center>{{row.expense.exp_number}} </center>
                 {% endif %}
             </td>
             <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 {% if row.is_invoice %} 
-                       INVOICE                    
+                      <center> INVOICE  </center>
                 {% endif %}
 
                 {% if row.is_creditnote %} 
-                    CREDIT NOTE                        
+                    <center>CREDIT NOTE </center>
                 {% endif %}
 
                 {% if row.is_purchase_order %} 
-                    PURCHASE ORDER                       
+                    <center>PURCHASE ORDER</center>
                 {% endif %}
 
                 {% if row.is_expense %} 
-                    EXPENSE                       
+                   <center> EXPENSE</center>
                 {% endif %}
             </td>
             <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 {% if row.is_invoice %} 
-                    {{row.invoice.invoice_number}}                         
+                    <center>{{row.invoice.invoice_number}} </center>
                 {% endif %}
 
                 {% if row.is_creditnote %} 
-                    {{row.creditnote.credit_number}}                         
+                     <center>{{row.creditnote.credit_number}} </center>
                 {% endif %}
 
                 {% if row.is_purchase_order %} 
-                    {{row.purchase_order.purchase_order_number}}                         
+                    <center> {{row.purchase_order.purchase_order_number}} </center>
                 {% endif %}
 
                 {% if row.is_expense %} 
-                    {{row.expense.exp_number}}                         
+                    <center> {{row.expense.exp_number}}  </center>
                 {% endif %}
 
             </td>                        
             <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 {% if row.input_tab %}                                 
-                    {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}Rs. {% endifnotequal %} {{row.cgst_amount|floatformat:2}} 
-                    {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}Rs. {% endifnotequal %} {{row.sgst_amount|floatformat:2}} 
-                    {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}Rs. {% endifnotequal %} {{row.igst_amount|floatformat:2}} 
+                     <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}Rs. {% endifnotequal %} {{row.cgst_amount|floatformat:2}}</center>
+                     <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}Rs. {% endifnotequal %} {{row.sgst_amount|floatformat:2}} </center>
+                     <center>{% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}Rs. {% endifnotequal %} {{row.igst_amount|floatformat:2}}</center>
                     {% else %} 
-                        {% ifnotequal row.total_tax "" %}Rs. {% endifnotequal %} {{row.total_tax|floatformat:2}}                                    
+                         <center>{% ifnotequal row.total_tax "" %}Rs. {% endifnotequal %} {{row.total_tax|floatformat:2}}</center>
                     {% endif %}
                 {% endif%}
              </td>
              <td style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 {% if not row.input_tab %}  
-                    {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}Rs. {% endifnotequal %}{{row.cgst_amount|floatformat:2}} 
-                    {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}Rs. {% endifnotequal %} {{row.sgst_amount|floatformat:2}} 
-                    {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}Rs. {% endifnotequal %} {{row.igst_amount|floatformat:2}} 
+                    <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}Rs. {% endifnotequal %}{{row.cgst_amount|floatformat:2}} </center>
+                    <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}Rs. {% endifnotequal %} {{row.sgst_amount|floatformat:2}} </center>
+                    <center>{% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}Rs. {% endifnotequal %} {{row.igst_amount|floatformat:2}}</center>
                     {% else %}
-                    {% ifnotequal row.total_tax "" %}Rs. {% endifnotequal %} {{row.total_tax|floatformat:2}}                                    
+                    <center>{% ifnotequal row.total_tax "" %}Rs. {% endifnotequal %} {{row.total_tax|floatformat:2}} </center>
                     {% endif %}
                 {% endif%}
             </td>
@@ -358,12 +425,12 @@
             </td>
             <td colspan="2" class="text-center" style="border:1px solid #888;color:black;font-weight:normal; padding:10px 5px; line-height:12px;">
                 
-                {% if not total_idt%}  
-                    CR {{row.input_tab|safe}}
+                {% if total_idt %}  
+                    DR {{row.input_tab|safe}}
                 {% else %}
-                    DR
+                    CR
                 {% endif %}
-                &nbsp;Rs.
+                &nbsp;Rs
                 {{main_tax}}
             </td>
         </tr>
@@ -383,7 +450,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Email Address</label>
+                        <label style="color: black;">Email Address</label>
                         <input class="form-control" type="email" value="{{org_email}}" name="email_address"> 
                         <input type="hidden" value="{{filename}}" name="file_name" readonly> 
                     </div>

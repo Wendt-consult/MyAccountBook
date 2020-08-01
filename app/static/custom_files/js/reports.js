@@ -1,3 +1,33 @@
+// datepicker 
+$("#start_date").datepicker({ 
+    dateFormat: 'yy-mm-dd',
+    changeMonth: true,
+    // minDate: new Date(),
+    maxDate: '+2y',
+    onSelect: function(date){
+
+        // var selectedDate = new Date(date);
+        // var msecsInADay = 86400000;
+        var endDate = $('#start_date').datepicker('getDate', '+1d'); 
+        endDate.setDate(endDate.getDate()+1); 
+
+       //Set Minimum Date of EndDatePicker After Selected Date of StartDatePicker
+        $("#end_date").datepicker( "option", "minDate", endDate );
+        $("#end_date").datepicker( "option", "maxDate", '+2y' );
+
+    }
+});
+
+$("#end_date").datepicker({ 
+    dateFormat: 'yy-mm-dd',
+    changeMonth: true,
+    minDate: new Date(),
+});
+
+
+
+
+
 $(document).ready(function(){
 
     $(".custom_dates_show_month, .custom_dates_show_month_q, .custom_dates_show_month_h").hide();

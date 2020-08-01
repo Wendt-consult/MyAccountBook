@@ -313,7 +313,7 @@ color: white!important;
                                             <a class="dropdown-item" title="Edit Expense" href="{% url 'edit_expense' expense.id %}" class="btn btn-primary btn-sm" style="padding:5px 5px;">
                                                 Edit
                                             </a>
-                                            <button class="dropdown-item delete_expense" title="Delete Expense" type="button" id="{{ expense.id }}" class="btn btn-primary btn-sm" style="padding:5px 5px;">
+                                            <button class="dropdown-item delete_expense" title="Delete Expense" type="button" id="{{ expense.id }}" class="btn btn-primary btn-sm" style="padding:5px 5px;outline:none;">
                                                 Delete
                                             </button>
                                             <a class="dropdown-item" title="Print Expense" href="{% url 'generate_pdf' expense.id %}" class="btn btn-primary btn-sm" target="_blank" style="padding:5px 5px;">

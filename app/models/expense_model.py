@@ -25,6 +25,90 @@ class Expense(models.Model):
 	payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
 	notes = models.TextField(null=True, blank=True)
 
+	cgst_5 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	igst_5 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	sgst_5 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	cgst_12 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	igst_12 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	sgst_12 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	cgst_18 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	igst_18 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	sgst_18 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	cgst_28 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	igst_28 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	sgst_28 = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
 	def __str__(self):
 		return self.exp_number
 

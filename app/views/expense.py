@@ -164,8 +164,22 @@ class AddExpense(View):
                 #button = int(request.POST.get('button'))
 				remove_file = request.POST.get('remove_file')
 				object_dict = {}
+				print('aaaaaaaaaaaaaaaa')
+				print(expense_form)
 				expense = expense_form.save(commit=False)
 				expense.user = request.user
+				expense.cgst_5 = request.POST.get('CGST_5')
+				expense.sgst_5 = request.POST.get('SGST_5')
+				expense.igst_5 = request.POST.get('IGST_5')
+				expense.cgst_12 = request.POST.get('CGST_12')
+				expense.sgst_12 = request.POST.get('SGST_12')
+				expense.igst_12 = request.POST.get('IGST_12')
+				expense.cgst_18 = request.POST.get('CGST_18')
+				expense.sgst_18 = request.POST.get('SGST_18')
+				expense.igst_18 = request.POST.get('IGST_18')
+				expense.cgst_28 = request.POST.get('CGST_28')
+				expense.sgst_28 = request.POST.get('SGST_28')
+				expense.igst_28 = request.POST.get('IGST_28')
 				
 				if remove_file == 'True':
 					expense.exp_bill = ''
@@ -231,6 +245,18 @@ class AddExpense(View):
 				object_dict = {}
 				expense = expense_form.save(commit=False)
 				expense.user = request.user
+				expense.cgst_5 = request.POST.get('CGST_5')
+				expense.sgst_5 = request.POST.get('SGST_5')
+				expense.igst_5 = request.POST.get('IGST_5')
+				expense.cgst_12 = request.POST.get('CGST_12')
+				expense.sgst_12 = request.POST.get('SGST_12')
+				expense.igst_12 = request.POST.get('IGST_12')
+				expense.cgst_18 = request.POST.get('CGST_18')
+				expense.sgst_18 = request.POST.get('SGST_18')
+				expense.igst_18 = request.POST.get('IGST_18')
+				expense.cgst_28 = request.POST.get('CGST_28')
+				expense.sgst_28 = request.POST.get('SGST_28')
+				expense.igst_28 = request.POST.get('IGST_28')
 				expense.save()
 				
 				for form in ex_cat_form:

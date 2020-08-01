@@ -6,6 +6,9 @@
 
 {% block content %}
 <style>
+.modal-body {
+    background-color: #fff!important;
+}
 .product_heading{
     background-color:#000000;
     padding: 1% 0% 1% 1%;
@@ -88,7 +91,7 @@
                         <div class="col-md-5">
                             <div class="uploadOuter">
                                 <span class="dragBox" >
-                                    Darg and Drop File here
+                                    Drag and Drop File here
                                     {{ expense_form.exp_bill }}
                                     <div id="preview"></div>
                                 </span>
@@ -109,7 +112,7 @@
                             {{ form.id }}
                             <input type="hidden" id='cate_tax_{{ forloop.counter }}' value="{{ form.instance.tax }}">
                             <table class="table table-bordered expense_forms table-responsive" id="cate_form_{{ forloop.counter }}" type='cate'>
-                                <tr>
+                                <tr style="background-color:#c3c3c3;"">
                                     <th style="color: white; text-align:center;">Category</th>
                                     <th style="color: white; text-align: center;">Amount</th>
                                     <th style="color: white; text-align: center;">Tax</th>
@@ -138,7 +141,7 @@
                                         {{ item_form.id }}
                                         <div style="padding-right: 10px; padding-left: 10px;">
                                             <table class="table table-bordered expense_forms item_form_{{ outer_counter }} table-responsive" type='item'>
-                                                <tr style="background-color: #7b1fa2;">
+                                                <tr style="background-color:#c3c3c3;">
                                                     <th style="color: white; text-align: center;">Item</th>
                                                     <th style="color: white; text-align: center;">Quantity</th>
                                                     <th style="color: white; text-align: center;">Rate</th>
@@ -147,7 +150,7 @@
                                                     <th style="color: white; text-align: center;">Total Amount</th>
                                                     <th style="color: white; text-align: center;">Action</th>
                                                 </tr>
-                                                <tr style="background-color: #006666;">
+                                                <tr style="background-color:#fff;">
                                                     <td>
                                                         <div class="td">
                                                             {{ item_form.product }}<br>
@@ -184,14 +187,14 @@
                         {% with forloop.counter as outer_counter %}
                             <input type="hidden" id='cate_tax_{{ forloop.counter }}' value="{{ form.tax.value }}">
                             <table class="table table-bordered expense_forms table-responsive" id="cate_form_{{ forloop.counter }}" type='cate'>
-                                <tr style="background-color: #7b1fa2;">
+                                <tr style="background-color: #c3c3c3;">
                                     <th style="color: white; text-align: center;">Category</th>
                                     <th style="color: white; text-align: center;">Amount</th>
                                     <th style="color: white; text-align: center;">Tax</th>
                                     <th style="color: white; text-align: center;">Total Amount</th>
                                     <th style="color: white; text-align: center;">Action</th>
                                 </tr>
-                                <tr class="ex_cat_form" style="background-color: #0000FF;">
+                                <tr class="ex_cat_form" style="background-color: #fff;">
                                     <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
                                     <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
@@ -212,7 +215,7 @@
                                     {% if item_form.reference_id.value == form.reference_id.value %}
                                         <div style="padding-right: 10px; padding-left: 10px;">
                                             <table class="table table-bordered expense_forms item_form_{{ outer_counter }} table-responsive" type='item'>
-                                                <tr style="background-color: #7b1fa2;">
+                                                <tr style="background-color: #c3c3c3;">
                                                     <th style="color: white; text-align: center;">Item</th>
                                                     <th style="color: white; text-align: center;">Quantity</th>
                                                     <th style="color: white; text-align: center;">Rate</th>
@@ -221,7 +224,7 @@
                                                     <th style="color: white; text-align: center;">Total Amount</th>
                                                     <th style="color: white; text-align: center;">Action</th>
                                                 </tr>
-                                                <tr style="background-color: #006666;">
+                                                <tr style="background-color: #fff;">
                                                     <td>
                                                         <div class="td">
                                                             {{ item_form.product }}<br>
@@ -255,14 +258,14 @@
                         <div class="table_form" count='1'>
                             <table class="table table-bordered expense_forms table-responsive" id="cate_form_1" type='cate'>
                                 {% for form in ex_cat_form %}
-                                    <tr style="background-color: #7b1fa2;">
+                                    <tr style="background-color: #c3c3c3;">
                                         <th style="color: white; text-align: center;">Category</th>
                                         <th style="color: white; text-align: center;">Amount</th>
                                         <th style="color: white; text-align: center;">Tax</th>
                                         <th style="color: white; text-align: center;">Total Amount</th>
                                         <th style="color: white; text-align: center;">Action</th>
                                     </tr>
-                                    <tr class="ex_cat_form" style="background-color: #0000FF;">
+                                    <tr class="ex_cat_form" style="background-color: #fff;">
                                         <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
                                         <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
                                         <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
@@ -280,10 +283,10 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Add Another</button>
+                            <button class="btn btn-sm  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color:#578bb7;" >Add Another</button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <button type="button" class="dropdown-item" id="add_category_btn" style="padding:5px 5px;margin-left:28px;">Category</button>
-                                <button type="button" class="dropdown-item" id="add_item_btn" style="padding:5px 5px;margin-left:28px;">Item</button>
+                                <button type="button" class="dropdown-item" id="add_category_btn" style="padding:5px 5px;margin-left:28px;outline:none;">Category</button>
+                                <button type="button" class="dropdown-item" id="add_item_btn" style="padding:5px 5px;margin-left:28px;outline:none;">Item</button>
                             </div>
                         </div>
                     </div>
@@ -309,21 +312,21 @@
 
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="CGST_5" value="0" class="form-control col-md-7" readonly>
                                 </div>     
                                 <div class="row form-group sub_i tax_csgst_2">
                                     <div class="col-md-3">
                                         <label>SGST @ 2.5%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="SGST_5" value="0" class="form-control col-md-7" readonly>
                                 </div>                           
                                 <div class="row form-group sub_i" id='tax_5'>
                                     <div class="col-md-3">
                                         <label>IGST @ 5%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="IGST_5" value="0" class="form-control col-md-7" readonly>
                                 </div>
 
                                 <div class="row form-group sub_i tax_csgst_6">
@@ -331,21 +334,21 @@
                                         <label>CGST @ 6%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="CGST_12" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i tax_csgst_6">
                                     <div class="col-md-3">
                                         <label>SGST @ 6%</label>
                                     </div>
                                    <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="SGST_12" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i" id='tax_12'>
                                     <div class="col-md-3">
                                         <label>IGST @ 12%</label>
                                     </div>
                                    <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="IGST_12" value="0" class="form-control col-md-7" readonly>
                                 </div>
 
                                 <div class="row form-group sub_i tax_csgst_9">
@@ -353,21 +356,21 @@
                                         <label>CGST @ 9%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="CGST_18" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i tax_csgst_9">
                                     <div class="col-md-3">
                                         <label>SGST @ 9%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="SGST_18" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i" id='tax_18'>
                                     <div class="col-md-3">
                                         <label>SGST @ 18%</label>
                                     </div>
                                    <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="IGST_18" name="IGST_18" value="0" class="form-control col-md-7" readonly>
                                 </div>
 
                                 <div class="row form-group sub_i tax_csgst_14">
@@ -375,21 +378,21 @@
                                         <label>CGST @ 14%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="CGST_28" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i tax_csgst_14">
                                     <div class="col-md-3">
                                         <label>SGST @ 14%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="SGST_28" value="0" class="form-control col-md-7" readonly>
                                 </div>
                                 <div class="row form-group sub_i" id='tax_28'>
                                     <div class="col-md-3">
                                         <label>IGST @ 28%</label>
                                     </div>
                                     <span style="color: black; padding-left: 10px;">₹</span>
-                                    <input type="number" value="0" class="form-control col-md-7" readonly>
+                                    <input type="number" name="IGST_28" value="0" class="form-control col-md-7" readonly>
                                 </div>
                             </div>
                             <div class="form-group row sub_i">
@@ -404,16 +407,16 @@
                         <div class="col-md-12" style="text-align: center;">
                             <div>
                                 <input type="hidden" name="button" id="save_button">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #598ebb;" >Save</button>
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #598ebb;color:white;" >Save</button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                    <button type="submit" class="dropdown-item save" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;">Save</button>
+                                    <button type="submit" class="dropdown-item save" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;color:white;outline:none;">Save</button>
                                     
-                                    <button type="submit" class="dropdown-item save_new" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;">Save & New</button>
+                                    <button type="submit" class="dropdown-item save_new" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;color:white;outline:none;">Save & New</button>
                                     
-                                    <button type="submit" class="dropdown-item save_print" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;">Save & Print</button>
+                                    <button type="submit" class="dropdown-item save_print" style="padding:5px 5px;background-color: #598ebb;margin-bottom:8px;color:white;outline:none;">Save & Print</button>
                                 </div>
                                 &nbsp;&nbsp;&nbsp;
-                                <a class="btn " href="{%url 'view_expenses' %}">Cancel</a>
+                                <a class="btn " href="{%url 'view_expenses' %}" style="margin-left:-14px;">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -426,14 +429,14 @@
 <!-- Extra Category Form -->
 <div class="extra_cate_form" style="display: none;">
     <table class="table table-bordered expense_forms table-responsive" type='cate'>
-        <tr style="background-color: #7b1fa2;">
+        <tr style="background-color: #c3c3c3;">
             <th style="color: white; text-align: center;">Category</th>
             <th style="color: white; text-align: center;">Amount</th>
             <th style="color: white; text-align: center;">Tax</th>
             <th style="color: white; text-align: center;">Total Amount</th>
             <th style="color: white; text-align: center;">Action</th>
         </tr>
-        <tr style="background-color: #0000FF;">
+        <tr style="background-color: #fff;">
             <td><div class="td">{{ ex_cat_form.empty_form.account }}<br>{{ ex_cat_form.empty_form.category_description }}</div></td>
             <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ ex_cat_form.empty_form.amount }}</div></td>
             <td class="tax_style"><div class="td">{{ ex_cat_form.empty_form.tax }} <span style="color: white;">%</span></div></td>
@@ -452,7 +455,7 @@
 <div class="extra_item_form" style="display: none;">
     <div style="padding-right: 10px; padding-left: 10px;">
         <table class="table table-bordered expense_forms table-responsive" type='item' style="width: 100%;">
-            <tr style="background-color: #7b1fa2;" class="item_header">
+            <tr style="background-color: #c3c3c3;" class="item_header">
                 <th style="color: white; text-align: center;">Item</th>
                 <th style="color: white; text-align: center;">Qunatity</th>
                 <th style="color: white; text-align: center;">Rate</th>
@@ -461,7 +464,7 @@
                 <th style="color: white; text-align: center;">Total Amount</th>
                 <th style="color: white; text-align: center;">Action</th>
             </tr>
-            <tr style="background-color: #006666;">
+            <tr style="background-color: #fff;">
                 <td><div class="td">{{ ex_item_form.empty_form.product }}<br>{{ ex_item_form.empty_form.item_description }}</div></td>
                 <td><div class="td">{{ ex_item_form.empty_form.quantity }}<span style="color: white; padding-left: 10px;"></span></div></td>
                 <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ ex_item_form.empty_form.rate }}</div></td>

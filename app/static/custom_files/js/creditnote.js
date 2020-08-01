@@ -132,7 +132,6 @@ function data() {
             // CLEAN SELECT OPTION //
             var select = document.getElementById('BillingAddress');
             var length = select.options.length;
-            console.log(length)
             if(length > 0){
                 $("#BillingAddress").empty();
             }
@@ -1135,16 +1134,107 @@ function float_value(event, a) {
     }      
 };
 
-// $('.Quantity').bind(function(e) {
-//     var text = e.originalEvent.clipboardData.getData('Text');
-//     if ($.isNumeric(text)) {
-//         if ((text.substring(text.indexOf('.')).length > 3) && (text.indexOf('.') > -1)) {
-//             e.preventDefault();
-//             $(this).val(text.substring(0, text.indexOf('.') + 3));
-//        }
-//     }
-//     else {
-//             e.preventDefault();
-//          }
-//     });
+
+/********************************************************************/
+// INVOICE GST CHANGES
+/********************************************************************/
+$('#multiple_gst_link').click(function(){
+
+    $.get("/gst_number/", function(data){
+        $(".gst_row").each(function(){
+                        
+            $(this).remove()
+        });
+        for(var i = 0;i < data.gst_number.length;i++){
+            var html = '<tr class="gst_row" id="choose_gst_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label" style="margin-left:27%;">'
+                html+='<input class="form-check-input choose_gst" type="radio" name="radio" id="choose_gst_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                html +='<td style="border:1px solid black;" id="c_gst_number'+(parseInt(i)+1)+'" align="center">'+data.gst_number[i]+'</td>'
+                html +='<td style="border:1px solid black;display:none;" id="c_gst_type'+(parseInt(i)+1)+'" align="center">'+data.gst_type[i]+'</td>'
+                $('#GST_table').append(html)
+        }
+        $('#invoice_multi_gst').modal('show')
+    });
+});
+
+/********************************************************************/
+// choose GST
+/********************************************************************/
+
+function radio_click(elem){
+    var names = $(elem).attr('id')
+    names = names.substring(names.length-1,names.length)
+    $('#org_gst_number').val($('#c_gst_number'+names).text())
+    $('#org_gst_reg_type').val($('#c_gst_type'+names).text())
+};
+
+
+function button_click(category){
+    if(category = 'multiple'){
+        var gst = $('#org_gst_number').val()
+        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to change gst number.")
+        gst = gst.substring(0,2)
+		if($("#single_gst_code option[value="+gst+"]").length > 0){
+
+            $('#single_gst_code').val(gst).change()
+        }
+        check_gst_status()
+    }
+}
+$(document).ready(function(){
+    if($('#org_gst_reg_type') == '8'){
+        alert('Organization is register under composite scheme, it can not choose delivery address of different state.')
+    }
+});
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function gst_state_code(elem){
+	if($('#error_field').text() == '' & $(elem).val() != ''){
+		var str = $(elem).val()
+		str = str.substring(0,2)
+		if($("#single_gst_code option[value="+str+"]").length > 0){
+			var state = $("#single_gst_code option[value="+str+"]").text()
+			var org_id = $('#org_id').val()
+			$.post("/org/gst_state_code/",{'state':state, 'org_id':org_id,'csrfmiddlewaretoken':csrf_token},function(data){
+				if(data == 0){
+					$('#error_field').text('GST state code not matching with existing address state') 
+					$('#org_single_gst_save').prop('disabled', true)
+				}else{
+                    $('#gst_state').val($("#single_gst_code option[value="+str+"]").text())
+                    $('#single_gst_code').val(str).change()
+				}
+			});
+		}else{
+			$('#error_field').text('GST state code not matching with existing address state') 
+			$('#org_single_gst_save').prop('disabled', true)
+		}
+	}
+}
+
+$('.mul_cancel_gst').click(function(){
+	$('#error_field').text('') 
+	$('.multiple_update').prop('disabled', false)
+})
+
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function update_single_gst(){
+    event.preventDefault()
+    $.post("/profile/gst_configuration/",$("#org_gst_update").serialize(), function(data){
+        if(data != '0'){
+            var gst_num = $('#single_gst').val()
+            $('#org_gst_reg_type').val($('#single_gst_type').val())
+            $('#replace_change_update').find('h6').text('Your default Organization gst number:-'+gst_num+'.')
+            $('#change_update_gst').hide()
+            $('#replace_change_update').show()
+            $('#org_gst_number').val(gst_num)
+            $('#add_gst_number').modal('hide')
+            check_gst_status()
+        }
+    });
+}
+
   
