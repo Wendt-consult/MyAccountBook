@@ -30,10 +30,8 @@ function creditnote_addRow(a) {
     creditnote_number += 1
 
     $(document).on('click','#select2-ItemName'+creditnote_number+'-container',function(){
-        console.log(creditnote_number);
         for(var i = 1;i <= creditnote_number; i++){
             var a = $('#row_ItemName'+creditnote_number+'').length
-            console.log("AA"+a);
             if(a == 0){
                 $('.select2-search').append('<button class="btn btn-link credit_product" data-toggle="modal" id="row_ItemName'+creditnote_number+'" onclick="get_credit_product_id('+creditnote_number+'),c()" data-target="#ProductModal" style="margin-left: -11%;">+ Add New</button>');
             }  
@@ -44,18 +42,18 @@ function creditnote_addRow(a) {
 
 
         var html = '<tr id="creditnote_row'+creditnote_number+'">'
-        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+'),validation()" style="padding-left:0px"><option value="-------">-------</option></select>'
-        html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top:1px;"></textarea></td>'
+        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="-------">-------</option></select>'
+        html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
         html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
+        html +='<td style="border:1px solid black;"><div class="row" style="padding-top:9px;"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'">₹</label></div>'
         html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+'),validation()" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
         html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+'), validation()" name="Quantity[]"></td>'
         html +='<td style="border:1px solid black;"><input class="form-control" onchange="validation()" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Discount'+creditnote_number+'" name="Discount[]"></div>'
         html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+creditnote_number+'" name="Dis[]" onchange="dicount_type('+creditnote_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px"><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
         html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Amount'+creditnote_number+'">₹</label></div>'
         html +='<div class="col"><input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,\'Amount'+creditnote_number+'\')" id="Amount'+creditnote_number+'" name="Amount[]" style="margin-top:1%;"></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+creditnote_number+'" name="'+creditnote_number+'" onclick="creditnote_removeRow('+creditnote_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         $('#creditnote_table').append(html)
@@ -105,13 +103,18 @@ function creditnote_addRow(a) {
 };
 // REMOVE JS TABLE
 function creditnote_removeRow(a) {
-
-$('#creditnote_row'+a+'').remove();
-$('#'+a+'').remove();
-sub_total()
-if(creditnote_number > 1){
-    creditnote_number -=1
-}
+    var first_row = $('#creditnote_table tbody tr:first').attr('id')
+    if(first_row == 'creditnote_row'+a+''){
+        var last_row = $('#creditnote_table tbody tr:last').attr('id')
+        if(last_row != 'creditnote_row'+a+''){
+            $('#creditnote_row'+a+'').remove();
+        }else{
+            $('#ItemName'+a+'').val('-------').change();
+            // $('#product_account'+a+'').val('').change();
+        }
+    }else{
+        $('#creditnote_row'+a+'').remove();
+    }
 
 }
 
@@ -121,44 +124,39 @@ if(creditnote_number > 1){
 
 function data() {
     var contact = $('#customerName option').filter(':selected').val()
-    //  $('#customerName :selected').text();
-    $.ajax({
-        type:"GET",
-        url: "/creditnote/contact/"+contact+"",
-        dataType: "json",
-        success: function(data){
-            $("#email").val(data.contacts)
-            var option = data.address
-            // CLEAN SELECT OPTION //
-            var select = document.getElementById('BillingAddress');
-            var length = select.options.length;
-            if(length > 0){
-                $("#BillingAddress").empty();
-            }
-            // for (var i = length; i >= 1; i--) {
-            //     console.log(select.options[i] )
-            //     select.options[i] = null;
-            //     console.log('xxxxxxxxxx')
-            // }
-            // END //
-
-            // ADD SELECT OPTION //
-            for(var i = 0;i < option.length;i++){
-                if(i == 0){
-                    $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
-                    $('#BillingAddress1').val(option[i])
-                }else{
-                    $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
+    if(contact !=''){
+        $.ajax({
+            type:"GET",
+            url: "/creditnote/contact/"+contact+"",
+            dataType: "json",
+            success: function(data){
+                $("#email").val(data.contacts)
+                var option = data.address
+                // CLEAN SELECT OPTION //
+                var select = document.getElementById('BillingAddress');
+                var length = select.options.length;
+                if(length > 0){
+                    $("#BillingAddress").empty();
                 }
-                
-            }
-            // END //
-        },
-        error: function (rs, e) {
-            alert('Sorry, try again.');
-        }
-    });
-
+    
+                // ADD SELECT OPTION //
+                for(var i = 0;i < option.length;i++){
+                    if(i == 0){
+                        $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
+                        $('#BillingAddress1').val(option[i])
+                    }else{
+                        $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
+                    }
+                    
+                }
+                // END //
+            },
+        });
+    }
+    else{
+        $('#BillingAddress1').val('')
+        $("#BillingAddress").empty();
+    }
 };
 
 /************************************************************ */
@@ -289,18 +287,14 @@ $('input[type=number]').on('keydown',function(e) {
 // SHOW EMAIL CC
 function show_cc_mail() {
     $(".ccemail").show()
-    // $(".cc").css("margin-top","-3%")
     $('#show_cc').hide()
-    // $('#billing_state').css('margin-top', '4%')
   }
 
 // HIDE EMAIL CC
 function hide_cc_mail() {
     $(".ccemail").hide()
     $("#ccemail").val('')
-    // $(".cc").css("margin-top","0px")
     $('#show_cc').show()
-    // $('#billing_state').css('margin-top', '0%')
   }
 
 /********************************************************************/
@@ -320,9 +314,6 @@ $(document).ready(function(){
     $('#Attachment').change(function(e){
         $('#creditnote_filename').hide()
         $(this).css('width','70%')
-        // var fileName = e.target.files[0].name;
-        // alert('The file "' + fileName +  '" has been selected.');
-
     });
 });
 /********************************************************************/
@@ -338,7 +329,6 @@ $(document).ready(function() {
     // select2-ItemName1-container
 
 $(document).on('click','#select2-ItemName1-container',function(){
-    console.log("Called");
     for(var i = 1;i <= creditnote_number; i++){
         var a = $('#row_ItemName'+creditnote_number+'').length
         if(a == 0){
@@ -348,7 +338,6 @@ $(document).on('click','#select2-ItemName1-container',function(){
 });
 
 function c(){
-    console.log("closed");
     $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
     $(document).ready(function() {
         $(function () {
@@ -399,7 +388,6 @@ function creditnote_calculate(a){
             }
         }
         else if(dis_type == '₹'){
-            console.log(val)
             if(discount == '' || discount == '0' || discount == '0.0'){
                 if(price == '' || price == '0.0' || price == '0'){
                     $("#Amount"+a+"").val('')
@@ -454,30 +442,85 @@ function sub_total(){
         creditnote_tax_cacultion()
     }
     else{
-        $("#SubTotal").val(sub_total)
+        $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
         creditnote_tax_cacultion()
     }
     
 }
+/********************************************************************/
+// CHECK GST STATUS FOR APPLY
+/********************************************************************/
 
+function check_gst_status(){
+    var state = $('#supplyPlace1').val()
+    var org_state = $('#single_gst_code option:selected').text()
+        // org gst not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '' ){
+            $('#creditnote_table').find('.tax').attr('readonly', true)
+            $('#creditnote_table').find('.tax').val('')
+            sub_total()
+            if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+                alert('tax not apply beacuse customer not select or customer is not gst register')
+            }else{
+                alert('Organization not register GST')
+            }
+        // org gst register
+        }else if(($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7') & global_gst_type != ''){
+            if(org_state !='' & state != ''){
+                $('#creditnote_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
+            else{
+                $('#creditnote_table').find('.tax').attr('readonly', true)
+                $('#creditnote_table').find('.tax').val('')
+                sub_total()
+            }
+        // org in composite
+        }else if($('#org_gst_reg_type').val()  == '8'){
+            if( org_state !='' & state != '' & org_state.toLowerCase() == state.toLowerCase()){
+                $('#creditnote_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }else{
+                $('#creditnote_table').find('.tax').attr('readonly', true)
+                $('#creditnote_table').find('.tax').val('')
+                sub_total()
+                alert('Organization is register under composite scheme,is you choose different state of state tax will not be calculated.')
+            }
+        }
+}
+
+var global_gst_type = ''
+function customer_gst_type(){
+    var ins = $('#customerName').val()
+    if(ins != ''){
+        $.get("/invoice/customer_gst/"+ins+"/",function(data){
+            global_gst_type = data.gst_type
+            check_gst_status()
+        });
+    }else{
+        global_gst_type = ''
+        check_gst_status()
+    }
+}
 /********************************************************************/
 // CREDIT_NOTE SGST CGST AND IGST CALCULATION 
 /********************************************************************/
 
-    $.ajax({
-        type:"GET",
-        url: "/creditnote/state_compare/",
-        dataType: "json",
-        success: function(data){
-            credit_note_user_state = data.state
-        },  
-    });
+    // $.ajax({
+    //     type:"GET",
+    //     url: "/creditnote/state_compare/",
+    //     dataType: "json",
+    //     success: function(data){
+    //         credit_note_user_state = data.state
+    //     },  
+    // });
 
-var credit_note_user_state =''
-creditnote_tax_cacultion()
-sub_total()
+
+// creditnote_tax_cacultion()
+// sub_total()
 function creditnote_tax_cacultion(){
     var state = $("#supplyPlace1").val()
+    var org_state = $('#single_gst_code option:selected').text()
     var cgst_5 = 0
     var sgst_5 = 0
     var igst_5 = 0
@@ -493,7 +536,7 @@ function creditnote_tax_cacultion(){
     var cgst_other = 0
     var sgst_other = 0
     var igst_other = 0
-    if(credit_note_user_state.toLowerCase() == state.toLowerCase() || state == 'none'){
+    if(org_state.toLowerCase() == state.toLowerCase()){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -627,7 +670,7 @@ function creditnote_tax_cacultion(){
         }
         
     }
-    else if(credit_note_user_state.toLowerCase() != state.toLowerCase() ){
+    else if(org_state.toLowerCase() != state.toLowerCase() ){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -760,7 +803,7 @@ function creditnote_tax_cacultion(){
 /********************************************************************/
 var message = ''
 function validation(){
-    
+    console.log('aaaaaaaaaa')
     for(var i = 1;i <= creditnote_number;i++){
         message = ''
         var product_name = $("#ItemName"+i+"").val()
@@ -790,7 +833,7 @@ function validation(){
 function  sendbtn(){
     var a = $("#email").val()
     var b = $("#customerName").val()
-    if(b == '-------'){
+    if(b == ''){
         alert('Contact name required')
         return false
     }
@@ -810,7 +853,7 @@ function  sendbtn(){
 
 function savebtn(){
     var b = $("#customerName").val()
-    if(b == '-------'){
+    if(b == ''){
         alert('Contact name required')
         return false
     }
@@ -826,7 +869,7 @@ function savebtn(){
 
 function draftbtn(){
     var b = $("#customerName").val()
-    if(b == '-------'){
+    if(b == ''){
         alert('Contact name required')
         return false
     }
@@ -1083,7 +1126,6 @@ function balnk_credit(){
 // CREDIT_NOTE DECIMAL POINT
 /********************************************************************/
 // $('.Quantity').keypress(function(event) { 
-//     console.log('aaaaaaaaaaa')
 //     var $this = $(this);
 //     if ((event.which != 46 || $this.val().indexOf('.') != -1) &&
 //        ((event.which < 48 || event.which > 57) &&
@@ -1138,6 +1180,7 @@ function float_value(event, a) {
 /********************************************************************/
 // INVOICE GST CHANGES
 /********************************************************************/
+
 $('#multiple_gst_link').click(function(){
 
     $.get("/gst_number/", function(data){

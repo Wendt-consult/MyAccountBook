@@ -19,10 +19,6 @@
                             </span>
                         </label>
                     </div>
-                    <!-- <input type="hidden" value="{{ids}}" name="org_id">
-                    <input type="hidden" value="" name="org_address_ids" id="org_address_ids">
-                    <input type="hidden" value="" class="tax_id_input" name="org_tax_id">
-                    <input type="hidden" value="" id="org_address_state" name="org_address_state"> -->
 
                     <div class="row single_gst_field">
                         <div class="col-2">
@@ -49,19 +45,7 @@
                             <p id="error_field" style="color: black;"></p>
                         </div>
                     </div>
-                    <!-- <div class="row single_gst_field" style="display: none;">
-                        <div class="col-3">
-                            <label for="single_gst_code">GST Code</label>
-                        </div>
-                        <div class="col-3">
-                            <select class="form-control" name="single_gst_code" id="single_gst_code">
-                                <option value="form-control" style="color: #000000;background-color: white;">---------</option>
-                                {% for i in gst_state_code %}
-                                <option value="{{i.0}}" style="color: #000000;background-color: white;">{{i.1}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div> -->
+                    
                     <input type="hidden" name="gst_state" id="gst_state">
                     <input type="hidden" value="{{org_id}}" name="org_id" id="org_id">
                 </div>

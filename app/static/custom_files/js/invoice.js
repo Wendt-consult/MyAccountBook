@@ -993,7 +993,6 @@ function check_gst_status(){
                 alert('Organization is register under composite scheme,is you choose different state of state tax will not be calculated.')
             }
         }
-
 }
 /********************************************************************/
 // invoice SGST CGST AND IGST CALCULATION 
@@ -1652,3 +1651,7 @@ function update_single_gst(){
         }
     });
 }
+
+$('#Invoice_date,#Invoice_one_due_date,#Invoice_recurring_start').keypress(function(event) {
+    event.preventDefault();
+});

@@ -117,6 +117,13 @@ class Organisations(models.Model):
         null = True,
     )
 
+    note = models.CharField(
+        max_length = 400,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     purchase_terms_and_condition = models.CharField(
         max_length = 400,
         db_index = True,

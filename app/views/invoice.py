@@ -473,6 +473,7 @@ def save_invoice(request):
                         igst_amount = product_igst[i-header],
                         amount=product_amount[i],
                         amount_inc = product_amount_inc[i-header],
+                        header_number_count = row_count,
                         # header_number_count = row_count,
                         # tax_amount = (float(product_tax[i-header])/100)*float(product_amount[i]), 
                         # igst_amount = float(igst[i]) if len(igst) > 0 else 0,
@@ -700,6 +701,10 @@ class EditInvoice(View):
             cgst = request.POST.get("CGST")
             sgst = request.POST.get("SGST")
             igst = request.POST.get("IGST")
+            # for invoice gst number and type
+            org_gst_number = request.POST.get("org_gst_number")
+            org_gst_reg_type = request.POST.get("org_gst_reg_type")
+            single_gst_code = request.POST.get("single_gst_code")
             shipping_charges = request.POST.get("shipping_charges")
             total_amount = request.POST.get("Total")
             is_tc = request.POST.get('invoice_t&c','off')
@@ -902,6 +907,9 @@ class CloneInvoice(View):
 
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+
     def get(self, request, *args, **kwargs):
             
         try:
@@ -985,6 +993,29 @@ class CloneInvoice(View):
         # Product form
         self.data["add_product_images_form"] = ProductPhotosForm()
         self.data["add_product_form"] = ProductForm(request.user)
+
+
+        # org gst number
+        self.data['is_gst'] = 'no'
+        self.data['is_signle_gst']  = 'no'
+        self.data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
+
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+
+        self.data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            self.data['is_signle_gst'] = 'yes'
+            self.data['is_gst'] = org_gst_num[0].gstin
+            self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                self.data['is_gst'] = default[0].gstin
+                self.data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                self.data['is_gst'] = org_gst_num[0].gstin
+                self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
 
 
         return render(request, self.template_name, self.data)

@@ -259,6 +259,27 @@ class CreditNode(models.Model):
         null = True,
     )
 
+    creditnote_org_gst_num = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    creditnote_org_gst_type =  models.CharField(
+        max_length=2,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    creditnote_org_gst_state =  models.CharField(
+        max_length=5,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     def __str__(self):
         return "{} - {}".format(self.contact_name,self.id) 
 

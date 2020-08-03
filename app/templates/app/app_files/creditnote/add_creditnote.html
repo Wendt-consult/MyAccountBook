@@ -174,11 +174,11 @@ optgroup{color :black; }
                             
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="customerName1">Contact Name</label>
+                                    <label for="customerName">Contact Name</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control select1" id="customerName" name="customerName" onchange=data($(this),customer_gst_type())  required> 
-                                        <option value="-------">-------</option>
+                                    <select class="form-control select1" id="customerName" name="customerName" onchange="data($(this)),customer_gst_type()" required> 
+                                        <option value="">-------</option>
                                         {% for contact in contacts %}
                                         <option value="{{contact.id}}">{{contact}}</option>
                                         {% endfor %}
@@ -254,8 +254,8 @@ optgroup{color :black; }
                                     <label for="supplyPlace1">State of Supply</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control" name="supplyPlace" id="supplyPlace1"  onchange="creditnote_tax_cacultion()">
-                                        <option value="none"></option>
+                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status()">
+                                        <option value="">------</option>
                                         {% for i in state %}
                                             <option value="{{i.0}}">{{i.1}}</option>
                                         {% endfor %}
@@ -292,8 +292,8 @@ optgroup{color :black; }
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <!-- <th scope="col" style="border:1px solid white;width: 5%;">#</th> -->
-                            <th scope="col" style="border:1px solid black;width: 21%;">Product</th>
-                            <th scope="col" style="border:1px solid black;width: 11%;">Type</th>
+                            <th scope="col" style="border:1px solid black;width: 17%;">Product</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Type</th>
                             <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
                             <th scope="col" style="border:1px solid black;">Quantity</th>
                             <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
@@ -308,7 +308,7 @@ optgroup{color :black; }
                             <!-- <td scope="row" style="border:1px solid white;">1</td> -->
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;">
+                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 174.6px;">
                                     
                                     <option value="-------">-------</option>
                                     
@@ -317,7 +317,7 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;"></textarea>
+                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;"></textarea>
                                 
                             </td>
                             <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
@@ -325,7 +325,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="currency1" name="currency[]" readonly>
                             </td> -->
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="padding-top: 9px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
                                     </div>
@@ -357,7 +357,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -372,7 +372,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Price1">₹</label>
+                                        <label for="Amount1">₹</label>
                                     </div>
                                     <div class="col">
                                         <input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,'Amount1')" onkeyup="balnk_credit()" id="Amount1" name="Amount[]" style="margin-top: 1%;">
@@ -380,7 +380,9 @@ optgroup{color :black; }
                                 </div>
                                 
                             </td>
-                            <td><span class="tbclose material-icons" id="clear_row" name="Clear_row"  onclick="clear_row()" style="cursor: default;">delete_forever</span></td>
+                            <td>
+                                <span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span>
+                            </td>
                           </tr>
                           
                         </tbody>
@@ -388,7 +390,7 @@ optgroup{color :black; }
                 <!-- </div> -->
                 <div class="container">
                 
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="text-decoration: underline;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;text-decoration: underline;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                 </div>
                 
                 <div class="container">
@@ -411,7 +413,7 @@ optgroup{color :black; }
                                  <div class="col form-check">
                                      <label class="form-check-label">
                                          <input class="form-check-input" type="checkbox" id="default" name="default" value="on">
-                                         Do you want set terms and condition as default
+                                         Use this as default terms and condition
                                          <span class="form-check-sign">
                                              <span class="check"></span>
                                          </span>
@@ -432,7 +434,22 @@ optgroup{color :black; }
                                      <textarea class="" id="Message" name="Message" rows="4" maxlength="400" size="400" style="width:73%;"></textarea>
                                  </div>
                              </div>
-
+                            
+                             {% if notes is None %}
+                             <div class="row">
+                                 <div class="col">
+                                     <div class="form-check">
+                                         <label class="form-check-label">
+                                             <input class="form-check-input" type="checkbox" id="creditnote_default_notes" name="creditnote_default_notes">
+                                             Use this as default notes
+                                             <span class="form-check-sign">
+                                                 <span class="check"></span>
+                                             </span>
+                                         </label>
+                                     </div>   
+                                 </div>
+                             </div>
+                             {% endif %}
                              
                             <div class="row">
                                 <div class="col-3">
@@ -447,7 +464,7 @@ optgroup{color :black; }
                                         <input type="checkbox" id="attach_check" name="attach_check" >
                                         <span class="slider round"></span>
                                     </label>
-                                    <font style="margin-left: 6px;color: #AAAAAA;font-size: smaller;">Do you want to send this attachment with email?</font>
+                                    <font style="margin-left: 6px;color: black;font-size: smaller;">Do you want to send this attachment with email?</font>
                                 </div>
                             </div>
                         </div>

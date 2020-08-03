@@ -129,7 +129,35 @@ optgroup{color :black; }
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Clone Credit Note{{status2}} </h4>
                 </div>  
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    {% if is_gst != 'no' %}
+                        {% if is_signle_gst == 'yes' %}
+                            <h6 style="color: white;">Your default Organization gst number:-{{is_gst}}.</h6>
+                        {% else %}
+                        <div class="row" style="margin-left: 0px;">
+                            <h6 style="color: white;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}.Do you want to create this invoice with another GST number</h6>&nbsp;
+                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;">YES</a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="row" style="margin-left: 0px;" id="change_update_gst">
+                        <h6 style="color: white;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
+                        <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
+                    </div>
+                    <div style="display: none;" id="replace_change_update">
+                        <h6 style="color: white;"></h6>
+                    </div>
+                    {% endif %}
+                </div>
             <div style="margin-top: 4%;">
+                <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
                 <div class="container">
                     <div class="row">
                         <!-- left -->
@@ -140,8 +168,8 @@ optgroup{color :black; }
                                     <label for="customerName1">Contact Name</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control select1" id="customerName"  name="customerName" onchange=data($(this)) required> 
-                                        <option value="-------">-------</option>
+                                    <select class="form-control select1" id="customerName"  name="customerName" onchange="data($(this)),customer_gst_type()" required> 
+                                        <option value="">-------</option>
                                         {% for contact in contacts %}
                                         <option value="{{contact.id}}" {% if credit_note.contact_name|lower == contact|lower %} selected {% endif %}>{{contact}}</option>
                                         {% endfor %}
@@ -233,10 +261,10 @@ optgroup{color :black; }
                                     <label for="supplyPlace1">State of Supply</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="creditnote_tax_cacultion()">
-                                        <option value="none" ></option>
+                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status()">
+                                        <option value="" ></option>
                                         {% for i in state %}
-                                            <option value="{{i.0}}" {% if credit_note.state_supply == i. %} selected {% endif %}>{{i.1}}</option>
+                                            <option value="{{i.0}}" {% if credit_note.state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -270,8 +298,8 @@ optgroup{color :black; }
                     <table class="table" id="creditnote_table" style="width: 95%;margin-left: 5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid black;width: 21%;">Product</th>
-                            <th scope="col" style="border:1px solid black;width: 11%;">Type</th>
+                            <th scope="col" style="border:1px solid black;width: 17%;">Product</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Type</th>
                             <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
                             <th scope="col" style="border:1px solid black;">Quantity</th>
                             <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
@@ -287,7 +315,7 @@ optgroup{color :black; }
                             
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="padding-left: 0px;">
+                                <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
                                     <option value="-------">-------</option>
                                     
@@ -296,7 +324,7 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc{{forloop.counter}}" name="desc[]" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                <textarea id="desc{{forloop.counter}}" name="desc[]" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
                             <td style="border:1px solid black;"><input type="text" class="form-control" value="{{items.product_type}}" id="type{{forloop.counter}}" name="type[]" readonly></td>                  
@@ -304,9 +332,9 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="currency{{forloop.counter}}" value="{{items.currency}}" name="currency[]" readonly>
                             </td> -->
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="padding-top: 9px;">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Price1">₹</label>
+                                        <label for="Price{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
                                         <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='creditnote_calculate({{forloop.counter}}), validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
@@ -335,7 +363,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;">
+                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
                                             <datalist id="tax">
                                                 {% for i in gst %}
                                                 <option value="{{i.taxname_percent}}">
@@ -358,21 +386,17 @@ optgroup{color :black; }
                                 </div>
                             </td>
                             <td style="border-top: none;">
-                                {% if forloop.counter == 1 %}
-                                <span class="tbclose material-icons" id="clear_row" name="Clear_row" onclick="clear_row()" style="cursor: default;">delete_forever</span>
-                                {% else %}
                                 <span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}" style="cursor: default;" onclick="creditnote_removeRow({{forloop.counter}})">delete_forever</span>
-                                {% endif %}
                             </td>
                           </tr>
                           
                         {% endfor %}
                         {% else %}
-                        <tr id="creditnote_row{{forloop.counter}}">
+                        <tr id="creditnote_row1">
                             
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;">
+                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
                                     <option value="-------">-------</option>
                                     
@@ -381,7 +405,7 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" value="" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{credit_note.description|default_if_none:""}}</textarea>
+                                <textarea id="desc1" name="desc[]" value="" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{credit_note.description|default_if_none:""}}</textarea>
                                 
                             </td>
                             <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
@@ -389,7 +413,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="currency1" value="" name="currency[]" readonly>
                             </td> -->
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="padding-top: 9px;">
                                     <div class="col-1" style="padding-right:0%;">
                                         <label for="Price1">₹</label>
                                     </div>
@@ -420,7 +444,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -442,7 +466,9 @@ optgroup{color :black; }
                                     </div>
                                 </div>
                             </td>    
-                            <td style="border-top: none;"><span class="tbclose material-icons" id="clear_row" name="Clear_row" style="cursor: default;" onclick="clear_row()">delete_forever</span></td>
+                            <td style="border-top: none;">
+                                <span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span>
+                            </td>
                           </tr>
                         {% endif %}
                         </tbody>
@@ -450,9 +476,9 @@ optgroup{color :black; }
                 <!-- </div> -->
                 <div class="container">
                     {% if creditnote_item %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
                     {% else %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
                     {% endif %}
                 </div>
 
@@ -479,7 +505,7 @@ optgroup{color :black; }
                                 <div class="col form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="default" name="default" value="on">
-                                        Do you want set terms and condition as default
+                                        Use this as default terms and condition
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
@@ -500,6 +526,22 @@ optgroup{color :black; }
                                 </div>
                             </div>   
 
+                            {% if notes is None %}
+                             <div class="row">
+                                 <div class="col">
+                                     <div class="form-check">
+                                         <label class="form-check-label">
+                                             <input class="form-check-input" type="checkbox" id="creditnote_default_notes" name="creditnote_default_notes">
+                                             Use this as default notes
+                                             <span class="form-check-sign">
+                                                 <span class="check"></span>
+                                             </span>
+                                         </label>
+                                     </div>   
+                                 </div>
+                             </div>
+                             {% endif %}
+
                             <div class="row">
                                 <div class="col-3">
                                     <label for="Attachment">Attachment</label>
@@ -507,13 +549,13 @@ optgroup{color :black; }
                                 <div class="col" style="margin-top:6px">
                                     <input type="file" class="form-control" id="Attachment" name="Attachment"  style="padding-top: 1px;margin-left: -17px;">
                                     <input type="button"  style="margin-left: 62%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
-                                    <font color="black" style="font-size:x-small;margin-left: -4%;">File Size Less Than: 20 MB </font><br>
+                                    <font style="font-size:x-small;margin-left: -4%;color: black;">File Size Less Than: 20 MB </font><br>
                                    
                                     <label class="switch" style="padding-top: 5px;margin-left: -5%;">
                                         <input type="checkbox" id="attach_check" name="attach_check" >
                                         <span class="slider round"></span>
                                     </label>
-                                    <font style="margin-left: 6px;color: #AAAAAA;font-size: smaller;">Do you want to send this attachment with email?</font>  
+                                    <font style="margin-left: 6px;color: black;font-size: smaller;">Do you want to send this attachment with email?</font>  
                                 </div>
                             </div>
                         </div>
@@ -1772,6 +1814,11 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+<!-- chosse GST model popup -->
+{% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
+
+<!-- UPDATE GST NUMBER -->
+{% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 
@@ -1784,13 +1831,13 @@ optgroup{color :black; }
     
     $(document).ready(function(){
         if('{{creditnote_product_status2}}' == 'NO'){
-            console.log('aaaaaaaaaaa')
             alert("can not make a copy some product and contact which is  inactive or deleted ")
         }
         else if('{{creditnote_contact_status2}}' == 'NO'){
-            console.log('bbbbbbbbbbbbbbb')
             alert("can not make a copy some product and contact which is  inactive or deleted ")
         }
+        csrf_token = '{{csrf_token}}';
+        customer_gst_type()
     });
 
 </script>

@@ -127,9 +127,12 @@ def add_creditnote(request, slug ):
     default = Organisations.objects.filter(user = request.user)
     if(len(default) > 0):
         msg = default[0].terms_and_condition
+        notes = default[0].note
         data['term_msg'] = msg
+        data['notes'] = notes
     data["contacts"] = contacts
     data["state"] = country_list.STATE_LIST_CHOICES
+    data['gst_r_type'] = user_constants.org_GST_REG_TYPE
     # data['tax'] = creditnote_constant.tax
 
     # gst tax model
@@ -153,6 +156,29 @@ def add_creditnote(request, slug ):
     elif(int(slug) == 0):
         products = ProductsModel.objects.filter(user = request.user, is_active = True, product_delete_status = 0)
         data["products"] = products
+
+        # org gst number
+        data['is_gst'] = 'no'
+        data['is_signle_gst']  = 'no'
+        data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
+
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+
+        data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            data['is_signle_gst'] = 'yes'
+            data['is_gst'] = org_gst_num[0].gstin
+            data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                data['is_gst'] = default[0].gstin
+                data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                data['is_gst'] = org_gst_num[0].gstin
+                data['org_gst_type'] = org_gst_num[0].gst_reg_type
+
         return render(request, template_name, data)
 
 
@@ -269,15 +295,26 @@ def save_credit_note(request):
         igst_other = request.POST.get("IGST_other")
         total = request.POST.get("Total","None")
         default = request.POST.get('default','off')
+        creditnote_default_notes = request.POST.get('creditnote_default_notes','off')
+        # for credit note gst number and type
+        org_gst_number = request.POST.get("org_gst_number")
+        org_gst_reg_type = request.POST.get("org_gst_reg_type")
+        single_gst_code = request.POST.get("single_gst_code")
         if(default == 'on'):
             org = Organisations.objects.get(user = request.user)
             if(org.terms_and_condition is None):
                 org.terms_and_condition = term_condition
                 org.save()
-                # org2 = Organisations(user = request.user, terms_and_condition = term_condition)
-                # org2.save()
             elif(org.terms_and_condition is not None):
                 Organisations.objects.get(user = request.user).update(terms_and_condition = term_condition)
+
+        if(creditnote_default_notes == 'on'):
+            org = Organisations.objects.get(user = request.user)
+            if(org.note is None):
+                org.note = message
+                org.save()
+            elif(org.note is not None):
+                Organisations.objects.get(user = request.user).update(note = message)
                 
 
         if 'save_send' in request.POST:
@@ -321,7 +358,10 @@ def save_credit_note(request):
             cgst_other=cgst_other,
             igst_other = igst_other,
             sgst_other = sgst_other,
-            total=total
+            total=total,
+            creditnote_org_gst_num = org_gst_number,
+            creditnote_org_gst_type = org_gst_reg_type,
+            creditnote_org_gst_state = single_gst_code,
         )
         credit.save()     
         
@@ -329,7 +369,7 @@ def save_credit_note(request):
         igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
         cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
         sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
-        print(igst, cgst, sgst)
+        # print(igst, cgst, sgst)
 
         
 
@@ -481,6 +521,7 @@ class EditCreditnote(View):
 
         self.data["contacts"] = contacts
         self.data["state"] = country_list.STATE_LIST_CHOICES
+        self.data['gst_r_type'] = user_constants.org_GST_REG_TYPE
         # self.data['tax'] = creditnote_constant.tax
         self.data['gst'] = gst 
 
@@ -497,9 +538,11 @@ class EditCreditnote(View):
         self.data["add_product_images_form"] = ProductPhotosForm()
         self.data["add_product_form"] = ProductForm(request.user) 
         # msg = len(defult)
-        if( len(default) > 0):
+        if(len(default) > 0):
             msg = default[0].terms_and_condition
+            notes = default[0].note
             self.data['term_msg'] = msg
+            self.data['notes'] = notes
 
         return render(request, self.template_name, self.data)
 
@@ -545,22 +588,26 @@ class EditCreditnote(View):
             igst_other = request.POST.get("IGST_other")
             total = request.POST.get("Total","None")
             default = request.POST.get('default','off')
+            creditnote_default_notes = request.POST.get('creditnote_default_notes','off')
+            # for invoice gst number and type
+            org_gst_number = request.POST.get("org_gst_number")
+            org_gst_reg_type = request.POST.get("org_gst_reg_type")
+            single_gst_code = request.POST.get("single_gst_code")
             if(default == 'on'):
-                # org = Organisations.objects.filter(user = request.user)
-                # if(len(org) == 0):
-                #     org2 = Organisations(user = request.user, terms_and_condition = term_condition)
-                #     org2.save()
-                # else:
-                #     org.terms_and_condition = term_condition
-                #     org.save()
                 org = Organisations.objects.get(user = request.user)
                 if(org.terms_and_condition is None):
                     org.terms_and_condition = term_condition
                     org.save()
-                    # org2 = Organisations(user = request.user, terms_and_condition = term_condition)
-                    # org2.save()
                 elif(org.terms_and_condition is not None):
                     Organisations.objects.get(user = request.user).update(terms_and_condition = term_condition)
+
+            if(creditnote_default_notes == 'on'):
+                org = Organisations.objects.get(user = request.user)
+                if(org.note is None):
+                    org.note = message
+                    org.save()
+                elif(org.note is not None):
+                    Organisations.objects.get(user = request.user).update(note = message)
 
             if 'save_send' in request.POST:
                 save_type = 1
@@ -575,7 +622,8 @@ class EditCreditnote(View):
                                 creditnote_number_check=creditnote_number,terms_and_condition=term_condition,Note=message,attachements=attachement,
                                 sub_total=subtotal,cgst_5 = cgst_5 ,igst_5 = igst_5,sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,
                                 sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,cgst_28 = cgst_28,igst_28 = igst_28,
-                                sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,total=total)
+                                sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,total=total,creditnote_org_gst_num = org_gst_number,
+                                creditnote_org_gst_type = org_gst_reg_type,creditnote_org_gst_state = single_gst_code,)
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -711,11 +759,34 @@ class CloneCreditnote(View):
         # Product form
         self.data["add_product_images_form"] = ProductPhotosForm()
         self.data["add_product_form"] = ProductForm(request.user)
-        if( len(default) > 0):
+
+        if(len(default) > 0):
             msg = default[0].terms_and_condition
+            notes = default[0].note
             self.data['term_msg'] = msg
+            self.data['notes'] = notes
+        
+        # org gst number
+        self.data['is_gst'] = 'no'
+        self.data['is_signle_gst']  = 'no'
+        self.data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
 
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
 
+        data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            self.data['is_signle_gst'] = 'yes'
+            self.data['is_gst'] = org_gst_num[0].gstin
+            self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                self.data['is_gst'] = default[0].gstin
+                self.data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                self.data['is_gst'] = org_gst_num[0].gstin
+                self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
 
         return render(request, self.template_name, self.data)
 

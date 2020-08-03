@@ -238,8 +238,35 @@ textarea{
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Clone Invoice</h4>
                 </div>  
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    {% if is_gst != 'no' %}
+                        {% if is_signle_gst == 'yes' %}
+                            <h6 style="color: white;">Your default Organization gst number:-{{is_gst}}.</h6>
+                        {% else %}
+                        <div class="row" style="margin-left: 0px;">
+                            <h6 style="color: white;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}.Do you want to create this invoice with another GST number</h6>&nbsp;
+                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;">YES</a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="row" style="margin-left: 0px;" id="change_update_gst">
+                            <h6 style="color: white;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
+                            <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
+                        </div>
+                        <div style="display: none;" id="replace_change_update">
+                            <h6 style="color: white;"></h6>
+                        </div>
+                    {% endif %}
+                </div>
             <div style="margin-top: 4%;margin-left: 2%;">
-
+                <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
                 <div class="container" >
                     <div class="row">
                         <!-- left -->
@@ -594,7 +621,7 @@ textarea{
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;">
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status()" style="padding-left: 9px;">
                                         <option value="">-------</option>
                                         {% for i in state %}
                                         <option value="{{i.0}}" {% if invoice.invoice_state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
@@ -912,7 +939,7 @@ textarea{
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="invoice_t&c" name="invoice_t&c">
-                                        use this as default Terms and Condition
+                                        Use this as default terms and condition
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
@@ -939,7 +966,7 @@ textarea{
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="invoice_default_notes" name="invoice_default_notes">
-                                        use this as default Notes
+                                        Use this as default notes
                                         <span class="form-check-sign">
                                             <span class="check"></span>
                                         </span>
@@ -1998,6 +2025,11 @@ textarea{
         </div>
     </div>
 </div>
+<!-- chosse GST model popup -->
+{% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
+
+<!-- UPDATE GST NUMBER -->
+{% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 
@@ -2017,9 +2049,9 @@ textarea{
         else if('{{check}}' == 'on'){
             alert("can not make a copy delivery contact address is inactive or deleted ")
         }
+        customer_gst_type()
         // sub_total()
         // change_state()
-        customer_gst_type()
     });
     
     csrf_token = '{{csrf_token}}';
