@@ -774,7 +774,7 @@ class CloneCreditnote(View):
 
         org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
 
-        data['org_id'] = org.id
+        self.data['org_id'] = org.id
         if(len(org_gst_num) == 1):
             self.data['is_signle_gst'] = 'yes'
             self.data['is_gst'] = org_gst_num[0].gstin

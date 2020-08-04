@@ -245,28 +245,28 @@ width:210px
                         <div class="row" style="margin-left: 0%;">
                             <table class="table-primary" id="table" style="width: 100%;background-color:#fff;">
                                 <thead style="background-color: black;">
-                                        <th style="width: 21%;border: 1px solid white;color:black;font-weight: normal">Product Type</th>
-                                        <th style="width: 44%;border: 1px solid white;color:black;font-weight: normal"> Product Name</th>
-                                        <th style="border: 1px solid white;width: 20%;color:black;font-weight: normal">Quantity</th>
+                                        <th style="width: 21%;border: 1px solid black;color:black;font-weight: normal">Product Type</th>
+                                        <th style="width: 44%;border: 1px solid black;color:black;font-weight: normal"> Product Name</th>
+                                        <th style="border: 1px solid black;width: 20%;color:black;font-weight: normal">Quantity</th>
 
                                 </thead>
                                 <tbody>
                                     <tr id="row_1">
                                         
-                                        <td style="border: 1px solid white;padding-bottom: 2%;"> 
+                                        <td style="border: 1px solid black;padding-bottom: 2%;"> 
                                             <select class="form-control" name="prod_type" id="product_type_1" onchange="bundle($(this),'#product_name_1',['#quantity_1'])" style="margin-top: 7%;">
                                                 <option value="-1">------</option>
                                                 <option value="0">GOODS</option>
                                                 <option value="1">SERVICES</option>
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
-                                            <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-top: 3%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
+                                            <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-top: 16px;">
                                                 <option value="0">------</option>
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
-                                            <input id="quantity_1" type="text" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 7%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
+                                            <input id="quantity_1" type="text" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 16px;">
                                         </td>
                                         <td>
                                             <span class=" material-icons tbclose" id="product_clear_row" name="product_Clear_row"  onclick="product_clear_row()">delete_forever</span>

@@ -115,7 +115,7 @@ function creditnote_removeRow(a) {
     }else{
         $('#creditnote_row'+a+'').remove();
     }
-
+    validation()
 }
 
 /************************************************************ */
@@ -803,7 +803,6 @@ function creditnote_tax_cacultion(){
 /********************************************************************/
 var message = ''
 function validation(){
-    console.log('aaaaaaaaaa')
     for(var i = 1;i <= creditnote_number;i++){
         message = ''
         var product_name = $("#ItemName"+i+"").val()

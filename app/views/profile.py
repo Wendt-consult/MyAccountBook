@@ -185,7 +185,6 @@ def add_organisation_addres(request):
         gst = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org_ins) & Q(state=address_form.data["state"]))
         if(len(gst) > 0 and gst[0].organisation_tax is not None):
             gst_id = gst[0].organisation_tax
-
         if address_form.is_valid():            
             if address_form.data["default_address"] == "True":
                 user_helper.change_org_default_address_status(org_ins)

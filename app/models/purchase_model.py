@@ -28,6 +28,7 @@ class PurchaseOrder(models.Model):
         (2, 'save_close'),
         (3, 'save_draft'),
         (4, 'save_print'),
+        (5,'void')
     )
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
@@ -74,8 +75,8 @@ class PurchaseOrder(models.Model):
         auto_now=False,
         auto_now_add=False, 
         db_index = True,
-        blank= False,
-        null= False,
+        blank= True,
+        null= True,
     )
 
     purchase_status =  models.IntegerField(

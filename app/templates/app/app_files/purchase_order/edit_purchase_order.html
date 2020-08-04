@@ -492,11 +492,11 @@ optgroup{color :black; }
                     <table class="table" id="purchase_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid black;width: 21%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid black;width: 14%;">Account</th>
+                            <th scope="col" style="border:1px solid black;width: 17%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Account</th>
                             <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
                             <th scope="col" style="border:1px solid black;width: 8%;">Quantity</th>
-                            <th scope="col" style="border:1px solid black;width: 15%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Discount</th>
                             <th scope="col" style="border:1px solid black;width: 8%;">Tax(In %)</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
@@ -507,7 +507,7 @@ optgroup{color :black; }
                           <tr id="purchase_row{{forloop.counter}}">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select purchase_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}})'  style="padding-left: 0px;" required>
+                                <select class="form-control select purchase_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
                                     <option value="">-------</option>
                                     
@@ -525,11 +525,11 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <select class="form-control prodduct_purchase_account"  id="product_account{{forloop.counter}}" name="product_account[]" required>
+                                <select class="form-control prodduct_purchase_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()">
                                     <option value="">-------</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
@@ -544,13 +544,13 @@ optgroup{color :black; }
                                         <label for="Price{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" required>
+                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' onfocusout="validation()" id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' id="Quantity{{forloop.counter}}" name="Quantity[]" required>
+                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' onfocusout="validation()" id="Quantity{{forloop.counter}}" name="Quantity[]">
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -571,7 +571,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" required>
+                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -589,7 +589,7 @@ optgroup{color :black; }
                                         <label for="Amount{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" value="{{items.amount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Amount{{forloop.counter}}')" onkeyup="balnk_credit()" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control amount" value="{{items.amount}}" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                                 
@@ -1208,7 +1208,7 @@ optgroup{color :black; }
                     <a class="dropdown-item btn " name="delete" id="delete" data-toggle="modal" data-target="#del_order{{purchase_order.id}}" style="color: aliceblue;;margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">delete_forever</i>delete
                     </a>
-                    <button class="dropdown-item btn " type="button" name="void" id="void" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                    <button class="dropdown-item btn " type="submit" name="void" id="void" onclick="return order_check()"  style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">credit_card</i>void
                     </button>
                     </div>
@@ -2158,7 +2158,7 @@ optgroup{color :black; }
                    
                 </div>
                 <div class="modal-footer" id="add_button">
-                    <button class="btm btn-sm" type="button" name="select_address" id="select_address" onclick="return prefill()">Submit</button>
+                    <button class="btn btn-sm" type="button" name="select_address" id="select_address" style="background-color: #598ebb;" onclick="return prefill()">Submit</button>
                     <!-- <button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form()">Save</button> -->
                     <button class="btn btn-sm " type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>
                 </div>
@@ -2507,6 +2507,7 @@ optgroup{color :black; }
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
         state_compare()
+        validation()
     });
 </script>
 

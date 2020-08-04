@@ -167,7 +167,7 @@ width:95px;
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 200px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 200px;height: 150px;border: 2px solid black;">
                                     {% if product_data.productphotos_set.all|length == 0 %}
                                         <span class="close material-icons" style="display: none;" >delete_forever</span>
                                         <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;">    
@@ -178,7 +178,7 @@ width:95px;
                                     
                                     {% for img in product_data.productphotos_set.all %}
                                     <span class="close material-icons">delete_forever</span>
-                                        <img id="myImgclone" class="responsive" src="/media/{{ img.product_image }}" style="color: white;width:200px;height:150px;">
+                                        <img id="myImgclone" class="responsive" src="/media/{{ img.product_image }}" style="color: black;width:200px;height:150px;">
                                     {% endfor %}
                                 </div>
 

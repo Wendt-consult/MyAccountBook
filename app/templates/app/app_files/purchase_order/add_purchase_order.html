@@ -478,11 +478,11 @@ optgroup{color :black; }
                     <table class="table" id="purchase_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
-                            <th scope="col" style="border:1px solid black;width: 21%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid black;width: 14%;">Account</th>
+                            <th scope="col" style="border:1px solid black;width: 17%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 15%;">Account</th>
                             <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
                             <th scope="col" style="border:1px solid black;width: 8%;">Quantity</th>
-                            <th scope="col" style="border:1px solid black;width: 15%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Discount</th>
                             <th scope="col" style="border:1px solid black;width: 8%;">Tax(In %)</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
@@ -492,7 +492,7 @@ optgroup{color :black; }
                           <tr id="purchase_row1">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select purchase_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
+                                <select class="form-control select purchase_line_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
                                     <option value="">-------</option>
                                     
@@ -501,11 +501,11 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 213.6px;margin-top: 1px;"></textarea>
+                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;"></textarea>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" required>
+                                <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" onchange="validation()">
                                     <option value="">-------</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
@@ -520,13 +520,13 @@ optgroup{color :black; }
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1)' id="Price1" name="Price[]" style="margin-top: 1%;" required>
+                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1)' onfocusout="validation()" id="Price1" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='purchase_calculate(1)' id="Quantity1" name="Quantity[]" required>
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='purchase_calculate(1)' onfocusout="validation()" id="Quantity1" name="Quantity[]">
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -547,7 +547,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" required readonly>
+                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -1912,7 +1912,7 @@ optgroup{color :black; }
                    
                 </div>
                 <div class="modal-footer" id="add_button">
-                    <button class="btm btn-sm" type="button" name="select_address" id="select_address" onclick="return prefill()">Submit</button>
+                    <button class="btn btn-sm" type="button" name="select_address" id="select_address" onclick="return prefill()" style="background-color: #598ebb;">Submit</button>
                     <!-- <button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form()">Save</button> -->
                     <button class="btn btn-sm " type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>
                 </div>
@@ -2067,7 +2067,7 @@ optgroup{color :black; }
                     <input type="hidden" value="" name="ids" id="ids">
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
-                            <tr style="display: none;">
+                            <tr>
                                 <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: black;">
                                     Is Shipping Address
                                 </td>
@@ -2251,6 +2251,7 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 
     document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
@@ -2260,7 +2261,9 @@ optgroup{color :black; }
     document.getElementById("add_more_accounts").readonly = true;
 
     csrf_token = '{{csrf_token}}';
-    
+    $(document).ready(function(){
+        validation()
+    });
 </script>
 
 

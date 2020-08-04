@@ -438,7 +438,11 @@ def save_purchase_order(request):
         delivery_date = request.POST.get("purchase_delivary_date")
 
         # change delivery date format
-        deli_date = datetime.strptime(str(delivery_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+        
+        if(delivery_date != ''):
+            deli_date = datetime.strptime(str(delivery_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+        else:
+            deli_date = None
 
         reference = request.POST.get("purchase_reference")
         is_org =  request.POST.get("org_radio","off")
@@ -541,29 +545,29 @@ def save_purchase_order(request):
         product_amount = request.POST.getlist('Amount[]',None)
 
         count = len(product_name)
+
         for i in range(0,count):
-
-            products = ProductsModel.objects.get(pk = int(product_name[i]))
-            account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
-            purchase_item = Purchase_Items(
-                user= request.user,
-                purchase_item_list = purchase_order,
-                product = products,
-                description=product_desc[i],
-                account=account,
-                price=product_price[i],
-                unit=product_unit[i],
-                quantity=product_quantity[i],
-                discount_type = product_discount_type[i],
-                discount=product_discount[i],
-                tax=product_tax[i],
-                amount=product_amount[i],
-                igst_amount = float(igst[i]) if len(igst) > 0 else 0,
-                cgst_amount = float(cgst[i]) if len(cgst) > 0 else 0,
-                sgst_amount = float(sgst[i]) if len(sgst) > 0 else 0,
-            )
-
-            purchase_item.save()  
+            if(product_name[i] !=''):
+                products = ProductsModel.objects.get(pk = int(product_name[i]))
+                account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
+                purchase_item = Purchase_Items(
+                    user= request.user,
+                    purchase_item_list = purchase_order,
+                    product = products,
+                    description=product_desc[i],
+                    account=account,
+                    price=product_price[i],
+                    unit=product_unit[i],
+                    quantity=product_quantity[i],
+                    discount_type = product_discount_type[i],
+                    discount=product_discount[i],
+                    tax=product_tax[i],
+                    amount=product_amount[i],
+                    igst_amount = float(igst[i]) if len(igst) > 0 else 0,
+                    cgst_amount = float(cgst[i]) if len(cgst) > 0 else 0,
+                    sgst_amount = float(sgst[i]) if len(sgst) > 0 else 0,
+                )
+                purchase_item.save()  
 
 
         # attach_check = request.POST.get("attach_check", False)
@@ -698,7 +702,10 @@ class EditPurchaseOrder(View):
             delivery_date = request.POST.get("purchase_delivary_date")
 
             # change delivery date format
-            deli_date = datetime.strptime(str(delivery_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            if(delivery_date != ''):
+                deli_date = datetime.strptime(str(delivery_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            else:
+                deli_date = None
 
             reference = request.POST.get("purchase_reference")
             is_org =  request.POST.get("org_radio","off")
@@ -767,6 +774,8 @@ class EditPurchaseOrder(View):
                 save_type = 3
             elif 'save_print' in request.POST:
                 save_type = 4
+            elif 'void' in request.POST:
+                save_type = 5
 
             
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(vendor)))
@@ -783,6 +792,8 @@ class EditPurchaseOrder(View):
 
             if(save_type == 3): 
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=1) 
+            elif(save_type == 5): 
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=2) 
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -808,17 +819,11 @@ class EditPurchaseOrder(View):
                 purchase_item.save()   
             
             if(save_type == 4):  
-            # order = PurchaseOrder.objects.latest('pk')
-            # print(order.id)
                 ins = '/purchase_order/print/'+str(kwargs["ins"])+'/'
                 return redirect(ins, permanent = False)
 
             if(save_type == 1):  
                 mail = request.POST.get('mail')   
-
-                # if attach_check:
-                    # credit_note_mailer(request, creditnote, contact, send_attachments = True)
-                # else:
                 purchase_order_mailer(request, purchase_order, contact, mail)
             
         return redirect('/view_purchase_order/', permanent = False)

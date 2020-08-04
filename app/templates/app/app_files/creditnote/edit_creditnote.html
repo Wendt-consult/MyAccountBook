@@ -297,7 +297,7 @@ optgroup{color :black; }
                         </div>
                     </div>
                 </div>
-                    <table class="table" id="creditnote_table" style="width: 95%;margin-left: 5%;margin-top: 2%;">
+                    <table class="table" id="creditnote_table" style="width: 95%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 17%;">Product</th>
@@ -393,7 +393,7 @@ optgroup{color :black; }
                                         <label for="Amount{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" value="{{items.amount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Amount{{forloop.counter}}')" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control amount" value="{{items.amount|default_if_none:'' }}" onkeypress="return restrictAlphabets(event), float_value(event,'Amount{{forloop.counter}}')" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>   

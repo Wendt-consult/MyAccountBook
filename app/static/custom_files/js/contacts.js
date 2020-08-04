@@ -502,7 +502,7 @@ function set_shipping(elem, target_elem){
         $(target_elem).val(1);
     }else{
         $(target_elem).val(0);
-    }    
+    }  
 }
 
 function set_billing(elem, target_elem){

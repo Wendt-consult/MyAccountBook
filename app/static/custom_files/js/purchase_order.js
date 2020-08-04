@@ -125,19 +125,19 @@ function run_others(){
 }
 function product_row_creator(purchase_number){
     var html = '<tr id="purchase_row'+purchase_number+'">'
-        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
-        html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 213.6px;margin-top:1px;"></textarea></td>'
-        html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
+        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="">-------</option></select>'
+        html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
+        html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" onchange="validation()"><option value="">-------</option></select></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
-        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" name="Quantity[]" required></td>'
+        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" onfocusout="validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
+        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" onfocusout="validation()" name="Quantity[]"></td>'
         html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+purchase_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
         html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" required readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="purchase_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
         html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,\'Amount'+purchase_number+'\')" id="Amount'+purchase_number+'" name="Amount[]" style="margin-top:1%;" readonly></div></div></td>'
+        html +='<div class="col"><input type="text" class="form-control amount" id="Amount'+purchase_number+'" name="Amount[]" style="margin-top:1%;" readonly></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+purchase_number+'" name="'+purchase_number+'" onclick="creditnote_removeRow('+purchase_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         return html;
 }
@@ -203,6 +203,7 @@ function get_func(next_id, acc_group_name_htm, products_htm){
             });
             // 
             check_gst_status('delivary_side')
+            validation()
         }
     }); 
 }
@@ -222,6 +223,7 @@ function creditnote_removeRow(a) {
         $('#purchase_row'+a+'').remove();
     }
     sub_total()
+    validation()
 }
 /********************************************************************/
 // PUCHASE LINE ITEMS SEARCH AND BUTTON INSIDE SELECT TAG 
@@ -1626,23 +1628,6 @@ $("#purchse_order").focusout(function(){
   });
 
 /*********************************************************************** */
-// get contact type vendor (state)
-/*********************************************************************** */
-
-function check_mail(){
-    if($('#purchase_address').text() == ''){
-        alert('Deilvery address is required')
-        $('#purchase_address').focus()
-        return false
-    }else if($('#mail').val() == ''){
-        alert('can not send mail because vendor email id did not exisit')
-        return false
-    }else{
-        return true
-    }
-}
-
-/*********************************************************************** */
 // MOUSE HOVER
 /*********************************************************************** */
 vendor_info()
@@ -1746,10 +1731,69 @@ function order_check(){
         alert('Deilvery address is required')
         $('#purchase_address').focus()
         return false
+    }else if(global_save_message != ''){
+        alert(global_save_message)
+        return false
+    }else{
+        return true
     }
 }
-
-
+function check_mail(){
+    if($('#purchase_address').text() == ''){
+        alert('Deilvery address is required')
+        $('#purchase_address').focus()
+        return false
+    }else if($('#mail').val() == ''){
+        alert('can not send mail because vendor email id did not exisit')
+        return false
+    }else if(global_save_message != ''){
+        alert(global_save_message)
+        return false
+    }
+    else{
+        return true
+    }
+}
 $('#purchase_delivary_date,#purchase_date,#purchase_edit_date').keypress(function(event) {
         event.preventDefault();
 });
+
+/*********************************************************************** */
+// VALIDATION FOR ROW IN SAVE BUTTON
+/*********************************************************************** */
+var global_save_message = ''
+function validation(){
+    var count = $('#purchase_table tbody tr').length
+    var row_ids = $('#purchase_table tbody tr:first').attr('id')
+    var number_of_row_blank = 1
+    for(var i = 1; i<=count;i++){
+        var row_last_str = row_ids.substring(row_ids.length-1,row_ids.length)
+        if($('#ItemName'+row_last_str).val() == '' & $('#product_account'+row_last_str).val() == '' & $('#Price'+row_last_str).val() == '' & $('#Quantity'+row_last_str).val() == ''){
+            if(number_of_row_blank == count){
+                global_save_message = 'Please fill the product line item'
+            }else{
+                global_save_message = ''
+            }
+            number_of_row_blank +=1
+        }else{
+            if($('#ItemName'+row_last_str).val() == ''){
+                global_save_message = 'Table row '+i+' product/service required'
+                break;
+            }
+            if($('#product_account'+row_last_str).val() == ''){
+                global_save_message = 'Table row '+i+' product account required'
+                break;
+            }
+            if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
+                global_save_message = 'Table row '+i+' product price required'
+                break; 
+            }
+            if($('#Quantity'+row_last_str).val() == '' || parseFloat($('#Quantity'+row_last_str).val()).toFixed(2) == 0){
+                global_save_message = 'Table row '+i+' product qunatity required'
+                break; 
+            }
+        }
+        row_ids = $('#'+row_ids+'').closest('tr').next('tr').attr('id');
+    }
+    
+}

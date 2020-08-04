@@ -584,21 +584,29 @@ class CloneProduct(View):
                 image_clone = products_model.ProductPhotos.objects.get(product = product)
             except:
                 pass
+            add_product = ProductForm(request.user, request.POST or None)
+            ins = None
+
+            if add_product.is_valid():
+                ins = add_product.save()            
+                ins.user = request.user
+                ins.save()
+            else:
+                raise Http404 
+            # product.pk = None
+            # product.product_name = request.POST["product_name"]
+            # product.sku = request.POST["sku"]
+            # product.hsn_code = request.POST["hsn_code"]
+            # product.unit = request.POST["unit"]
+            # product.product_description = request.POST["product_description"]
+            # product.tax = request.POST["tax"]
+            # product.gst = request.POST["gst"]
+            # product.preferred_currency = request.POST["preferred_currency"]
+            # product.selling_price = request.POST["selling_price"]
+            # product.selling_GST = request.POST["selling_GST"]
+            # product.sales_account = request.POST["sales_account"] if request.POST["sales_account"] else 1
             
-            product.pk = None
-            product.product_name = request.POST["product_name"]
-            product.sku = request.POST["sku"]
-            product.hsn_code = request.POST["hsn_code"]
-            product.unit = request.POST["unit"]
-            product.product_description = request.POST["product_description"]
-            product.tax = request.POST["tax"]
-            product.gst = request.POST["gst"]
-            product.preferred_currency = request.POST["preferred_currency"]
-            product.selling_price = request.POST["selling_price"]
-            product.selling_GST = request.POST["selling_GST"]
-            product.sales_account = request.POST["sales_account"] if request.POST["sales_account"] else 1
-            
-            product.save()
+            # product.save()
 
             add_images = ProductPhotosForm(request.FILES or None)
 

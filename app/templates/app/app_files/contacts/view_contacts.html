@@ -116,7 +116,13 @@
                                         
                                         <!-- <td>{{contact.get_organization_type_display|upper}}</td> -->
                                         {% if customize.contact_org_name != 0 %}
-                                        <td align="center" class="customize_org">{{contact.organization_name|default_if_none:""|upper | truncatechars:25}}</td>
+                                        <td align="center" class="customize_org">
+                                            {% if contact.organization_name %}
+                                            {{contact.organization_name|upper | truncatechars:25}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
                                         {% endif %}
                                         {% if customize.contact_email != 0 %}
                                         <td align="center" class="customize_mail">{{contact.email}}</td>
