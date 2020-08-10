@@ -33,7 +33,7 @@ table{
     width: 60%;
 }
 </style>
-</style>
+
 
 
 
@@ -95,17 +95,17 @@ table{
                 </div>
                 {% if from_expense %}
                     <input type="hidden" name="json_response" value="True">
-                    <div class="card-footer"  style="justify-content: center;">
+                    <div class="modal-footer"  style="justify-content: center;padding: 25px;margin-bottom: -46px">
 
-                        <button class="btn " type="submit" style="background-color: #598ebb;margin-bottom:-62px;height:30px;margin-left:320px;width: 78px;padding: 8px;">Save</button>
+                        <button class="btn " type="submit" style="background-color: #598ebb;margin-bottom:-62px;height:30px;margin-left:320px;width: 78px;padding: 8px;margin-top: -58px">Save</button>
 
-                        <a class="btn " type="button" id='ledgerCancelBtn' style="margin-bottom:-62px;height:30px;margin-left:15px;width: 78px;padding: 8px;color:white">Cancel</a>
+                        <a class="btn " type="button" id='ledgerCancelBtn' style="margin-bottom:-62px;height:30px;margin-left:15px;width: 78px;padding: 8px;color:white;margin-top: -58px">Cancel</a>
                     </div>
                 {% else %}
-                    <div class="card-footer"  style="justify-content: center;">
-                        <button class="btn " style="background-color:#598ebb">Save</button>
+                    <div class="modal-footer"  style="justify-content: center;padding: 25px;margin-bottom: -46px;">
+                        <button class="btn " style="background-color:#598ebb;margin-top: -58px">Save</button>
                         
-                        <a class="btn " type="reset" style="background-color: #9095a2;">Cancel</a>
+                        <a class="btn " type="reset" style="background-color: #9095a2;margin-top: -58px">Cancel</a>
                     </div>
                 {% endif %}
             </form>

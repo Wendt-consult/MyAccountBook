@@ -150,7 +150,7 @@
                                             <!-- Dropdown Add by Roshan -->
     
                                             <div class="dropdown" style="margin-left: 22px;">
-                                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:85px;">Action</button>
+                                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width:85px;color:black;">Action</button>
     
                                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                                     <a class="dropdown-item" title="Edit Contact" href="{% url 'edit-contact' contact.id %}" style="padding: 5px 5px;">Edit
@@ -173,18 +173,14 @@
                                                             <i class="material-icons">check</i>
                                                         </button> -->
                                                     {% endif %}
-                                                    <!-- Added by dipika -->
-                                                    <a class="dropdown-item" title="Delete Contact"  style="padding: 5px 5px;"data-toggle="modal" data-target="#del{{contact.id}}">Delete
-                                                       <!--  <i class="material-icons">delete_forever</i> -->
-                                                    </a>
-    
-    
-    
-                                                     
+                                                    <!-- this comment code for delete -->
+                                                    
+                                                    <!-- <a class="dropdown-item" title="Delete Contact"  style="padding: 5px 5px;"data-toggle="modal" data-target="#del{{contact.id}}">Delete
+                                                        <i class="material-icons">delete_forever</i>
+                                                    </a> -->
                                                 </div>  
     
-    
-                                                <div class="modal " tabindex="-1" role="dialog" id="del{{contact.id}}" style="border-top: none;left: 20%;top:200px;width: 500;align-content: center;">
+                                                <!-- <div class="modal " tabindex="-1" role="dialog" id="del{{contact.id}}" style="border-top: none;left: 20%;top:200px;width: 500;align-content: center;">
                                                     <div class="modal-dialog" role="document" style="border-top: none;">
                                                         <div class="modal-content" style="border-top: none;background:white;position:bottom">
                                                             <div class="modal-header" style="border-bottom: none;padding:5px;">
@@ -200,7 +196,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
     
                                                  <!-- DeactivePopup -->
                                             {% if contact.is_active %}

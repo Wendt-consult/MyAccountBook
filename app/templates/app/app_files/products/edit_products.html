@@ -217,16 +217,16 @@ width:95px
                     {% if product_type == 2 %}
                     <div class="container">
                         <div class="row product_heading">
-                            <b>PRODUCTS IN BUNDLE</b>
+                            <b style="color:black;">PRODUCTS IN BUNDLE</b>
                         </div>
                         <div class="row">
                             <table class="table-primary" id="table" style="width: 100%;background-color:#fff;">
                                 <thead style="background-color: black;">
                                     <!-- <tr style="background-color: white;"> -->
                                         <!-- <th scope="col" style="width: 5%;border:1px solid white;">#</th> -->
-                                        <th scope="col" style="width: 21%;border: 1px solid black;">Product Type</th>
-                                        <th scope="col" style="width: 44%;border: 1px solid black;"> Product Name</th>
-                                        <th scope="col" style="border: 1px solid black;width: 20%;">Quantity</th>  
+                                        <th scope="col" style="width: 21%;border: 1px solid black;color:black;font-weight: normal">Product Type</th>
+                                        <th scope="col" style="width: 44%;border: 1px solid black;font-weight: normal;color:black;"> Product Name</th>
+                                        <th scope="col" style="border: 1px solid black;width: 20%;font-weight: normal;color:black;">Quantity</th>
                                         <!-- <th scope="col" style="border: 1px solid white;width: 1%;">Action</th>                                   -->
                                     <!-- </tr> -->
                                 </thead>
@@ -236,21 +236,21 @@ width:95px
                                     <tr id="row_{{forloop.counter}}">
                                         <!-- <th scope="row" style="border: 1px solid white;"><center style="margin-top: 5px;">1</center></th> -->
                                         <td style="border: 1px solid black;padding-bottom: 2%;"> 
-                                            <select class="form-control" name="prod_type" id="product_type_{{forloop.counter}}" onchange="bundle($(this),'#product_name_{{forloop.counter}}',['#quantity_{{forloop.counter}}'])" style="margin-top: 7%;">
-                                                <option value="-1">------</option>
-                                                <option value="0" {% if product.product.get_product_type_display|lower == 'goods' %} selected {% endif %}>GOODS</option>
-                                                <option value="1" {% if product.product.get_product_type_display|lower == 'services' %} selected {% endif %}>SERVICES</option>
+                                            <select class="form-control bundle_product_type" name="prod_type" id="product_type_{{forloop.counter}}" onchange="bundle($(this),'#product_name_{{forloop.counter}}',['#quantity_{{forloop.counter}}'])" style="margin-top: 7%;">
+                                                <option value="">------</option>
+                                                <option value="0" {% if product.product.get_product_type_display == 'GOODS' %} selected {% endif %}>GOODS</option>
+                                                <option value="1" {% if product.product.get_product_type_display == 'SERVICES' %} selected {% endif %}>SERVICES</option>
                                             </select>
                                         </td>
                                         <td style="border: 1px solid black;padding-bottom: 2%;">
-                                            <select class="form-control" id="product_name_{{forloop.counter}}" name="prod_name[]" style="margin-top: 16px;">
+                                            <select class="form-control bundle_product_name" id="product_name_{{forloop.counter}}" name="prod_name[]" style="margin-top: 16px;">
                                                 
                                                 <option value="{{product.product.id}}" selected>{{product.product.product_name}}</option>
                                                 
                                             </select>
                                         </td>
                                         <td style="border: 1px solid black;padding-bottom: 2%;">
-                                            <input id="quantity_{{forloop.counter}}" type="text" value="{{product.quantity}}" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 16px;">
+                                            <input id="quantity_{{forloop.counter}} bundle_product_qunatity" type="text" value="{{product.quantity}}" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 16px;">
                                         </td>
                                         
                                         <td>
@@ -265,21 +265,21 @@ width:95px
                                     {% else %}
                                     <tr id="row_1">
                                         <!-- <th scope="row" style="border: 1px solid white;"><center style="margin-top: 5px;">1</center></th> -->
-                                        <td style="border: 1px solid white;padding-bottom: 2%;"> 
+                                        <td style="border: 1px solid black;padding-bottom: 2%;"> 
                                             <select class="form-control" name="prod_type" id="product_type_1" onchange="bundle($(this),'#product_name_1',['#quantity_1'])" style="margin-top: 7%;">
                                                 <option value="-1">------</option>
                                                 <option value="0">GOODS</option>
                                                 <option value="1">SERVICES</option>
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
                                             <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-top: 3%;">
                                                 
                                                 <option value="0" >------</option>
                                                 
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
                                             <input id="quantity_1" type="number" class="form-control" name="qty[]"  style="margin-top: 7%;">
                                         </td>
                                         
@@ -292,7 +292,7 @@ width:95px
                             </table>
                         </div>
                         <div class="row">
-                            <button class="btn btn-link btn-sm" type="button" id="product_addrow" onclick="addRow({{bundle_count}})" style="text-decoration: underline;color: white;">
+                            <button class="btn btn-link btn-sm" type="button" id="product_addrow" onclick="addRow({{bundle_count}})" style="text-decoration: underline;color: black;">
                                 Add Row
                             </button>
                         </div>

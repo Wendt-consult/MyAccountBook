@@ -383,6 +383,12 @@ class InvoiceModel(models.Model):
         null = True,
     )
 
+    invoice_delete_status = models.IntegerField(
+        db_index = True,
+        default=0,
+        blank = False,
+        null = False,
+    )    
     def __str__(self):
         return "{} - {}".format(self.invoice_customer,self.id) 
 

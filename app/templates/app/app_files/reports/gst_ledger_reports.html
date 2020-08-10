@@ -90,7 +90,7 @@
                             <label style="font-size:90%">Month</label>
                         </div>
                         <div class="custom_dates_show_month_q col-1 hide" style="display:none">
-                            <select id="q_month" name="q_month" class="form-control">
+                            <select id="q_month" name="q_month" class="form-control" style="width:60px;">
                                 <option value=""></option>
                                 <option value="1">Apr-Jun</option>
                                 <option value="2">Jul-Sep</option>
@@ -102,7 +102,7 @@
                             <label style="font-size:90%">Month</label>
                         </div>
                         <div class="custom_dates_show_month_h col-1 hide" style="display:none">
-                            <select id="h_month" name="h_month" class="form-control">
+                            <select id="h_month" name="h_month" class="form-control" style="width:60px;">
                                 <option value=""></option>
                                 <option value="1">Apr-Sep</option>
                                 <option value="2">Oct-Mar</option>
@@ -120,7 +120,7 @@
                         <div class="col-2 custom_dates_show" >
                             <input id="end_date" type="text" name="end_date" value="{{end_date}}" class="form-control report_dates">
                         </div>
-                        <div class="col-2" style="margin-left:380px;">
+                        <div class="col-2" style="margin-left:380px;" align="center">
                             <input type="submit" name="save_btn" class="btn btn-sm btn-primary" value="Submit" style="color:white;background-color:#9095a2;">
                         </div>
                     </div>  
@@ -144,15 +144,15 @@
                 <div align="center">
                     <textarea name="html_content" id="html_content" style="display:none;"></textarea>
 
-                    <a download href="{% get_media_prefix %}reports/{{filename}}" class="btn btn-primary" style="padding:10px;width:100px;color:white;background-color:#9095a2;">
-                        Download
+                    <a download href="{% get_media_prefix %}reports/{{filename}}" class="btn btn-primary" style="padding:10px;width:100px;color:white;background-color:#9095a2;font-size:10px;padding-left: 6px">
+                        Download Xlsx
                     </a>
-                    <input type="submit" name="pdf_print" class="btn" value="PRINT" style="background-color:#9095a2;color:white;;padding:10px;width:100px;">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#send_mail" style="padding:10px;width:100px;color:white;background-color:#9095a2;">
+                    <input type="submit" name="pdf_print" class="btn" value="PREVIEW" style="background-color:#9095a2;color:white;;padding:10px;width:100px;font-size:10px;">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#send_mail" style="padding:10px;width:100px;color:white;background-color:#9095a2;font-size:10px;">
                         Mail Report
                     </button>
                     
-                    <input type="submit" name="pdf_btn" class="btn" value="GET PDF" style="background-color:#9095a2;color:white;;padding:10px;width:100px;">
+                    <input type="submit" name="pdf_btn" class="btn" value="GET PDF" style="background-color:#9095a2;color:white;;padding:10px;width:100px;font-size:10px;">
                 </div>
             </div>
             </form>
@@ -166,20 +166,20 @@
             <div class="card-body"> 
                 <table class="table-bordered table-hover table-striped" style="border:1px solid white;width: 100%;">
                     <tr style="background: #c3c3c3;border:1px solid #888;">
-                        <th style="border:1px solid #888;color:black;font-size:11px;"><center>Sl.No</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 9%;"><center>Date</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 13%;"><center>Particulars</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;"><center>Voucher type</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 15%;"><center>Voucher number</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;width: 17%;"><center>Debit</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:11px;"><center>Credit</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;"><center>Sl.No</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 9%;"><center>Date</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 13%;"><center>Particulars</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher type</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher number</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 17%;"><center>Debit</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;"><center>Credit</center></th>
                     </tr>
 
                     {% for row in gst_reports %}
                     <tr>
-                        <td style="border:1px solid #888;color:black;font-weight:normal"><center>{{forloop.counter}}</center></td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal"><center>{{row.created_on|date:'d M,Y'}}</center></td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal">
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>{{forloop.counter}}</center></td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>{{row.created_on|date:'d M,Y'}}</center></td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
                             <center>{{row.invoice.invoice_customer}}</center>
                             {% endif %}
@@ -196,7 +196,7 @@
                             <center>{{row.expense.exp_number}}</center>
                             {% endif %}
                         </td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal">
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
                             <center>INVOICE</center>
                             {% endif %}
@@ -213,7 +213,7 @@
                             <center>EXPENSE</center>
                             {% endif %}
                         </td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal">
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
                             <center>{{row.invoice.invoice_number}}</center>
                             {% endif %}
@@ -231,7 +231,7 @@
                             {% endif %}
 
                         </td>                        
-                        <td style="border:1px solid #888;color:black;font-weight:normal">
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.input_tab %}                                 
                             <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %} {{row.cgst_amount|floatformat:2}}</center>
                                 <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
@@ -241,7 +241,7 @@
                                 {% endif %}
                             {% endif%}
                          </td>
-                         <td style="border:1px solid #888;color:black;font-weight:normal">
+                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if not row.input_tab %}  
                                 <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %}{{row.cgst_amount|floatformat:2}} </center>
                                 <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
@@ -254,8 +254,8 @@
                     </tr>					
                     {% endfor %}
                     <tr style="border:1px solid #888;">
-                        <td colspan="5" style="border:1px solid #888;color:black;font-weight:normal"><center>By Closing Balance</center></td>
-                        <td colspan="2" class="text-center" style="border:1px solid #888;color:black;font-weight:normal">
+                        <td colspan="5" style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>By Closing Balance</center></td>
+                        <td colspan="2" class="text-center" style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             
                             
                             {% if total_idt %}  
@@ -451,7 +451,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label style="color: black;">Email Address</label>
-                        <input class="form-control" type="email" value="{{org_email}}" name="email_address"> 
+                        <input class="form-control" type="email" value="{{org_email}}" name="email_address" required> 
                         <input type="hidden" value="{{filename}}" name="file_name" readonly> 
                     </div>
                 </div> 

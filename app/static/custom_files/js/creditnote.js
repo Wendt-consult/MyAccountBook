@@ -90,14 +90,11 @@ function creditnote_addRow(a) {
                 for(var i = 0;i < option.length;i++){
                     $('<option/>').val(id[i]).html(option[i]).appendTo('#ItemName'+creditnote_number+'');
                 }
-        
+                check_gst_status('vendor_side')
                 // for(var i = 0;i < unit.length;i++){
                 //     $('<option/>').val(unit[i]).html(unit[i]).appendTo('#Unit'+number+'');
                 // }
             },
-            error: function (rs, e) {
-                alert('Sorry, try again.');
-            }
         });
     
 };
@@ -372,7 +369,7 @@ function creditnote_calculate(a){
                     sub_total()
                 }   
             }
-            else if(parseFloat(discount).toFixed(2) < parseFloat(100.00)){
+            else if(parseFloat(discount).toFixed(2) <= parseFloat(100.00)){
                 var cal = (parseFloat(val) - (parseFloat(val) * (parseFloat(discount) / 100))).toFixed(2);
                 if(price == '' || price == '0.0'){
                     $("#Amount"+a+"").val('')
@@ -397,7 +394,7 @@ function creditnote_calculate(a){
                     sub_total()
                 }   
             }
-            else if (parseFloat(discount).toFixed(2) < parseFloat(val)){
+            else if (parseFloat(discount).toFixed(2) <= parseFloat(val)){
                 var cal = (parseFloat(val) - parseFloat(discount)).toFixed(2);
                 if(price == '' || price == '0.0'){
                     $("#Amount"+a+"").val('')
@@ -430,32 +427,33 @@ function sub_total(){
 
         var a = $(this).val()
         if(a == ''){
-                    sub_total += 0
-                }
-                else{
-                    sub_total +=  parseFloat(a)
-                }
+            sub_total += 0
+        }
+        else{
+            sub_total +=  parseFloat(a)
+        }
     });
 
-    if(sub_total == 0){
-        $("#SubTotal").val('')
-        creditnote_tax_cacultion()
-    }
-    else{
+    // if(sub_total == 0){
+    //     $("#SubTotal").val('')
+    //     creditnote_tax_cacultion()
+    // }
+    // else{
         $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
         creditnote_tax_cacultion()
-    }
+    // }
     
 }
 /********************************************************************/
 // CHECK GST STATUS FOR APPLY
 /********************************************************************/
 
-function check_gst_status(){
+function check_gst_status(category){
     var state = $('#supplyPlace1').val()
     var org_state = $('#single_gst_code option:selected').text()
+    if(category == 'user_side'){
         // org gst not register
-        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '' ){
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
             $('#creditnote_table').find('.tax').attr('readonly', true)
             $('#creditnote_table').find('.tax').val('')
             sub_total()
@@ -465,7 +463,7 @@ function check_gst_status(){
                 alert('Organization not register GST')
             }
         // org gst register
-        }else if(($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7') & global_gst_type != ''){
+        }else if($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7'){
             if(org_state !='' & state != ''){
                 $('#creditnote_table').find('.tax').attr('readonly', false)
                 sub_total()
@@ -487,6 +485,41 @@ function check_gst_status(){
                 alert('Organization is register under composite scheme,is you choose different state of state tax will not be calculated.')
             }
         }
+    }else if(category == 'vendor_side'){
+        // org gst not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+            $('#creditnote_table').find('.tax').attr('readonly', true)
+            $('#creditnote_table').find('.tax').val('')
+            sub_total()
+            // if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+            //     alert('tax not apply beacuse customer not select or customer is not gst register')
+            // }else{
+            //     alert('Organization not register GST')
+            // }
+        // org gst register
+        }else if($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7'){
+            if(org_state !='' & state != ''){
+                $('#creditnote_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }
+            else{
+                $('#creditnote_table').find('.tax').attr('readonly', true)
+                $('#creditnote_table').find('.tax').val('')
+                sub_total()
+            }
+        // org in composite
+        }else if($('#org_gst_reg_type').val()  == '8'){
+            if( org_state !='' & state != '' & org_state.toLowerCase() == state.toLowerCase()){
+                $('#creditnote_table').find('.tax').attr('readonly', false)
+                sub_total()
+            }else{
+                $('#creditnote_table').find('.tax').attr('readonly', true)
+                $('#creditnote_table').find('.tax').val('')
+                sub_total()
+                // alert('Organization is register under composite scheme,is you choose different state of state tax will not be calculated.')
+            }
+        }
+    }
 }
 
 var global_gst_type = ''
@@ -495,11 +528,11 @@ function customer_gst_type(){
     if(ins != ''){
         $.get("/invoice/customer_gst/"+ins+"/",function(data){
             global_gst_type = data.gst_type
-            check_gst_status()
+            check_gst_status('user_side')
         });
     }else{
         global_gst_type = ''
-        check_gst_status()
+        check_gst_status('user_side')
     }
 }
 /********************************************************************/
@@ -954,6 +987,13 @@ function add_contact(){
             $("#customerName").select2();
           });
         });
+
+        $('#id_customer_type').remove()
+        var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
+        html+='<option value="1" selected="">CUSTOMER</option>'
+        html +='<option value="2">VENDOR</option>'
+        html+='<option value="3">EMPLOYEE</option></select>'
+       $('#con_type').append(html)
 }
 
 /********************************************************************/
@@ -1040,61 +1080,60 @@ function creditnote_contact_form(save_type){
   
     event.preventDefault()
 
-    if($('#id_contact_name').val() == ''){
-        alert('Contact name is requried')
-        $('#id_contact_name').focus()
-        return false
-    }else if($('#id_organization_type option').filter(':selected').val() != '1' & $('#id_organization_name').val() == ''){
-        alert('Organization name is requried')
-        $('#id_organization_name').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-city').val() == ''){
-        alert('City is requried')
-        $('#id_user_address_details_set-0-city').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-state').val() == ''){
-        alert('State is requried')
-        $('#id_user_address_details_set-1-state').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-country').val() == ''){
-        alert('Country is requried')
-        $('#id_user_address_details_set-0-country').focus()
-        return false
-    }
+    // if($('#id_contact_name').val() == ''){
+    //     alert('Contact name is requried')
+    //     $('#id_contact_name').focus()
+    //     return false
+    // }else if($('#id_organization_type option').filter(':selected').val() != '1' & $('#id_organization_name').val() == ''){
+    //     alert('Organization name is requried')
+    //     $('#id_organization_name').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-city').val() == ''){
+    //     alert('City is requried')
+    //     $('#id_user_address_details_set-0-city').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-state').val() == ''){
+    //     alert('State is requried')
+    //     $('#id_user_address_details_set-1-state').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-country').val() == ''){
+    //     alert('Country is requried')
+    //     $('#id_user_address_details_set-0-country').focus()
+    //     return false
+    // }
 
-    if($('.address_is_billing_diff').is(':checked')){
-        if($('#id_user_address_details_set-1-city').val() == ''){
-            alert('City is requried')
-            $('#id_user_address_details_set-1-city').focus()
-            return false
-        }else if($('#id_user_address_details_set-1-state').val() == ''){
-            alert('State is requried')
-            $('#id_user_address_details_set-1-state').focus()
-            return false
-        }else if($('#id_user_address_details_set-1-country').val() == ''){
-            alert('Country is requried')
-            $('#id_user_address_details_set-1-country').focus()
-            return false
-        }
-    }
+    // if($('.address_is_billing_diff').is(':checked')){
+    //     if($('#id_user_address_details_set-1-city').val() == ''){
+    //         alert('City is requried')
+    //         $('#id_user_address_details_set-1-city').focus()
+    //         return false
+    //     }else if($('#id_user_address_details_set-1-state').val() == ''){
+    //         alert('State is requried')
+    //         $('#id_user_address_details_set-1-state').focus()
+    //         return false
+    //     }else if($('#id_user_address_details_set-1-country').val() == ''){
+    //         alert('Country is requried')
+    //         $('#id_user_address_details_set-1-country').focus()
+    //         return false
+    //     }
+    // }
 
     $.post("/contacts/add/",$("#add_creditnote_contact_form").serialize(), function(data){
-    if(data != '0'){
-        
-        $.get("/creditnote/contact_fetch/",function(data){
-
-            $("#customerName").each(function(){
-                $('<option/>').val(data.ids).html(data.name).appendTo($(this));
-            });
-            $('#BillingAddress1').val('')
-            $('#email').val('')
-            $('#customerName').val(data.ids).change(); 
+        if(data != '0'){
             
-        });
-        $("#ContactModal").modal('hide');
-    }
-  
-});
+            $.get("/creditnote/contact_fetch/",function(data){
+
+                $("#customerName").each(function(){
+                    $('<option/>').val(data.ids).html(data.name).appendTo($(this));
+                });
+                $('#BillingAddress1').val('')
+                $('#email').val('')
+                $('#customerName').val(data.ids).change(); 
+                
+            });
+            $("#ContactModal").modal('hide');
+        }
+    });
 }
 
 /********************************************************************/
@@ -1212,14 +1251,25 @@ function radio_click(elem){
 
 function button_click(category){
     if(category = 'multiple'){
+        var checkbox_count = 0
+        $('.choose_gst').each(function(){
+            if($(this).prop("checked") == true){
+                checkbox_count +=1
+            }
+        })
+        if(checkbox_count == 0){
+            alert('Please first choose the GST')
+            return false
+        }
         var gst = $('#org_gst_number').val()
-        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to change gst number.")
+        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to create this invoice with another GST number.")
         gst = gst.substring(0,2)
 		if($("#single_gst_code option[value="+gst+"]").length > 0){
 
             $('#single_gst_code').val(gst).change()
         }
-        check_gst_status()
+        check_gst_status('user_side')
+        $('#invoice_multi_gst').modal('hide')
     }
 }
 $(document).ready(function(){
@@ -1274,7 +1324,7 @@ function update_single_gst(){
             $('#replace_change_update').show()
             $('#org_gst_number').val(gst_num)
             $('#add_gst_number').modal('hide')
-            check_gst_status()
+            check_gst_status('user_side')
         }
     });
 }

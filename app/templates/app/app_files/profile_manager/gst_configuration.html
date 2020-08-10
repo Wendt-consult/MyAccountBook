@@ -289,7 +289,7 @@ select.form-control option{color : #000000; }
                                 <label for="single_gst">GSTIN</label>
                             </div>
                             <div class="col-3">
-                                <input class="form-control" id="single_gst" value="{{org_address_details.0.organisation_tax.gstin}}" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this)),gst_state_code($(this))" required>
+                                <input class="form-control" id="single_gst" value="{{org_address_details.0.organisation_tax.gstin}}" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this)),valid_GST($(this)),gst_state_code($(this))" required>
                             </div>
                             <div class="col-3">
                                 <p id="error_field" style="color: black;"></p>
@@ -331,14 +331,14 @@ select.form-control option{color : #000000; }
                                 <label for="single_gst">GSTIN</label>
                             </div>
                             <div class="col-3">
-                                <input class="form-control" id="single_gst" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this)),gst_state_code($(this))" required>
+                                <input class="form-control" id="single_gst" name="single_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this)),valid_GST($(this)),gst_state_code($(this))" required>
                             </div>
                             <div class="col-3">
                                 <p id="error_field" style="color: black;"></p>
                             </div>
                         </div>
 
-                        <div class="row single_gst_field" style="display: none;">
+                        <div class="row" style="display: none;">
                             <div class="col-3">
                                 <label for="single_gst_code">GST Code</label>
                             </div>

@@ -132,3 +132,4 @@ class Invoice_Line_Items(admin.ModelAdmin):
 @admin.register(Expense)
 class Expense(admin.ModelAdmin):
     model = Expense
+

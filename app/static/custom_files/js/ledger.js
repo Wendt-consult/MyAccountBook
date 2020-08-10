@@ -58,17 +58,22 @@ function add_group_form(save_type){
 }
 
 function info(ins,slug){
-    $.ajax({
-        type:"GET",
-        url: "/add_ledger_group/"+ins+"/"+slug+"",
-        dataType: "json",
-        success: function(data){
-            var info = data.account
-            // $("#id_info_message").val(info)
-            $('#grouping_info').removeAttr('data-tip')
-            $("#grouping_info").attr('data-tip', info);
-        },  
-    });
+    if(slug != '-----'){
+        $.ajax({
+            type:"GET",
+            url: "/add_ledger_group/"+ins+"/"+slug+"",
+            dataType: "json",
+            success: function(data){
+                var info = data.account
+                // $("#id_info_message").val(info)
+                $('#grouping_info').removeAttr('data-tip')
+                $("#grouping_info").attr('data-tip', info);
+            },  
+        });
+    }else{
+        $("#grouping_info").attr('data-tip', '');
+    }
+    
 }
 /**********************************************************/
 // ADD GROUP WITHOUT REFRECH
@@ -174,9 +179,6 @@ $("#id_group_name").keyup(function(){
     var head = $("#id_major_heads").val()
    
     var account = $("#id_accounts_name").val()
-    console.log(account)
-    // var ins = $('#id_major_heads option').filter(':selected').val()
-    console.log(head)
     $.ajax({
         type:"GET",
         url: "/add_ledger_group/unique2/"+head+"/"+account+"/",

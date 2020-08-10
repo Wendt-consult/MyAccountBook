@@ -89,6 +89,7 @@ urlpatterns += [
     path('invoice/clone_invoice/<int:ins>/', never_cache(login_required(invoice.CloneInvoice.as_view())), name = 'clone_invoice'),
     path('invoice/paid/<int:ins>/', never_cache(login_required(invoice.paid_invoice)), name = 'paid_invoice'),
     path('invoice/customer_gst/<int:ins>/', never_cache(login_required(invoice.customer_gst)), name = 'customer_gst'),
+    path('invoice/delete/<int:ins>/', never_cache(login_required(invoice.delete_invoice)), name = 'delete_invoice'),
 ]
 
 # urlpatterns +=[
@@ -172,6 +173,7 @@ urlpatterns += [
     path('creditnote/clone/<int:ins>/', never_cache(login_required(creditnotes.CloneCreditnote.as_view())), name = 'clone_credit_note'),
     path('creditnote/state_compare/', never_cache(login_required(creditnotes.state_compare)), name = 'creditnote_state_compare'),
     path('creditnote/print/<int:ins>/', never_cache(login_required(creditnotes.print_credit_note)), name = 'print_credit_note'),
+    path('creditnote/delete/<int:ins>/', never_cache(login_required(creditnotes.delete_credit_note)), name = 'delete_credit_note'),
     
 ]
 
@@ -218,6 +220,7 @@ urlpatterns += [
     path('purchase_order/delete/<int:ins>/', never_cache(login_required(purchase_order.delete_purchase_order)), name = 'delete_purchase_order'),
     path('purchase_order/vendor_details/<int:ins>/', never_cache(login_required(purchase_order.vendor_details)), name = 'vendor_details'),
     path('purchase_order/void/<int:ins>/', never_cache(login_required(purchase_order.void_purchase)), name = 'void_purchase'),
+    path('purchase_order/vendor_gst_save/', never_cache(login_required(purchase_order.vendor_gst_save)), name = 'vendor_gst_save'),
 ]
 
 # Expense

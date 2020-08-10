@@ -341,7 +341,7 @@ class EditProducts(View):
             product = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
             a = []
             for i in range(0,len(bundle_item)):
-                result = product.filter(product_name__iexact = bundle_item[i].product).exists()
+                result = product.filter(product_name__iexact = bundle_item[i].product.product_name).exists()
                 if(result == True):
                     a.append(bundle_item[i])
             if(len(bundle_item) == len(a)):

@@ -21,18 +21,35 @@
 							<tr id="table-{{forloop.counter}}" style="font-size:12px">
 													   
 								<td style="vertical-align: bottom;border: 1px solid black;color: black;">
-									{{ org.taxname|default_if_none:"" }}
+									{{ org.taxname|default_if_none:""|truncatechars:25 }}
 								</td>                  
 								<td style="vertical-align: bottom;border: 1px solid black;color: black;">
 									{{ org.taxname_percent|default_if_none:"" }}
 								</td>  
 								<td class="text-center" style="vertical-align: bottom;border: 1px solid black;color: black;">
 									<i data-toggle="modal" data-target="#edit_gst_settings_modal_{{forloop.counter}}" title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;">create</i>
-									<a href="{% url 'delete_gst_settings' org.id %}">
-										<i style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;" title="Delete" class="material-icons">delete_forever</i>
-									</a>
+									<i data-toggle="modal" data-target="#del_basic_tax{{forloop.counter}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;" title="Delete" class="material-icons">delete_forever</i>
 								</td>
-							</tr>
+                            </tr>
+                             <!-- DELETE PopUP -->
+
+                             <div class="modal " tabindex="-1" role="dialog" id="del_basic_tax{{forloop.counter}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                    <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                        <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                            
+                                        </div>
+                                        <div class="modal-body" style="border-top: none;position: bottom;">
+                                            <h4><b><center style="color: black;">Are you sure you want to delete {{ org.taxname|default_if_none:"" }}. Deleting tax will not affect reports or historical transactions. </center></b></h4>
+                                        </div>
+                                        
+                                        <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                            <center><a href="{% url 'delete_gst_settings' org.id %}" class="btn  mr-2" style="align-content: left;margin-left:150px;text-align:center;background-color:#598ebb;padding-left:25px;">Yes</a></center>
+                                            <button class="btn" data-dismiss="modal" aria-label="Close" style="padding-left:25px;">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 						{% endfor %}
 					</tbody>
 				</table>
@@ -67,18 +84,35 @@
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                                        
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ org.taxname|default_if_none:"" }}
+                                    {{ org.taxname|default_if_none:""|truncatechars:25  }}
                                 </td>                  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black">
                                     {{ org.taxname_percent|default_if_none:"" }}
                                 </td>  
                                 <td class="text-center" style="vertical-align: bottom;border: 1px solid black;color: black">
                                     <i data-toggle="modal" data-target="#edit_composite_gst_settings_modal_{{forloop.counter}}" title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;">create</i>
-                                    <a href="{% url 'delete_composite_gst_settings' org.id %}">
-                                        <i style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;" title="Delete" class="material-icons">delete_forever</i>
-                                    </a>
+                                    <i data-toggle="modal" data-target="#del_composite_tax{{forloop.counter}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;" title="Delete" class="material-icons">delete_forever</i>
                                 </td>
                             </tr>
+                            <!-- DELETE PopUP -->
+
+                            <div class="modal " tabindex="-1" role="dialog" id="del_composite_tax{{forloop.counter}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                    <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                        <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                            
+                                        </div>
+                                        <div class="modal-body" style="border-top: none;position: bottom;">
+                                            <h4><b><center style="color: black;">Are you sure you want to delete. Deleting tax will not affect reports or historical transactions. </center></b></h4>
+                                        </div>
+                                        
+                                        <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                            <center><a href="{% url 'delete_composite_gst_settings' org.id %}" class="btn  mr-2" style="align-content: left;margin-left:150px;text-align:center;background-color:#598ebb;padding-left:25px;">Yes</a></center>
+                                            <button class="btn" data-dismiss="modal" aria-label="Close" style="padding-left:25px;">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         {% endfor %}
                     </tbody>
                 </table>

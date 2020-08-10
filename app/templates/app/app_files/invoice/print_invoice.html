@@ -218,7 +218,7 @@ footer {
 
     </style>
   </head>
-  <body style="">
+  <body>
     {% load static %}
     <header class="clearfix">
       <div id="logo">
@@ -251,6 +251,9 @@ footer {
 
           {% endif %}
         </div>
+        {% if org_address.organisation_tax.gstin %}
+        <div>GST Number:-{{org_address.organisation_tax.gstin}}</div>
+        {% endif %}
         <div>{{organisation_contact.phone|default_if_none:""}}</div>
         <div><a href="#">{{organisation_contact.email|default_if_none:""}}</a></div>
       </div>
@@ -367,7 +370,9 @@ footer {
             <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.cgst_amount}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.sgst_amount}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount_inc}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">
+              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+            </td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
           {% elif item.is_header == True %}
@@ -401,7 +406,9 @@ footer {
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.igst_amount}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount_inc}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">
+              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+            </td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
           {% elif item.is_header == True %}

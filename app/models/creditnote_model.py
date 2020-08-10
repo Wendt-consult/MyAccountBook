@@ -280,6 +280,13 @@ class CreditNode(models.Model):
         null = True,
     )
 
+    creditnote_delete_status = models.IntegerField(
+        db_index = True,
+        default=0,
+        blank = False,
+        null = False,
+    )
+
     def __str__(self):
         return "{} - {}".format(self.contact_name,self.id) 
 

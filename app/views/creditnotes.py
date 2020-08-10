@@ -57,7 +57,7 @@ class CreditView(View):
     #
     def get(self, request):        
 
-        credit_note = CreditNode.objects.filter(user = request.user)
+        credit_note = CreditNode.objects.filter(user = request.user, creditnote_delete_status = 0)
         credit_paginator = Paginator(credit_note, 10)
         credit_page = request.GET.get('page')     
         try:
@@ -231,21 +231,23 @@ def unique_credit_number(request, ins, number):
         count = len(credit_note)
 
         if(count == 0):
-            data['credit_number'] = 'CN-1001'
+            data['credit_number'] = 'CN-0001'
         else:
-            a = 'CN-100'+str(count+1)
-            result = credit_note.filter(credit_number__iexact = a).exists()
-            if(result == True):
-                num = 'CN-100'+str(count+2)
-                data['credit_number'] = num
-            else:
-                data['credit_number'] = a
+            inc = count+1
+            for i in range(0,count):
+                a = 'CN-000'+str(inc)
+                result = credit_note.filter(Q(user = request.user) & Q(credit_number__iexact = a)).exists() 
+                if(result == True):
+                    inc += 1
+                elif(result == False):
+                    data['credit_number'] = 'CN-000'+str(inc)
+                    break
         
         return JsonResponse(data)
     elif (ins == 1):
         # check credit note number is unquie
         credit_note = CreditNode.objects.filter(Q(user = request.user) & Q(credit_number = number))
-        count = len(credit_note)
+        count = len(purchase_order)
         if(count == 0):
             data['unique'] = 0
         else:
@@ -371,7 +373,6 @@ def save_credit_note(request):
         sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
         # print(igst, cgst, sgst)
 
-        
 
         product_name = request.POST.getlist('ItemName[]',None)
         product_desc = request.POST.getlist('desc[]',None)
@@ -409,7 +410,7 @@ def save_credit_note(request):
                     discount = product_discount[i],
                     tax = product_tax[i],
                     amount = product_amount[i],
-                    tax_amount = (float(product_tax[i])/100)*float(product_amount[i]), 
+                    tax_amount = (float(product_tax[i])if len(product_tax[i]) > 0 else 0/100)*float(product_amount[i]), 
                     igst_amount = float(igst[i]) if len(igst) > 0 else 0,
                     cgst_amount = float(cgst[i]) if len(cgst) > 0 else 0,
                     sgst_amount = float(sgst[i]) if len(sgst) > 0 else 0,
@@ -506,12 +507,10 @@ class EditCreditnote(View):
         try:
             creditnote = CreditNode.objects.get(pk = int(kwargs["ins"]))
             contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
-
+            products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
             # inactive and delete product or contact
             intcontacts = Contacts.objects.filter(Q(user = request.user))
             intproducts = ProductsModel.objects.filter(Q(user = request.user))
-            
-            products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
             creditnote_item = creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote))
             default = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -717,6 +716,10 @@ class CloneCreditnote(View):
             creditnote = CreditNode.objects.get(pk = int(kwargs["ins"]))
             contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
             products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
+            # inactive and delete product or contact
+            intcontacts = Contacts.objects.filter(Q(user = request.user))
+            intproducts = ProductsModel.objects.filter(Q(user = request.user))
+
             creditnote_item = creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote))
             default = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -745,6 +748,9 @@ class CloneCreditnote(View):
         else:
             self.data['creditnote_product_status2'] = 'YES'
         
+        # inactive and delete product or contact
+        self.data["intproducts"] = intproducts
+        self.data["intcontacts"] = intcontacts
         self.data["contacts"] = contacts
         self.data["state"] = country_list.STATE_LIST_CHOICES
         # self.data['tax'] = creditnote_constant.tax
@@ -752,7 +758,7 @@ class CloneCreditnote(View):
         self.data["credit_note"] = creditnote
         self.data['gst'] = gst 
         # if(len(a) > 0):
-        self.data["creditnote_item"] = a
+        self.data["creditnote_item"] = creditnote_item
 
         self.data["item_count"] = len(creditnote_item)-1
 
@@ -798,16 +804,20 @@ class CloneCreditnote(View):
 def state_compare(request):
     # Initialize 
     data = defaultdict()
-    data['state'] = None
+    data['gst'] = ''
+    data['gst_type'] = ''
     org = users_model.Organisations.objects.get(user = request.user)
     org_address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org) & Q(default_address = True))
     if(len(org_address) != 0):
-        data['state'] = org_address[0].get_state_display()
+        if(org_address[0].organisation_tax !=''):
+            data['gst'] = org_address[0].organisation_tax.gstin
+            data['gst_type'] = org_address[0].gst_reg_type
     else:
         first_address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org))
         
         if(len(first_address) != 0):
-            data['state'] = first_address[0].get_state_display()
+            data['gst'] = first_address[0].organisation_tax.gstin
+            data['gst_type'] = first_address[0].gst_reg_type
     return JsonResponse(data)
     
 #=====================================================================================
@@ -943,3 +953,22 @@ def send_creditnote(request, ins=None):
             return HttpResponse(1) 
         return HttpResponse(0) 
     return HttpResponse(0) 
+
+#=====================================================================================
+#   DELETE CREDIT_NOTE
+#=====================================================================================
+#
+
+def delete_credit_note(request, ins):
+    if ins is not None:
+        try:
+            CreditNode.objects.filter(pk = int(ins)).update(creditnote_delete_status = 1)
+        
+        except:
+            return redirect('/unauthorized/', permanent=False)
+
+        # Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order)).delete()
+        # PurchaseOrder.objects.get(pk = int(ins)).delete()
+
+        return redirect('/creditnotes/', permanent=False)
+    return redirect('/unauthorized/', permanent=False)

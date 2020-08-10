@@ -129,8 +129,8 @@ function product_row_creator(purchase_number){
         html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
         html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" onchange="validation()"><option value="">-------</option></select></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" onfocusout="validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
-        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" onfocusout="validation()" name="Quantity[]"></td>'
+        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
+        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" name="Quantity[]"></td>'
         html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+purchase_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
         html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
@@ -168,10 +168,10 @@ function get_func(next_id, acc_group_name_htm, products_htm){
             $("#ItemName"+next_id).empty().append(products_htm);
             $("#product_account"+next_id).empty().append(acc_group_name_htm);
 
-            if(vendor_state == $('#order_state').val()){
-                $("#tax"+next_id).attr('readonly',false)
-            }
-
+            // if(vendor_state == $('#order_state').val()){
+            //     $("#tax"+next_id).attr('readonly',false)
+            // }
+            check_gst_status('vendor_side')
             $(document).on('click','#select2-ItemName'+purchase_number+'-container',function(){
 
                 for(var i = 1;i <= purchase_number; i++){
@@ -202,7 +202,7 @@ function get_func(next_id, acc_group_name_htm, products_htm){
                 $('.select2-container--default').css('padding-bottom','16px')
             });
             // 
-            check_gst_status('delivary_side')
+            // check_gst_status('delivary_side')
             validation()
         }
     }); 
@@ -510,67 +510,66 @@ function purchase_contact_form(category){
   
     event.preventDefault()
 
-    if($('#id_contact_name').val() == ''){
-        alert('Contact name is requried')
-        $('#id_contact_name').focus()
-        return false
-    }else if($('#id_organization_type option').filter(':selected').val() != '1' & $('#id_organization_name').val() == ''){
-        alert('Organization name is requried')
-        $('#id_organization_name').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-city').val() == ''){
-        alert('City is requried')
-        $('#id_user_address_details_set-0-city').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-state').val() == ''){
-        alert('State is requried')
-        $('#id_user_address_details_set-1-state').focus()
-        return false
-    }else if($('#id_user_address_details_set-0-country').val() == ''){
-        alert('Country is requried')
-        $('#id_user_address_details_set-0-country').focus()
-        return false
-    }
+    // if($('#id_contact_name').val() == ''){
+    //     alert('Contact name is requried')
+    //     $('#id_contact_name').focus()
+    //     return false
+    // }else if($('#id_organization_type option').filter(':selected').val() != '1' & $('#id_organization_name').val() == ''){
+    //     alert('Organization name is requried')
+    //     $('#id_organization_name').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-city').val() == ''){
+    //     alert('City is requried')
+    //     $('#id_user_address_details_set-0-city').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-state').val() == ''){
+    //     alert('State is requried')
+    //     $('#id_user_address_details_set-1-state').focus()
+    //     return false
+    // }else if($('#id_user_address_details_set-0-country').val() == ''){
+    //     alert('Country is requried')
+    //     $('#id_user_address_details_set-0-country').focus()
+    //     return false
+    // }
 
-    if($('.address_is_billing_diff').is(':checked')){
-        if($('#id_user_address_details_set-1-city').val() == ''){
-            alert('City is requried')
-            $('#id_user_address_details_set-1-city').focus()
-            return false
-        }else if($('#id_user_address_details_set-1-state').val() == ''){
-            alert('State is requried')
-            $('#id_user_address_details_set-1-state').focus()
-            return false
-        }else if($('#id_user_address_details_set-1-country').val() == ''){
-            alert('Country is requried')
-            $('#id_user_address_details_set-1-country').focus()
-            return false
-        }
-    }
+    // if($('.address_is_billing_diff').is(':checked')){
+    //     if($('#id_user_address_details_set-1-city').val() == ''){
+    //         alert('City is requried')
+    //         $('#id_user_address_details_set-1-city').focus()
+    //         return false
+    //     }else if($('#id_user_address_details_set-1-state').val() == ''){
+    //         alert('State is requried')
+    //         $('#id_user_address_details_set-1-state').focus()
+    //         return false
+    //     }else if($('#id_user_address_details_set-1-country').val() == ''){
+    //         alert('Country is requried')
+    //         $('#id_user_address_details_set-1-country').focus()
+    //         return false
+    //     }
+    // }
     
     $.post("/contacts/add/",$("#add_purchase_contact_form").serialize(), function(data){
-    if(data != '0'){
-        
-        $.get("/creditnote/contact_fetch/",function(data){
-            if(category == 'vendor'){
-                $("#purchase_vendor").each(function(){
-                    $('<option/>').val(data.ids).html(data.name).appendTo($(this));
-                });
-                $('#purchase_vendor').val(data.ids).change(); 
-            }
-            else if(category == 'c_e'){
-                $("#choose_customer_address").each(function(){
-                    $('<option/>').val(data.ids).html(data.name).appendTo($(this));
-                });
-                $('#choose_customer_address').val(data.ids).change(); 
-            }
+        if(data != '0'){
             
-            
-        });
-        $("#ContactModal").modal('hide');
-    }
-  
-});
+            $.get("/creditnote/contact_fetch/",function(data){
+                if(category == 'vendor'){
+                    $("#purchase_vendor").each(function(){
+                        $('<option/>').val(data.ids).html(data.name).appendTo($(this));
+                    });
+                    $('#purchase_vendor').val(data.ids).change(); 
+                }
+                else if(category == 'c_e'){
+                    $("#choose_customer_address").each(function(){
+                        $('<option/>').val(data.ids).html(data.name).appendTo($(this));
+                    });
+                    $('#choose_customer_address').val(data.ids).change(); 
+                }
+                
+                
+            });
+            $("#ContactModal").modal('hide');
+        }  
+    });
 }
 
 /********************************************************************/
@@ -624,7 +623,7 @@ function purchase_calculate(a){
                     sub_total()
                 }   
             }
-            else if(parseFloat(discount).toFixed(2) < parseFloat(100.00)){
+            else if(parseFloat(discount).toFixed(2) <= parseFloat(100.00)){
                 var cal = (parseFloat(val) - (parseFloat(val) * (parseFloat(discount) / 100))).toFixed(2);
                 if(price == '' || price == '0.0'){
                     $("#Amount"+a+"").val('')
@@ -650,7 +649,7 @@ function purchase_calculate(a){
                     sub_total()
                 }   
             }
-            else if (parseFloat(discount).toFixed(2) < parseFloat(val)){
+            else if (parseFloat(discount).toFixed(2) <= parseFloat(val)){
                 var cal = (parseFloat(val) - parseFloat(discount)).toFixed(2);
                 if(price == '' || price == '0.0'){
                     $("#Amount"+a+"").val('')
@@ -683,25 +682,25 @@ function sub_total(){
 
         var a = $(this).val()
         if(a == ''){
-                    sub_total += 0
-                }
-                else{
-                    sub_total +=  parseFloat(a)
-                }
+            sub_total += 0
+        }
+        else{
+            sub_total +=  parseFloat(a)
+        }
     });
 
-    if(sub_total == 0){
-        $("#SubTotal").val('')
-        purchase_tax_cacultion()
-        total_discount()
-        freight_advance_totalamount()
-    }
-    else{
+    // if(sub_total == 0){
+    //     $("#SubTotal").val('')
+    //     purchase_tax_cacultion()
+    //     total_discount()
+    //     freight_advance_totalamount()
+    // }
+    // else{
         $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
         purchase_tax_cacultion()
         total_discount()
         freight_advance_totalamount()
-    }
+    // }
     
 }
 
@@ -714,15 +713,17 @@ function total_discount(){
     
     // for loop
     $(".all_discount").each(function(){
+        
         var a = $(this).attr('id')
         var ids = '#Dis'+a.slice(8)+''
         if($(ids).val() == '%'){
             if($(this).val() != ''){
                 var current_discount = $(this).val()
-                var remaining_discount = ( parseFloat(100) - parseFloat(current_discount) )
-                var current_amount = $("#Amount"+a.slice(8)+"").val()
-                var discount_cal =( ( parseFloat(current_amount) * (parseFloat(100)) ) / (parseFloat(remaining_discount)) )
-                discount += (parseFloat(discount_cal) - parseFloat(current_amount))
+                var row_price = parseFloat($("#Price"+a.slice(8)+"").val())
+                var row_quantity = parseFloat($("#Quantity"+a.slice(8)+"").val())
+                var row_amount = parseFloat(row_price) * parseFloat(row_quantity)
+                var discount_cal = (parseFloat(row_amount) * (parseFloat(current_discount) / parseFloat(100)))
+                discount += parseFloat(discount_cal)
             }
             
         }
@@ -738,8 +739,6 @@ function total_discount(){
     if(discount == 0){
         $('#purchase_Discountotal').val('')
     }
-        
-
 }
 /********************************************************************/
 // Freight Charges, advance and total amount calculation
@@ -784,7 +783,7 @@ function freight_advance_totalamount(){
     }
     if(total_balance.toString() != 'NaN'){
         if(total_balance == 0){
-         $('#total_balance').val('')   
+         $('#total_balance').val(parseFloat(0).toFixed(2))   
         }
         else{
             $('#total_balance').val(parseFloat(total_balance).toFixed(2))
@@ -799,7 +798,7 @@ function freight_advance_totalamount(){
 /********************************************************************/
 // FOR GST
 /********************************************************************/
-
+var vendor_gstin =''
 function state_compare(){
     var ids = $('#purchase_vendor').val()
     if(ids != ''){
@@ -814,88 +813,90 @@ function state_compare(){
                 // gst = data.gst_type
                 if(data.gst_type != null){
                     $('#gst_type').val(data.gst_type)
+                }else{
+                    $('#gst_type').val('')
                 }
-                vendor_state = data.vendor_state
-                check_gst_status('vendor_side')
+                vendor_gstin = data.gstin
+
+                // vendor_state = data.vendor_state
+                check_gst_status('user_side')
             },
         });
     }else{
         $('#mail').val('')
         $('#gst_type').val('')
-        $('#purchase_table').find('.tax').attr('readonly', true)
-        $('#purchase_table').find('.tax').val('')
-        vendor_state = ''
-        sub_total()
+        vendor_gstin = ''
+        // $('#purchase_table').find('.tax').attr('readonly', true)
+        // $('#purchase_table').find('.tax').val('')
+        // vendor_state = ''
+        // sub_total()
+        check_gst_status('user_side')
     }
 }
 
-function check_gst_status(category){
-    if(category == 'vendor_side'){
-        // vendor_side
-        if($('#gst_type').val() == '0' || $('#gst_type').val()  =='3' || $('#gst_type').val()  == '5' ){
-            $('#purchase_table').find('.tax').attr('readonly', true)
-            $('#purchase_table').find('.tax').val('')
-            alert('Vendor not register GST')
-            sub_total()
-        }else if($('#gst_type').val()  == '8'){
-            if(vendor_state !='' & $('#order_state').val() != ''){
-                if(vendor_state == $('#order_state').val()){
-                    $('#purchase_table').find('.tax').attr('readonly', false)
-                    sub_total()
-                }else{
-                    $('#purchase_table').find('.tax').attr('readonly', true)
-                    $('#purchase_table').find('.tax').val('')
-                    sub_total()
-                    alert('Vendor is register under composite scheme, it can not choose delivery address of different state.')
-                }
-            }else{
-                $('#purchase_table').find('.tax').attr('readonly', true)
-                $('#purchase_table').find('.tax').val('')
-                sub_total()
-                alert('Vendor is register under composite scheme, it can not choose delivery address of different state.')
-            }
-        }else{
-            if(vendor_state !='' & $('#order_state').val() != ''){
-                $('#purchase_table').find('.tax').attr('readonly', false)
-                sub_total()
-            }
-        }
-    }else if(category == 'delivary_side'){
-        // delivary_side
-        if($('#gst_type').val() == '0' || $('#gst_type').val()  =='3' || $('#gst_type').val()  == '5' ){
+function check_gst_status(cat){
+    if(cat == 'user_side'){
+        // for organization and vendor not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' ||  $('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5' ||  $('#gst_type').val() == ''){
             $('#purchase_table').find('.tax').attr('readonly', true)
             $('#purchase_table').find('.tax').val('')
             sub_total()
-        }else if($('#gst_type').val()  == '8'){
-            if(vendor_state !='' & $('#order_state').val() != ''){
-                if(vendor_state == $('#order_state').val()){
-                    $('#purchase_table').find('.tax').attr('readonly', false)
-                    sub_total()
-                }else{
-                    $('#purchase_table').find('.tax').attr('readonly', true)
-                    $('#purchase_table').find('.tax').val('')
-                    sub_total()
-                }
-            }else{
-                $('#purchase_table').find('.tax').attr('readonly', true)
-                $('#purchase_table').find('.tax').val('')
-                sub_total()
+            if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
+                alert('Organization not register GST')
+            }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5'){
+                alert('Vendor not register GST')
+            }else if($('#gst_type').val() == ''){
+                alert('Vendor not selected')
             }
         }else{
-
-            if(vendor_state !='' & $('#order_state').val() != ''){
-                $('#purchase_table').find('.tax').attr('readonly', false)
-                sub_total()
-            }
+            $('#purchase_table').find('.tax').attr('readonly', false)
+            sub_total()
         }
-    } 
+    }else if(cat == 'vendor_side'){
+        // for organization and vendor not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' ||  $('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5' ||  $('#gst_type').val() == ''){
+            $('#purchase_table').find('.tax').attr('readonly', true)
+            $('#purchase_table').find('.tax').val('')
+            sub_total()
+            // if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
+            //     alert('Organization not register GST')
+            // }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5'){
+            //     alert('Vendor not register GST')
+            // }else if($('#gst_type').val() == ''){
+            //     alert('Vendor not selected')
+            // }
+        }else{
+            $('#purchase_table').find('.tax').attr('readonly', false)
+            sub_total()
+        }
+    }
+    
 }
+// $.ajax({
+//         type:"GET",
+//         url: "/creditnote/state_compare/",
+//         dataType: "json",
+//         success: function(data){
+//             if(data.gst != '' & data.gst_type !=''){
+//                 purchase_user_state = data.gst
+//                 purchase_user_gst_type = data.gst_type
+//             }
+            
+//         },  
+//     });
+// var purchase_user_state = ''
+// var purchase_user_gst_type
 /********************************************************************/
 // purchase SGST CGST AND IGST CALCULATION 
 /********************************************************************/
 
-var vendor_state =''
+// var vendor_state =''
 function purchase_tax_cacultion(){
+    var org_state = $('#single_gst_code option:selected').val()
+    var vendor_g = ''
+    if(vendor_gstin != ''){
+        vendor_g = vendor_gstin.substring(0,2)
+    }
     var cgst_5 = 0
     var sgst_5 = 0
     var igst_5 = 0
@@ -911,8 +912,7 @@ function purchase_tax_cacultion(){
     var cgst_other = 0
     var sgst_other = 0
     var igst_other = 0
-    
-    if(vendor_state == $('#order_state').val()){
+    if(org_state == vendor_g){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1046,7 +1046,7 @@ function purchase_tax_cacultion(){
         }
         
     }
-    else if(vendor_state != $('#order_state').val()){
+    else if(org_state != vendor_g){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
@@ -1259,7 +1259,7 @@ function ajax_org_address(){
                 organisation_id = data.ids
                 // pass organization id
                 $('#button_add').remove()
-                var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'org\')">Add New</button>'
+                var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'org\')">Add Address</button>'
                 $( add ).insertBefore( "#table_close" );
                 
                 // empty table
@@ -1299,7 +1299,7 @@ function ajax_org_address(){
                         a_branch = branch[i]
                     }
                     var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
-                        html+='<input class="form-check-input choose_address" type="radio" name="radio" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
+                        html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
                         html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
                         html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
                         html +='<div class="row" id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
@@ -1335,7 +1335,7 @@ function purchase_cont_address(){
     
                     // pass organization id
                     $('#button_add').remove()
-                    var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'cont\')">Add New</button>'
+                    var add = '<button class="btn btn-sm" type="button" name="add_address" id="button_add" style="background-color: #598ebb;" onclick="org_cont_address_form('+data.ids+',\'cont\')">Add Address</button>'
                     $( add ).insertBefore( "#table_close" );
                     // empty table
                     $(".address_row").each(function(){
@@ -1367,7 +1367,7 @@ function purchase_cont_address(){
                             a_branch = branch[i]
                         }
                         var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
-                            html+='<input class="form-check-input choose_address" type="radio" name="radio" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
+                            html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
                             html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
                             html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
                             html +='<div class="row"  id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
@@ -1384,7 +1384,7 @@ function purchase_cont_address(){
         $('#purchase_address').text('')
         $('#purchase_attention').val('')
         $('#order_state').val('')
-        check_gst_status('delivary_side')
+        // check_gst_status('delivary_side')
     }
     
 }
@@ -1394,13 +1394,13 @@ function purchase_cont_address(){
 var global_parson = ''
 var global_address =''
 var global_gst = ''
-var global_delivery_state = ''
-function radio_click(elem){
+// var global_delivery_state = ''
+function radio_click_add(elem){
     var names = $(elem).attr('id')
     global_parson = $('#con_person'+names.substring(names.length - 1, names.length)).text()
     global_address = $('#p_address'+names.substring(names.length - 1, names.length)).text()
     global_gst = $('#address_gst'+names.substring(names.length - 1, names.length)).text()
-    global_delivery_state = $('#p_state'+names.substring(names.length - 1, names.length)).text()
+    // global_delivery_state = $('#p_state'+names.substring(names.length - 1, names.length)).text()
 };
 /********************************************************************/
 // ORGNIZATION AND CUSTOMER RADIO BUTTON
@@ -1422,23 +1422,22 @@ function prefill(){
         address = ''+global_address+''+'\n'+''+global_gst+''
     }else{
         address = ''+global_parson+''+'\n'+''+global_address+''+'\n'+''+global_gst+''
-    }
-            
+    }  
     $('#purchase_address').text(address)
     $('#purchase_attention').val(global_parson.substring(16,global_parson.length))
-    $('#order_state').val(global_delivery_state)
-    check_gst_status('delivary_side')
+    // $('#order_state').val(global_delivery_state)
+    // check_gst_status('delivary_side')
     
     $('#Purchase_order_AddressModal').modal('hide')
 }
 
 $('#table_close').click(function(){
-    $('#order_state').val('')
+    // $('#order_state').val('')
     $('#org_radio').prop('checked', false)
     $('#customer_radio').prop('checked', false)
     $('#cust_address').hide()
     $('#choose_customer_address').val('').change();
-    check_gst_status('delivary_side')
+    // check_gst_status('delivary_side')
 });
 
 /********************************************************************/
@@ -1519,7 +1518,7 @@ function save__address(event,category){
                     
                     $('#purchase_address').text(address)
                     $('#order_state').val(data.state)
-                    check_gst_status('delivary_side')
+                    // check_gst_status('delivary_side')
                 });
                $('#newOrgAddressModal').modal('hide');
             }
@@ -1576,7 +1575,7 @@ function save__address(event,category){
 
                     $('#purchase_address').text(address)
                     $('#order_state').val(data.state)
-                    check_gst_status('delivary_side')
+                    // check_gst_status('delivary_side')
 
                 });
                $('#newContactAddressModal').modal('hide');
@@ -1674,14 +1673,51 @@ function vendor_info(){
                 address = data.address
             }
                 
-
-            var html2 = ''
+            if(data.gstin == null){
+                gstin = ''
+            }
+            else if(data.gstin != null){
+                gstin = data.gstin
+            }
+            if(data.gst_type == null){
+                gst_type = ''
+            }
+            else if(data.gst_type != null){
+                gst_type = data.gst_type
+            }
+            // var html2 = ''
             
-            html2 +='Name:- '+name+''+'\n'+ 'Organisation Name:-'+'\n'+organization+''+'\n'+'Email:-'+mail+''+'\n'+'Number:-'+number+''+'\n'+'Address:-'+address+'';
-            $("#vendor_details").attr('data-tip', html2);
+            // html2 +='Name:- '+name+''+'\n'+ 'Organisation Name:-'+'\n'+organization+''+'\n'+'Email:-'+mail+''+'\n'+'Number:-'+number+''+'\n'+'Address:-'+address+'';
+            
+            $("#v_info").find('#v_name').text(name)
+            $("#v_info").find('#v_org').text(organization)
+            // $("#v_info").find('#v_mail').text(mail)
+            // $("#v_info").find('#v_num').text(number)
+            $("#v_info").find('#v_addr').text(address)
+            $("#v_info").find('#v_gst_type').text(gst_type)
+            $("#v_info").find('#v_gstin').text(gstin)
+            $("#v_info").show()
+            $('#v_question').hide()
+            // $('#contact_gst_change').find('#vendor_gst_type').text(gst_type)
+            $("#contact_gst_change option:contains("+gst_type+")").attr('selected', true);
+            $('#contact_gst_change').find('#vendor_gst').val(gstin)
+            $('#vendor_ids').val(ins)
+            // attr('data-tip', html2);
         });
     }else{
-        $("#vendor_details").attr('data-tip', '');
+        // $("#vendor_details").append('')
+        $("#v_info").hide()
+        $('#v_question').show()
+        $("#v_info").find('#v_name').text('')
+        $("#v_info").find('#v_org').text('')
+        // $("#v_info").find('#v_mail').text('')
+        // $("#v_info").find('#v_num').text('')
+        $("#v_info").find('#v_addr').text('')
+        $("#v_info").find('#v_gst_type').text('')
+        $("#v_info").find('#v_gstin').text('')
+        $('#contact_gst_change').find('#vendor_gst_type').val(0).change()
+        $('#contact_gst_change').find('#vendor_gst').val('')
+        // attr('data-tip', '');
     }
     
 }
@@ -1762,12 +1798,18 @@ $('#purchase_delivary_date,#purchase_date,#purchase_edit_date').keypress(functio
 // VALIDATION FOR ROW IN SAVE BUTTON
 /*********************************************************************** */
 var global_save_message = ''
+$(document).ready(function(){
+    validation()
+});
 function validation(){
     var count = $('#purchase_table tbody tr').length
     var row_ids = $('#purchase_table tbody tr:first').attr('id')
+    // var last_row = $('#purchase_table tbody tr:first').attr('id')
+    // var first_row =  $('#purchase_table tbody tr:first').attr('id')
     var number_of_row_blank = 1
     for(var i = 1; i<=count;i++){
         var row_last_str = row_ids.substring(row_ids.length-1,row_ids.length)
+        
         if($('#ItemName'+row_last_str).val() == '' & $('#product_account'+row_last_str).val() == '' & $('#Price'+row_last_str).val() == '' & $('#Quantity'+row_last_str).val() == ''){
             if(number_of_row_blank == count){
                 global_save_message = 'Please fill the product line item'
@@ -1779,21 +1821,145 @@ function validation(){
             if($('#ItemName'+row_last_str).val() == ''){
                 global_save_message = 'Table row '+i+' product/service required'
                 break;
-            }
-            if($('#product_account'+row_last_str).val() == ''){
+            }else if($('#product_account'+row_last_str).val() == ''){
                 global_save_message = 'Table row '+i+' product account required'
                 break;
-            }
-            if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
+            }else if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
                 global_save_message = 'Table row '+i+' product price required'
                 break; 
-            }
-            if($('#Quantity'+row_last_str).val() == '' || parseFloat($('#Quantity'+row_last_str).val()).toFixed(2) == 0){
+            }else if($('#Quantity'+row_last_str).val() == '' || parseFloat($('#Quantity'+row_last_str).val()).toFixed(2) == 0){
                 global_save_message = 'Table row '+i+' product qunatity required'
                 break; 
+            }else{
+                global_save_message = ''
             }
         }
         row_ids = $('#'+row_ids+'').closest('tr').next('tr').attr('id');
     }
     
+}
+
+/********************************************************************/
+// INVOICE GST CHANGES
+/********************************************************************/
+$('#multiple_gst_link').click(function(){
+
+    $.get("/gst_number/", function(data){
+        $(".gst_row").each(function(){
+                        
+            $(this).remove()
+        });
+        for(var i = 0;i < data.gst_number.length;i++){
+            var html = '<tr class="gst_row" id="choose_gst_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label" style="margin-left:27%;">'
+                html+='<input class="form-check-input choose_gst" type="radio" name="radio" id="choose_gst_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                html +='<td style="border:1px solid black;" id="c_gst_number'+(parseInt(i)+1)+'" align="center">'+data.gst_number[i]+'</td>'
+                html +='<td style="border:1px solid black;display:none;" id="c_gst_type'+(parseInt(i)+1)+'" align="center">'+data.gst_type[i]+'</td>'
+                $('#GST_table').append(html)
+        }
+        $('#invoice_multi_gst').modal('show')
+    });
+});
+
+/********************************************************************/
+// choose GST
+/********************************************************************/
+
+function radio_click(elem){
+    var names = $(elem).attr('id')
+    names = names.substring(names.length-1,names.length)
+    $('#org_gst_number').val($('#c_gst_number'+names).text())
+    $('#org_gst_reg_type').val($('#c_gst_type'+names).text())
+};
+
+
+function button_click(category){
+    if(category = 'multiple'){
+        var checkbox_count = 0
+        $('.choose_gst').each(function(){
+            if($(this).prop("checked") == true){
+                checkbox_count +=1
+            }
+        })
+        if(checkbox_count == 0){
+            alert('Please first choose the GST')
+            return false
+        }
+        var gst = $('#org_gst_number').val()
+        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to create this invoice with another GST number.")
+        gst = gst.substring(0,2)
+		if($("#single_gst_code option[value="+gst+"]").length > 0){
+
+            $('#single_gst_code').val(gst).change()
+        }
+        check_gst_status('user_side')
+        $('#invoice_multi_gst').modal('hide')
+    }
+}
+$(document).ready(function(){
+    if($('#org_gst_reg_type') == '8'){
+        alert('Organization is register under composite scheme, it can not choose delivery address of different state.')
+    }
+});
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function gst_state_code(elem){
+	if($('#error_field').text() == '' & $(elem).val() != ''){
+		var str = $(elem).val()
+		str = str.substring(0,2)
+		if($("#single_gst_code option[value="+str+"]").length > 0){
+			var state = $("#single_gst_code option[value="+str+"]").text()
+			var org_id = $('#org_id').val()
+			$.post("/org/gst_state_code/",{'state':state, 'org_id':org_id,'csrfmiddlewaretoken':csrf_token},function(data){
+				if(data == 0){
+					$('#error_field').text('GST state code not matching with existing address state') 
+					$('#org_single_gst_save').prop('disabled', true)
+				}else{
+                    $('#gst_state').val($("#single_gst_code option[value="+str+"]").text())
+                    $('#single_gst_code').val(str).change()
+				}
+			});
+		}else{
+			$('#error_field').text('GST state code not matching with existing address state') 
+			$('#org_single_gst_save').prop('disabled', true)
+		}
+	}
+}
+
+$('.mul_cancel_gst').click(function(){
+	$('#error_field').text('') 
+	$('.multiple_update').prop('disabled', false)
+})
+
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function update_single_gst(){
+    event.preventDefault()
+    $.post("/profile/gst_configuration/",$("#org_gst_update").serialize(), function(data){
+        if(data != '0'){
+            var gst_num = $('#single_gst').val()
+            $('#org_gst_reg_type').val($('#single_gst_type').val())
+            $('#replace_change_update').find('h6').text('Your default Organization gst number:-'+gst_num+'.')
+            $('#change_update_gst').hide()
+            $('#replace_change_update').show()
+            $('#org_gst_number').val(gst_num)
+            $('#add_gst_number').modal('hide')
+            check_gst_status('user_side')
+        }
+    });
+}
+/********************************************************************/
+// vandor gst update
+/********************************************************************/
+function v_gst_save(){
+    $.post("/purchase_order/vendor_gst_save/",$("#vendor_gst_update").serialize(),function(data){
+        if(data == 1){
+            $('#contact_gst_change').modal('hide')
+            vendor_info()
+            state_compare()
+        }
+    });
 }

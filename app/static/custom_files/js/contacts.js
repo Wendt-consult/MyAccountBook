@@ -64,6 +64,7 @@ function valid_Phone(elem){
         setLocalStorageValue('form_errors_phone', true);
         $(elem).closest("tr").find("td.error_field").empty().append("p").text(ret[1]);
         $('#error_field').append("p").text(ret[1]);
+        $('#c_error_field').append("p").text(ret[1]);
         $(elem).focus();
         $(".save_button, #editContactModal > .save_button,").prop("disabled",true);
         $(".order_button").prop("disabled",true);
@@ -71,6 +72,7 @@ function valid_Phone(elem){
         setLocalStorageValue('form_errors_phone', false);
         $(elem).closest("tr").find("td.error_field").empty().append("p").text("");
         $('#error_field').append("p").text('');
+        $('#c_error_field').append("p").text('');
         $(".save_button, #editContactModal > .save_button").prop("disabled",false);
         $(".order_button").prop("disabled",false);
     } 
@@ -116,12 +118,14 @@ function valid_GST(elem){
         $(elem).closest("tr").find("td.error_field").empty().append("p").text(ret[1]);
         $(elem).focus();
         $('#error_field').text(ret[1]);
-        $(".save_button, #editContactModal > .save_button,#org_single_gst_save").prop("disabled",true);
+        $('#vendor_error_field').text(ret[1]);
+        $(".save_button, #editContactModal > .save_button,#org_single_gst_save,#vendor_gst_save").prop("disabled",true);
     }else{
         setLocalStorageValue('form_errors_get', false);
         $(elem).closest("tr").find("td.error_field").empty().append("p").text("");
         $('#error_field').text('');
-        $(".save_button, #editContactModal > .save_button,#org_single_gst_save").prop("disabled",false);
+        $('#vendor_error_field').text('');
+        $(".save_button, #editContactModal > .save_button,#org_single_gst_save,#vendor_gst_save").prop("disabled",false);
     }  
 }
 

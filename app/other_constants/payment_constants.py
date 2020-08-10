@@ -81,7 +81,7 @@ PAYMENT_STATUS = (
 )
 
 purchse_status = (
-    (0, ''),
+    (0, 'Due'),
     (1, 'Drafted'),
     (2, 'Cancelled'),
     (3, 'Send Mail'),

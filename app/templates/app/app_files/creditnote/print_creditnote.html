@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>MyAccountBook</title>
+    <title>Vagmi</title>
     <!-- <link rel="stylesheet" href="style.css" media="all" /> -->
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -354,7 +354,7 @@ footer {
                  <h5>Notes:</h5>
                </label>
             </div>
-            {% credit_note.Note %}
+            {% if credit_note.Note %}
             <div class="col" style="padding-left: 0%;margin-left: -3%;">
               <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important; word-break: break-all;border: 1px solid black;">
                 <label id="td1" >
@@ -425,7 +425,7 @@ footer {
           </div>
           {% endif %}
 
-          {%if credit_note.cgst_12 and credit_note.sgst_12 %}
+          {% if credit_note.cgst_12 and credit_note.sgst_12 %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5>CGST @ on 6</h5>

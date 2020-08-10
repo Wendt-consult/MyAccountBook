@@ -60,7 +60,7 @@ class Invoice(View):
     #
     def get(self, request):        
         
-        invoice = invoice_model.InvoiceModel.objects.filter(user = request.user)
+        invoice = invoice_model.InvoiceModel.objects.filter(user = request.user,invoice_delete_status=0)
         invoice_paginator = Paginator(invoice, 10)
         invoice_page = request.GET.get('page')     
         try:
@@ -745,7 +745,7 @@ class EditInvoice(View):
                         cgst = cgst,sgst = sgst,igst = igst,total_amount = total_amount,shipping_charges=shipping_charges,
                         invoice_org_gst_num = org_gst_number,invoice_org_gst_type = org_gst_reg_type,invoice_org_gst_state = single_gst_code,)
             
-            if(cgst_amount != '' or sgst_amount != ''):
+            if(cgst != '' or sgst != ''):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
             else:
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = False)
@@ -916,8 +916,12 @@ class CloneInvoice(View):
             invoice = InvoiceModel.objects.get(pk = int(kwargs["ins"]))
             contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
             products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
-            invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
+            
+            # inactive and delete product or contact
+            intcontacts = Contacts.objects.filter(Q(user = request.user))
+            intproducts = ProductsModel.objects.filter(Q(user = request.user))
 
+            invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
             default_term_condition = Organisations.objects.filter(user = request.user)
@@ -973,16 +977,18 @@ class CloneInvoice(View):
         
         self.data["contacts"] = contacts
         self.data['gst'] = gst
-
+        # inactive and delete product or contact
+        self.data["intproducts"] = intproducts
+        self.data["intcontacts"] = intcontacts
         self.data["products"] = products
         self.data["invoice"] = invoice
 
-        self.data["invoice_item"] = a
+        self.data["invoice_item"] = invoice_item
         self.data['acc_ledger_income'] = acc_ledger_income
-        if(len(a) == 0):
-            self.data["item_count"] = 0
-        else:
-            self.data["item_count"] = len(a)-1
+        # if(len(a) == 0):
+        #     self.data["item_count"] = 0
+        # else:
+        self.data["item_count"] = len(invoice_row)-1
         self.data['item_header_count'] = len(invoice_row_header)
 
         self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
@@ -1239,6 +1245,28 @@ def customer_gst(request, ins):
     data = defaultdict()
     contact = Contacts.objects.get(pk = int(ins))
     gst = User_Tax_Details.objects.get(contact = contact)
-
+    data['contact_bill'] = ''
+    print(gst.bills_terms)
+    if(gst.bills_terms is not None):
+        data['contact_bill'] =  gst.bills_terms
     data['gst_type'] = gst.gst_reg_type
     return JsonResponse(data)
+
+#=====================================================================================
+#   DELETE INVOICE
+#=====================================================================================
+#
+
+def delete_invoice(request, ins):
+    if ins is not None:
+        try:
+            InvoiceModel.objects.filter(pk = int(ins)).update(invoice_delete_status = 1)
+        
+        except:
+            return redirect('/unauthorized/', permanent=False)
+
+        # Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order)).delete()
+        # PurchaseOrder.objects.get(pk = int(ins)).delete()
+
+        return redirect('/invoice/', permanent=False)
+    return redirect('/unauthorized/', permanent=False)

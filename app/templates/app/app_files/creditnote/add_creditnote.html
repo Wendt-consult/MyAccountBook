@@ -98,16 +98,16 @@ textarea.form-control{
 }
 #files{
     padding-top: 1px;
-    width: 75%;
+    /* width: 75%; */
 }
 optgroup{color :black; }
 .addrow:hover{
     border: 1px solid black;
     color: black;
 }
-#id_preferred_currency{
+/* #id_preferred_currency{
     width: 5%!important;
-}
+} */
 #id_selling_GST{
     padding-top: 5%;
 }
@@ -128,6 +128,12 @@ optgroup{color :black; }
 .container{
     margin-left: 2%;
 }
+#show_cc:hover{
+    color: black!important;
+}
+#close:hover{
+     color: red!important;
+ }
 </style>
 
 <form method="post" action="{% url 'save_credit_note' %}" autocomplete="off" enctype="multipart/form-data">
@@ -141,20 +147,20 @@ optgroup{color :black; }
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
                     {% if is_gst != 'no' %}
                         {% if is_signle_gst == 'yes' %}
-                            <h6 style="color: white;">Your default Organization gst number:-{{is_gst}}.</h6>
+                            <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}.Do you want to create this invoice with another GST number</h6>&nbsp;
-                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;">YES</a>
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this credit note with another GST number</h6>&nbsp;
+                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
                     {% else %}
                     <div class="row" style="margin-left: 0px;" id="change_update_gst">
-                        <h6 style="color: white;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
-                        <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
+                        <h6 style="color: white;font-size: x-small;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
+                        <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
                     </div>
                     <div style="display: none;" id="replace_change_update">
-                        <h6 style="color: white;"></h6>
+                        <h6 style="color: white;font-size: x-small;"></h6>
                     </div>
                     {% endif %}
                 </div>
@@ -227,7 +233,7 @@ optgroup{color :black; }
                                 <div class="col-7">
                                     <input type="email" class="form-control" id="email" name="Email_Address" multiple >
                                     <div>
-                                        <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;"><font>Add CC</font></a>
+                                        <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;color: black;"><font>Add CC</font></a>
                                     </div>
                                     
                                 </div>
@@ -254,7 +260,7 @@ optgroup{color :black; }
                                     <label for="supplyPlace1">State of Supply</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status()">
+                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status('vendor_side')">
                                         <option value="">------</option>
                                         {% for i in state %}
                                             <option value="{{i.0}}">{{i.1}}</option>
@@ -268,7 +274,7 @@ optgroup{color :black; }
                                     <label for="supplyPlace1">Credit Note#</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control"  name="CreditNoteNumber" value="" id="CreditNoteNumber" >
+                                    <input type="text" class="form-control"  name="CreditNoteNumber" value="" id="CreditNoteNumber" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
@@ -456,15 +462,15 @@ optgroup{color :black; }
                                    <label for="Attachment">Attachment</label>
                                 </div>
                                 <div class="col" style="margin-top:6px">
-                                    <input type="file" class="form-control" id="Attachment" name="Attachment"  style="padding-top: 1px;margin-left: -17px;width: 70%;">
+                                    <input type="file" class="form-control" id="Attachment" name="Attachment"  style="margin-left: -17px;width: 70%;">
                                     <input type="button"  style="margin-left: 62%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
                                     <font color="black" style="font-size:x-small;margin-left: -4%;">File Size Less Than: 20 MB </font><br>
                                         
-                                    <label class="switch" style="padding-top: 5px;margin-left: -5%;">
+                                    <!-- <label class="switch" style="padding-top: 5px;margin-left: -5%;">
                                         <input type="checkbox" id="attach_check" name="attach_check" >
                                         <span class="slider round"></span>
                                     </label>
-                                    <font style="margin-left: 6px;color: black;font-size: smaller;">Do you want to send this attachment with email?</font>
+                                    <font style="margin-left: 6px;color: black;font-size: smaller;">Do you want to send this attachment with email?</font> -->
                                 </div>
                             </div>
                         </div>
@@ -741,7 +747,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Type</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.product_type}}
                                     </div>
                                 </div>
@@ -750,7 +756,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">SKU/Product ID</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.sku}}
                                     </div>
                                 </div>
@@ -759,7 +765,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Name</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.product_name}}
                                     </div>
                                 </div>
@@ -768,7 +774,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">HSN/SAC Code</label>
                                     </div>
-                                    <div class="col-7" style="padding-top:2%;">
+                                    <div class="col-7" style="padding-top:1%;">
                                         {{add_product_form.hsn_code}}
                                     </div>
                                     <div class="col" style="">
@@ -783,7 +789,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Units</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.unit}}
                                     </div>
                                 </div>
@@ -792,7 +798,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Description</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.product_description}}
                                     </div>
                                 </div>
@@ -801,7 +807,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">TDS%</label>
                                     </div>
-                                    <div class="col" style="padding-top:2%;">
+                                    <div class="col" style="padding-top:1%;">
                                         {{add_product_form.tds}}
                                     </div>
                                 </div>
@@ -1084,8 +1090,8 @@ optgroup{color :black; }
                                     <td style="border:0px; vertical-align: bottom;width: 20%;">
                                         Contact Type
                                     </td>
-                                    <td style="width: 44%;border:0px;padding-top: 2%;">
-                                        {{ contact_form.customer_type }}
+                                    <td style="width: 44%;border:0px;padding-top: 2%;" id="con_type">
+                                        <!-- {{ contact_form.customer_type }} -->
                                         {{ contact_form.fromwhere.as_hidden }}
                                     </td>                                    
                                 </tr>
@@ -1225,7 +1231,7 @@ optgroup{color :black; }
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
-                                                            GST Registration Type
+                                                            GST Type
                                                         </td>
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gst_reg_type }}
@@ -1409,7 +1415,7 @@ optgroup{color :black; }
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
+                                                <!-- <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -1533,10 +1539,10 @@ optgroup{color :black; }
 <script>
 
     document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
-    document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
+    // document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
     //document.getElementById("cancelBtn").style.display = 'none';
     document.getElementById("add_more_addresses").disabled = true;
-    document.getElementById("add_more_accounts").disabled = true;
+    // document.getElementById("add_more_accounts").disabled = true;
     
     csrf_token = '{{csrf_token}}';
 </script>

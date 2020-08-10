@@ -60,7 +60,7 @@ class PurchaseOrderView(View):
     #
     #
     def get(self, request):       
-        purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user)
+        purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user,purchase_delete_status = 0)
         # purchase_paginator = Paginator(purchase_order, 1)
         # purchase_page = request.GET.get('page')     
         # try:
@@ -128,6 +128,11 @@ def add_purchase_order(request, slug):
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+    data['gst_r_type'] = user_constants.org_GST_REG_TYPE
+    # data['ven_gst_type'] = user_constants.GST_REG_TYPE
+
      # list contact name
     contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
     gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -182,6 +187,31 @@ def add_purchase_order(request, slug):
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_income'] = acc_ledger_income
+
+
+        # org gst number
+        data['is_gst'] = 'no'
+        data['is_signle_gst']  = 'no'
+        data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
+
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+
+        data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            data['is_signle_gst'] = 'yes'
+            data['is_gst'] = org_gst_num[0].gstin
+            data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                data['is_gst'] = default[0].gstin
+                data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                data['is_gst'] = org_gst_num[0].gstin
+                data['org_gst_type'] = org_gst_num[0].gst_reg_type
+
+
         return render(request, template_name, data)
 
 #=====================================================================================
@@ -312,6 +342,7 @@ def last_address_fetch(request):
 def vendor_state(request, ins):
     # Initialize 
     data = defaultdict()
+    data['gstin'] = ''
     contact = Contacts.objects.get(pk = int(ins))
     gst = User_Tax_Details.objects.get(contact = contact)
     address = users_model.User_Address_Details.objects.filter(Q(contact = contact) & Q(default_address = True))
@@ -320,6 +351,8 @@ def vendor_state(request, ins):
     # else:
     data['mail'] = contact.email
     data['gst_type'] = gst.gst_reg_type
+    if(gst.gstin is not None):
+        data['gstin'] = gst.gstin
     if(len(address) == 1):
         if(address[0].state is None):
             data['vendor_state'] = 'null'
@@ -349,7 +382,9 @@ def vendor_details(request, ins):
     data['number'] = contact.phone
     data['address'] =[]
     address = users_model.User_Address_Details.objects.filter(Q(contact = contact) & Q(default_address = True)).values('contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode' ,)
-
+    contact_tax = users_model.User_Tax_Details.objects.get(Q(contact = contact))
+    data['gstin'] = contact_tax.gstin
+    data['gst_type'] = contact_tax.get_gst_reg_type_display()
     if(len(address) == 1):
         for i in range(0,len(address)):
             add=""
@@ -478,7 +513,13 @@ def save_purchase_order(request):
         advance = request.POST.get("advance")
         total_balance = request.POST.get("total_balance")
 
-        state = request.POST.get("order_state")
+        # state = request.POST.get("order_state")
+
+         # for purhase gst number and type
+        org_gst_number = request.POST.get("org_gst_number")
+        org_gst_reg_type = request.POST.get("org_gst_reg_type")
+        single_gst_code = request.POST.get("single_gst_code")
+        
         is_tc = request.POST.get('purchase_t&c','off')
         is_notes = request.POST.get('purchase_default_notes','off')
 
@@ -515,17 +556,20 @@ def save_purchase_order(request):
 
         purchase_order = PurchaseOrder(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
                         save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
+                        is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
                         contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
                         sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
                         cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
                         total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
-                        advacne_payment_method = hidden_advance_method,advacne_note= hidden_advance_notes,)
+                        advacne_payment_method = hidden_advance_method,advacne_note= hidden_advance_notes,
+                        purchase_org_gst_num = org_gst_number,purchase_org_gst_type = org_gst_reg_type,purchase_org_gst_state = single_gst_code,)
         if(hidden_advance_date != ''):
             purchase_order.advance_payment_date=hidden_advance_date
 
         if(save_type == 3):  
             purchase_order.purchase_status=1
+        if(save_type == 2 or save_type == 4):
+            purchase_order.purchase_status = 0
             
         purchase_order.save()               
 
@@ -626,21 +670,24 @@ class EditPurchaseOrder(View):
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
 
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+    data['gst_r_type'] = user_constants.org_GST_REG_TYPE
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
+    # data['ven_gst_type'] = user_constants.GST_REG_TYPE
 
     def get(self, request, *args, **kwargs):
 
         try:
             purchase_order = PurchaseOrder.objects.get(pk = int(kwargs["ins"]))
             contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
+            products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
 
             # inactive and delete product or contact
             intcontacts = Contacts.objects.filter(Q(user = request.user))
             intproducts = ProductsModel.objects.filter(Q(user = request.user))
-            
-            products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
-            purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
 
+            purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
             default_term_condition = Organisations.objects.filter(user = request.user)
@@ -740,7 +787,11 @@ class EditPurchaseOrder(View):
             freight_charges = request.POST.get("Freight_Charges")
             advance = request.POST.get("advance")
             total_balance = request.POST.get("total_balance")
-            state = request.POST.get("order_state")
+            # state = request.POST.get("order_state")
+             # for purchase gst number and type
+            org_gst_number = request.POST.get("org_gst_number")
+            org_gst_reg_type = request.POST.get("org_gst_reg_type")
+            single_gst_code = request.POST.get("single_gst_code")
 
             is_tc = request.POST.get('purchase_t&c','off')
             is_notes = request.POST.get('purchase_default_notes','off')
@@ -781,12 +832,13 @@ class EditPurchaseOrder(View):
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(vendor)))
             PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
                         save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        delivery_state = state,is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
+                        is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
                         contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
                         sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
                         cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
                         total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
-                        advacne_payment_method=hidden_advance_method,advacne_note=hidden_advance_notes)
+                        advacne_payment_method=hidden_advance_method,advacne_note=hidden_advance_notes,purchase_org_gst_num = org_gst_number,
+                        purchase_org_gst_type = org_gst_reg_type,purchase_org_gst_state = single_gst_code,)
             if(hidden_advance_date != ''):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(advance_payment_date = hidden_advance_date)
 
@@ -794,6 +846,8 @@ class EditPurchaseOrder(View):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=1) 
             elif(save_type == 5): 
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=2) 
+            elif(save_type == 2 or save_type == 4):
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=0) 
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -867,6 +921,10 @@ class ClonePurchaseOrder(View):
     data["groups_form"] = AccGroupsForm()
 
     data['country_code'] = user_constants.PHONE_COUNTRY_CODE
+    # constant
+    data['gst_code'] = country_list.GST_STATE_CODE
+    data['gst_r_type'] = user_constants.org_GST_REG_TYPE
+    # data['ven_gst_type'] = user_constants.GST_REG_TYPE
 
     def get(self, request, *args, **kwargs):
             
@@ -874,8 +932,12 @@ class ClonePurchaseOrder(View):
             purchase_order = PurchaseOrder.objects.get(pk = int(kwargs["ins"]))
             contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
             products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0))
-            purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
 
+            # inactive and delete product or contact
+            intcontacts = Contacts.objects.filter(Q(user = request.user))
+            intproducts = ProductsModel.objects.filter(Q(user = request.user))
+
+            purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
             default_term_condition = Organisations.objects.filter(user = request.user)
@@ -923,11 +985,14 @@ class ClonePurchaseOrder(View):
         
         self.data["contacts"] = contacts
         # self.data["state"] = creditnote_constant.state
+        # inactive and delete product or contact
+        self.data["intproducts"] = intproducts
+        self.data["intcontacts"] = intcontacts
         self.data['gst'] = gst
         self.data["products"] = products
         self.data["purchase_order"] = purchase_order
         # if(len(a) > 0):
-        self.data["purchase_item"] = a
+        self.data["purchase_item"] = purchase_item
         self.data['acc_ledger_income'] = acc_ledger_income
         self.data["item_count"] = len(purchase_item)-1
 
@@ -937,6 +1002,28 @@ class ClonePurchaseOrder(View):
         # if( len(default) > 0):
         #     msg = default[0].terms_and_condition
         #     self.data['term_msg'] = msg
+
+        # org gst number
+        self.data['is_gst'] = 'no'
+        self.data['is_signle_gst']  = 'no'
+        self.data['org_gst_type'] = None
+        org = Organisations.objects.get(user = request.user)
+
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+
+        self.data['org_id'] = org.id
+        if(len(org_gst_num) == 1):
+            self.data['is_signle_gst'] = 'yes'
+            self.data['is_gst'] = org_gst_num[0].gstin
+            self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
+        elif(len(org_gst_num) > 0):
+            default = org_gst_num.filter(default_gstin = True)
+            if(len(default) != 0):
+                self.data['is_gst'] = default[0].gstin
+                self.data['org_gst_type'] = default[0].gst_reg_type
+            else:
+                self.data['is_gst'] = org_gst_num[0].gstin
+                self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
 
         return render(request, self.template_name, self.data)
 
@@ -1092,13 +1179,13 @@ def print_purchase_order(request, ins):
 def delete_purchase_order(request, ins):
     if ins is not None:
         try:
-            purchase_order = PurchaseOrder.objects.get(pk = int(ins))
+            PurchaseOrder.objects.filter(pk = int(ins)).update(purchase_delete_status = 1)
         
         except:
             return redirect('/unauthorized/', permanent=False)
 
-        Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order)).delete()
-        PurchaseOrder.objects.get(pk = int(ins)).delete()
+        # Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order)).delete()
+        # PurchaseOrder.objects.get(pk = int(ins)).delete()
 
         return redirect('/view_purchase_order/', permanent=False)
     return redirect('/unauthorized/', permanent=False)
@@ -1115,3 +1202,14 @@ def void_purchase(request, ins):
     except:
         return HttpResponse(0) 
     return HttpResponse(1) 
+
+def vendor_gst_save(request):
+    contact_ids = request.POST.get("vendor_ids")
+    contact_gst_type = request.POST.get("vendor_gst_type")
+    contact_gst = request.POST.get("vendor_gst")
+    try:
+        contact = contacts_model.Contacts.objects.get(pk = int(contact_ids))
+        User_Tax_Details.objects.filter(contact = contact).update(gst_reg_type = contact_gst_type,gstin = contact_gst)
+    except:
+        return HttpResponse(0) 
+    return HttpResponse(1)

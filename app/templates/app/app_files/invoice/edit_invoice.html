@@ -112,16 +112,16 @@ textarea{
     }
     #files{
         padding-top: 1px;
-        width: 75%;
+        /* width: 75%; */
     }
     optgroup{color :black; }
     .addrow:hover{
         border: 1px solid rgb(255, 255, 255);
         color: rgb(255, 255, 255);
     }
-    #id_preferred_currency{
+    /* #id_preferred_currency{
         width: 5%!important;
-    }
+    } */
     #id_selling_GST{
         padding-top: 5%;
     }
@@ -226,9 +226,18 @@ textarea{
         margin-top: -1%;
     }
     #Attachment {
-    width: 90px;
+    width: 92px;
 }
-    </style>
+.select2-results__options{
+        font-size:14px !important;
+ }
+ #show_cc:hover{
+     color: black!important;
+ }
+ #close:hover{
+    color: red!important;
+}
+</style>
 
 <form method="post" action="{% url 'edit_invoice' invoice.id %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
@@ -238,12 +247,18 @@ textarea{
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Edit Invoice</h4>
                 </div>  
+                {% if invoice.invoice_org_gst_num %}
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
-                    <h6 style="color: white;">Your default Organization gst number:-{{invoice.invoice_org_gst_num}}.</h6>
+                    <h6 style="color: white;font-size: x-small;">Gst number for this invoice is:-{{invoice.invoice_org_gst_num}}.</h6>
                 </div>
+                {% else %}
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    <h6 style="color: white;font-size: x-small;">This invoice created without gst number.</h6>
+                </div>
+                {% endif %}
             <div style="margin-top: 4%;margin-left: 2%;">
-                <input class="form-control" type="hidden" value="{{invoice.invoice_org_gst_num}}" name="org_gst_number" id="org_gst_number">
-                <input class="form-cntrol" type="hidden" value="{{invoice.invoice_org_gst_type}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <input class="form-control" type="hidden" value="{{invoice.invoice_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{invoice.invoice_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
                 <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
                     <option value="">---------</option>
                     {% for i in gst_code %}
@@ -470,14 +485,13 @@ textarea{
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="col-lg-2 col-md-3" style="padding-right:2px;padding-left: 3px;">
+                                    <label for="Invoice_recurring_repeat">Repeat for</label>
+                                </div>
+                                <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
+                                    <input type="number" class="form-control" value="{{invoice.invoice_recurring_repeat}}" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
+                                </div>
                             </div>
-                            <div class="col-lg-2 col-md-3" style="padding-right:2px;padding-left: 3px;">
-                                <label for="Invoice_recurring_repeat">Repeat for</label>
-                            </div>
-                            <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
-                                <input type="number" class="form-control" value="{{invoice.invoice_recurring_repeat}}" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
-                            </div>
-
                         </div>
                         <!-- right -->
                         <div class="col">
@@ -622,7 +636,7 @@ textarea{
                                     <label for="">State of Supply</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('delivary_side')" style="padding-left: 9px;" required>
+                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('vendor_side')" style="padding-left: 9px;" required>
                                         <option value="">-------</option>
                                         {% for i in state %}
                                         <option value="{{i.0}}" {% if invoice.invoice_state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
@@ -641,7 +655,7 @@ textarea{
                                 </div>
                                 <div class="col-7 input">
                                     <input type="email" class="form-control" id="email" name="Email_Address" value="{{invoice.email|default_if_none:''}}" multiple >
-                                    <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding:0%;"><font>Add CC</font></a>
+                                    <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding:0%;color: black;"><font>Add CC</font></a>
                                 </div>
                             </div>
 
@@ -784,7 +798,7 @@ textarea{
                                 <td style="border:1px solid black;">
                                     <div class="row">
                                         <div class="col-8" style="padding-right: 3px;">
-                                            <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{items.header_number_count}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{items.header_number_count}}')" id="tax{{items.header_number_count}}" style="margin-top: -1px;" required readonly>
+                                            <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{items.header_number_count}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{items.header_number_count}}')" id="tax{{items.header_number_count}}" style="margin-top: -1px;" readonly>
                                             <datalist id="tax">
                                                 {% for i in gst %}
                                                 <option value="{{i.taxname_percent}}">
@@ -921,9 +935,9 @@ textarea{
                     <div class="col">
                         <button class="btn btn-sm btn-primary dropdown-toggle addrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white;background-color: #598ebb;margin-top: -4px;margin-bottom: 8px;">Add </button>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
-                            <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%">add row</button>
-                            <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%">add item header</button>
-                            <button type="button" class="dropdown-item" id="add_item_btn" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%">add item in bulk</button>
+                            <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%;outline:none;">add row</button>
+                            <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%;outline:none;">add item header</button>
+                            <button type="button" class="dropdown-item" id="add_item_btn" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%;outline:none;">add item in bulk</button>
                         </div>
                     </div>
                 </div>
@@ -991,7 +1005,7 @@ textarea{
                                <label for="Attachment">Attachment</label>
                             </div>
                             <div class="col" style="margin-top:6px">
-                                <input type="file" class="form-control" id="Attachment" name="Attachment"  style="padding-top: 1px;margin-left: -17px;">
+                                <input type="file" class="form-control" id="Attachment" name="Attachment"  style="margin-left: -17px;">
                                 <p id="invoice_filename" style="color: black;position: absolute;margin-top: -5%;margin-left: 23%;">{{invoice.attachements|truncatechars:10}}</p>
                                 <input type="button"  style="margin-left: 44%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
                                 <font style="font-size:x-small;margin-left: -4%;color: black;">File Size Less Than: 25 MB </font>
@@ -1649,7 +1663,7 @@ textarea{
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
-                                                            GST Registration Type
+                                                            GST Type
                                                         </td>
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gst_reg_type }}
@@ -1833,7 +1847,7 @@ textarea{
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
+                                                <!-- <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -1927,7 +1941,7 @@ textarea{
                                                             </td>
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.attachements }}
-                                                                <font color="white" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
+                                                                <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -2030,8 +2044,8 @@ textarea{
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-primary" type="button" onclick=" return add_bulk_product_item()">add item</button>
-                    <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal"aria-label="Close" onclick="hide_bulk_item()">Cancel</button>
+                    <button class="btn btn-sm " type="button" onclick=" return add_bulk_product_item()" style="background-color:#598ebb;color:white">add item</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" onclick="hide_bulk_item()" style="background-color:#9095a2;">Cancel</button>
                 </div>
             </form>
         </div>
@@ -2041,10 +2055,10 @@ textarea{
 <script>
 
     document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
-    document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
+    // document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
     //document.getElementById("cancelBtn").style.display = 'none';
     document.getElementById("add_more_addresses").readonly = true;
-    document.getElementById("add_more_accounts").readonly = true;
+    // document.getElementById("add_more_accounts").readonly = true;
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
         customer_gst_type()

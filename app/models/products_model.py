@@ -476,4 +476,5 @@ class BundleProducts(models.Model):
         default = 0,
         db_index = True,
     )
+    
   

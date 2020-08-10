@@ -155,12 +155,18 @@ color: white!important;
                                     <td align="center" class="customize_total">{{order.total_amount}}</td>
                                     {% endif %}
                                     {% if customize.purchase_date != 0 %}
-                                    <td align="center" class="customize_date">{{order.purchase_delivery_date|date:"d-m-Y"}}</td>
+                                    <td align="center" class="customize_date">
+                                        {% if order.purchase_delivery_date %}
+                                        {{order.purchase_delivery_date|date:"d-m-Y"}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
                                     {% endif %}
                                     <td class="text-center" align="center" > 
 
                                         <div class="dropdown">
-                                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Action</button>
+                                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                                 <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_purchase_order' order.id %}" style="padding: 5px 5px;">
@@ -195,7 +201,7 @@ color: white!important;
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
                                                             <center><a class="btn  mr-2" href="{% url 'delete_purchase_order' order.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
-                                                            <a class="btn " href="{% url 'purchase_order' %}" style=""><font color="white" >No</font></a>
+                                                            <a class="btn " data-dismiss="modal" aria-label="Close"><font color="white" >No</font></a>
                                                         </div>
                                                     </div>
                                                 </div>

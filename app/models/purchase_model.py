@@ -101,12 +101,12 @@ class PurchaseOrder(models.Model):
         null=True,
     )
 
-    delivery_state = models.CharField(
-        max_length = 10,
-        db_index = True,
-        blank=True,
-        null=True,
-    )
+    # delivery_state = models.CharField(
+    #     max_length = 10,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # )
 
     is_organisation_delivary = models.CharField(
         db_index = True,
@@ -331,6 +331,33 @@ class PurchaseOrder(models.Model):
         null = True,
     )
 
+    purchase_org_gst_num = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_org_gst_type =  models.CharField(
+        max_length=2,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_org_gst_state =  models.CharField(
+        max_length=5,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_delete_status = models.IntegerField(
+        db_index = True,
+        default=0,
+        blank = False,
+        null = False,
+    )
     def __str__(self):
         return "{} - {}".format(self.vendor,self.id) 
 

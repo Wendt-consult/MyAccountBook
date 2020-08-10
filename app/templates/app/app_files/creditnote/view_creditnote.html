@@ -130,7 +130,7 @@ color: white!important;
                                     <td align="center" class="customize_date">{{note.credit_date|date:"d-m-Y"}}</td>
                                     {% endif %}
                                     {% if customize.credit_amount != 0 %}
-                                    <td align="center" class="customize_amount">{% if note.total %}₹.{% endif %}{{note.total}}</td>
+                                    <td align="center" class="customize_amount">{% if note.total %}₹.{{note.total}}{% else %}₹. 0.00{% endif %}</td>
                                     {% endif %}
                                    
                                     <!-- <td>{{contact.email}}</td> -->
@@ -138,7 +138,7 @@ color: white!important;
                                         <!-- Dropdown Add by Roshan -->
 
                                         <div class="dropdown">
-                                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >Action</button>
+                                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                                 <a class="dropdown-item" title="Edit Credit Note" href="{% url 'edit_credit_note' note.id %}" style="padding: 5px 5px;">
@@ -158,10 +158,30 @@ color: white!important;
                                                     Send
                                                 </a>  
 
-                                            <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_credit_note' note.id %}" style="padding: 5px 5px;">
-                                                    Make a Copy
-                                                 </a>  
+                                                <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_credit_note' note.id %}" style="padding: 5px 5px;">
+                                                        Make a Copy
+                                                </a>
+                                                <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{note.id}}" style="padding: 5px 5px;">
+                                                    Delete
+                                                </a> 
                                             </div> 
+                                            <div class="modal " tabindex="-1" role="dialog" id="del{{note.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                                    <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                                        <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                            
+                                                        </div>
+                                                        <div class="modal-body" style="border-top: none;position: bottom;">
+                                                            <h4><b><font color="black">Are you sure you want to delete {{note.credit_number |truncatechars:10 }}. Deleting credit note will not affect reports or historical transactions.</font></b></h4>
+                                                        </div>
+                                                        
+                                                        <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                            <center><a class="btn  mr-2" href="{% url 'delete_credit_note' note.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                            <a class="btn" data-dismiss="modal" aria-label="Close"><font color="white" >No</font></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>       
                                     </td>                   
                                 </tr>

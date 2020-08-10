@@ -95,7 +95,7 @@ textarea.form-control{
 }
 #files{
     padding-top: 1px;
-    width: 75%;
+    /* width: 75%; */
     display: flex!important;
 }
 optgroup{color :black; }
@@ -103,9 +103,9 @@ optgroup{color :black; }
     border: 1px solid black;
     color: black;
 }
-#id_preferred_currency{
+/* #id_preferred_currency{
     width: 5%!important;
-}
+} */
 #id_selling_GST{
     padding-top: 5%;
 }
@@ -159,50 +159,47 @@ optgroup{color :black; }
 }
 
 
-/*== pointer tip ==*/
-.tool::before {
-    border-style: solid;
-    border-width: 1em 0.75em 0 0.75em;
-    border-color: #3E474F transparent transparent transparent;
-    bottom: 100%;
-    content: "";
-    margin-left: -0.5em;
-    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
-    transform:  scale(.6) translateY(-90%);
-} 
 
-.tool:hover::before,
-.tool:focus::before {
-    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+.dropbtn {
+  color: #000000db;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
 }
 
-
-/*== speech bubble ==*/
-.tool::after {
-    background: #3E474F;
-    border-radius: .25em;
-    bottom: 180%;
-    color: #EDEFF0;
-    content: attr(data-tip);
-    margin-left: -8.75em;
-    padding: 1em;
-    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
-    transform:  scale(.6) translateY(50%);  
-    width: 17.5em;
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-.tool:hover::after,
-.tool:focus::after  {
-    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+.dropdown-content {
+  margin-left: -144px;
+  margin-top: -6px;
+  display: none;
+  position: absolute;
+  background-color: #000000db;
+  min-width: 328px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
 }
 
-@media (max-width: 760px) {
-  .tool::after { 
-        font-size: .75em;
-        margin-left: -5em;
-        width: 10em; 
-  }
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
 }
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* .dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+} */
+.select2-results__options{
+        font-size:14px !important;
+ }
 </style>
 
 <form method="post" action="{% url 'edit_purchase_order' purchase_order.id %}" autocomplete="off" enctype="multipart/form-data">
@@ -212,9 +209,25 @@ optgroup{color :black; }
             <div class="card">
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Edit Purchase Order</h4>
-                </div>  
+                </div> 
+                {% if purchase_order.purchase_org_gst_num %} 
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    <h6 style="color: white;font-size: x-small;">Gst number for this purchase order is-{{purchase_order.purchase_org_gst_num}}.</h6>
+                </div>
+                {% else %}
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    <h6 style="color: white;font-size: x-small;">This purchase order created without gst number.</h6>
+                </div> 
+                {% endif %}
             <div style="margin-top: 4%;">
-
+                <input class="form-control" type="hidden" value="{{purchase_order.purchase_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{purchase_order.purchase_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if purchase_order.purchase_org_gst_state == i.0 %} selected {% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
                 <div class="container">
                     <div class="row">
                         <!-- left -->
@@ -263,14 +276,68 @@ optgroup{color :black; }
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-1" style="margin-bottom: -6%;">
-
-                                    <p>
+                                <div class="col-1 dropdown" style="margin-bottom: -6%;">
+                                    <!-- <p>
                                         <span class="tool" tabindex="1" id="vendor_details">
                                             <span class="material-icons">info</span>
                                         </span>
-                                    </p>
+                                    </p> -->
+                                    <span class="material-icons dropbtn" style="font-size: x-large;margin-left: -14px;">info</span>
+                                    <!-- <button class="dropbtn">Dropdown</button> -->
+                                    <div class="dropdown-content" id="vendor_details">
+                                        <div id="v_question">
+                                            <p style="text-align: center;color: white;">?</p>
+                                        </div>
+                                        <div id="v_info" style="display: none;color: white;margin-top: 2%;margin-right: 3%;margin-bottom: 2%; margin-left: 3%;">
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_name" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Organisation Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_org" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <!-- <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Email:-
+                                                </div>
+                                                <div class="col-md-8" id="v_mail" style="padding-left: 3px;"></div>
+                                            </div> -->
+                                            <!-- <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Number:-
+                                                </div>
+                                                <div class="col-md-8" id="v_num" style="padding-left: 3px;"></div>
+                                            </div> -->
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Address:-
+                                                </div>
+                                                <div class="col-md-8" id="v_addr" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row" style="display: none;">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GST Type:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gst_type" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GSTIN:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gstin" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <a href="#" data-toggle="modal" data-target="#contact_gst_change" style="text-decoration: underline;">Want to change gst?</a>
+                                            </div>
 
+                                        </div>
+                                    <!-- <a href="#">Link 1</a> -->
+                                    </div>
                                 </div>
                             </div>
 
@@ -424,14 +491,14 @@ optgroup{color :black; }
                             </div>
                             {% endif %}
 
-                            <div class="row" style="display: none;">
+                            <!-- <div class="row" style="display: none;">
                                 <div class="col-4">
                                     <label for="order_state"></label>
                                 </div>
                                 <div class="col-8">
                                      <input class="form-control" id="order_state" name='order_state' value="{{purchase_order.delivery_state}}">
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="row">
                                 <div class="col-4">
@@ -463,7 +530,7 @@ optgroup{color :black; }
                                     <label for="purchase_contact">Contact Number</label>
                                 </div>
                                 <div class="col-3 input">
-                                    <select class="form-control" id="country_code" name="country_code">
+                                    <select class="form-control" id="country_code" name="country_code" style="width: 35px;">
                                         <option value="">-------</option>
                                         {% for code in country_code%}
                                         <option value="{{code.1}}" {% if purchase_order.country_code == code.1 %} selected {% endif %}>{{code.1}}</option>
@@ -471,7 +538,7 @@ optgroup{color :black; }
                                     </select>
                                 </div>
                                 <div class="col-4 input" style="padding-left: 2px;">
-                                    <input type="number" class="form-control" id="purchase_contact" value="{{purchase_order.contact_number}}" name="purchase_contact" onfocusout="valid_Phone($(this))">
+                                    <input type="number" class="form-control" id="purchase_contact" value="{{purchase_order.contact_number}}" name="purchase_contact" onfocusout="valid_Phone($(this))" style="width: 250px;margin-left:-78px;">
                                 </div>
 
                             </div>
@@ -480,7 +547,7 @@ optgroup{color :black; }
                                 <div class="col-4">
 
                                 </div>
-                                <div class="col-8" id="error_field" style="color: red;">
+                                <div class="col-8" id="c_error_field" style="color:black;">
                                     
                                 </div>
                             </div>
@@ -493,7 +560,7 @@ optgroup{color :black; }
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 17%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid black;width: 15%;">Account</th>
+                            <th scope="col" style="border:1px solid black;width: 16%;">Account</th>
                             <th scope="col" style="border:1px solid black;width: 9%;">Price</th>
                             <th scope="col" style="border:1px solid black;width: 8%;">Quantity</th>
                             <th scope="col" style="border:1px solid black;width: 16%;">Unit</th>
@@ -544,13 +611,13 @@ optgroup{color :black; }
                                         <label for="Price{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' onfocusout="validation()" id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}})' onfocusout="validation()" id="Quantity{{forloop.counter}}" name="Quantity[]">
+                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]">
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -1722,7 +1789,7 @@ optgroup{color :black; }
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
-                                                            GST Registration Type
+                                                            GST Type
                                                         </td>
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gst_reg_type }}
@@ -1906,7 +1973,7 @@ optgroup{color :black; }
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button>
+                                                <!-- <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -2495,19 +2562,70 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+<!-- vendor gst update -->
+<div class="modal fade" id="contact_gst_change" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form method="post" style="margin:0px" id="vendor_gst_update">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add GST</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="vendor_ids" id="vendor_ids">
+                    <div class="row ">
+                        <div class="col-2">
+                            <label for="vendor_gst_type">GST Type</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <select class="form-control" name="vendor_gst_type" id="vendor_gst_type" required>
+                                <option value="">---------</option>
+                                {% for i in gst_r_type %}
+                                <option value="{{i.0}}">{{i.1}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row single_gst_field">
+                        <div class="col-2">
+                            <label for="vendor_gst">GSTIN</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <input class="form-control" id="vendor_gst" name="vendor_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this))" required>
+                        </div>
+                        <div class="col-6">
+                            <p id="vendor_error_field" style="color: black;"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- <input type="hidden" name="gst_state" id="gst_state"> -->
+                    <!-- <input type="hidden" value="{{org_id}}" name="org_id" id="org_id"> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm " id="vendor_gst_save" onclick="v_gst_save()" style="background-color:#598ebb;">Update</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 
     document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
-    document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
+    // document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
     //document.getElementById("cancelBtn").style.display = 'none';
     document.getElementById("add_more_addresses").readonly = true;
-    document.getElementById("add_more_accounts").readonly = true;
+    // document.getElementById("add_more_accounts").readonly = true;
     
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
         state_compare()
-        validation()
+        // validation()
     });
 </script>
 

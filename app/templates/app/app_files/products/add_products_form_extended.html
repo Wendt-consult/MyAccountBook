@@ -75,9 +75,9 @@ table{
     <div class="col-lg-12" style="padding:0px">
         <div class="card">    
             <form method="post" enctype="multipart/form-data" id="product_form">
-                <div class="card-header card-header-primary" style="margin-top:-5px;margin-left:0px;margin-right:0px;">
+                <div class="card-header card-header-primary" style="margin-left:0px;margin-right:0px;">
                     <h4 class="card-title ">Add Product</h4>
-                </div>  
+                </div>
                 {% if messages %}
 
                     {% for message in messages %}
@@ -190,27 +190,27 @@ table{
                         <div class="row" style="margin-left: 0%;">
                             <table class="table-primary" id="table" style="width: 100%;background-color:#fff;">
                                 <thead style="background-color: black;">
-                                        <th style="width: 21%;border: 1px solid white;color:black;font-weight: normal">Product Type</th>
-                                        <th style="width: 44%;border: 1px solid white;color:black;font-weight: normal"> Product Name</th>
-                                        <th style="border: 1px solid white;width: 20%;color:black;font-weight: normal">Quantity</th>
+                                        <th style="width: 21%;border: 1px solid black;color:black;font-weight: normal">Product Type</th>
+                                        <th style="width: 44%;border: 1px solid black;color:black;font-weight: normal"> Product Name</th>
+                                        <th style="border: 1px solid black;width: 20%;color:black;font-weight: normal">Quantity</th>
 
                                 </thead>
                                 <tbody>
                                     <tr id="row_1">
                                         
-                                        <td style="border: 1px solid white;padding-bottom: 2%;"> 
+                                        <td style="border: 1px solid black;padding-bottom: 2%;"> 
                                             <select class="form-control" name="prod_type" id="product_type_1" onchange="bundle($(this),'#product_name_1',['#quantity_1'])" style="margin-top: 7%;">
                                                 <option value="-1">------</option>
                                                 <option value="0">GOODS</option>
                                                 <option value="1">SERVICES</option>
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
                                             <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-top: 3%;">
                                                 <option value="0">------</option>
                                             </select>
                                         </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
+                                        <td style="border: 1px solid black;padding-bottom: 2%;">
                                             <input id="quantity_1" type="text" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 7%;">
                                         </td>
                                         <td>
@@ -222,7 +222,7 @@ table{
                         </div>
 
                         <div class="row">
-                            <button class="btn btn-link btn-sm" type="button" id="product_addrow" onclick="addRow(0)" style="text-decoration: underline;color: white;">
+                            <button class="btn btn-sm" type="button" id="product_addrow" onclick="addRow(0)" style="border: 1px solid black;text-decoration: underline;">
                                 Add Row
                             </button>
                         </div>
@@ -408,12 +408,12 @@ table{
                 </div>
                 {% if from_expense %}
                     <input type="hidden" name="json_response" value="True">
-                    <div class="card-footer"  style="justify-content: center;margin-left:650px;margin-bottom:-45px;">
+                    <div class="modal-footer"  style="justify-content: center;padding: 6px;margin-bottom: -64px;padding-left: 539px;">
                         <button type="submit" class="btn btn-sm " id="add_product" style="width: 20%;background-color:#598ebb;">Save</button>
                         <button class="btn btn-sm " type="button" id='cancel_product' style="margin-left:5px;background-color: #9095a2;">Cancel</button>
                     </div>
                 {% else %}
-                    <div class="card-footer"  style="justify-content: center;margin-left:550px;margin-bottom:-55px;">
+                    <div class="modal-footer"  style="justify-content: center;padding: 6px;margin-bottom: -64px;padding-left: 539px;">
                         <button class="btn btn-success" id="add_product" style="width: 11%;">Save</button>
                         <a class="btn btn-sm btn-danger" href="{% url 'view_products' 0 %}">Cancel</a>
                     </div>

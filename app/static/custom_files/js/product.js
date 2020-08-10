@@ -302,9 +302,9 @@ function addRow(b) {
     }
     number += 1
     htm = '<tr id="row_'+number+'"></th>';
-    htm += '<td style="border: 1px solid white;padding-bottom:2%;"> <select class="form-control" name="prod_type[]" onchange="bundle($(this),\'#product_name_'+number+'\', [\'#quantity_'+number+'\'])" style="margin-top: 7%;"><option value="">------</option><option value="0">GOODS</option><option value="1">SERVICES</option></td>';
-    htm += '<td style="border: 1px solid white;padding-bottom:2%;"><select class="form-control" id="product_name_'+number+'" name="prod_name[]" style="margin-top: 3%;"><option value="">------</option></td>';
-    htm += '<td style="border: 1px solid white;padding-bottom:2%;"><input id="quantity_'+number+'" type="text" onkeypress="return restrictAlphabets(event), float_value(event,\'quantity_'+number+'\')"  class="form-control" name="qty[]" style="margin-top: 7%;"></td>';
+    htm += '<td style="border: 1px solid black;padding-bottom:2%;"> <select class="form-control bundle_product_type" name="prod_type[]" onchange="bundle($(this),\'#product_name_'+number+'\', [\'#quantity_'+number+'\'])" style="margin-top: 7%;" required><option value="">------</option><option value="0">GOODS</option><option value="1">SERVICES</option></td>';
+    htm += '<td style="border: 1px solid black;padding-bottom:2%;"><select class="form-control bundle_product_name" id="product_name_'+number+'" name="prod_name[]" style="margin-top: 3%;" requried><option value="">------</option></td>';
+    htm += '<td style="border: 1px solid black;padding-bottom:2%;"><input id="quantity_'+number+'" type="text" onkeypress="return restrictAlphabets(event), float_value(event,\'quantity_'+number+'\')"  class="form-control bundle_product_qunatity" name="qty[]" style="margin-top: 7%;" requried></td>';
     htm += '<td style=""><span class="tbclose material-icons" onclick="removeRow('+number+')" id="'+number+'" name="'+number+'" >delete_forever</span></td></tr>';
     $('#table').append(htm);
     
@@ -382,24 +382,35 @@ function bundle(number) {
 /********************************************************************/
 
 function show_bundle(elem){
+    console.log('aaaaaaaaaaa')
     var a = $(elem).val();
     if(a == "2"){
+        console.log('lllllll')
         $(".bundle_dont_show").hide();
         $(".bundle_show").show();
         $("#set_row_span").attr("rowspan",5);
         $("#td1").css('margin-top','8%')
         $('#id_tds').prop("disabled", false);
+        $('.bundle_product_type').prop('required',true)
+        $('.bundle_product_name').prop('required',true)
+        $('.bundle_product_qunatity').prop('required',true)
     }
-    else if(a == '0'){
+    else if(a == '0' || a == '1'){
         $('#id_tds').val('0.0')
         $('#id_tds').prop("disabled", true);
         $(".bundle_dont_show").show();
         $(".bundle_show").hide();
+        $('.bundle_product_type').prop('required',false)
+        $('.bundle_product_name').prop('required',false)
+        $('.bundle_product_qunatity').prop('required',false)
     }
     else{
         $(".bundle_dont_show").show();
         $(".bundle_show").hide();
         $('#id_tds').prop("disabled", false);
+        $('.bundle_product_type').prop('required',false)
+        $('.bundle_product_name').prop('required',false)
+        $('.bundle_product_qunatity').prop('required',false)
     }
 }
 var a = $('#id_product_type :selected').text();
@@ -409,16 +420,25 @@ if(a == "BUNDLE"){
     $("#set_row_span").attr("rowspan",5);
     $("#td1").css('margin-top','8%')
     $('#id_tds').prop("disabled", false);
+    $('.bundle_product_type').prop('required',true)
+    $('.bundle_product_name').prop('required',true)
+    $('.bundle_product_qunatity').prop('required',true)
 }
-else if(a == 'GOODS'){
+else if(a == 'GOODS' || a == 'SERVICES'){
     $('#id_tds').prop("disabled", true);
     $(".bundle_dont_show").show();
     $(".bundle_show").hide();
+    $('.bundle_product_type').prop('required',false)
+    $('.bundle_product_name').prop('required',false)
+    $('.bundle_product_qunatity').prop('required',false)
 }
 else{
     $(".bundle_dont_show").show();
     $(".bundle_show").hide();
     $('#id_tds').prop("disabled", false);
+    $('.bundle_product_type').prop('required',false)
+    $('.bundle_product_name').prop('required',false)
+    $('.bundle_product_qunatity').prop('required',false)
 }
 
 
