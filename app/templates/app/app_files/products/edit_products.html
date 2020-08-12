@@ -183,14 +183,15 @@ width:95px
                                 </div>
 
                                 <div class="row img-wrap" style="box-sizing: content-box; width: 200px;height: 150px;border: 2px solid white;">
+                                    
                                     {% if product.productphotos_set.all|length == 0 %}
                                         <span class="close material-icons" style="display: none;">delete_forever</span>
-                                        <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;">    
+                                        <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;position: absolute;">    
                                     {% else %}
                                         <span class="close material-icons" style="display: none;">delete_forever</span>
-                                        <img id="myImg_preview" class="responsive hide"  style="color: white;width:200px;height:150px;">
+                                        <img id="myImg_preview" class="responsive hide"  style="color: white;width:200px;height:150px;position: absolute;">
                                     {% endif %}
-                                    
+                                   
                                     {% if product.productphotos_set.all|length == 0 %}
                                         {{add_product_form.hidden_img.as_hidden}}
                                     {% else %}
@@ -199,7 +200,7 @@ width:95px
                                     
                                     {% for img in product.productphotos_set.all %}
                                         <span class="image_deleter close material-icons" onclick = "deleteDivs({{product_id}}, {{img.id}})" >delete_forever</span>
-                                        <img id="myImg" class="responsive" src="/media/{{ img.product_image }}" style="color:black;width:200px;height:150px;">
+                                        <img id="myImg" class="responsive" src="/media/{{ img.product_image }}" style="color:black;width:200px;height:150px;position: absolute;">
                                     {% endfor %}
                                 </div>
 

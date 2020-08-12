@@ -163,7 +163,7 @@ def add_creditnote(request, slug ):
         data['org_gst_type'] = None
         org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         data['org_id'] = org.id
         if(len(org_gst_num) == 1):
@@ -171,7 +171,7 @@ def add_creditnote(request, slug ):
             data['is_gst'] = org_gst_num[0].gstin
             data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 data['is_gst'] = default[0].gstin
                 data['org_gst_type'] = default[0].gst_reg_type
@@ -212,10 +212,14 @@ def fetch_product(request, slug):
     # Initialize 
     data = defaultdict()
     products = ProductsModel.objects.get(pk = int(slug))
+    data['is_check_selling'] = 'no'
     data['product'] = products.product_type
     data['unit'] = products.get_unit_display()
     data['price'] =  products.selling_price
     data['desc'] = products.product_description
+    data['selling_tax'] = products.selling_tax
+    if(products.inclusive_tax is not None):
+        data['is_check_selling'] = 'yes'
     return JsonResponse(data)
 
 #=====================================================================================
@@ -657,6 +661,40 @@ class EditCreditnote(View):
                                                 tax=product_tax[i],amount=product_amount[i])
                     creditnote_item.save()   
 
+
+            #******************************************************************************
+            #  Added By Lawrence : Execute On Credit Note Edit
+            #******************************************************************************
+            #
+            credit_note = CreditNode.objects.get(pk = int(kwargs["ins"]))
+
+            igst_amount = list(filter(None, [credit_note.igst_5, credit_note.igst_12, credit_note.igst_18, credit_note.igst_28, credit_note.igst_other]))
+            cgst_amount = list(filter(None, [credit_note.cgst_5, credit_note.cgst_12, credit_note.cgst_18, credit_note.cgst_28, credit_note.cgst_other]))
+            sgst_amount = list(filter(None, [credit_note.sgst_5, credit_note.sgst_12, credit_note.sgst_18, credit_note.sgst_28, credit_note.sgst_other]))
+            
+            igst_amount = [ float(i) for i in igst_amount]
+            cgst_amount = [ float(i) for i in cgst_amount]
+            sgst_amount = [ float(i) for i in sgst_amount]
+
+
+            gst_ledger = gst_ledger_model.GST_Ledger.objects.get(creditnote=credit_note)
+
+            gst_ledger.gst_number = credit_note.creditnote_org_gst_num
+            gst_ledger.cgst_amount = sum(cgst_amount)
+            gst_ledger.sgst_amount = sum(sgst_amount)
+            gst_ledger.igst_amount = sum(igst_amount)
+            gst_ledger.is_creditnote = True
+            gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+
+            gst_ledger.user = credit_note.user
+
+            gst_ledger.save()
+
+            #******************************************************************************
+            # Code End
+            #******************************************************************************
+            #
+
             #
             # PDF CODE
             #
@@ -778,7 +816,7 @@ class CloneCreditnote(View):
         self.data['org_gst_type'] = None
         org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         self.data['org_id'] = org.id
         if(len(org_gst_num) == 1):
@@ -786,7 +824,7 @@ class CloneCreditnote(View):
             self.data['is_gst'] = org_gst_num[0].gstin
             self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 self.data['is_gst'] = default[0].gstin
                 self.data['org_gst_type'] = default[0].gst_reg_type

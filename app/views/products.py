@@ -460,7 +460,7 @@ def bundle(request):
         prod_type = request.GET["prod_type"]
 
         if prod_type != '':
-            products = ProductsModel.objects.filter(user = request.user, product_type = prod_type).values("id","product_name")
+            products = ProductsModel.objects.filter(user = request.user, product_type = prod_type,is_active = True).values("id","product_name")
             
             for product in products:
                 html.append('<option value="{}">{}</option>'.format(product["id"], product["product_name"]))

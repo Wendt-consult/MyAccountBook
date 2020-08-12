@@ -242,6 +242,22 @@ function set_default_tax(elem){
 			$(elem).prop("checked",true);
 		}
 	}
-	
-	
+}
+/********************************************************************/
+// hide and show table active and inactive row
+/********************************************************************/
+
+function show_table_row(category){
+	if(category == 'show_inactive'){
+		$('.org_address_table_active').hide()
+		$('.org_address_table_inactive').show()
+		$('#active_row').show()
+		$('#inactive_row').hide()
+	}else if(category == 'show_active'){
+		$('.org_address_table_active').show()
+		$('.org_address_table_inactive').hide()
+		$('#active_row').hide()
+		$('#inactive_row').show()
+	}
+
 }

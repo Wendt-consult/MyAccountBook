@@ -83,9 +83,9 @@ class Profile(View):
             self.data["address_details"] = cont_posts
             self.data["cont_page"] = cont_page
 
-            # org_address
-            org_address = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
-            paginator = Paginator(org_address, 5)
+            # org_address active
+            org_address_active = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = True)
+            paginator = Paginator(org_address_active, 5)
             page = request.GET.get('page')     
             try:
                 posts = paginator.page(page)
@@ -97,6 +97,10 @@ class Profile(View):
             
             self.data["org_address_details"] = posts
             self.data["page"] = page 
+
+            # org_address inactive
+            org_address_inactive = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = False)
+            self.data["org_address_details_inactive"] = org_address_inactive
         # edit org address
         contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
         c_count = len(contact_address_form)
@@ -663,3 +667,39 @@ def gst_state_code(request):
         return HttpResponse(1)
     elif(len(org_address) == 0):
         return HttpResponse(0)
+
+#===================================================================================================
+# active org address
+#===================================================================================================
+# 
+def org_address_active(request,ins):
+    org_address = users_model.User_Address_Details.objects.get(pk = ins)
+    org_address.is_active = True
+    org_address.save()
+    # check gst number connect with multiple address
+    if(org_address.organisation_tax is not None):
+        check_gst = users_model.User_Address_Details.objects.filter(organisation_tax = org_address.organisation_tax.id)
+        if(len(check_gst) == 1):
+            gst = users_model.User_Tax_Details.objects.filter(pk = int(check_gst[0].organisation_tax.id))
+            if(gst[0].is_active == False):
+                gst[0].is_active = True
+                gst[0].save()
+    return redirect('/profile/', permanent=False)
+
+
+#===================================================================================================
+# inactive org address
+#===================================================================================================
+# 
+
+def org_address_inactive(request,ins):
+    org_address = users_model.User_Address_Details.objects.get(pk = ins)
+    org_address.is_active = False
+    org_address.save()
+    # check gst number connect with multiple address
+    if(org_address.organisation_tax is not None):
+        check_gst = users_model.User_Address_Details.objects.filter(organisation_tax = org_address.organisation_tax.id)
+        if(len(check_gst) == 1):
+            users_model.User_Tax_Details.objects.filter(pk = int(check_gst[0].organisation_tax.id)).update(is_active = False)
+
+    return redirect('/profile/', permanent=False)

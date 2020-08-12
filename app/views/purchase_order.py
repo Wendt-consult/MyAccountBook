@@ -195,7 +195,7 @@ def add_purchase_order(request, slug):
         data['org_gst_type'] = None
         org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         data['org_id'] = org.id
         if(len(org_gst_num) == 1):
@@ -203,7 +203,7 @@ def add_purchase_order(request, slug):
             data['is_gst'] = org_gst_num[0].gstin
             data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 data['is_gst'] = default[0].gstin
                 data['org_gst_type'] = default[0].gst_reg_type
@@ -1009,7 +1009,7 @@ class ClonePurchaseOrder(View):
         self.data['org_gst_type'] = None
         org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         self.data['org_id'] = org.id
         if(len(org_gst_num) == 1):
@@ -1017,7 +1017,7 @@ class ClonePurchaseOrder(View):
             self.data['is_gst'] = org_gst_num[0].gstin
             self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 self.data['is_gst'] = default[0].gstin
                 self.data['org_gst_type'] = default[0].gst_reg_type

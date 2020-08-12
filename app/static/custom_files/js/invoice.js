@@ -968,15 +968,15 @@ function check_gst_status(cat){
     var org_state = $('#single_gst_code option:selected').text()
     if(cat == 'user_side'){
          // org gst not register
-        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
             $('#invoice_table').find('.tax').attr('readonly', true)
             $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
             sub_total()
-            if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
-                alert('tax not apply beacuse customer not select or customer is not gst register')
-            }else{
+            // if(global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+            //     alert('Customer not select or customer is not gst register')
+            // }else{
                 alert('Organization not register GST')
-            }
+            // }
         // org gst register
         }else if($('#org_gst_reg_type').val() == '1' || $('#org_gst_reg_type').val() == '2' ||$('#org_gst_reg_type').val() == '4' ||$('#org_gst_reg_type').val() == '6' || $('#org_gst_reg_type').val() == '7'){
             if(org_state !='' & state != ''){
@@ -1002,7 +1002,7 @@ function check_gst_status(cat){
         }
     }else if(cat == 'vendor_side'){
          // org gst not register
-         if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+         if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
             $('#invoice_table').find('.tax').attr('readonly', true)
             $('#invoice_table').find('.tax,.row_cgst,.row_sgst,.row_igst').val('')
             sub_total()

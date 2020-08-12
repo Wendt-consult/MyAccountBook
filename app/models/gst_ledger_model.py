@@ -9,6 +9,14 @@ from django.dispatch import receiver
 # MULTIPLE COLLECTION METHODS
 #=====================================================================
 class GST_Ledger(models.Model):
+    user = models.ForeignKey(
+        User,
+        db_index = True,
+        null = True,
+        blank = True,
+        on_delete = models.CASCADE,
+    )
+
     is_invoice = models.BooleanField(
         default = False,
         db_index = True,
@@ -58,6 +66,13 @@ class GST_Ledger(models.Model):
         blank = True,
         db_index = True,
         on_delete = models.SET_NULL,
+        null = True,
+    )
+
+    gst_number = models.CharField(
+        max_length=50,
+        db_index = True,
+        blank = True,
         null = True,
     )
 
@@ -119,11 +134,14 @@ def create_gstlegder_invoice(sender, instance, created, **kwargs):
         sgst_amount = float(invoice.sgst) if invoice.sgst !="" else 0
         #print(igst, cgst, sgst)
 
+        gst_ledger.gst_number = invoice.invoice_org_gst_num
         gst_ledger.cgst_amount = cgst_amount
         gst_ledger.sgst_amount = sgst_amount
         gst_ledger.igst_amount = igst_amount
         gst_ledger.is_invoice = True
         gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+
+        gst_ledger.user = invoice.user
 
         gst_ledger.save()
 
@@ -149,12 +167,16 @@ def create_gstlegder_creditnote(sender, instance, created, **kwargs):
         sgst_amount = list(filter(None, [ins.sgst_5, ins.sgst_12, ins.sgst_18, ins.sgst_28, ins.sgst_other]))
         #print(igst, cgst, sgst)
 
+
+        gst_ledger.gst_number = ins.creditnote_org_gst_num
         gst_ledger.cgst_amount = sum([float(i) for i in cgst_amount]) if len(cgst_amount) > 0  else 0
         gst_ledger.sgst_amount = sum([float(i) for i in sgst_amount]) if len(sgst_amount) > 0  else 0
         gst_ledger.igst_amount = sum([float(i) for i in igst_amount]) if len(igst_amount) > 0  else 0
         gst_ledger.is_creditnote = True
         gst_ledger.input_tab = True
         gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+        gst_ledger.user = ins.user
+
         gst_ledger.save()
 
     else:
@@ -183,6 +205,7 @@ def create_gstlegder_expense(sender, instance, created, **kwargs):
         gst_ledger.is_expense = True
         gst_ledger.input_tab = True
         gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+        gst_ledger.user = ins.user
         gst_ledger.save()
 
     else:

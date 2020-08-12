@@ -125,7 +125,7 @@
 <!-- Add Composite GST Settings -->
 <div class="modal " tabindex="-1" role="dialog" id="add_composite_gst_settings_modal" style="border-top: none;left: 20%;top:200px;width: 500">
     <div class="modal-dialog" role="document" style="border-top: none;">
-        <form method="post" action="{% url 'gst_composite_setting' %}">
+        <form method="post" action="{% url 'gst_composite_setting' %}" autocomplete="off">
 			<div class="modal-content" style="background-color:currentcolor">            
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">
@@ -175,7 +175,7 @@
 
 <div class="modal " tabindex="-1" role="dialog" id="edit_composite_gst_settings_modal_{{forloop.counter}}" style="border-top: none;left: 20%;top:200px;width: 500">
     <div class="modal-dialog" role="document" style="border-top: none;">
-        <form method="post" action="{% url 'edit_composite_gst_settings' %}">
+        <form method="post" action="{% url 'edit_composite_gst_settings' %}" autocomplete="off">
 			<div class="modal-content" style="background-color:currentcolor">            
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">
@@ -224,7 +224,7 @@
 <!-- Add GST Settings -->
 <div class="modal " tabindex="-1" role="dialog" id="add_gst_settings_modal" style="border-top: none;left: 20%;top:200px;width: 500">
     <div class="modal-dialog" role="document" style="border-top: none;">
-        <form method="post" action="{% url 'gst_settings' %}">
+        <form method="post" action="{% url 'gst_settings' %}" autocomplete="off">
 			<div class="modal-content" style="background-color:currentcolor">            
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">
@@ -275,7 +275,7 @@
 
 <div class="modal " tabindex="-1" role="dialog" id="edit_gst_settings_modal_{{forloop.counter}}" style="border-top: none;left: 20%;top:200px;width: 500">
     <div class="modal-dialog" role="document" style="border-top: none;">
-        <form method="post" action="{% url 'edit_gst_settings' %}">
+        <form method="post" action="{% url 'edit_gst_settings' %}" autocomplete="off">
 			<div class="modal-content" style="background-color:currentcolor">            
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">

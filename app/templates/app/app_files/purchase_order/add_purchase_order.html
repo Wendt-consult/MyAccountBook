@@ -497,16 +497,16 @@ optgroup{color :black; }
                                 <div class="col-4">
                                     <label for="purchase_contact">Contact Number</label>
                                 </div>
-                                <div class="col-3 input">
-                                    <select class="form-control" id="country_code" name="country_code" style="width: 35px;">
+                                <div class="col-sm-2 input">
+                                    <select class="form-control" id="country_code" name="country_code" >
                                         <option value="">-------</option>
                                         {% for code in country_code%}
                                         <option value="{{code.1}}" {% if code.1 == '+91' %} selected {% endif %}>{{code.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-4 input" style="padding-left: 2px;">
-                                    <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))"  style="width: 250px;margin-left:-78px;">
+                                <div class="col-md-5 input" style="padding-left: 0px;">
+                                    <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))"  >
                                 </div>
 
                             </div>

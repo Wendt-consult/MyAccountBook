@@ -572,6 +572,11 @@ class User_Tax_Details(models.Model):
         default=False,
     )
 
+    is_active = models.BooleanField(
+        db_index = True,
+        default = True,
+        choices = user_constants.IS_TRUE,
+    )
     
     class META:
         verbose_name_plural = 'user_tax_details_tbl'
@@ -734,6 +739,12 @@ class User_Address_Details(models.Model):
         db_index = True,
         null = True,
     )    
+
+    is_active = models.BooleanField(
+        db_index = True,
+        default = True,
+        choices = user_constants.IS_TRUE,
+    )
 
     def __str__(self):
         return str(self.flat_no)+", "+str(self.street)+", "+str(self.city)

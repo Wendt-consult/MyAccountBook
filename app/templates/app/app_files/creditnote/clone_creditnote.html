@@ -223,7 +223,7 @@ optgroup{color :black; }
                                 <div class="col-7">
                                     <input type="email" class="form-control" id="email" name="Email_Address" {% if creditnote_contact_status2 == 'YES' %} value="{{credit_note.email|default_if_none:''}}" {% endif %} multiple >
                                     <div>
-                                        <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;"><font>Add CC</font></a>
+                                        <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;color:black;"><font>Add CC</font></a>
                                     </div>
                                 </div>
                             </div>
@@ -238,7 +238,7 @@ optgroup{color :black; }
                                             <input type="email" class="form-control ccemail" id="ccemail" {% if creditnote_contact_status2 == 'YES' %} value="{{credit_note.cc_email|default_if_none:''}}" {% endif %} name="CC_Email_Address" multiple>
                                         </div>
                                         <div class="col-1" style="padding-left: 2px;">
-                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;">X</a>
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;color:red;">X</a>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +254,7 @@ optgroup{color :black; }
                                             <input type="email" class="form-control ccemail" id="ccemail" name="CC_Email_Address" multiple>
                                         </div>
                                         <div class="col-1" style="padding-left: 2px;">
-                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;color: black;">X</a>
+                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;color:red;">X</a>
                                         </div>
                                     </div>
                                 </div>

@@ -81,7 +81,7 @@ width:95px;
                 <div class="card-header card-header-primary">
                     <h4 class="card-title ">Clone Product</h4>
                 </div>  
-                <div class="card-body" style="margin-left: 13px;margin-bottom: 10px;">
+                <div class="card-body" style="margin-left: 13px;margin-bottom: 10px;margin-top: 2%;">
                     {% csrf_token %}
                     
                     <div class="container">
@@ -170,15 +170,15 @@ width:95px;
                                 <div class="row img-wrap" style="box-sizing: content-box; width: 200px;height: 150px;border: 2px solid black;">
                                     {% if product_data.productphotos_set.all|length == 0 %}
                                         <span class="close material-icons" style="display: none;" >delete_forever</span>
-                                        <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;">    
+                                        <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;position: absolute;">    
                                     {% else %}
                                         <span class="close material-icons" style="display: none;">delete_forever</span>
-                                        <img id="myImg_preview" class="responsive hide"  style="color: white;width:200px;height:150px;">
+                                        <img id="myImg_preview" class="responsive hide"  style="color: white;width:200px;height:150px;position: absolute;">
                                     {% endif %}
                                     
                                     {% for img in product_data.productphotos_set.all %}
                                     <span class="close material-icons">delete_forever</span>
-                                        <img id="myImgclone" class="responsive" src="/media/{{ img.product_image }}" style="color: black;width:200px;height:150px;">
+                                        <img id="myImgclone" class="responsive" src="/media/{{ img.product_image }}" style="color: black;width:200px;height:150px;position: absolute;">
                                     {% endfor %}
                                 </div>
 

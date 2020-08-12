@@ -193,7 +193,7 @@ def add_invoice(request, slug):
         data['org_gst_type'] = None
         org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         data['org_id'] = org.id
         if(len(org_gst_num) == 1):
@@ -201,7 +201,7 @@ def add_invoice(request, slug):
             data['is_gst'] = org_gst_num[0].gstin
             data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 data['is_gst'] = default[0].gstin
                 data['org_gst_type'] = default[0].gst_reg_type
@@ -760,10 +760,35 @@ class EditInvoice(View):
             else:
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(invoice_recurring_start_date = None,invoice_recurring_end_date = None,
                                             invoice_recurring_repeat = None,invoice_recurring_frequency = None,invoice_recurring_advance = None)
+
+
+            #******************************************************************************
+            #  Added By Lawrence : Execute On Invoice Edit
+            #******************************************************************************
+            #
+            invoice = InvoiceModel.objects.get(pk = int(kwargs["ins"]))
+
+            igst_amount = float(invoice.igst) if invoice.igst !="" else 0
+            cgst_amount = float(invoice.cgst) if invoice.cgst !="" else 0
+            sgst_amount = float(invoice.sgst) if invoice.sgst !="" else 0
             
-            # igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
-            # cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
-            # sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
+            gst_ledger = gst_ledger_model.GST_Ledger.objects.get(invoice=invoice)
+
+            gst_ledger.gst_number = invoice.invoice_org_gst_num
+            gst_ledger.cgst_amount = cgst_amount
+            gst_ledger.sgst_amount = sgst_amount
+            gst_ledger.igst_amount = igst_amount
+            gst_ledger.is_invoice = True
+            gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+
+            gst_ledger.user = invoice.user
+
+            gst_ledger.save()
+
+            #******************************************************************************
+            # Code End
+            #******************************************************************************
+            #
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -1005,7 +1030,7 @@ class CloneInvoice(View):
         self.data['is_gst'] = 'no'
         self.data['is_signle_gst']  = 'no'
         self.data['org_gst_type'] = None
-        org = Organisations.objects.get(user = request.user)
+        org = Organisations.objects.get(user = request.user,is_active = True)
 
         org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
 
@@ -1015,7 +1040,7 @@ class CloneInvoice(View):
             self.data['is_gst'] = org_gst_num[0].gstin
             self.data['org_gst_type'] = org_gst_num[0].gst_reg_type
         elif(len(org_gst_num) > 0):
-            default = org_gst_num.filter(default_gstin = True)
+            default = org_gst_num.filter(default_gstin = True,is_active = True)
             if(len(default) != 0):
                 self.data['is_gst'] = default[0].gstin
                 self.data['org_gst_type'] = default[0].gst_reg_type

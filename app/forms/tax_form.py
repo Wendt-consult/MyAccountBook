@@ -69,7 +69,7 @@ class OrganisationGSTSettingsForm(ModelForm):
 
         widgets = {
             'taxname' : TextInput(attrs = {'class':'form-control input-sm',}), 
-            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)',}),  
+            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)', 'required':True}),  
         }   
 #
 #
@@ -81,5 +81,5 @@ class OrganisationCompositeGSTSettingsForm(ModelForm):
 
         widgets = {
             'taxname' : TextInput(attrs = {'class':'form-control input-sm',}), 
-            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)',}),  
+            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)','required':True}),  
         }   

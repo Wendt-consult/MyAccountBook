@@ -213,6 +213,11 @@ class GSTLedgerReportsView(View):
         self.data["gst_reports_show"] = False
         self.data["pdf_btn"] = False
 
+        #self.data["gst_numbers_list"] = gst_ledger_model.GST_Ledger.objects.filter(user = request.user).distinct('gst_number').values_list('gst_number')
+
+        #print(self.data["gst_numbers_list"])
+
+
         if save_btn:
 
             self.data["gst_reports_show"] = True

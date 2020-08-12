@@ -181,19 +181,19 @@
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>{{row.created_on|date:'d M,Y'}}</center></td>
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
-                            <center>{{row.invoice.invoice_customer}}</center>
+                            <center>{{row.invoice.invoice_customer| truncatechars:25}}</center>
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                            <center>{{row.creditnote.contact_name}}</center>
+                            <center>{{row.creditnote.contact_name| truncatechars:25}}</center>
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                            <center>{{row.purchase_order.vendor}}</center>
+                            <center>{{row.purchase_order.vendor| truncatechars:25}}</center>
                             {% endif %}
 
                             {% if row.is_expense %} 
-                            <center>{{row.expense.exp_number}}</center>
+                            <center>{{row.expense.exp_number| truncatechars:25}}</center>
                             {% endif %}
                         </td>
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">

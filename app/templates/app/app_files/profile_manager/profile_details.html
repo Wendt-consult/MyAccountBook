@@ -135,9 +135,14 @@ td{padding:5px;}
             <div class="card-header card-header-primary">
                 <h4 class="card-title">
                     Address Details
-                    <span data-toggle="modal" data-target="#accounts_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
-                        <i class="material-icons" style="font-size:20px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">add</i>
+                    <div class="pull-right">
+                        <button class="btn btn-sm mr-2" id="inactive_row" onclick="show_table_row('show_inactive')" style="font-size:10px; color: #000000; background: #EEEEEE;margin-top: 0%;">Show inactive address</button>
+                        <button class="btn btn-sm mr-2" id="active_row" onclick="show_table_row('show_active')" style="display: none;font-size:10px; color: #000000; background: #EEEEEE;margin-top: 0%;">Show active address</button>
+                        <span data-toggle="modal" data-target="#accounts_add_modal" title="Add New" style="margin-right:65px; cursor:pointer">
+                            <button class="btn  mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
                         </span>
+                    </div>
+                    
                         <!-- <span  onclick="del_all_entries(1)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
                         <i class="material-icons" style="font-size:20px; color: #FF0000; background:#FFFFFF; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">delete_forever</i> -->
                     </span>
@@ -160,7 +165,7 @@ td{padding:5px;}
                             <td class="text-center" style="border: 1px solid black;">Action</td>                
                         </tr> 
                         {% for i in org_address_details %}
-                        <tr id="table-{{forloop.counter}}" style="font-size:12px">
+                        <tr class="org_address_table_active" id="table-{{forloop.counter}}" style="font-size:12px">
                                                    
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
@@ -214,21 +219,21 @@ td{padding:5px;}
                             </td>
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">                                                                
                                 <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
-                                <i title="Delete" class="material-icons" data-toggle="modal" data-target="#del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
+                                <i title="Make Inactive" class="material-icons" data-toggle="modal" data-target="#org_inactive{{i.id}}" style="cursor:pointer; font-size:18px; color:grey; margin-left:5px; position:relative; vertical-align:middle;">clear</i> 
                             
-							                                <!-- delete model popup -->
-                                <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+							                                <!-- inactive modal model popup -->
+                                <div class="modal " tabindex="-1" role="dialog" id="org_inactive{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                     <div class="modal-dialog" role="document" style="border-top: none;">
                                         <div class="modal-content" style="border-top: none;background:white;position:bottom">
                                             <div class="modal-header" style="border-bottom: none;padding:5px;">
                                                 
                                             </div>
                                             <div class="modal-body" style="border-top: none;position: bottom;">
-                                                <h4 align="center"><b><font color="black">Are you sure you want to delete {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Deleting address will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center"><b><font color="black">Are you sure you want to inactive {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Inactive address will not affect reports or historical transactions. </font></b></h4>
                                             </div>
                                             
                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                <center><button onclick="delete_address({{i.id}})" class="btn  mr-2" style="align-content: left;margin-left: 150px;background-color: #598ebb;">Yes</button></center>
+                                                <center><a class="btn mr-2" href="{% url 'org_address_inactive' i.id %}" style="align-content: left;margin-left: 150px;background-color: #598ebb;">Yes</a></center>
                                                 <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
                                         </div>
@@ -237,9 +242,71 @@ td{padding:5px;}
                             </td>                                   
                         </tr>  
                         {% endfor %}
+
+                         <!-- for inactive org address -->
+                         {% for i in org_address_details_inactive %}
+                         <tr class="org_address_table_inactive" id="table_inactive-{{forloop.counter}}" style="display: none;font-size:12px;">
+                                                    
+                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
+                             </td>  
+                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                 {% if i.flat_no %}
+                                 {{ i.flat_no|truncatechars:15 }},
+                                 {% endif %}
+                                 {% if i.street %}
+                                 {{ i.street|truncatechars:15 }},
+                                 {% endif %}
+                                 {% if i.city %}
+                                 {{ i.city|truncatechars:15 }},
+                                 {% endif %}
+                                 {% if i.pincode %}
+                                 {{ i.pincode|default_if_none:"" }},
+                                 {% endif %}
+                                 {% if i.state %}
+                                 {{ i.get_state_display|default_if_none:""|truncatechars:20 }},
+                                 {% endif %}
+                                 {% if i.country %}
+                                 {{ i.get_country_display|default_if_none:""|truncatechars:20 }}
+                                 {% endif %}
+                             </td>                
+                             <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">                                                                    
+                                 {{ i.get_is_shipping_address_display  }}
+                             </td>
+                             <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">
+                                 {{ i.get_is_billing_address_display }}
+                             </td>
+                             <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">
+                                 {{ i.organisation_tax.gstin|default_if_none:"" }}
+                             </td>
+                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">                                                                
+                                 <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
+                                 <i title="Make Active" class="material-icons" data-toggle="modal" data-target="#org_active{{i.id}}" style="cursor:pointer; font-size:18px; color: lightskyblue; margin-left:5px; position:relative; vertical-align:middle;">done</i>
+                             
+                                                             <!-- active model popup -->
+                                 <div class="modal " tabindex="-1" role="dialog" id="org_active{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                     <div class="modal-dialog" role="document" style="border-top: none;">
+                                         <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                             <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                 
+                                             </div>
+                                             <div class="modal-body" style="border-top: none;position: bottom;">
+                                                 <h4 align="center"><b><font color="black">Are you sure you want to active {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Active address will not affect reports or historical transactions. </font></b></h4>
+                                             </div>
+                                             
+                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                 <center><a class="btn mr-2" href="{% url 'org_address_active' i.id %}" style="align-content: left;margin-left: 150px;background-color: #598ebb;">Yes</a></center>
+                                                 <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </td>                                   
+                         </tr>  
+                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="pagination" style="float: right;">
+                <!-- <div class="pagination" style="float: right;">
                     <span class="step-links">
                         {% if org_address_details.has_previous %}
                             <a href="?page=1">&laquo; First</a>
@@ -255,7 +322,7 @@ td{padding:5px;}
                             <a href="?page={{ org_address_details.paginator.num_pages }}">Last &raquo;</a>
                         {% endif %}
                     </span>
-                </div>
+                </div> -->
             </div>            
         </div>
     </div>
@@ -267,9 +334,9 @@ td{padding:5px;}
         <div class="card">
             <div class="card-header card-header-primary" style="padding-bottom:10px">
                 <h5 class="card-title">
-                    Organisation Contact Details
+                    Contact Details
                     <span data-toggle="modal" data-target="#org_contact_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
-                        <i class="material-icons" style="font-size:20px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">add</i>
+                        <button class="btn  mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
                     </span>
                     <!-- <span onclick="del_all_entries(0)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
                         <i class="material-icons" style="font-size:20px; color: #FF0000; background:#FFFFFF; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">delete_forever</i>
@@ -294,25 +361,25 @@ td{padding:5px;}
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                 
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.phone|default_if_none:""|safe }}
+                                    {{ i.phone|default_if_none:""|safe|truncatechars:20}}
                                 </td>                  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.email|default_if_none:""|safe }}
+                                    {{ i.email|default_if_none:""|safe|truncatechars:20 }}
                                 </td>  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.website|default_if_none:""|safe }}
+                                    {{ i.website|default_if_none:""|safe|truncatechars:20 }}
                                 </td>               
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.fax|default_if_none:""|safe }}
+                                    {{ i.fax|default_if_none:""|safe|truncatechars:20 }}
                                 </td>   
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.skype|default_if_none:""|safe }}
+                                    {{ i.skype|default_if_none:""|safe|truncatechars:20 }}
                                 </td>      
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.linkedin|default_if_none:""|safe }}
+                                    {{ i.linkedin|default_if_none:""|safe|truncatechars:20 }}
                                 </td>  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.facebook|default_if_none:""|safe }}
+                                    {{ i.facebook|default_if_none:""|safe|truncatechars:20 }}
                                 </td> 
                                 <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
                                     <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" data-toggle="modal"  data-target="#editAccountModal-{{forloop.counter}}">create</i>
@@ -326,7 +393,7 @@ td{padding:5px;}
                                                 
                                             </div>
                                             <div class="modal-body" style="border-top: none;position: bottom;">
-                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting address will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting contact details will not affect reports or historical transactions. </font></b></h4>
                                             </div>
                                             
                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
@@ -341,7 +408,7 @@ td{padding:5px;}
                         {% endfor %}    
                     </tbody>
                 </table>
-                <div class="pagination" style="float: right;">
+                <!-- <div class="pagination" style="float: right;">
                     <span class="step-links">
                         {% if address_details.has_previous %}
                             <a href="?page=1">&laquo; First</a>
@@ -357,7 +424,7 @@ td{padding:5px;}
                             <a href="?page={{ address_details.paginator.num_pages }}">Last &raquo;</a>
                         {% endif %}
                     </span>
-                </div>
+                </div> -->
             </div>            
         </div>
     </div>
