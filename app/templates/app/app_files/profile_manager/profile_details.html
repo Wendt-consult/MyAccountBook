@@ -219,9 +219,9 @@ td{padding:5px;}
                             </td>
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">                                                                
                                 <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
-                                <i title="Make Inactive" class="material-icons" data-toggle="modal" data-target="#org_inactive{{i.id}}" style="cursor:pointer; font-size:18px; color:grey; margin-left:5px; position:relative; vertical-align:middle;">clear</i> 
-                            
-							                                <!-- inactive modal model popup -->
+                            <i title="Make Inactive" class="material-icons" onclick="org_address_check({{i.id}},'{{i.state}}')"  style="cursor:pointer; font-size:18px; color:grey; margin-left:5px; position:relative; vertical-align:middle;">clear</i> 
+                            <!-- onclick="org_address_check({{i.id}},'{{i.state}}')" -->
+							                                <!-- inactive model popup -->
                                 <div class="modal " tabindex="-1" role="dialog" id="org_inactive{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                     <div class="modal-dialog" role="document" style="border-top: none;">
                                         <div class="modal-content" style="border-top: none;background:white;position:bottom">
@@ -229,11 +229,14 @@ td{padding:5px;}
                                                 
                                             </div>
                                             <div class="modal-body" style="border-top: none;position: bottom;">
-                                                <h4 align="center"><b><font color="black">Are you sure you want to inactive {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Inactive address will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center" id="msg_text1"><b><font color="black">Are you sure you want to inactive {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Inactive address will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center" id="msg_text2" style="display: none;"><b><font color="black">In this {{i.get_state_display}} state, It's your last reamining address if you make inactive then this address gst number also inactive</font></b></h4>
                                             </div>
                                             
-                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                <center><a class="btn mr-2" href="{% url 'org_address_inactive' i.id %}" style="align-content: left;margin-left: 150px;background-color: #598ebb;">Yes</a></center>
+                                            <div class="modal-footer" style="text-align: center;justify-content: center; border-top: none;padding:6px;">
+                                                <a class="btn mr-2" href="{% url 'org_address_inactive' i.id %}" style="background-color: #598ebb;">Yes</a>
+                                                <button class="btn mr-2" id="org_add_new" onclick="show_hide_address_modal({{i.id}})" title="Add New" style="display: none;background-color: #598ebb;">Add new address</button>
+                                                <!-- data-toggle="modal" data-target="#accounts_add_modal" -->
                                                 <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
                                         </div>

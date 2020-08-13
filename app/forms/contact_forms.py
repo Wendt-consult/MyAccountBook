@@ -96,6 +96,27 @@ class EditAddressForm(ModelForm):
             'address_tag' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
         }
 
+# class EditOrgAddressForm(ModelForm):
+
+#     class Meta:
+#         model = users_model.User_Address_Details
+        
+#         fields = ('default_address', 'address_tag','contact_person', 'flat_no', 'street', 'city', 'state', 'country', 'pincode', 'is_billing_address', 'is_shipping_address')
+        
+#         widgets = {
+#             'contact_person' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
+#             'flat_no' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
+#             'street' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
+#             'city' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
+#             'state' : Select(attrs={'class':'form-control input-sm state_select','style':'width:50%;'}, choices = country_list.STATE_LIST_CHOICES),
+#             'country' : Select(attrs={'class':'form-control input-sm','style':'width:50%;'}, choices = country_list.COUNTRIES_LIST_CHOICES),
+#             'pincode' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;','onkeypress':'return restrictAlphabets(event)',}),
+#             'is_shipping_address' : Select(attrs={'class':'form-control input-sm shipping_address hide','style':'width:40%;display:none;', 'required':'false',}),
+#             'is_billing_address' : Select(attrs={'class':'form-control input-sm billing_address hide','style':'width:40%;display:none;', 'required':'false'}),
+#             'default_address' : Select(attrs={'class':'form-control input-sm default_address','style':'width:40%;', 'hidden':'true'}),
+#             'address_tag' : TextInput(attrs={'class':'form-control input-sm','style':'width:50%;'}),
+#         }
+
 #
 # ACCOUNTS FORM
 #

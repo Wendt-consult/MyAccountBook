@@ -261,3 +261,33 @@ function show_table_row(category){
 	}
 
 }
+
+/********************************************************************/
+// ajax for check state address is one or multiple
+/********************************************************************/
+
+function org_address_check(addres_ids,address_state){
+	event.preventDefault()
+	$.post("/profile/org_address_check/",{'addres_ids':addres_ids,'address_state':address_state,'csrfmiddlewaretoken':csrf_token},function(data){
+		if(data == 1){
+			$('#msg_text1').hide()
+			$('#msg_text2').show()
+			$('#org_add_new').show()
+			$('#org_inactive'+addres_ids).modal('show')
+		}else{
+			$('#msg_text1').show()
+			$('#msg_text2').hide()
+			$('#org_add_new').hide()
+			$('#org_inactive'+addres_ids).modal('show')
+		}
+	});
+}
+
+function show_hide_address_modal(modal_ids){
+	$('#org_inactive'+modal_ids).modal('hide')
+	$('#accounts_add_modal').modal('show')
+	// nsg and button
+	$('#msg_text1').show()
+	$('#msg_text2').hide()
+	$('#org_add_new').hide()
+}

@@ -571,13 +571,13 @@ class GSTConfigurationView(View):
     #
     def get(self, request): 
         organisation_form = users_model.Organisations.objects.get(user = request.user)
-        org_address = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
+        org_address = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active=True)
         self.data["gst_form"] = tax_form.OrganisationCompositTaxForm()
         self.data["org_address_details"] = org_address
         self.data["gst_state_code"] = country_list.GST_STATE_CODE
 
         # edit org address
-        contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
+        contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active=True)
         c_count = len(contact_address_form)
 
         self.data["c_count"] = [i for i in range(c_count)]
@@ -662,10 +662,26 @@ def gst_state_code(request):
     state = request.POST.get("state")
     org_id = request.POST.get("org_id")
     org = users_model.Organisations.objects.get(pk = int(org_id))
-    org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = org,state = state)
+    org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = org,state = state,is_active=True)
     if(len(org_address) > 0):
         return HttpResponse(1)
     elif(len(org_address) == 0):
+        return HttpResponse(0)
+
+#===================================================================================================
+# check org address is the least address
+#===================================================================================================
+# 
+def org_address_check(request):
+    ids = request.POST.get("addres_ids")
+    state = request.POST.get("address_state")
+    org = users_model.User_Address_Details.objects.get(pk = int(ids))
+    org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = org.organisation,state = state)
+    # check 
+    active_address = org_address.filter(is_active = True)
+    if(len(active_address) == 1):
+        return HttpResponse(1)
+    else:
         return HttpResponse(0)
 
 #===================================================================================================
@@ -678,12 +694,12 @@ def org_address_active(request,ins):
     org_address.save()
     # check gst number connect with multiple address
     if(org_address.organisation_tax is not None):
-        check_gst = users_model.User_Address_Details.objects.filter(organisation_tax = org_address.organisation_tax.id)
-        if(len(check_gst) == 1):
-            gst = users_model.User_Tax_Details.objects.filter(pk = int(check_gst[0].organisation_tax.id))
-            if(gst[0].is_active == False):
-                gst[0].is_active = True
-                gst[0].save()
+        # check_gst = users_model.User_Address_Details.objects.filter(organisation_tax = org_address.organisation_tax.id)
+        # if(len(check_gst) == 1):
+            gst = users_model.User_Tax_Details.objects.get(pk = int(org_address.organisation_tax.id))
+            if(gst.is_active == False):
+                gst.is_active = True
+                gst.save()
     return redirect('/profile/', permanent=False)
 
 
@@ -693,13 +709,19 @@ def org_address_active(request,ins):
 # 
 
 def org_address_inactive(request,ins):
-    org_address = users_model.User_Address_Details.objects.get(pk = ins)
-    org_address.is_active = False
-    org_address.save()
-    # check gst number connect with multiple address
-    if(org_address.organisation_tax is not None):
-        check_gst = users_model.User_Address_Details.objects.filter(organisation_tax = org_address.organisation_tax.id)
-        if(len(check_gst) == 1):
-            users_model.User_Tax_Details.objects.filter(pk = int(check_gst[0].organisation_tax.id)).update(is_active = False)
+    org = users_model.User_Address_Details.objects.get(pk = ins)
+    org_address = users_model.User_Address_Details.objects.filter(is_user = True,is_organisation = True, organisation = org.organisation,state = org.state)
+
+    # check 
+    active_address = org_address.filter(is_active = True)
+    if(len(active_address) == 1):
+        if(org.id == active_address[0].id):
+            org.is_active = False
+            org.save()
+            if(org.organisation_tax is not None):
+                users_model.User_Tax_Details.objects.filter(pk = int(org.organisation_tax.id)).update(is_active = False)
+    else:
+        org.is_active = False
+        org.save()
 
     return redirect('/profile/', permanent=False)

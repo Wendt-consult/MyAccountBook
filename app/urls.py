@@ -203,6 +203,7 @@ urlpatterns += [
     path('profile/gst_composite_setting/', never_cache(login_required(profile.gst_composite_setting)), name = 'gst_composite_setting'),
     path('profile/org_address_active/<int:ins>/', never_cache(login_required(profile.org_address_active)), name = 'org_address_active'),
     path('profile/org_address_inactive/<int:ins>/', never_cache(login_required(profile.org_address_inactive)), name = 'org_address_inactive'),
+    path('profile/org_address_check/', never_cache(login_required(profile.org_address_check)), name = 'org_address_check'),
 ]
 
 # Purchase Order
