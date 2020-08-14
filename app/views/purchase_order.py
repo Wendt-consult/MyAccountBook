@@ -116,7 +116,7 @@ def add_purchase_order(request, slug):
     data["tax_form"] = TaxForm()
     data["other_details_form"] = OtherDetailsForm()
     data["social_form"] = ContactsExtraForm()
-    data["new_address_form"] = EditAddressForm()
+    data["new_address_form"] = EditOrgAddressForm()
 
     # gst form
     data["gst_form"] = OrganisationTaxForm()
@@ -256,7 +256,7 @@ def org_contact_address(request, slug):
 
     if(slug == 'org'):
         organization = users_model.Organisations.objects.get(user = request.user)
-        address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(organisation = organization) & Q(is_organisation = True) & Q(is_shipping_address = True)).values('address_tag','contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode','organisation_tax')
+        address = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(organisation = organization) & Q(is_organisation = True) & Q(is_active = True)).values('address_tag','contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode','organisation_tax')
         data['ids'] = organization.id
 
         for i in range(0,len(address)):
@@ -658,7 +658,7 @@ class EditPurchaseOrder(View):
     data["tax_form"] = TaxForm()
     data["other_details_form"] = OtherDetailsForm()
     data["social_form"] = ContactsExtraForm()
-    data["new_address_form"] = EditAddressForm()
+    data["new_address_form"] = EditOrgAddressForm()
 
     # FORMSETS    
     data["address_formset"] = AddressFormset
@@ -908,7 +908,7 @@ class ClonePurchaseOrder(View):
     data["tax_form"] = TaxForm()
     data["other_details_form"] = OtherDetailsForm()
     data["social_form"] = ContactsExtraForm()
-    data["new_address_form"] = EditAddressForm()
+    data["new_address_form"] = EditOrgAddressForm()
 
     # FORMSETS    
     data["address_formset"] = AddressFormset

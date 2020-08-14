@@ -149,14 +149,13 @@ class ProductsModel(models.Model):
 
     tds = models.CharField(
         default = 0.0,
-        max_length=5,
+        max_length=3,
         db_index = True,
         null=True,
         blank=True,
     )
 
     unit = models.IntegerField(
-        default = 0,
         db_index = True,
         blank = True,
         null = True,

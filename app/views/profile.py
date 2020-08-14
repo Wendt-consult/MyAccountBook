@@ -66,7 +66,7 @@ class Profile(View):
         #
         # Address Details
 
-        self.data["org_address_form"] = contact_forms.EditAddressForm()
+        self.data["org_address_form"] = contact_forms.EditOrgAddressForm()
         self.data["gst_form"] = tax_form.OrganisationTaxForm()
 
         if organisation_form is not None:
@@ -102,7 +102,7 @@ class Profile(View):
             org_address_inactive = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = False)
             self.data["org_address_details_inactive"] = org_address_inactive
         # edit org address
-        contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
+        contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active=True)
         c_count = len(contact_address_form)
 
         # self.data["contact_addresses"] = contact_address_form
@@ -113,7 +113,7 @@ class Profile(View):
         self.data["edit_gst_form"] = []
         
         for i in range(c_count):
-            self.data["contact_address_form"].append(contact_forms.EditAddressForm(instance = contact_address_form[i], prefix = 'form_{}'.format(contact_address_form[i].id)))
+            self.data["contact_address_form"].append(contact_forms.EditOrgAddressForm(instance = contact_address_form[i], prefix = 'form_{}'.format(contact_address_form[i].id)))
 
         #   edit org account
         org_account = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
@@ -171,7 +171,7 @@ def add_organisation_addres(request):
             # pass
             return redirect('/unauthorized/', permanent = False)
 
-        address_form = contact_forms.EditAddressForm(request.POST)
+        address_form = contact_forms.EditOrgAddressForm(request.POST)
         # gst_form = tax_form.OrganisationTaxForm(request.POST)
 
         # gst = None
@@ -185,6 +185,7 @@ def add_organisation_addres(request):
         #         gst.is_organisation = True            
         #         gst.save()
         gst_id = None
+        check_gst = request.POST.get('check_gst')
         # check same state gst register
         gst = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = org_ins) & Q(state=address_form.data["state"]))
         if(len(gst) > 0 and gst[0].organisation_tax is not None):
@@ -197,7 +198,11 @@ def add_organisation_addres(request):
             ins.is_user = True
             ins.organisation = org_ins
             ins.is_organisation = True
-            ins.organisation_tax = gst_id
+            if(check_gst == 'yes'):
+                ins.organisation_tax = None
+                users_model.User_Address_Details.objects.filter(Q(organisation = org_ins) & Q(state=address_form.data["state"])).update(organisation_tax=None)
+            elif(check_gst == 'no'):
+                ins.organisation_tax = gst_id
             ins.save()
 
     return redirect("/profile/",permanent = False)
@@ -237,8 +242,9 @@ def edit_org_address_details_form(request, ins):
         #         gst.is_organisation = True            
         #         gst.save()
 
-        address_form = contact_forms.EditAddressForm(request.POST, prefix='form_'+prefix, instance = obj)
+        address_form = contact_forms.EditOrgAddressForm(request.POST, prefix='form_'+prefix, instance = obj)
         gst_id = None
+        check_gst = request.POST.get('check_gst')
         # check same state gst register
         gst = users_model.User_Address_Details.objects.filter(Q(is_user = True) & Q(is_organisation = True) & Q(organisation = obj.organisation) & Q(state=address_form.data['form_'+prefix+"-state"]))
         if(len(gst) > 0 and gst[0].organisation_tax is not None):
@@ -252,7 +258,11 @@ def edit_org_address_details_form(request, ins):
             ins.is_user = True
             ins.organisation = obj.organisation
             ins.is_organisation = True
-            ins.organisation_tax = gst_id
+            if(check_gst == 'yes'):
+                ins.organisation_tax = None
+                users_model.User_Address_Details.objects.filter(Q(organisation = obj.organisation) & Q(state=address_form.data['form_'+prefix+"-state"])).update(organisation_tax=None)
+            else:
+                ins.organisation_tax = gst_id
             ins.save()
          
         # set_state_gst(obj.organisation, ins.state, gst)    
@@ -725,3 +735,28 @@ def org_address_inactive(request,ins):
         org.save()
 
     return redirect('/profile/', permanent=False)
+
+#===================================================================================================
+# while saving new address check the current state all address is inactive 
+#===================================================================================================
+# 
+def org_address_inactive_check(request):
+    ids = request.POST.get("org_id")
+    state = request.POST.get("address_state")
+    org = users_model.Organisations.objects.get(pk = int(ids))
+    org_address = users_model.User_Address_Details.objects.filter(organisation = org,state = state)
+    if(len(org_address) != 0):
+        check_active = org_address.filter(is_active=True)
+        if(len(check_active) > 0):
+            return HttpResponse(0)
+        else:
+            check_inactive = org_address.filter(is_active=False)
+            if(len(check_inactive) > 0):
+                if(check_inactive[0].organisation_tax is not None):
+                    return HttpResponse(check_inactive[0].organisation_tax.gstin)
+                else:
+                    return HttpResponse(1)
+            else:
+                return HttpResponse(0)
+    else:
+        return HttpResponse(0)

@@ -272,13 +272,13 @@ function org_address_check(addres_ids,address_state){
 		if(data == 1){
 			$('#msg_text1').hide()
 			$('#msg_text2').show()
-			$('#org_add_new').show()
-			$('#org_inactive'+addres_ids).modal('show')
+			$('#org_add_new'+addres_ids+'').show()
+			$('#org_inactive'+addres_ids+'').modal('show')
 		}else{
 			$('#msg_text1').show()
 			$('#msg_text2').hide()
-			$('#org_add_new').hide()
-			$('#org_inactive'+addres_ids).modal('show')
+			$('#org_add_new'+addres_ids+'').hide()
+			$('#org_inactive'+addres_ids+'').modal('show')
 		}
 	});
 }
@@ -290,4 +290,33 @@ function show_hide_address_modal(modal_ids){
 	$('#msg_text1').show()
 	$('#msg_text2').hide()
 	$('#org_add_new').hide()
+}
+
+/********************************************************************/
+// check inactive address present in same state
+/********************************************************************/
+
+function exit_address(elem){
+	console.log($(elem).val())
+	var address_state = $(elem).val()
+	var org_id = $('#accounts_add_modal,#newOrgAddressModal').find('input[name=ids]').val()
+	console.log(org_id)
+	if(address_state != ''){
+		$.post("/profile/org_address_inactive_check/",{'org_id':org_id,'address_state':address_state,'csrfmiddlewaretoken':csrf_token},function(data){
+			if(data != 0){
+				if(data != 1){
+					c_box = confirm('In this State your previous gst number is '+data+', do you want to use that gst number.if you click "cancel" then you not be able to use previous gst number for new voucher.');
+					if(c_box){
+						$('.check_gst').val('no');
+					}else{
+						$('.check_gst').val('yes');
+					}
+				}else if(data == 1){
+					$('.check_gst').val('no');
+				}
+			}else if(data == 0){
+				$('.check_gst').val('no');
+			}
+		});
+	}
 }

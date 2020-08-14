@@ -235,7 +235,7 @@ td{padding:5px;}
                                             
                                             <div class="modal-footer" style="text-align: center;justify-content: center; border-top: none;padding:6px;">
                                                 <a class="btn mr-2" href="{% url 'org_address_inactive' i.id %}" style="background-color: #598ebb;">Yes</a>
-                                                <button class="btn mr-2" id="org_add_new" onclick="show_hide_address_modal({{i.id}})" title="Add New" style="display: none;background-color: #598ebb;">Add new address</button>
+                                                <button class="btn mr-2" id="org_add_new{{i.id}}" onclick="show_hide_address_modal({{i.id}})" title="Add New" style="display: none;background-color: #598ebb;">Add new address</button>
                                                 <!-- data-toggle="modal" data-target="#accounts_add_modal" -->
                                                 <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
@@ -282,10 +282,10 @@ td{padding:5px;}
                              <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">
                                  {{ i.organisation_tax.gstin|default_if_none:"" }}
                              </td>
-                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">                                                                
-                                 <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
+                             <td style="justify-content: center;vertical-align: bottom;border: 1px solid black;color: black;">                                                                
+                                 <i title="Edit" class="material-icons" style="display: none;cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAddressModal({{forloop.counter}}, '{{i.is_billing_address}}', '{{i.is_shipping_address}}', '{{i.default_address}}',{{i.id}}, true)">create</i>
                                  <i title="Make Active" class="material-icons" data-toggle="modal" data-target="#org_active{{i.id}}" style="cursor:pointer; font-size:18px; color: lightskyblue; margin-left:5px; position:relative; vertical-align:middle;">done</i>
-                             
+                                </td>  
                                                              <!-- active model popup -->
                                  <div class="modal " tabindex="-1" role="dialog" id="org_active{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                      <div class="modal-dialog" role="document" style="border-top: none;">
@@ -303,8 +303,7 @@ td{padding:5px;}
                                              </div>
                                          </div>
                                      </div>
-                                 </div>
-                             </td>                                   
+                                 </div>                                 
                          </tr>  
                          {% endfor %}
                     </tbody>
@@ -387,7 +386,7 @@ td{padding:5px;}
                                 <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
                                     <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" data-toggle="modal"  data-target="#editAccountModal-{{forloop.counter}}">create</i>
                                     <i title="Delete" class="material-icons" data-toggle="modal" data-target="#account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
-                                    
+                                </td>      
                                 <!-- delete model popup -->
                                 <div class="modal " tabindex="-1" role="dialog" id="account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                     <div class="modal-dialog" role="document" style="border-top: none;">
@@ -405,8 +404,7 @@ td{padding:5px;}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                </td>                                   
+                                </div>                                
                             </tr>
                         {% endfor %}    
                     </tbody>
@@ -584,6 +582,7 @@ td{padding:5px;}
             <div class="modal-body">
                 {% csrf_token %}
                 <input type="hidden" value="{{ids}}" name="ids">
+                <input type="hidden" class="check_gst" name="check_gst">
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
@@ -730,6 +729,7 @@ td{padding:5px;}
                 <div class="modal-body">
                     {% csrf_token %}
                     <input type="hidden" value="{{contact_ins}}" name="ids">
+                    <input type="hidden" class="check_gst" name="check_gst" value="no">
                     <table class="table-responsive">
                         <tbody style=" width: 100%; display: inline-table;">
                             <tr>
