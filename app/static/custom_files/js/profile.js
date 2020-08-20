@@ -270,13 +270,13 @@ function org_address_check(addres_ids,address_state){
 	event.preventDefault()
 	$.post("/profile/org_address_check/",{'addres_ids':addres_ids,'address_state':address_state,'csrfmiddlewaretoken':csrf_token},function(data){
 		if(data == 1){
-			$('#msg_text1').hide()
-			$('#msg_text2').show()
+			$('#msg_text'+addres_ids+'').hide()
+			$('#msg_text_last'+addres_ids+'').show()
 			$('#org_add_new'+addres_ids+'').show()
 			$('#org_inactive'+addres_ids+'').modal('show')
 		}else{
-			$('#msg_text1').show()
-			$('#msg_text2').hide()
+			$('#msg_text'+addres_ids+'').show()
+			$('#msg_text_last'+addres_ids+'').hide()
 			$('#org_add_new'+addres_ids+'').hide()
 			$('#org_inactive'+addres_ids+'').modal('show')
 		}
@@ -297,10 +297,8 @@ function show_hide_address_modal(modal_ids){
 /********************************************************************/
 
 function exit_address(elem){
-	console.log($(elem).val())
 	var address_state = $(elem).val()
 	var org_id = $('#accounts_add_modal,#newOrgAddressModal').find('input[name=ids]').val()
-	console.log(org_id)
 	if(address_state != ''){
 		$.post("/profile/org_address_inactive_check/",{'org_id':org_id,'address_state':address_state,'csrfmiddlewaretoken':csrf_token},function(data){
 			if(data != 0){
@@ -318,5 +316,45 @@ function exit_address(elem){
 				$('.check_gst').val('no');
 			}
 		});
+	}
+}
+/********************************************************************/
+// decimal point
+/********************************************************************/
+function float_value(event, elem) { 
+    // var $this = $(this);
+    
+    if ((event.which != 46 || $(elem).val().indexOf('.') != -1) &&
+       ((event.which < 48 || event.which > 57) &&
+       (event.which != 0 && event.which != 8))) {
+           event.preventDefault();
+    }
+
+    var text = $(elem).val();
+    if ((event.which == 46) && (text.indexOf('.') == -1)) {
+        setTimeout(function() {
+            if ($('#'+a+'').val().substring($(elem).val().indexOf('.')).length > 3) {
+                $('#'+a+'').val($this.val().substring(0, $(elem).val().indexOf('.') + 3));
+            }
+        }, 1);
+    }
+
+    if ((text.indexOf('.') != -1) &&
+        (text.substring(text.indexOf('.')).length > 2) &&
+        (event.which != 0 && event.which != 8) &&
+        ($(elem)[0].selectionStart >= text.length - 2)) {
+            event.preventDefault();
+    }      
+};
+
+/********************************************************************/
+// baisc setting gst less then 100 percent
+/********************************************************************/
+
+function check_percent(elem){
+	var gst_val = $(elem).val()
+	if(parseFloat(gst_val) >= 100.00){
+		alert("Pelase enter valid tax")
+		$(elem).val('')
 	}
 }

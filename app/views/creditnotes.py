@@ -58,16 +58,16 @@ class CreditView(View):
     def get(self, request):        
 
         credit_note = CreditNode.objects.filter(user = request.user, creditnote_delete_status = 0)
-        credit_paginator = Paginator(credit_note, 10)
-        credit_page = request.GET.get('page')     
-        try:
-            credit_posts = credit_paginator.page(credit_page)
-        except PageNotAnInteger:
-            credit_posts = credit_paginator.page(1)
-        except EmptyPage:
-            credit_posts = credit_paginator.page(credit_paginator.num_pages)
-        self.data["credit_note"] = credit_posts
-        self.data["credit_page"] = credit_page
+        # credit_paginator = Paginator(credit_note, 10)
+        # credit_page = request.GET.get('page')     
+        # try:
+        #     credit_posts = credit_paginator.page(credit_page)
+        # except PageNotAnInteger:
+        #     credit_posts = credit_paginator.page(1)
+        # except EmptyPage:
+        #     credit_posts = credit_paginator.page(credit_paginator.num_pages)
+        self.data["credit_note"] = credit_note
+        # self.data["credit_page"] = credit_page
         # self.data['credit_note'] = credit_note
 
         # CUSTOMIZE VIEW CODE
@@ -194,13 +194,23 @@ def fetch_contact(request, slug):
     contacts = Contacts.objects.get(Q(user = request.user) & Q(pk = int(slug)))
     data['contacts'] =  contacts.email 
     data['address'] = []
-    address = User_Address_Details.objects.filter(Q(contact = slug) & Q(is_billing_address = 1)).values('contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode')
-    for i in range(0,len(address)):
-        add=""
-        for j in address[i].values():
-            if( j is not None):
-                add+=str(j)+', '
-        data['address'].append(add[0:(len(add))-2])
+    address = User_Address_Details.objects.filter(Q(contact = slug) & Q(is_billing_address = 1) & Q(default_address = True)).values('contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode')
+    if(len(address) != 0):
+        for i in range(0,1):
+            add=""
+            for j in address[i].values():
+                if( j is not None):
+                    add+=str(j)+', '
+            data['address'].append(add[0:(len(add))-2])
+    else:
+        address_new = User_Address_Details.objects.filter(Q(contact = slug) & Q(is_billing_address = 1)).values('contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode')
+        if(len(address_new) != 0):
+            for i in range(0,1):
+                add_new=""
+                for j in address_new[i].values():
+                    if( j is not None):
+                        add_new+=str(j)+', '
+                data['address'].append(add_new[0:(len(add_new))-2])
     return JsonResponse(data)
 
 #=====================================================================================

@@ -119,16 +119,16 @@ class ContactsView(View):
         #     contacts = contacts.filter(is_active = True)
 
         # self.data["contacts"] = contacts
-        contact_paginator = Paginator(contacts, 10)
-        contact_page = request.GET.get('page')     
-        try:
-            contact_posts = contact_paginator.page(contact_page)
-        except PageNotAnInteger:
-            contact_posts = contact_paginator.page(1)
-        except EmptyPage:
-            contact_posts = contact_paginator.page(contact_paginator.num_pages)
-        self.data["contacts"] = contact_posts
-        self.data["contact_page"] = contact_page
+        # contact_paginator = Paginator(contacts, 10)
+        # contact_page = request.GET.get('page')     
+        # try:
+        #     contact_posts = contact_paginator.page(contact_page)
+        # except PageNotAnInteger:
+        #     contact_posts = contact_paginator.page(1)
+        # except EmptyPage:
+        #     contact_posts = contact_paginator.page(contact_paginator.num_pages)
+        self.data["contacts"] = contacts
+        # self.data["contact_page"] = contact_page
 
         # CUSTOMIZE VIEW CODE
         customize_contact = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 1))

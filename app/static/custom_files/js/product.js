@@ -1,3 +1,12 @@
+$(document).ready(function(){
+
+    $("#id_selling_tax").empty().append(selling_tax);
+
+    $("#id_selling_tax").val(selling_tax_old);
+
+})
+
+
 
 $("#id_is_sales").on("click", function(){
     if($(this).prop("checked") === true){
@@ -6,12 +15,19 @@ $("#id_is_sales").on("click", function(){
         $('#id_selling_price').prop('required', true)
         $('#id_selling_tax').prop('required', true)
         $('#id_sales_account').prop('required', true)
-    }else{
+    }else if($('#id_is_purchase').prop("checked") === true){
         $("#id_selling_price, #id_sales_account, #sales_tax, #id_selling_tax,#id_preferred_currency").prop("disabled", true);
-        
+        $('#sales_tax').prop('checked',false)
         $('#id_selling_price').prop('required', false)
         $('#id_selling_tax').prop('required', false)
         $('#id_sales_account').prop('required', false)
+        $('#id_selling_price').val('')
+        $('#id_selling_tax').val('')
+        $('#id_sales_account').val('').change()
+        calculate()
+    }else{
+        alert('Please fill at least one information between sales and purchase')
+        $('#id_is_sales').prop('checked',true)
     }
 });
 // sales information
@@ -41,12 +57,20 @@ $("#id_is_purchase").on("click", function(){
         $('#id_purchase_price').prop('required', true)
         $('#id_purchase_tax').prop('required', true)
         $('#id_purchase_account').prop('required', true)
-    }else{
+    }else if($('#id_is_sales').prop("checked") === true){
         $("#id_purchase_currency, #id_purchase_price,#purchase_tax,#id_purchase_tax,#id_reverse_charges,#id_purchase_account").prop("disabled", true);
-        
+        $('#purchase_tax').prop('checked',false)
         $('#id_purchase_price').prop('required', false)
         $('#id_purchase_tax').prop('required', false)
         $('#id_purchase_account').prop('required', false)
+        $('#id_purchase_price').val('')
+        $('#id_purchase_tax').val('')
+        $('#id_reverse_charges').val('')
+        $('#id_purchase_account').val('').change()
+        calculate_pc()
+    }else{
+        alert('Please fill at least one information between sales and purchase')
+        $('#id_is_purchase').prop('checked',true)
     }
 });
 
@@ -382,12 +406,12 @@ function bundle(number) {
 /********************************************************************/
 
 function show_bundle(elem){
-    console.log('aaaaaaaaaaa')
     var a = $(elem).val();
     if(a == "2"){
-        console.log('lllllll')
         $(".bundle_dont_show").hide();
         $(".bundle_show").show();
+        $('#hsn_code').hide();
+        $('#id_hsn_code').val('')
         $("#set_row_span").attr("rowspan",5);
         $("#td1").css('margin-top','8%')
         $('#id_tds').prop("disabled", false);
@@ -400,6 +424,7 @@ function show_bundle(elem){
         $('#id_tds').prop("disabled", true);
         $(".bundle_dont_show").show();
         $(".bundle_show").hide();
+        $('#hsn_code').show();
         $('.bundle_product_type').prop('required',false)
         $('.bundle_product_name').prop('required',false)
         $('.bundle_product_qunatity').prop('required',false)
@@ -407,6 +432,7 @@ function show_bundle(elem){
     else{
         $(".bundle_dont_show").show();
         $(".bundle_show").hide();
+        $('#hsn_code').show();
         $('#id_tds').prop("disabled", false);
         $('.bundle_product_type').prop('required',false)
         $('.bundle_product_name').prop('required',false)
@@ -417,6 +443,8 @@ var a = $('#id_product_type :selected').text();
 if(a == "BUNDLE"){
     $(".bundle_dont_show").hide();
     $(".bundle_show").show();
+    $('#hsn_code').hide();
+    $('#id_hsn_code').val('')
     $("#set_row_span").attr("rowspan",5);
     $("#td1").css('margin-top','8%')
     $('#id_tds').prop("disabled", false);
@@ -428,6 +456,7 @@ else if(a == 'GOODS' || a == 'SERVICES'){
     $('#id_tds').prop("disabled", true);
     $(".bundle_dont_show").show();
     $(".bundle_show").hide();
+    $('#hsn_code').show();
     $('.bundle_product_type').prop('required',false)
     $('.bundle_product_name').prop('required',false)
     $('.bundle_product_qunatity').prop('required',false)
@@ -435,6 +464,7 @@ else if(a == 'GOODS' || a == 'SERVICES'){
 else{
     $(".bundle_dont_show").show();
     $(".bundle_show").hide();
+    $('#hsn_code').show();
     $('#id_tds').prop("disabled", false);
     $('.bundle_product_type').prop('required',false)
     $('.bundle_product_name').prop('required',false)
@@ -830,3 +860,9 @@ $('#id_purchase_tax').keyup(function(){
     }
 });
 
+$('#id_tds').keyup(function(){
+    if(parseFloat($(this).val()) > parseFloat(99.99)){
+        alert("TDS must be less than 100%")
+        $(this).val('')
+    }
+});

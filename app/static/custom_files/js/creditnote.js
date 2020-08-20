@@ -42,7 +42,7 @@ function creditnote_addRow(a) {
 
 
         var html = '<tr id="creditnote_row'+creditnote_number+'">'
-        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="-------">-------</option></select>'
+        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="-------">None</option></select>'
         html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
         html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
         html +='<td style="border:1px solid black;"><div class="row" style="padding-top:9px;"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'">₹</label></div>'
@@ -130,23 +130,24 @@ function data() {
                 $("#email").val(data.contacts)
                 var option = data.address
                 // CLEAN SELECT OPTION //
-                var select = document.getElementById('BillingAddress');
-                var length = select.options.length;
-                if(length > 0){
-                    $("#BillingAddress").empty();
-                }
+                // var select = document.getElementById('BillingAddress');
+                // var length = select.options.length;
+                // if(length > 0){
+                //     $("#BillingAddress").empty();
+                // }
     
                 // ADD SELECT OPTION //
-                for(var i = 0;i < option.length;i++){
-                    if(i == 0){
-                        $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
-                        $('#BillingAddress1').val(option[i])
-                    }else{
-                        $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
-                    }
+                // for(var i = 0;i < option.length;i++){
+                //     if(i == 0){
+                //         $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
+                //         $('#BillingAddress1').val(option[i])
+                //     }else{
+                //         $('<option/>').val(option[i]).html(option[i]).appendTo('#BillingAddress');
+                //     }
                     
-                }
+                // }
                 // END //
+                $('#BillingAddress1').text(option)
             },
         });
     }
@@ -1128,11 +1129,10 @@ function creditnote_contact_form(save_type){
         if(data != '0'){
             
             $.get("/creditnote/contact_fetch/",function(data){
-
                 $("#customerName").each(function(){
                     $('<option/>').val(data.ids).html(data.name).appendTo($(this));
                 });
-                $('#BillingAddress1').val('')
+                // $('#BillingAddress1').val('')
                 $('#email').val('')
                 $('#customerName').val(data.ids).change(); 
                 

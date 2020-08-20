@@ -71,32 +71,32 @@ class Profile(View):
 
         if organisation_form is not None:
             org_contacts = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
-            cont_paginator = Paginator(org_contacts, 5)
-            cont_page = request.GET.get('page')     
-            try:
-                cont_posts = cont_paginator.page(cont_page)
-            except PageNotAnInteger:
-                cont_posts = cont_paginator.page(1)
+            # cont_paginator = Paginator(org_contacts, 5)
+            # cont_page = request.GET.get('page')     
+            # try:
+            #     cont_posts = cont_paginator.page(cont_page)
+            # except PageNotAnInteger:
+            #     cont_posts = cont_paginator.page(1)
  
-            except EmptyPage:
-                cont_posts = cont_paginator.page(cont_paginator.num_pages)
-            self.data["address_details"] = cont_posts
-            self.data["cont_page"] = cont_page
+            # except EmptyPage:
+            #     cont_posts = cont_paginator.page(cont_paginator.num_pages)
+            self.data["address_details"] = org_contacts
+            # self.data["cont_page"] = cont_page
 
             # org_address active
             org_address_active = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = True)
-            paginator = Paginator(org_address_active, 5)
-            page = request.GET.get('page')     
-            try:
-                posts = paginator.page(page)
-            except PageNotAnInteger:
-                posts = paginator.page(1)
+            # paginator = Paginator(org_address_active, 5)
+            # page = request.GET.get('page')     
+            # try:
+            #     posts = paginator.page(page)
+            # except PageNotAnInteger:
+            #     posts = paginator.page(1)
  
-            except EmptyPage:
-                posts = paginator.page(paginator.num_pages)
+            # except EmptyPage:
+            #     posts = paginator.page(paginator.num_pages)
             
-            self.data["org_address_details"] = posts
-            self.data["page"] = page 
+            self.data["org_address_details"] = org_address_active
+            # self.data["page"] = page 
 
             # org_address inactive
             org_address_inactive = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = False)
@@ -264,7 +264,6 @@ def edit_org_address_details_form(request, ins):
             else:
                 ins.organisation_tax = gst_id
             ins.save()
-         
         # set_state_gst(obj.organisation, ins.state, gst)    
         
         return redirect("/profile/",permanent = False)
@@ -274,42 +273,26 @@ def edit_org_address_details_form(request, ins):
 #=======================================================================================
 #
 def edit_org_account_details_form(request, ins):
+
     if request.POST:
 
-        # keys = [i for i in request.POST.keys() if "flat_no" in i]
+        keys = [i for i in request.POST.keys() if "phone" in i]
 
-        # prefix = keys[0].replace("-flat_no", "").replace("form_", "")
-
-        # try:
-        #     obj = users_model.User_Address_Details.objects.get(pk = int(prefix))
-        #     address_form = contact_forms.EditAddressForm(request.POST, prefix='form_'+prefix, instance = obj)
-        #     if address_form.is_valid():
-        #         address_form.save()
-            
-        # except:
-        #     try:
-        #         org_ins = users_model.Organisations.objects.get(pk = int(ins))
-        #     except:
-        #         return redirect('/unauthorized/', permanent=False)
-
-        #     address_form = contact_forms.EditAddressForm(request.POST, prefix='form_'+prefix)
-        #     if address_form.is_valid():
-        #         obj_add = address_form.save()
-        #         obj_add.contact_org = org_ins
-        #         obj_add.is_user = True
-        #         obj_add.save() 
+        prefix = keys[0].replace("-phone", "").replace("form_", "")
 
         try:
-            org_ins = users_model.Organisation_Contact.objects.get(pk = int(ins))
+            obj = users_model.Organisation_Contact.objects.get(pk = int(prefix))    
         except:
-            return redirect('/unauthorized/', permanent=False)
-
-        address_form = profile_forms.OrganisationContactForm(request.POST, instance = org_ins)
-        if address_form.is_valid():
-            obj_add = address_form.save()
+            return redirect("/unauthorized/",permanent=False)
+ 
+        contact_form = profile_forms.OrganisationContactForm(request.POST, prefix='form_'+prefix, instance = obj)
+        if contact_form.is_valid():
+            obj_add = contact_form.save()
             # obj_add.contact_org = org_ins
             # obj_add.is_user = True
             obj_add.save() 
+        else:
+            print(contact_form.errors.as_data())
         
         return redirect("/profile/",permanent = False)
 
@@ -585,7 +568,19 @@ class GSTConfigurationView(View):
         self.data["gst_form"] = tax_form.OrganisationCompositTaxForm()
         self.data["org_address_details"] = org_address
         self.data["gst_state_code"] = country_list.GST_STATE_CODE
+        gst_register = users_model.User_Tax_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active=True,is_organisation_gst_register = True)
+        # for gst register
+        if(len(gst_register) > 0):
+            self.data['gst_register'] = 'yes'
+        else:
+            self.data['gst_register'] = 'no'
 
+        # for gst is multiple
+        is_multiple = gst_register.filter(multiple_gst = True)
+        if(len(is_multiple) > 0):
+            self.data['is_multiple'] = 'yes'
+        else:
+            self.data['is_multiple'] = 'no'
         # edit org address
         contact_address_form = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active=True)
         c_count = len(contact_address_form)

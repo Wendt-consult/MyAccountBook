@@ -75,7 +75,7 @@
             <div class="col-md-1 rect2">
                 <form action="{% url 'view_products' 2 %}" method="get">
                             <div class="dropdown"style="margin-left:150px;margin-top:-18px;margin-bottom:7px;">
-                                <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"data-display="static" aria-haspopup="true" aria-expanded="false" style="float: right;padding: 7px 14px 7px 14px;height:30px;width:60px;background-color:#598ebb;">
+                                <button title="Filter" class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"data-display="static" aria-haspopup="true" aria-expanded="false" style="float: right;padding: 7px 14px 7px 14px;height:30px;width:60px;background-color:#598ebb;">
                             <i class="material-icons">filter_list</i>
                         </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -93,21 +93,21 @@
                                     <div class="collapse" id="Product" >
                                         <div>
                                             <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                                <input class="form-check-input" type="checkbox" value="0" name="product_type[]" style="width: 111%;margin-left: -38%;">
+                                                <input class="form-check-input" type="checkbox" value="0" name="product_type[]" style="width: 111%;margin-left: -38%;margin-top:1px;">
                                                 <span class="form-check-sign">
                                                     <span class="check" style="margin-left: 41px;color: black;">Goods</span>
                                                 </span>
                                             </label>
 
                                             <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                                <input class="form-check-input" type="checkbox" value="1" name="product_type[]" style="width: 111%;margin-left: -38%;">
+                                                <input class="form-check-input" type="checkbox" value="1" name="product_type[]" style="width: 111%;margin-left: -38%;margin-top:1px;">
                                                 <span class="form-check-sign">
                                                     <span class="check" style="margin-left: 41px;color: black;">Services</span>
                                                 </span>
                                             </label>
 
-                                            <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                                <input class="form-check-input" type="checkbox" value="2" name="product_type[]" style="width: 111%;margin-left: -38%;">
+                                            <label class="form-check-label" style="margin-bottom: 3px;width: 100%;margin-top:1px;">
+                                                <input class="form-check-input" type="checkbox" value="2" name="product_type[]" style="width: 111%;margin-left: -38%;margin-top:1px;">
                                                 <span class="form-check-sign">
                                                     <span class="check" style="margin-left: 41px;color: black;">Bundle</span>
                                                 </span>
@@ -131,14 +131,14 @@
                                     <div class="collapse" id="status">
                                         <div>
                                             <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                                <input class="form-check-input" type="checkbox" value="1" name="is_active[]" style="width: 111%;margin-left: -38%;">
+                                                <input class="form-check-input" type="checkbox" value="1" name="is_active[]" style="width: 111%;margin-left: -38%;margin-top:1px;">
                                                 <span class="form-check-sign">
                                                     <span class="check" style="margin-left: 41px;color: black;">Active</span>
                                                 </span>
                                             </label>
 
                                             <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                                <input class="form-check-input" type="checkbox" value="0" name="is_active[]" style="width: 111%;margin-left: -38%;">
+                                                <input class="form-check-input" type="checkbox" value="0" name="is_active[]" style="width: 111%;margin-left: -38%;margin-top:1px;">
                                                 <span class="form-check-sign">
                                                     <span class="check" style="margin-left: 41px;color: black;">Inactive</span>
                                                 </span>
@@ -155,7 +155,7 @@
                             </form>
                 
             <div class="col-md-1 rect1">
-                <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="margin-top: 13%;margin-left:-19px;color: rgba(190, 186, 186, 0.781);">settings</span>
+                <span title="Custom View" class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="margin-top: 13%;margin-left:-19px;color: rgba(190, 186, 186, 0.781);">settings</span>
             </div>
             
         </div>

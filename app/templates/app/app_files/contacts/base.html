@@ -71,7 +71,7 @@
                 <form action="{% url 'contacts' 2 %}" method="get">
                     <div class="dropdown" style="margin-left:560px;margin-top:-14px;margin-bottom:2px;">
 
-                        <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"data-display="static" aria-haspopup="true" aria-expanded="false" style="float: right;padding: 7px 14px 7px 14px;height:30px;width:60px;background-color:#598ebb;">
+                        <button title="Filter" class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"data-display="static" aria-haspopup="true" aria-expanded="false" style="float: right;padding: 7px 14px 7px 14px;height:30px;width:60px;background-color:#598ebb;">
                             <i class="material-icons">filter_list</i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -89,21 +89,21 @@
                             <div class="collapse" id="Customer" >
                                 <div>
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox"  value="1" name="customer_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox"  value="1" name="customer_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Customer</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="2" name="customer_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="2" name="customer_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Vendor</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="3" name="customer_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="3" name="customer_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Employee</span>
                                         </span>
@@ -125,35 +125,56 @@
                             <div class="collapse"  id="OrganizationType">
                                 <div>
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="1" name="org_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="1" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Individual</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="2" name="org_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="2" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Proprietorship</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="4" name="org_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="4" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Partnership</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="5" name="org_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="5" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Trust</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="6" name="org_type[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="6" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
+                                        <span class="form-check-sign">
+                                            <span class="check" style="margin-left: 41px;color: black;">Private Limited</span>
+                                        </span>
+                                    </label>
+
+                                    <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
+                                        <input class="form-check-input" type="checkbox" value="7" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
+                                        <span class="form-check-sign">
+                                            <span class="check" style="margin-left: 41px;color: black;">Public Limited</span>
+                                        </span>
+                                    </label>
+
+                                    <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
+                                        <input class="form-check-input" type="checkbox" value="8" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
+                                        <span class="form-check-sign">
+                                            <span class="check" style="margin-left: 41px;color: black;">Overseas Org.</span>
+                                        </span>
+                                    </label>
+
+                                    <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
+                                        <input class="form-check-input" type="checkbox" value="9" name="org_type[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Gvt. Organisation</span>
                                         </span>
@@ -176,14 +197,14 @@
                             <div class="collapse" id="status">
                                 <div>
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="1" name="is_active[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="1" name="is_active[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Active</span>
                                         </span>
                                     </label>
 
                                     <label class="form-check-label" style="margin-bottom: 3px;width: 100%;">
-                                        <input class="form-check-input" type="checkbox" value="0" name="is_active[]" style="width: 111%;margin-left: -38%;">
+                                        <input class="form-check-input" type="checkbox" value="0" name="is_active[]" style="width: 111%;margin-left: -38%;margin-top: 1px;">
                                         <span class="form-check-sign">
                                             <span class="check" style="margin-left: 41px;color: black;">Inactive</span>
                                         </span>
@@ -203,8 +224,8 @@
             
         </div>
             <div class="col-md-1 rect1" style="margin-top:-2px;margin-left:22px;">
-        <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);margin-left:350px;">settings</span>
-    </div>
+                <span title="Custom View" class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);margin-left:350px;">settings</span>
+            </div>
 
     </div>
 

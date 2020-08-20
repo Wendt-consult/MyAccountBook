@@ -20,7 +20,6 @@ select.form-control option{color : #000000; }
 .form-group{
     width: 35%;
     margin-left: 5%;
-    
 }
 
 #select2-product_account1-results {
@@ -109,9 +108,9 @@ textarea.form-control{
 .close{
     text-shadow: 0 1px 0 red;
 }
-#files{
+#ProductModal #files{
     padding-top: 1px;
-    /* width: 75%; */
+    width: 75%!important;
 }
 optgroup{color :black; }
 .addrow:hover{
@@ -242,6 +241,12 @@ optgroup{color :black; }
  #close:hover{
      color: red!important;
  }
+#multiple_gst_link:hover{
+    color: white!important;
+}
+#common_gst:hover{
+    color:white!important;
+}
 </style>
 
 <form method="post" action="{% url 'save_invoice' %}" autocomplete="off" enctype="multipart/form-data">
@@ -258,7 +263,7 @@ optgroup{color :black; }
                             <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your defalut Organization gst number:-{{is_gst}}. Do you want to create this invoice with another GST number</h6>&nbsp;
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this invoice with another GST number</h6>&nbsp;
                             <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
@@ -312,7 +317,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="customer_gst_type()">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
         
                                         {% for contact in contacts %}
                                         {% if contact.customer_type == 1%}
@@ -404,7 +409,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8 input">
                                     <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" style="padding-left: 9px;" required>
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
@@ -449,7 +454,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-3 input" style="padding-right: 5px;">
                                     <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
@@ -513,7 +518,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" id="invoice_seales_person" name="invoice_seales_person">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
             
                                             {% for contact in contacts %}
                                             {% if contact.customer_type == 3 %}
@@ -530,7 +535,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8 input">
                                     <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('vendor_side')" style="padding-left: 9px;" required>
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in state %}
                                         <option value="{{i.0}}">{{i.1}}</option>
                                         {% endfor %}
@@ -598,7 +603,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select invoice_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
                                     
-                                    <option value="">-------</option>
+                                    <option value="">None</option>
                                     
                                     {% for product in products %}
                                         <option value="{{product.id}}">{{product}}</option>
@@ -610,7 +615,7 @@ optgroup{color :black; }
                             </td>
                             <td style="border:1px solid black;">
                                 <select class="form-control product_invoice_account"  id="product_account1" name="product_account[]" required>
-                                    <option value="">-------</option>
+                                    <option value="">None</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
                                         <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
@@ -958,7 +963,7 @@ optgroup{color :black; }
                                     </div>
                                     <div class="col" style="padding-top:2%;">
                                         <select name="product_type" class="form-control input-sm" onchange="show_bundle($(this))" id="id_product_type" required="">
-                                            <option value="">---------</option>
+                                            <!-- <option value="">---------</option> -->
                                           
                                             <option value="0" selected="">GOODS</option>
                                           
@@ -1037,7 +1042,7 @@ optgroup{color :black; }
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 1px solid black;">
                                     <span class="close material-icons">delete_forever</span>
                                     <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
                                 </div>
@@ -1688,7 +1693,7 @@ optgroup{color :black; }
                                                             <td style=" width:150px; border:0px;">
                                                                 Attachments
                                                             </td>
-                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            <td style="width:44%;border:0px;padding-top: 1%;">
                                                                 {{ social_form.attachements }}
                                                                 <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>

@@ -11,18 +11,18 @@ from django.forms import *
 AddressFormset = inlineformset_factory(contacts_model.Contacts, users_model.User_Address_Details, extra = 2,
     fields = ('default_address', 'address_tag','contact_person', 'flat_no', 'street', 'city', 'state', 'country', 'pincode', 'is_shipping_address_diff', 'is_shipping_address', 'is_billing_address'),
     widgets = {
-        'contact_person' : TextInput(attrs={'class':'form-control input-sm','style':'width:65%;padding-left:9px;',}),
-        'flat_no' : TextInput(attrs={'class':'form-control input-sm','style':'width:65%;padding-left:9px;'}),
-        'street' : TextInput(attrs={'class':'form-control input-sm','style':'width:65%;padding-left:9px;'}),
-        'city' : TextInput(attrs={'class':'form-control input-sm','style':'width:65%;padding-left:9px;'}),
+        'contact_person' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;',}),
+        'flat_no' : TextInput(attrs={'class':'form-control input-sm','maxlength':'200','style':'width:65%;padding-left:9px;'}),
+        'street' : TextInput(attrs={'class':'form-control input-sm','maxlength':'100','style':'width:65%;padding-left:9px;'}),
+        'city' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;'}),
         'state' : Select(attrs={'class':'form-control input-sm','style':'width:65%;'}, choices = country_list.STATE_LIST_CHOICES),
         'country' : Select(attrs={'class':'form-control input-sm','style':'width:65%;'}, choices = country_list.COUNTRIES_LIST_CHOICES),
-        'pincode' : TextInput(attrs={'class':'form-control input-sm','type':'number','style':'width:65%;padding-left:9px;'}),
+        'pincode' : TextInput(attrs={'class':'form-control input-sm','type':'number','maxlength':'10','style':'width:65%;padding-left:9px;'}),
         'is_shipping_address_diff' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'is_shipping_address' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'is_billing_address' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'default_address' : Select(attrs={'class':'form-control input-sm default_address','style':'width:40%;','hidden':'true'}, choices = user_constants.IS_TRUE),
-        'address_tag' : TextInput(attrs={'class':'form-control input-sm','style':'width:65%;padding-left:9px;'}),
+        'address_tag' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;'}),
     }
 )
 

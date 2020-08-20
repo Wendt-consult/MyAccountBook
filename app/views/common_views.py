@@ -300,7 +300,7 @@ def get_gst_number(request):
     data['gst_number'] = []
     data['gst_type'] = []
     org = Organisations.objects.get(user = request.user)
-    org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+    org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active=True)
     for i in range(0,len(org_gst_num)):
         data['gst_number'].append(org_gst_num[i].gstin)
         data['gst_type'].append(org_gst_num[i].gst_reg_type)

@@ -93,9 +93,12 @@ textarea.form-control{
 .close{
     text-shadow: 0 1px 0 red;
 }
-#files{
+#ProductModal #files{
     padding-top: 1px;
-    /* width: 75%; */
+    width: 75%!important;
+    display: flex!important;
+}
+#ContactModal #files{
     display: flex!important;
 }
 optgroup{color :black; }
@@ -200,6 +203,9 @@ optgroup{color :black; }
 .select2-results__options{
         font-size:14px !important;
  }
+ #tool_tip_link:hover{
+    color: white!important;
+}
 </style>
 
 <form method="post" action="{% url 'edit_purchase_order' purchase_order.id %}" autocomplete="off" enctype="multipart/form-data">
@@ -259,7 +265,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-7">
                                     <select class="form-control purchase_vendor" id="purchase_vendor" name="purchase_vendor" required onchange="state_compare(),vendor_info()">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
         
                                         {% for contact in intcontacts %}
                                             {% if purchase_order.vendor_id|lower == contact.id|lower %}
@@ -332,7 +338,7 @@ optgroup{color :black; }
                                                 <div class="col-md-8" id="v_gstin" style="padding-left: 3px;"></div>
                                             </div>
                                             <div class="row">
-                                                <a href="#" data-toggle="modal" data-target="#contact_gst_change" style="text-decoration: underline;">Want to change gst?</a>
+                                                <a href="#" data-toggle="modal" data-target="#contact_gst_change" style="text-decoration: underline;">Want to Update GST number?</a>
                                             </div>
 
                                         </div>
@@ -454,7 +460,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8">
                                      <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()" style="width: 100%;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
 
                                         {% for contact in intcontacts %}
                                             {% if purchase_order.customer|lower == contact.id|lower %}
@@ -479,7 +485,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8">
                                      <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()" style="width: 100%;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
 
                                         {% for contact in contacts %}
                                         {% if contact.customer_type == 1 or contact.customer_type == 3 %}
@@ -531,7 +537,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-sm-2 input">
                                     <select class="form-control" id="country_code" name="country_code" >
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for code in country_code%}
                                         <option value="{{code.1}}" {% if purchase_order.country_code == code.1 %} selected {% endif %}>{{code.1}}</option>
                                         {% endfor %}
@@ -576,7 +582,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select purchase_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
-                                    <option value="">-------</option>
+                                    <option value="">None</option>
                                     
                                     {% for product in intproducts %}
                                         {% if items.product_id|lower == product.id|lower %}
@@ -597,7 +603,7 @@ optgroup{color :black; }
                             </td>
                             <td style="border:1px solid black;">
                                 <select class="form-control prodduct_purchase_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()">
-                                    <option value="">-------</option>
+                                    <option value="">None</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
                                         <option value="{{acc_group.id}}" {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
@@ -1335,7 +1341,7 @@ optgroup{color :black; }
                                     </div>
                                     <div class="col" style="padding-top:2%;">
                                         <select name="product_type" class="form-control input-sm" onchange="show_bundle($(this))" id="id_product_type" required="">
-                                            <option value="">---------</option>
+                                            <!-- <option value="">---------</option> -->
                                           
                                             <option value="0" selected="">GOODS</option>
                                           
@@ -1414,7 +1420,7 @@ optgroup{color :black; }
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 1px solid black;">
                                     <span class="close material-icons">delete_forever</span>
                                     <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
                                 </div>
@@ -1752,10 +1758,10 @@ optgroup{color :black; }
 
                                 <tr>
                                     <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
-                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px; background-color:#598ebb;">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#598ebb;">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
-                                                aria-selected="true">Address Details</a>
+                                                aria-selected="false">Address Details</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
@@ -1774,7 +1780,7 @@ optgroup{color :black; }
                                             </li>                                    
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
-                                            <div class="tab-pane fade show active" id="tax-form" role="tabpanel" aria-labelledby="tax-tab" style="padding:10px 0px;">
+                                            <div class="tab-pane fade " id="tax-form" role="tabpanel" aria-labelledby="tax-tab" style="padding:10px 0px;">
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;">
                                                         <tr>
@@ -1882,7 +1888,7 @@ optgroup{color :black; }
                                                                             
                                                                         </td>
                                                                         <td style="border:0px; padding:0px">  
-                                                                            <label class="switch" style="margin-left: 14px;">
+                                                                            <label class="switch" style="margin-left: 20px;">
                                                                                 <input type="checkbox" value="False" class="address_is_billing_diff" onclick="set_shipping_diff($(this),0)">
                                                                                 <span class="slider round"></span>
                                                                             </label>   
@@ -1895,7 +1901,7 @@ optgroup{color :black; }
                                                                         </td>
                                                                         <td style="border:0px;">
 																			{{form.default_address}}
-																			 <label class="switch" style="margin-left: 20px;">																				
+																			 <label class="switch" style="margin-left: 14px;">																				
 																				<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
                                                                                 <span class="slider round"></span>
                                                                             </label>   
@@ -1973,7 +1979,7 @@ optgroup{color :black; }
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <!-- <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
+                                                <!-- <button class="btn btn-sm pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -2065,9 +2071,9 @@ optgroup{color :black; }
                                                             <td style=" width:150px; border:0px;">
                                                                 Attachments
                                                             </td>
-                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            <td style="width:44%;border:0px;padding-top: 1%;">
                                                                 {{ social_form.attachements }}
-                                                                <font color="white" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
+                                                                <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -2081,8 +2087,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" style="margin-top: -3%;">
-                    <button class="btn btn-sm  save_button" name="purchase_contact" onclick="return purchase_contact_form(0)" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    <!-- <button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form()">Save</button> -->
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="contact_type_add" aria-label="Close" style="margin-top:16px;">Cancel</button>
                 </div>
             </form>
         </div>
@@ -2197,7 +2203,7 @@ optgroup{color :black; }
 
 <div class="modal fade" id="Purchase_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
+        <div class="modal-content" style="background-color:#202940;width: 85%;margin-left: 15%;">
             <form method="post" style="margin:0px" enctype="multipart/form-data">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Choose Address</h5>
@@ -2583,7 +2589,7 @@ optgroup{color :black; }
                         </div>
                         <div class="col-4" style="padding-top: 1%;">
                             <select class="form-control" name="vendor_gst_type" id="vendor_gst_type" required>
-                                <option value="">---------</option>
+                                <option value="">None</option>
                                 {% for i in gst_r_type %}
                                 <option value="{{i.0}}">{{i.1}}</option>
                                 {% endfor %}

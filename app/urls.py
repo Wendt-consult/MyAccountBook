@@ -9,7 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
-    profile, purchase_order, expense, reports
+    profile, purchase_order, expense, reports, purchasentry
 
 
 
@@ -250,7 +250,11 @@ urlpatterns += [
     path('reports/email/', reports.send_email, name='send_reports_email'),
 ]
 
-
+# Purchase Entry
+urlpatterns += [
+    path('view_purchase_entry/', never_cache(login_required(purchasentry.PurchaseEntry.as_view())), name = 'Purchase_entry'),
+    path('purchase_entry/add_purchase_entry/<slug:slug>/', never_cache(login_required(purchasentry.add_purchase_entry)), name = 'add_purchase_entry'),
+]
 
 
 #

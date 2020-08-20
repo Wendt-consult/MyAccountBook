@@ -650,25 +650,25 @@ class User_Address_Details(models.Model):
     contact_person = models.CharField(
         blank = True,
         null = True,
-        max_length = 250,
+        max_length = 50,
     )
 
     flat_no = models.CharField(
-        max_length = 250,
+        max_length = 200,
         blank = True,
         null = True,
         db_index = True,
     )
 
     street = models.CharField(
-        max_length = 250,
+        max_length = 100,
         blank = True,
         null = True,
         db_index = True,
     )
 
     city = models.CharField(
-        max_length = 250,
+        max_length = 50,
         blank = True,
         null = True,
         db_index = True,
@@ -692,7 +692,7 @@ class User_Address_Details(models.Model):
     )
 
     pincode = models.CharField(
-        max_length = 250,
+        max_length = 10,
         blank = True,
         null = True,
         db_index = True,

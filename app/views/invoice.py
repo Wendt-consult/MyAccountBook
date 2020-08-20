@@ -61,16 +61,16 @@ class Invoice(View):
     def get(self, request):        
         
         invoice = invoice_model.InvoiceModel.objects.filter(user = request.user,invoice_delete_status=0)
-        invoice_paginator = Paginator(invoice, 10)
-        invoice_page = request.GET.get('page')     
-        try:
-            invoice_posts = invoice_paginator.page(invoice_page)
-        except PageNotAnInteger:
-            invoice_posts = invoice_paginator.page(1)
-        except EmptyPage:
-            invoice_posts = invoice_paginator.page(invoice_paginator.num_pages)
-        self.data["invoice"] = invoice_posts
-        self.data["invoice_page"] = invoice_page
+        # invoice_paginator = Paginator(invoice, 10)
+        # invoice_page = request.GET.get('page')     
+        # try:
+        #     invoice_posts = invoice_paginator.page(invoice_page)
+        # except PageNotAnInteger:
+        #     invoice_posts = invoice_paginator.page(1)
+        # except EmptyPage:
+        #     invoice_posts = invoice_paginator.page(invoice_paginator.num_pages)
+        self.data["invoice"] = invoice
+        # self.data["invoice_page"] = invoice_page
     
         # CUSTOMIZE VIEW CODE
         customize_invoice = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 5))
@@ -1028,11 +1028,11 @@ class CloneInvoice(View):
 
         # org gst number
         self.data['is_gst'] = 'no'
-        self.data['is_signle_gst']  = 'no'
+        self.data['is_signle_gst'] = 'no'
         self.data['org_gst_type'] = None
-        org = Organisations.objects.get(user = request.user,is_active = True)
+        org = Organisations.objects.get(user = request.user)
 
-        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id)
+        org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
 
         self.data['org_id'] = org.id
         if(len(org_gst_num) == 1):

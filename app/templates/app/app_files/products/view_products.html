@@ -1,4 +1,5 @@
 <style>
+    
 .product_name:hover{
     color: #598ebb!important;
 }
@@ -64,6 +65,13 @@ color: white!important;
     
     line-height:1.3;
 }
+thead th{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color:#c3c3c3;
+    }
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -178,7 +186,7 @@ color: white!important;
             <div class="card-body">
                 <div class="loader" style="display: none;"></div>
                 <div class="table" id="customize_table">
-                    <table class="table-bordered" width="100%" cellspacing="0">
+                    <table class="table-bordered" style="width: 96%;" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             <!-- <th class="text-center">SL. No.</th> -->
                             <!-- <th class="text-center">PID</th> -->
@@ -241,10 +249,10 @@ color: white!important;
                                     <td>{{ product.cost_price }}</td>
                                     <td>{{ product.marked_price }}</td> -->
                                     {% if customize.product_selling_price != 0 %}
-                                    <td align="center" class="customize_selling">{% if product.selling_price %}₹.{% endif %}  {{ product.selling_price|truncatechars:10 }}</td>
+                                    <td align="center" class="customize_selling">{% if product.selling_price %}₹{% endif %}  {{ product.selling_price|truncatechars:10 }}</td>
                                     {% endif %}
                                     {% if customize.product_Purchase_price != 0 %}
-                                    <td align="center" class="customize_purchase">{% if product.purchase_price %}₹.{% endif %}  {{ product.purchase_price|truncatechars:10 }}</td>
+                                    <td align="center" class="customize_purchase">{% if product.purchase_price %}₹{% endif %}  {{ product.purchase_price|truncatechars:10 }}</td>
                                     {% endif %}
                                     <td class="text-center" align="center">
                                         {% if product.is_active %}
@@ -364,7 +372,7 @@ color: white!important;
                             {% endfor %}
                         </tbody>
                     </table>
-                    {% if products %} 
+                    <!-- {% if products %} 
                     <div class="pagination" style="float: right;">
                         <span class="step-links">
                             {% if products.has_previous %}
@@ -382,7 +390,7 @@ color: white!important;
                             {% endif %}
                         </span>
                     </div>
-                    {% endif %}
+                    {% endif %} -->
                 </div>
             </div>
         </div>

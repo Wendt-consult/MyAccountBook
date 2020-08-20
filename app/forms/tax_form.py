@@ -68,8 +68,8 @@ class OrganisationGSTSettingsForm(ModelForm):
         fields = ('taxname', 'taxname_percent')
 
         widgets = {
-            'taxname' : TextInput(attrs = {'class':'form-control input-sm',}), 
-            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)', 'required':True}),  
+            'taxname' : TextInput(attrs = {'class':'form-control input-sm','required':True}), 
+            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event),float_value(event,$(this))','onkeyup':'check_percent($(this))', 'required':True}),  
         }   
 #
 #
@@ -80,6 +80,6 @@ class OrganisationCompositeGSTSettingsForm(ModelForm):
         fields = ('taxname', 'taxname_percent')
 
         widgets = {
-            'taxname' : TextInput(attrs = {'class':'form-control input-sm',}), 
-            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)','required':True}),  
+            'taxname' : TextInput(attrs = {'class':'form-control input-sm','required':True}), 
+            'taxname_percent' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event),float_value(event,$(this))','onkeyup':'check_percent($(this))','required':True}),  
         }   

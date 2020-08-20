@@ -28,7 +28,7 @@ select.form-control option{color : #000000; }
                             <div class="col-1">
                                 <div class="form-check form-check-radio">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="is_orginsation_register" id="is_orginsation_register" value="on" {%if org_address_details.0.organisation_tax.is_organisation_gst_register == True %} checked {% endif %}>
+                                        <input class="form-check-input" type="radio" name="is_orginsation_register" id="is_orginsation_register" value="on" {% if gst_register == 'yes' %} checked {% endif %}>
                                         Yes
                                         <span class="circle">
                                             <span class="check"></span>
@@ -48,7 +48,7 @@ select.form-control option{color : #000000; }
                                 </div>
                             </div>
                         </div>
-                        {% if org_address_details.0.organisation_tax.is_organisation_gst_register == True %}
+                        {% if gst_register == 'yes' %}
                         <div class="row" id="gst_multiple">
                             <div class="col-3">
                                 <label>Is Multiple GST</label>
@@ -56,7 +56,7 @@ select.form-control option{color : #000000; }
                             <div class="col-1">
                                 <div class="form-check form-check-radio">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="is_multiple_gst" id="is_multiple_gst" value="on" {% if org_address_details.0.organisation_tax.multiple_gst == True %} checked {% endif %}>
+                                        <input class="form-check-input" type="radio" name="is_multiple_gst" id="is_multiple_gst" value="on" {% if is_multiple == 'yes' %} checked {% endif %}>
                                         Yes
                                         <span class="circle">
                                             <span class="check"></span>
@@ -67,7 +67,7 @@ select.form-control option{color : #000000; }
                             <div class="col-1">
                                 <div class="form-check form-check-radio">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="is_single_gst" id="is_single_gst" value="on" {% if org_address_details.0.organisation_tax.multiple_gst == False %} checked {% endif %}>
+                                        <input class="form-check-input" type="radio" name="is_single_gst" id="is_single_gst" value="on" {% if is_multiple == 'no' %} checked {% endif %}>
                                         No
                                         <span class="circle">
                                             <span class="check"></span>
@@ -106,7 +106,7 @@ select.form-control option{color : #000000; }
                         </div>
                         {% endif %}
                         
-                        {% if org_address_details.0.organisation_tax.multiple_gst == True %}
+                        {% if is_multiple == 'yes' %}
                         <div class="row" id="gst_configuration_setting">
                             <table class="table-responsive table-bordered">
                                 <tbody style="width:100%; display:inline-table;">
@@ -269,7 +269,7 @@ select.form-control option{color : #000000; }
                             </table>
                         </div>
                         {% endif %}
-                        {% if org_address_details.0.organisation_tax.multiple_gst == False %}
+                        {% if is_multiple == 'no' %}
                         <div class="row single_gst_field">
                             <div class="col-3">
                                 <label for="single_gst_type">GST Type</label>

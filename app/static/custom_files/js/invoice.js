@@ -73,7 +73,7 @@ function add_header(a){
         var org_state = $('#single_gst_code option:selected').text()
 
         var html = '<tr id="invoice_row_header'+invoice_header_number+'">'
-        if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == '' ){
+        if(org_state == '' || state == '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '' ){
             html +='<td class="invoice_row_header" colspan="8" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
         }else if(org_state.toLowerCase() != state.toLowerCase()){
             html +='<td class="invoice_row_header" colspan="7" style="border:1px solid black;"><input class="form-control" id="prduct_header'+invoice_header_number+'" name="ItemName[]" placeholder="Header" required><input type="text" id="header_quan'+invoice_header_number+'" name="Quantity[]" value="header" style="display:none;"></td>'
@@ -196,9 +196,9 @@ function product_row_creator(invoice_number){
     var state = $('#invoice_state_supply').val()
     var org_state = $('#single_gst_code option:selected').text()
     var html = '<tr id="invoice_row'+invoice_number+'">'
-    html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">-------</option></select>'
+    html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select invoice_line_item" id="ItemName'+invoice_number+'" name="ItemName[]" onchange="product('+invoice_number+')" style="padding-left:0px" required><option value="">None</option></select>'
     html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
-    html +='<td style="border:1px solid black;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">-------</option></select></td>'
+    html +='<td style="border:1px solid black;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
     html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Price'+invoice_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+invoice_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" name="Quantity[]" required></td>'
@@ -207,7 +207,7 @@ function product_row_creator(invoice_number){
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+invoice_number+'" name="Dis[]" onchange="dicount_type('+invoice_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
-    if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == ''){
+    if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+invoice_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+invoice_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
         html +='<td class="row_i_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+invoice_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'
@@ -301,8 +301,8 @@ function get_func(next_id, value,product_quantity,product_price,product_unit, ac
 //  add bulk product in the table
 
 function run_others(counter,type){
-    acc_group_name_htm = '<option value="">-------</option>';
-    products_htm = '<option value="">-------</option>';
+    acc_group_name_htm = '<option value="">None</option>';
+    products_htm = '<option value="">None</option>';
     if(type == 'single'){
         invoice_number += 1
         value = 'NA'
@@ -1166,7 +1166,7 @@ function change_state(){
     var state = $('#invoice_state_supply').val()
     var org_state = $('#single_gst_code option:selected').text()
     if(org_state != '' & state != ''){
-        if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val() == '8'|| $('#org_gst_reg_type').val() == '' || global_gst_type == '0' || global_gst_type =='3' || global_gst_type == '5'|| global_gst_type == ''){
+        if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
             $('#invoice_table').find('.row_i_gst').hide()
             $('#invoice_table').find('.row_igst').val('')
             $('#invoice_table').find('.row_cs_gst').show()

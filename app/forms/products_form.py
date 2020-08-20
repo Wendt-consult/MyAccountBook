@@ -1,5 +1,6 @@
 from django.forms import * 
 from app.models.products_model import *
+from app.models.users_model import *
 from app.other_constants import *
 
 #===================================================================================
@@ -12,7 +13,7 @@ class ProductForm(ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(ProductForm, self).__init__(*args, **kwargs)
-        
+
     class Meta:
         model = ProductsModel
 
@@ -27,10 +28,10 @@ class ProductForm(ModelForm):
             
             'product_type' : Select(attrs = {'class':'form-control input-sm', 'onchange':'show_bundle($(this))'}, choices = products_constant.PRODUCT_TYPE),
             'sku' : TextInput(attrs = {'class':'form-control input-sm',}),
-            'product_name' : TextInput(attrs = {'class':'form-control input-sm', 'onfocusout':'check_product_name($(this), true)'}),            
+            'product_name' : TextInput(attrs = {'class':'form-control input-sm','maxlenght':'50', 'onfocusout':'check_product_name($(this), true)'}),            
             'hsn_code' : TextInput(attrs = {'class':'form-control input-sm',}),
             'product_description' : Textarea(attrs = {'class':' input-sm', 'rows':'2', 'style':'width:100%;background-color: #fff;border-style: double;color: black;'}), 
-            'tds' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)',}),      
+            'tds' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_tds")',}),      
             'unit' : Select(attrs = {'class':'form-control input-sm',}, choices = products_constant.UNITS), 
             'hidden_img' : TextInput(attrs = {'class':'form-control input-sm',}),     
             
@@ -39,7 +40,9 @@ class ProductForm(ModelForm):
             'is_sales' : CheckboxInput(attrs={'class':'form-check-input', 'style':'margin-left:1%',}),
             # 'preferred_currency' : Select(attrs = {'class':'form-control input-sm','onchange':'select_change()','style':'width: 15%;position: absolute;margin-top: 7px;color: black;background-color: silver;',}, choices = products_constant.Currency ),
             'selling_price' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_price")','onkeyup':'change_SP()','style':'margin-top:4px',}),
-            'selling_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_tax")', 'onkeyup':'change_SP()'}),
+            #'selling_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_tax")', 'onkeyup':'change_SP()'}),
+            'selling_tax' : Select(attrs = {'class':'form-control input-sm', 'onchange':'change_SP()'},),
+            
             'inclusive_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)','style':'width: 100%;', }),
             'sales_account' : Select(attrs = {'class':'form-control input-sm',},),
 
@@ -78,9 +81,9 @@ class EditProductForm(ModelForm):
             'product_type' : Select(attrs = {'class':'form-control input-sm', 'onchange':'show_bundle($(this))'}, choices = products_constant.PRODUCT_TYPE),
             'sku' : TextInput(attrs = {'class':'form-control input-sm',}),
             'product_name' : TextInput(attrs = {'class':'form-control input-sm', 'onfocusout':'check_product_name($(this), true)'}),            
-            'hsn_code' : TextInput(attrs = {'class':'form-control input-sm',}),
+            'hsn_code' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_tds")'}),
             'product_description' : Textarea(attrs = {'class':'input-sm','rows':'2', 'style':'width:100%;background-color: #fff;border-style: double;color: black;'}), 
-            'tds' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)',}),      
+            'tds' : TextInput(attrs = {'class':'form-control input-sm',}),      
             'unit' : Select(attrs = {'class':'form-control input-sm',}, choices = products_constant.UNITS), 
             'hidden_img' : TextInput(attrs = {'class':'form-control input-sm',}),     
             
@@ -89,7 +92,9 @@ class EditProductForm(ModelForm):
             'is_sales' : CheckboxInput(attrs={'class':'form-check-input', 'style':'margin-left:1%',}),
             # 'preferred_currency' : Select(attrs = {'class':'form-control input-sm','onchange':'select_change()','style':'width: 15%;position: absolute;margin-top: 7px;color: black;background-color: silver;',}, choices = products_constant.Currency ),
             'selling_price' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_price")','onkeyup':'change_SP()','style':'margin-top:4px',}),
-            'selling_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_tax")', 'onkeyup':'change_SP()'}),
+            # 'selling_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_selling_tax")', 'onkeyup':'change_SP()'}),
+            'selling_tax' : Select(attrs = {'class':'form-control input-sm', 'onchange':'change_SP()'},),
+            
             'inclusive_tax' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event)','style':'width: 100%;', }),
             'sales_account' : Select(attrs = {'class':'form-control input-sm',},),
 

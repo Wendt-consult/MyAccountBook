@@ -110,9 +110,9 @@ textarea{
     .close{
         text-shadow: 0 1px 0 red;
     }
-    #files{
+    #ProductModal #files{
         padding-top: 1px;
-        width: 75%;
+        width: 75%!important;
     }
     optgroup{color :black; }
     .addrow:hover{
@@ -226,7 +226,7 @@ textarea{
         margin-top: -1%;
     }
     #Attachment {
-    width: 92px;
+    width: 91px;
 }
 .select2-results__options{
         font-size:14px !important;
@@ -237,7 +237,13 @@ textarea{
  #close:hover{
     color: red!important;
 }
-    </style>
+#multiple_gst_link:hover{
+    color: white!important;
+}
+#common_gst:hover{
+    color:white!important;
+}
+</style>
 
 <form method="post" action="{% url 'save_invoice' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
@@ -307,7 +313,7 @@ textarea{
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="customer_gst_type()">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
 
                                         {% for contact in intcontacts %}
                                             {% if invoice.invoice_customer_id|lower == contact.id|lower %}
@@ -407,7 +413,7 @@ textarea{
                                 </div>
                                 <div class="col-8 input">
                                     <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" required>
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}" {% if invoice.invoice_new_pay_terms == i.1 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
@@ -444,7 +450,7 @@ textarea{
                                 </div>
                                 <div class="col-8 input">
                                     <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" style="padding-left: 9px;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
@@ -491,7 +497,7 @@ textarea{
                                 </div>
                                 <div class="col-3 input" style="padding-right: 5px;">
                                     <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}" {% if invoice.invoice_recurring_frequency == i.1 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
@@ -559,7 +565,7 @@ textarea{
                                 </div>
                                 <div class="col-3 input" style="padding-right: 5px;">
                                     <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}">{{i.1}}</option>
                                         {% endfor %}
@@ -621,7 +627,7 @@ textarea{
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" id="invoice_seales_person" name="invoice_seales_person">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
 
                                         {% for contact in contacts %}
                                             {% if contact.customer_type == 3 %}
@@ -638,7 +644,7 @@ textarea{
                                 </div>
                                 <div class="col-8 input">
                                     <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('vendor_side')" style="padding-left: 9px;">
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for i in state %}
                                         <option value="{{i.0}}" {% if invoice.invoice_state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
@@ -739,7 +745,7 @@ textarea{
                                     
                                     <select class="form-control select invoice_line_item" id="ItemName{{items.header_number_count}}" name="ItemName[]" onchange='product({{items.header_number_count}})'  style="padding-left: 0px;" required>
                                         
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         
                                         {% for product in intproducts %}
                                             {% if items.product_id|lower == product.id|lower %}
@@ -760,7 +766,7 @@ textarea{
                                 </td>
                                 <td style="border:1px solid black;">
                                     <select class="form-control product_invoice_account"  id="product_account{{items.header_number_count}}" name="product_account[]" required>
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         
                                         {% for acc_group in acc_ledger_income %}
                                             <option value="{{acc_group.id}}" {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
@@ -1208,7 +1214,7 @@ textarea{
                                     </div>
                                     <div class="col" style="padding-top:2%;">
                                         <select name="product_type" class="form-control input-sm" onchange="show_bundle($(this))" id="id_product_type" required="">
-                                            <option value="">---------</option>
+                                            <!-- <option value="">---------</option> -->
                                           
                                             <option value="0" selected="">GOODS</option>
                                           
@@ -1287,7 +1293,7 @@ textarea{
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 1px solid black;">
                                     <span class="close material-icons">delete_forever</span>
                                     <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
                                 </div>
@@ -1938,7 +1944,7 @@ textarea{
                                                             <td style=" width:150px; border:0px;">
                                                                 Attachments
                                                             </td>
-                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            <td style="width:44%;border:0px;padding-top: 1%;">
                                                                 {{ social_form.attachements }}
                                                                 <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>

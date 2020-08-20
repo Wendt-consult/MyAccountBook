@@ -229,8 +229,8 @@ td{padding:5px;}
                                                 
                                             </div>
                                             <div class="modal-body" style="border-top: none;position: bottom;">
-                                                <h4 align="center" id="msg_text1"><b><font color="black">Are you sure you want to inactive {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Inactive address will not affect reports or historical transactions. </font></b></h4>
-                                                <h4 align="center" id="msg_text2" style="display: none;"><b><font color="black">In this {{i.get_state_display}} state, It's your last reamining address if you make inactive then this address gst number also inactive</font></b></h4>
+                                                <h4 align="center" id="msg_text{{i.id}}"><b><font color="black">Are you sure you want to inactive {{ i.contact_person|default_if_none:""|truncatechars:15 }}. Inactive address will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center" id="msg_text_last{{i.id}}" style="display: none;"><b><font color="black">Making this address inactive will also make GST number related to this address Inactive, Do you want to proceed?</font></b></h4>
                                             </div>
                                             
                                             <div class="modal-footer" style="text-align: center;justify-content: center; border-top: none;padding:6px;">

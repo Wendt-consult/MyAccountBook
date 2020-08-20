@@ -96,9 +96,9 @@ textarea.form-control{
 .close{
     text-shadow: 0 1px 0 red;
 }
-#files{
-    padding-top: 1px;
-    /* width: 75%; */
+#ProductModal #files{
+    padding-top: 0px;
+    width: 75%!important;
 }
 optgroup{color :black; }
 .addrow:hover{
@@ -134,6 +134,12 @@ optgroup{color :black; }
 #close:hover{
      color: red!important;
  }
+ #multiple_gst_link:hover{
+    color: white!important;
+}
+#common_gst:hover{
+    color:white!important;
+}
 </style>
 
 <form method="post" action="{% url 'save_credit_note' %}" autocomplete="off" enctype="multipart/form-data">
@@ -184,7 +190,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-7">
                                     <select class="form-control select1" id="customerName" name="customerName" onchange="data($(this)),customer_gst_type()" required> 
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
                                         {% for contact in contacts %}
                                         <option value="{{contact.id}}">{{contact}}</option>
                                         {% endfor %}
@@ -194,13 +200,14 @@ optgroup{color :black; }
 
                             <div class="row" style="margin-top: 10px;">
                                 <div class="col-4">
-                                    <label for="BillingAddress">Billing Address</label>
+                                    <label for="BillingAddress1">Billing Address</label>
                                 </div>
                                 <div class="col-7">
-                                    <input list="BillingAddress" role="2" class="form-control" name="BillingAddress" id="BillingAddress1" >
+                                    <textarea rows="3" placeholder="Billing address" id="BillingAddress1" name="BillingAddress" style="width: 100%;" required></textarea>
+                                    <!-- <input list="BillingAddress" role="2" class="form-control" name="BillingAddress" id="BillingAddress1" >
                                     <datalist id="BillingAddress">
                                         
-                                    </datalist> 
+                                    </datalist>  -->
                                 </div>
                             </div>
 
@@ -261,7 +268,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-7">
                                     <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status('vendor_side')">
-                                        <option value="">------</option>
+                                        <option value="">None</option>
                                         {% for i in state %}
                                             <option value="{{i.0}}">{{i.1}}</option>
                                         {% endfor %}
@@ -316,7 +323,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 174.6px;">
                                     
-                                    <option value="-------">-------</option>
+                                    <option value="-------">None</option>
                                     
                                     {% for product in products %}
                                         <option value="{{product.id}}">{{product}}</option>
@@ -819,7 +826,7 @@ optgroup{color :black; }
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 1px solid black;">
                                     <span class="close material-icons">delete_forever</span>
                                     <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
                                 </div>
@@ -1507,7 +1514,7 @@ optgroup{color :black; }
                                                             <td style=" width:150px; border:0px;">
                                                                 Attachments
                                                             </td>
-                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            <td style="width:44%;border:0px;padding-top: 1%;">
                                                                 {{ social_form.attachements }}
                                                                 <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>

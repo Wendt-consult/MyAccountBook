@@ -94,9 +94,9 @@ textarea.form-control{
 .close{
     text-shadow: 0 1px 0 red;
 }
-#files{
-    padding-top: 1px;
-    /* width: 75%; */
+#ProductModal #files{
+    padding-top: 0px;
+    width: 75%!important;
 }
 optgroup{color :black; }
 .addrow:hover{
@@ -176,7 +176,7 @@ optgroup{color :black; }
                                 
                                 <div class="col-7">
                                     <select class="form-control select1" id="customerName"  name="customerName" onchange="data($(this)),customer_gst_type()" required> 
-                                        <option value="">-------</option>
+                                        <option value="">None</option>
         
                                         {% for contact in intcontacts %}
                                             {% if credit_note.contact_name|lower == contact|lower %}
@@ -198,10 +198,11 @@ optgroup{color :black; }
                                     <label for="BillingAddress">Billing Address</label>
                                 </div>
                                 <div class="col-7">
-                                    <input list="BillingAddress" class="form-control" value="{{credit_note.billing_address|default_if_none:''}}" name="BillingAddress" id="BillingAddress1" >
+                                    <textarea rows="3" placeholder="Billing address" id="BillingAddress1" name="BillingAddress" style="width: 100%;" required>{{credit_note.billing_address|default_if_none:''}}</textarea>
+                                    <!-- <input list="BillingAddress" class="form-control" value="{{credit_note.billing_address|default_if_none:''}}" name="BillingAddress" id="BillingAddress1" >
                                     <datalist id="BillingAddress">
                                         
-                                    </datalist> 
+                                    </datalist>  -->
                                 </div>
                             </div>
 
@@ -278,7 +279,7 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-7">
                                     <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status('vendor_side')">
-                                        <option value=""></option>
+                                        <option value="">None</option>
                                         {% for i in state %}
                                             <option value="{{i.0}}" {% if credit_note.state_supply == i.0 %} selected {% endif %} >{{i.1}}</option>
                                         {% endfor %}
@@ -331,7 +332,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
-                                    <option value="-------">-------</option>
+                                    <option value="-------">None</option>
                                     
                                     {% for product in intproducts %}
                                         {% if items.product_id|lower == product.id|lower %}
@@ -422,7 +423,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
-                                    <option value="-------">-------</option>
+                                    <option value="-------">None</option>
                                     
                                     {% for product in products %}
                                         <option value="{{product.id}}" >{{product}}</option>
@@ -1125,7 +1126,7 @@ optgroup{color :black; }
                                         <label for="">Product Image</label>
                                 </div>
 
-                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 2px solid white;">
+                                <div class="row img-wrap" style="box-sizing: content-box; width: 201px;height: 150px;border: 1px solid black;">
                                     <span class="close material-icons">delete_forever</span>
                                     <img id="myImg_preview" class="responsive"  style="color: white;width:200px;height:150px;"> 
                                 </div>
@@ -1395,7 +1396,7 @@ optgroup{color :black; }
                                     <td style="border:0px; vertical-align: bottom;width: 20%;">
                                         Contact Type
                                     </td>
-                                    <td style="width: 44%;border:0px;padding-top: 2%;">
+                                    <td style="width: 44%;border:0px;padding-top: 2%;" id="con_type">
                                         <!-- {{ contact_form.customer_type }} -->
                                         {{ contact_form.fromwhere.as_hidden }}
                                     </td>                                    
@@ -1812,9 +1813,9 @@ optgroup{color :black; }
                                                             <td style=" width:150px; border:0px;">
                                                                 Attachments
                                                             </td>
-                                                            <td style="width:44%;border:0px;padding-top: 2%;">
+                                                            <td style="width:44%;border:0px;padding-top: 1%;">
                                                                 {{ social_form.attachements }}
-                                                                <font color="white" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
+                                                                <font color="black" style="font-size:x-small;">(File Size Less Than: 2 MB)</font>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -1828,8 +1829,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" style="margin-top: -3%;">
-                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick=" return creditnote_contact_form(0)" style="background-color:#598ebb">Save</button>
-                    <button class="btn btn-sm" type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>
+                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick=" return creditnote_contact_form(0)" style="margin-top:16px;background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm" type="button" data-dismiss="modal" aria-label="Close" style="margin-top:16px;background-color: #9095a2;">Cancel</button>
                 </div>
             </form>
         </div>

@@ -115,14 +115,14 @@
                                 <tr style="background-color:#c3c3c3;"">
                                     <th style="color: white; text-align:center;">Category</th>
                                     <th style="color: white; text-align: center;">Amount</th>
-                                    <th style="color: white; text-align: center;">Tax</th>
+                                    <th style="color:white; text-align: center;">Tax</th>
                                     <th style="color: white; text-align: center;">Total Amount</th>
                                     <th style="color: white; text-align: center;">Action</th>
                                 </tr>
                                 <tr class="ex_cat_form" >
                                     <td ><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
-                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
+                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color:black;">%</span></div></td>
                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
                                     <td style="text-align: center;">
                                         <div class="td">
@@ -160,7 +160,7 @@
                                                     <td><div class="td" style="padding-top: 20px; display: inline-grid;">{{ item_form.quantity }}<span style="color: white; padding-left: 10px;">({{ item_form.instance.product.get_unit_display }})</span></div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i>{{ item_form.rate }}</div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.amount }}</div></td>
-                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color: white;">%</span></div></td>
+                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color:black;">%</span></div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.total_amount }}</div></td>
                                                     <td style="text-align: center;">
                                                         <div class="td">
@@ -197,7 +197,7 @@
                                 <tr class="ex_cat_form" style="background-color: #fff;">
                                     <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
-                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
+                                    <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: black;">%</span></div></td>
                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
                                     <td style="text-align: center;">
                                         <div class="td">
@@ -234,7 +234,7 @@
                                                     <td><div class="td" style="padding-top: 20px; display: inline-grid;">{{ item_form.quantity }}<span style="color: white; padding-left: 10px;">({{ item_form.product_unit.value }})</span></div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i>{{ item_form.rate }}</div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.amount }}</div></td>
-                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color: white;">%</span></div></td>
+                                                    <td class="tax_style"><div class="td">{{ item_form.tax }} <span style="color:black;">%</span></div></td>
                                                     <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ item_form.total_amount }}</div></td>
                                                     <td style="text-align: center;">
                                                         <div class="td">
@@ -268,7 +268,7 @@
                                     <tr class="ex_cat_form" style="background-color: #fff;">
                                         <td><div class="td">{{ form.account }}<br>{{ form.category_description }}</div></td>
                                         <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.amount }}</div></td>
-                                        <td class="tax_style"><div class="td">{{ form.tax }} <span style="color: white;">%</span></div></td>
+                                        <td class="tax_style"><div class="td">{{ form.tax }} <span style="color:black;">%</span></div></td>
                                         <td><div class="td"><i class="fa fa-inr" aria-hidden="true"></i> {{ form.total_amount }}</div></td>
                                         <td style="text-align: center;"><div class="td">
                                             <button class="btn btn-sm btn-danger" id='delete_cate_btn_0' type="button">Delete</button>

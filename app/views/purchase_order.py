@@ -289,7 +289,7 @@ def org_contact_address(request, slug):
         contacts = Contacts.objects.get(pk = int(slug))
         address = users_model.User_Address_Details.objects.filter(Q(is_user = False) & Q(contact = contacts) & Q(is_organisation = False) & Q(is_shipping_address = True)).values('address_tag','contact_person','flat_no', 'street', 'city', 'state', 'country', 'pincode' ,'organisation_tax')
         data['ids'] = contacts.id
-        gst = users_model.User_Tax_Details.objects.get(contact = contacts)
+        gst = users_model.User_Tax_Details.objects.get(Q(contact = contacts))
         if(gst.gstin is not None):
             data['gst'].append(gst.gstin)
         else:

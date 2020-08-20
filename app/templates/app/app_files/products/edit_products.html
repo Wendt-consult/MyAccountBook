@@ -132,7 +132,7 @@ width:95px
                                     </div>
                                 </div>
                                 {% if product_type != 2 %}
-                                <div class="row">
+                                <div class="row" id="hsn_code">
                                     <div class="col-3 left">
                                         <label for="">HSN/SAC Code</label>
                                     </div>
@@ -383,7 +383,7 @@ width:95px
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label>Income Accounts</label>
+                                        <label>Income Account</label>
                                     </div> 
                                     <div class="col">
                                         {{add_product_form.sales_account}}
@@ -653,5 +653,9 @@ width:95px
             alert(" Some product in bundle table is inactive or deleted")
         }
     });
+</script>
+<script>
+    selling_tax = '{{selling_taxes|safe}}';
+    selling_tax_old = '{{selling_tax_old}}';
 </script>
 {% endblock %}

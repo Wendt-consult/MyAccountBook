@@ -114,8 +114,8 @@ function add_single_row(a){
     run_others();
 }
 function run_others(){
-    acc_group_name_htm = '<option value="">-------</option>';
-    products_htm = '<option value="">-------</option>';
+    acc_group_name_htm = '<option value="">None</option>';
+    products_htm = '<option value="">None</option>';
 
     next_id = purchase_number;       
     html = product_row_creator(next_id);
@@ -125,9 +125,9 @@ function run_others(){
 }
 function product_row_creator(purchase_number){
     var html = '<tr id="purchase_row'+purchase_number+'">'
-        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="">-------</option></select>'
+        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="">None</option></select>'
         html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
-        html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" onchange="validation()"><option value="">-------</option></select></td>'
+        html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" onchange="validation()"><option value="">None</option></select></td>'
         html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
         html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
         html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" name="Quantity[]"></td>'
@@ -1299,8 +1299,8 @@ function ajax_org_address(){
                         a_branch = branch[i]
                     }
                     var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
-                        html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
-                        html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
+                        html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                        html +='<td style="border:1px solid black;" align="center" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
                         html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
                         html +='<div class="row" id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
                         html +='<div class="row" id="p_state'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;display:none">'+state[i]+'</div>'
@@ -1367,8 +1367,8 @@ function purchase_cont_address(){
                             a_branch = branch[i]
                         }
                         var html = '<tr class="address_row" id="purchase_delivery_address_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label">'
-                            html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-1%"><span class="circle"><span class="check"></span></span></label></td>'
-                            html +='<td style="border:1px solid black;" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
+                            html+='<input class="form-check-input choose_address" type="radio" name="radio_add" id="adress_'+(parseInt(i)+1)+'" onclick="radio_click_add($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                            html +='<td style="border:1px solid black;" align="center" class="choose_address_branch'+(parseInt(i)+1)+'">'+a_branch+'</td>'
                             html +='<td style="border:1px solid black;"><div class="row" id="con_person'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+con+'</div>'
                             html +='<div class="row"  id="p_address'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;">'+count[i]+'</div>'
                             html +='<div class="row" id="p_state'+(parseInt(i)+1)+'" style="margin-left:0px;margin-right:0px;display:none">'+state[i]+'</div>'

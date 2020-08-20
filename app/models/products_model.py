@@ -110,8 +110,8 @@ class ProductsModel(models.Model):
         db_index = True,
         default=0,
         choices = products_constant.PRODUCT_TYPE,
-        blank = True,
-        null = True,
+        blank = False,
+        null = False,
     )
 
     product_delete_status = models.IntegerField(
@@ -131,7 +131,7 @@ class ProductsModel(models.Model):
         db_index = True,
         blank = False,
         null = False,
-        max_length = 250,
+        max_length = 50,
     )
 
     product_description = models.TextField(
@@ -149,7 +149,7 @@ class ProductsModel(models.Model):
 
     tds = models.CharField(
         default = 0.0,
-        max_length=3,
+        max_length=10,
         db_index = True,
         null=True,
         blank=True,
@@ -193,9 +193,7 @@ class ProductsModel(models.Model):
         null = True,
     )
 
-    selling_tax = models.CharField(
-        max_length=5,
-        default = 0.0,
+    selling_tax = models.IntegerField(
         db_index = True,
         null=True,
         blank=True,

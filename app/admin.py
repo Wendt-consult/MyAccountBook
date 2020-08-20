@@ -8,6 +8,7 @@ from app.models.purchase_model import *
 from app.models.customize_model import *
 from app.models.invoice_model import *
 from app.models.expense_model import *
+from app.models.purchasentry_model import *
 from app.models import *
 
 #
@@ -133,3 +134,6 @@ class Invoice_Line_Items(admin.ModelAdmin):
 class Expense(admin.ModelAdmin):
     model = Expense
 
+@admin.register(PurchaseEntry)
+class PurchaseEntry(admin.ModelAdmin):
+    model = PurchaseEntry

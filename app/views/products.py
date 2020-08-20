@@ -15,6 +15,22 @@ from django.conf import settings
 
 import json, shutil
 
+#========================================================================================
+#   VIEW/LIST PRODUCTS
+#========================================================================================
+#
+
+def get_selling_tax(user):
+    html = []
+
+    qset = users_model.OrganisationGSTSettings.objects.filter(user = user).values_list('id', 'taxname_percent')
+    #print(qset)
+
+    for x in qset:
+        html.append('<option value="'+str(x[0])+'">'+str(x[1])+'</option>')
+
+    return ''.join(html)
+
 
 #========================================================================================
 #   VIEW/LIST PRODUCTS
@@ -23,7 +39,10 @@ import json, shutil
 
 def check_existing_product(request):
     if request.GET["ins"]:
-        product = products_model.ProductsModel.objects.filter(product_name__iexact = request.GET["ins"],user = request.user)
+        product = products_model.ProductsModel.objects.filter(Q(product_name__iexact = request.GET["ins"]) | Q(product_name = request.GET["ins"])) \
+            .filter(user = request.user).values('id', 'product_name')
+        print(product.query, product)
+
         value = ""
         if request.GET["add_form"] == "1" and request.GET["prod_id"]:
             product = product.exclude(pk = int(request.GET["prod_id"]))
@@ -110,16 +129,16 @@ def view_products(request, *args, **kwargs):
     # data["products"] = products
 
     # pagination
-    product_paginator = Paginator(products, 10)
-    product_page = request.GET.get('page')     
-    try:
-        product_posts = product_paginator.page(product_page)
-    except PageNotAnInteger:
-        product_posts = product_paginator.page(1)
-    except EmptyPage:
-        product_posts = product_paginator.page(product_paginator.num_pages)
-    data["products"] = product_posts
-    data["product_page"] = product_page
+    # product_paginator = Paginator(products, 10)
+    # product_page = request.GET.get('page')     
+    # try:
+    #     product_posts = product_paginator.page(product_page)
+    # except PageNotAnInteger:
+    #     product_posts = product_paginator.page(1)
+    # except EmptyPage:
+    #     product_posts = product_paginator.page(product_paginator.num_pages)
+    data["products"] = products
+    # data["product_page"] = product_page
 
     # CUSTOMIZE VIEW CODE
     customize_product = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 2))
@@ -172,7 +191,10 @@ class AddProducts(View):
         elif request.session.has_key('product_filter_active'):
             del request.session['product_filter_active']
 
+        self.data["selling_taxes"] = get_selling_tax(request.user)
+
         self.data["add_product_form"] = ProductForm(request.user)
+
         return render(request, self.template_name, self.data)
 
     def post(self, request, *args, **kwargs):                         
@@ -353,15 +375,18 @@ class EditProducts(View):
             self.data["add_bundle_product_form"] = BundleProductForm(request.user, kwargs["ins"])
             self.data['bundle_count'] = len(self.data["bundle_products"]) - 1
 
+        self.data["selling_tax_old"] = product.selling_tax
+        self.data["selling_taxes"] = get_selling_tax(request.user)
         
         return render(request, self.template_name, self.data)
 
     #
     #
     #
-    def post(self, request, *args, **kwargs):
+    def post(self, request, ins=None):
+
         try:
-            product = ProductsModel.objects.get(pk = int(kwargs["ins"]))
+            product = ProductsModel.objects.get(pk = int(ins))
         except:
             return redirect('/unauthorized/', permanent=False)
 
