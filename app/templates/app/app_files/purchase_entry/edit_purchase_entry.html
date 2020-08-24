@@ -247,43 +247,35 @@ optgroup{color :black; }
 #common_gst:hover{
     color:white!important;
 }
+#Attachment {
+    width: 91px;
+}
 </style>
 
-<form method="post" action="{% url 'save_purchase_entry' %}" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'edit_purchase_entry' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row" style="margin: 0% 5% 6% 7%;">
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title">Add Purchase Entry</h4>
+                    <h4 class="card-title">Edit Purchase Entry</h4>
                 </div>  
+                {% if entry.purchase_org_gst_num %} 
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
-                    {% if is_gst != 'no' %}
-                        {% if is_signle_gst == 'yes' %}
-                            <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
-                        {% else %}
-                        <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this purchase entry with another GST number</h6>&nbsp;
-                            <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
-                        </div>
-                        {% endif %}
-                    {% else %}
-                    <div class="row" style="margin-left: 0px;" id="change_update_gst">
-                        <h6 style="color: white;font-size: x-small;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
-                        <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
-                    </div>
-                    <div style="display: none;" id="replace_change_update">
-                        <h6 style="color: white;font-size: x-small;"></h6>
-                    </div>
-                    {% endif %}
+                    <h6 style="color: white;font-size: x-small;">Gst number for this purchase Entry is-{{entry.purchase_org_gst_num}}.</h6>
                 </div>
+                {% else %}
+                <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
+                    <h6 style="color: white;font-size: x-small;">This purchase Entry created without gst number.</h6>
+                </div> 
+                {% endif %} 
             <div style="margin-top: 4%;margin-left: 2%;">
-                <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
-                <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <input class="form-control" type="hidden" value="{{entry.purchase_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{entry.purchase_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
                 <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
                     <option value="">---------</option>
                     {% for i in gst_code %}
-                    <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
+                    <option value="{{i.0}}" {% if entry.purchase_org_gst_state == i.0 %} selected {% endif %}>{{i.1}}</option>
                     {% endfor %}
                 </select>
                 <div class="container" >
@@ -296,11 +288,11 @@ optgroup{color :black; }
                                     <label for="invoice_number">Purchase Number</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input class="form-control" id="purchase_entry_number" name="purchase_entry_number" required>
+                                    <input class="form-control" id="purchase_entry_number" name="purchase_entry_number" value="{{entry.purchase_entry_number}}" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" id="auto_entry_number" name="auto_entry_number">
+                                                <input class="form-check-input" type="checkbox" id="auto_entry_number" name="auto_entry_number" {% if entry.purchase_number_check == 'on '%} checked {% endif %}>
                                                 Auto-Generate Purchase Entry Number
                                                 <span class="form-check-sign">
                                                     <span class="check"></span>
@@ -318,11 +310,18 @@ optgroup{color :black; }
                                 <div class="col-8" style="margin-top:-1%">
                                     <select class="form-control entry_vendor" id="entry_vendor" name="entry_vendor" onchange="state_compare()" required>
                                         <option value="">None</option>
+                                        {% for contact in intcontacts %}
+                                            {% if purchase_order.vendor_id|lower == contact.id|lower %}
+                                            <option value="{{contact.id}}" {% if entry.vendor|lower == contact|lower %} selected {% endif %}>{{contact}}</option>
+                                            {% endif %}
+                                        {% endfor %}
         
                                         {% for contact in contacts %}
-                                        {% if contact.customer_type == 2%}
-                                        <option value="{{contact.id}}">{{contact}}</option>
-                                        {% endif %}
+                                            {% if contact.customer_type == 2%}
+                                            {% if entry.vendor_id|lower != contact.id|lower %}
+                                            <option value="{{contact.id}}">{{contact}}</option>
+                                            {% endif %}
+                                            {% endif %}
                                         {% endfor %}
                                    </select>
                                 </div>
@@ -336,7 +335,7 @@ optgroup{color :black; }
                                     <select class="form-control" id="entry_pay_terms" name="entry_pay_terms" style="padding-left: 9px;" onchange="invoice_pay_date()">
                                         <option value="">None</option>
                                         {% for i in payment_terms %}
-                                        <option value="{{i.1}}">{{i.1}}</option>
+                                        <option value="{{i.1}}"{% if entry.purchase_entry_pay_terms == i.1 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -362,7 +361,7 @@ optgroup{color :black; }
                                     <label for="entry_date">Purchase Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_entry_date" id="purchase_entry_date" required>
+                                    <input type="text" class="form-control" name="purchase_entry_date" id="purchase_entry_date" value="{{entry.purchase_entry_date|date:'d-m-Y'}}" required>
                                 </div>
                             </div>
 
@@ -371,7 +370,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_ref">Reference#</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref">
+                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref" value="{{entry.purchase_entry_refrence}}">
                                 </div>
                             </div>
 
@@ -380,7 +379,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_due_date">Due Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date">
+                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date" value="{{entry.purchase_entry_due_date|date:'d-m-Y'}}">
                                 </div>
                             </div>
                         </div>
@@ -390,6 +389,8 @@ optgroup{color :black; }
                     <table class="table" id="p_entry_table" style="width: 100%;margin-left: 1.5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
+                            {% if invoice.is_cs_gst == True %}
+                    
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
@@ -402,30 +403,54 @@ optgroup{color :black; }
                             <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;display: none;">IGST</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                        {% elif invoice.is_cs_gst == False %} 
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 8%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 6%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 8%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                        {% endif %}
                           
                         </thead>
                         <tbody>
-                          <tr id="entry_row1">
+                            {% for items in entry_item %}
+                          <tr id="entry_row{{forloop.counter}}">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select entry_line_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;">
+                                <select class="form-control select entry_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;">
                                     
                                     <option value="">None</option>
                                     
-                                    {% for product in products %}
-                                        <option value="{{product.id}}">{{product}}</option>
-                                    {% endfor %}
+                                    {% for product in intproducts %}
+                                            {% if items.product_id|lower == product.id|lower %}
+                                            <option value="{{product.id}}" {% if items.product_id|lower == product.id|lower %} selected {% endif %}>{{product}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% for product in products %}
+    
+                                            {% if items.product_id|lower != product.id|lower %}
+                                            <option value="{{product.id}}">{{product}}</option>
+                                            {% endif %}
+                                        {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;"></textarea>
+                                <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <select class="form-control purchase_entry_account"  id="product_account1" name="product_account[]" onchange="validation()" required>
+                                <select class="form-control purchase_entry_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()" required>
                                     <option value="">None</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
-                                        <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
+                                        <option value="{{acc_group.id}}"  {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
                                     {% endfor %}
                                 </select>
                             </td>                  
@@ -433,29 +458,29 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Price1">₹</label>
+                                        <label for="Price{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),validation()' id="Price1" name="Price[]" style="margin-top: 1%;" >
+                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" >
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='purchase_calculate(1),validation()' id="Quantity1" name="Quantity[]" >
+                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" >
                             </td>
                             <td style="border:1px solid black;">
-                                <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
+                                <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount1" name="Discount[]">
+                                        <input type="text" value="{{items.discount}}"  onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount{{forloop.counter}}" name="Discount[]">
                                     </div>
                                     <div class="col-5" style="padding-left:1px;">
-                                        <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
-                                            <option value="%">%</option>
-                                            <option value="₹">₹</option>
+                                        <select class="form-control" align="right"  id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
+                                            <option value="%" {% if items.discount_type == '%' %} selected {% endif %}>%</option>
+                                            <option value="₹" {% if items.discount_type == '₹' %} selected {% endif %}>₹</option>
                                         </select>
                                     </div>
                                 </div>
@@ -463,7 +488,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
+                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
@@ -475,68 +500,100 @@ optgroup{color :black; }
                                     </div>
                                 </div>  
                             </td>
+                            {% if invoice.is_cs_gst == True %}
                             <td class="row_cs_gst" style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_cgst1">₹</label>
+                                        <label for="row_cgst{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control row_cgst" id="row_cgst1" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control row_cgst" value="{{items.cgst_amount}}"  id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                             </td>
                             <td class="row_cs_gst" style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_sgst1">₹</label>
+                                        <label for="row_sgst{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control row_sgst" id="row_sgst1" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control row_sgst" value="{{items.sgst_amount}}" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                             </td>
                             <td class="row_i_gst" style="border:1px solid black;display: none;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_igst1">₹</label>
+                                        <label for="row_igst{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control row_igst" id="row_igst1" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control row_igst" id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            {% elif invoice.is_cs_gst == False %}
+                            <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_cgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_cgst" id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_sgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_sgst" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_i_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_igst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_igst" value="{{items.igst_amount}}"  id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="Amount{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control amount" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Amount1">₹</label>
+                                        <label for="Amount_inc{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
+                                        <input type="text" class="form-control amount_inc" id="Amount_inc{{forloop.counter}}" name="Amount_inc[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                                 
                             </td>
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Amount_inc1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control amount_inc" id="Amount_inc1" name="Amount_inc[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div>
-                                
-                            </td>
-                            <td><span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span></td>
+                            <td><span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}"  onclick=" return creditnote_removeRow('{{forloop.counter}}')" style="cursor: default;">delete_forever</span></td>
                           </tr>
-                          
+                          {% endfor %}
                         </tbody>
                     </table>
                
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row({{item_count}})" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                     </div>
                 </div>
                 <div class="row">
@@ -551,7 +608,7 @@ optgroup{color :black; }
     
                         <div class="row">
                             <div class="col">
-                                <textarea  id="entry_notes" name="entry_notes" rows="4" maxlength="400" size="400" style="width: 55%;"></textarea>
+                                <textarea  id="entry_notes" name="entry_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{entry.Note|default_if_none:""}}</textarea>
                             </div>
                         </div>
 
@@ -560,7 +617,8 @@ optgroup{color :black; }
                                <label for="Attachment">Attachment</label>
                             </div>
                             <div class="col" style="margin-top:6px">
-                                <input type="file" class="form-control" id="Attachment" name="Attachment"  style="margin-left: -17px;width: 50%;">
+                                <input type="file" class="form-control" id="Attachment" name="Attachment"  style="margin-left: -17px;">
+                                <p id="invoice_filename" style="color: black;position: absolute;margin-top: -5%;margin-left: 23%;">{{entry.attachements|truncatechars:10}}</p>
                                 <input type="button"  style="margin-left: 44%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
                                 <font style="font-size:x-small;margin-left: -4%;color: black;">File Size Less Than: 25 MB </font>
                             </div>
@@ -577,7 +635,7 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" readonly>
+                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" value="{{entry.sub_total}}" readonly>
                             </div>
                         </div>
 
@@ -589,11 +647,37 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" readonly>
+                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" value="{{invoice.total_discount}}" readonly>
                             </div>
                         </div>
 
                         <!-- 5% GST -->
+                        {% if entry.cgst and entry.sgst %}
+                        <div id="cs_gst">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text"value="{{entry.cgst}}" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{entry.sgst}}" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% else %}
                         <div id="cs_gst" style="display: none;">
                             <div class="row">
                                 <div class="col-4">
@@ -618,6 +702,20 @@ optgroup{color :black; }
                                 </div> 
                             </div> 
                         </div>
+                        {% endif %}
+                        {% if entry.igst %}
+                        <div class="row" id="i_gst">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" value="{{entry.igst}}" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% else %}
                         <div class="row" id="i_gst" style="display: none;">
                             <div class="col-4">
                                 <label for="IGST">IGST</label>
@@ -629,6 +727,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="IGST" name="IGST" readonly>
                             </div> 
                         </div>
+                        {% endif%}
 
                         <div class="row">
                             <div class="col-4">
@@ -644,13 +743,13 @@ optgroup{color :black; }
 
                         <div class="row">
                             <div class="col-4">
-                                <label for="total_amount">Total Balance:</label>
+                                <label for="total_amount">Total Balnce:</label>
                             </div>
                             <div class="col-1" style="padding-right: 0%;">
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="Total" name="Total" readonly>
+                                <input type="text" class="form-control" id="Total" name="Total" value="{{entry.total_balance|default_if_none:''}}" readonly>
                             </div> 
                         </div>
 
@@ -1633,11 +1732,7 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
-<!-- chosse GST model popup -->
-{% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
 
-<!-- UPDATE GST NUMBER -->
-{% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 

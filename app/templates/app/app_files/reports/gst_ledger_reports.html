@@ -24,30 +24,30 @@
                     <form action="" method="get">
                     <div class="row" >
                         <div class="col-1">
-                            <label style="font-size:90%">Account</label>
+                            <label style="font-size:100%">Account</label>
                         </div>
                         <div class="col-2">
-                            <select required name="account_type" class="form-control" style="margin-left:-25px;">
+                            <select required name="account_type" class="form-control" style="margin-left:-5px;">
                                 <option value="" selected >--Select--</option>
                                 <optgroup label="Input GST">
                                     <option value="0" {% if account_type == '0'%} selected {% endif %}>All input GST</option>
-                                    <option value="0-sgst" {% if account_type == '0-sgst'%} selected {% endif %}>SGST</option>
-                                    <option value="0-cgst"{% if account_type == '0-cgst'%} selected {% endif %}>CGST</option>
-                                    <option value="0-igst" {% if account_type == '0-igst'%} selected {% endif %}>IGST</option>
+                                    <option value="0-sgst" {% if account_type == '0-sgst'%} selected {% endif %}>Input SGST</option>
+                                    <option value="0-cgst"{% if account_type == '0-cgst'%} selected {% endif %}>Input CGST</option>
+                                    <option value="0-igst" {% if account_type == '0-igst'%} selected {% endif %}>Input IGST</option>
                                 </optgroup>
                                 <optgroup label="Output GST">
                                     <option value="1" {% if account_type == '1'%} selected {% endif %}>All Output GST</option>
-                                    <option value="1-sgst" {% if account_type == '1-sgst'%} selected {% endif %}>SGST</option>
-                                    <option value="1-cgst" {% if account_type == '1-cgst'%} selected {% endif %}>CGST</option>
-                                    <option value="1-igst" {% if account_type == '1-igst'%} selected {% endif %}>IGST</option>
+                                    <option value="1-sgst" {% if account_type == '1-sgst'%} selected {% endif %}>Output SGST</option>
+                                    <option value="1-cgst" {% if account_type == '1-cgst'%} selected {% endif %}>OutputCGST</option>
+                                    <option value="1-igst" {% if account_type == '1-igst'%} selected {% endif %}>Output IGST</option>
                                 </optgroup>
                             </select>
                         </div>
                         <div class="col-2 text-center">
-                            <label style="font-size:90%">Period</label>
+                            <label style="font-size:100%;margin-right:72px;">Period</label>
                         </div>
                         <div class="col-1" style="margin-left:-50px;">
-                            <select required name="time_period" onchange="show_hide_custom_dates($(this))" class="form-control" style="width:69px;">
+                            <select required name="time_period" onchange="show_hide_custom_dates($(this))" class="form-control" style="width:69px;margin-left:-25px;">
                                 <option value="0" {% if time_period == '0' %} selected {% endif %}>Custom</option>
                                 <option value="1" {% if time_period == '1' %} selected {% endif %}>Monthly</option>
                                 <option value="2" {% if time_period == '2' %} selected {% endif %}>Quaterly</option>
@@ -56,10 +56,10 @@
                             </select>
                         </div>
                         <div class="custom_dates_show_year col-1" style="display:none">
-                            <label style="font-size:90%">Year</label>
+                            <label style="font-size:100%">Year</label>
                         </div>
                         <div class="custom_dates_show_year col-1 hide" style="display:none">
-                            <select id = "year"name="year" class="form-control">
+                            <select id = "year"name="year" class="form-control" style="margin-left:-11px;">
                                 <option value=""></option>
                                 {% for year in year_list %}
                                 <option value="{{year}}" {% if year|safe == year_t %} selected {% endif %}>{{year}}</option>
@@ -67,7 +67,7 @@
                             </select>
                         </div>
                         <div class="custom_dates_show_month col-1" style="display:none">
-                            <label style="font-size:90%">Month</label>
+                            <label style="font-size:100%">Month</label>
                         </div>
                         <div class="custom_dates_show_month col-1 hide" style="display:none">
                             <select id = "month"name="month" class="form-control" >
@@ -87,7 +87,7 @@
                             </select>
                         </div>
                         <div class="custom_dates_show_month_q col-1" style="display:none">
-                            <label style="font-size:90%">Month</label>
+                            <label style="font-size:100%">Month</label>
                         </div>
                         <div class="custom_dates_show_month_q col-1 hide" style="display:none">
                             <select id="q_month" name="q_month" class="form-control" style="width:60px;">
@@ -99,7 +99,7 @@
                             </select>
                         </div>
                         <div class="custom_dates_show_month_h col-1" style="display:none">
-                            <label style="font-size:90%">Month</label>
+                            <label style="font-size:100%">Month</label>
                         </div>
                         <div class="custom_dates_show_month_h col-1 hide" style="display:none">
                             <select id="h_month" name="h_month" class="form-control" style="width:60px;">
@@ -109,13 +109,13 @@
                             </select>
                         </div>
                         <div class="col-1 custom_dates_show">
-                            <label style="font-size:90%">Start Date</label>
+                            <label style="font-size:100%;margin-left:23px;">Start Date</label>
                         </div>
-                        <div class="col-2 custom_dates_show" >
+                        <div class="col-2 custom_dates_show" style="margin-right:25px;">
                             <input id="start_date" type="text" name="start_date" value="{{start_date}}" class="form-control report_dates">
                         </div>
                         <div class="col-1 custom_dates_show">
-                            <label style="font-size:90%">End Date</label>
+                            <label style="font-size:100%">End Date</label>
                         </div>
                         <div class="col-2 custom_dates_show" >
                             <input id="end_date" type="text" name="end_date" value="{{end_date}}" class="form-control report_dates">
@@ -166,88 +166,88 @@
             <div class="card-body"> 
                 <table class="table-bordered table-hover table-striped" style="border:1px solid white;width: 100%;">
                     <tr style="background: #c3c3c3;border:1px solid #888;">
-                        <th style="border:1px solid #888;color:black;font-size:14px;"><center>Sl.No</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width:2%"><center>Sl.No</center></th>
                         <th style="border:1px solid #888;color:black;font-size:14px;width: 9%;"><center>Date</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:14px;width: 13%;"><center>Particulars</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher type</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher number</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:14px;width: 17%;"><center>Debit</center></th>
-                        <th style="border:1px solid #888;color:black;font-size:14px;"><center>Credit</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 20%;"><center>Particulars</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher Type</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Voucher Number</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width: 15%;"><center>Debit</center></th>
+                        <th style="border:1px solid #888;color:black;font-size:14px;width:15%"><center>Credit</center></th>
                     </tr>
 
                     {% for row in gst_reports %}
                     <tr>
-                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>{{forloop.counter}}</center></td>
-                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;"><center>{{row.created_on|date:'d M,Y'}}</center></td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">{{forloop.counter}}</td>
+                        <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">{{row.created_on|date:'d M,Y'}}</td>
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
-                            <center>{{row.invoice.invoice_customer| truncatechars:25}}</center>
+                            {{row.invoice.invoice_customer| truncatechars:25}}
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                            <center>{{row.creditnote.contact_name| truncatechars:25}}</center>
+                            {{row.creditnote.contact_name| truncatechars:25}}
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                            <center>{{row.purchase_order.vendor| truncatechars:25}}</center>
+                            {{row.purchase_order.vendor| truncatechars:25}}
                             {% endif %}
 
                             {% if row.is_expense %} 
-                            <center>{{row.expense.exp_number| truncatechars:25}}</center>
+                            {{row.expense.exp_number| truncatechars:25}}
                             {% endif %}
                         </td>
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
-                            <center>INVOICE</center>
+                            INVOICE
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                            <center>CREDIT NOTE</center>
+                            CREDIT NOTE
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                            <center>PURCHASE ORDER</center>
+                            PURCHASE ORDER
                             {% endif %}
 
                             {% if row.is_expense %} 
-                            <center>EXPENSE</center>
+                            EXPENSE
                             {% endif %}
                         </td>
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.is_invoice %} 
-                            <center>{{row.invoice.invoice_number}}</center>
+                            {{row.invoice.invoice_number}}
                             {% endif %}
 
                             {% if row.is_creditnote %} 
-                            <center>{{row.creditnote.credit_number}}</center>
+                            {{row.creditnote.credit_number}}
                             {% endif %}
 
                             {% if row.is_purchase_order %} 
-                            <center>{{row.purchase_order.purchase_order_number}}</center>
+                            {{row.purchase_order.purchase_order_number}}
                             {% endif %}
 
                             {% if row.is_expense %} 
-                            <center>{{row.expense.exp_number}}</center>
+                            {{row.expense.exp_number}}
                             {% endif %}
 
                         </td>                        
                         <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if row.input_tab %}                                 
-                            <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %} {{row.cgst_amount|floatformat:2}}</center>
-                                <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
-                               <center> {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} </center>
+                           {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %} {{row.cgst_amount|floatformat:2}}
+                                {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}
+                                {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}}
                                 {% else %} 
-                                   <center> {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}  </center>
+                                    {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}
                                 {% endif %}
                             {% endif%}
                          </td>
                          <td style="border:1px solid #888;color:black;font-weight:normal;font-size:12px;">
                             {% if not row.input_tab %}  
-                                <center>{% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %}{{row.cgst_amount|floatformat:2}} </center>
-                                <center>{% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}</center>
-                                <center>{% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}} </center>
+                                {% if g_type == 'cgst' %} {% ifnotequal row.cgst_amount "" %}&#8377; {% endifnotequal %}{{row.cgst_amount|floatformat:2}}
+                                {% elif g_type == 'sgst' %} {% ifnotequal row.sgst_amount "" %}&#8377; {% endifnotequal %} {{row.sgst_amount|floatformat:2}}
+                                {% elif g_type == 'igst' %} {% ifnotequal row.igst_amount "" %}&#8377; {% endifnotequal %} {{row.igst_amount|floatformat:2}}
                                 {% else %}
-                                <center>{% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}   </center>
+                                      {% ifnotequal row.total_tax "" %}&#8377; {% endifnotequal %} {{row.total_tax|floatformat:2}}
                                 {% endif %}
                             {% endif%}
                         </td>

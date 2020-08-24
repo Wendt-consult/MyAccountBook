@@ -23,11 +23,8 @@ class PurchaseEntry(models.Model):
     )
 
     SAVE_TYPES = (
-        (1, 'save_send'),
-        (2, 'save_close'),
-        (3, 'save_draft'),
-        (4, 'save_print'),
-        (5,'void')
+        (1, 'save_close'),
+        (2, 'save_draft'),
     )
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
@@ -155,6 +152,41 @@ class PurchaseEntry(models.Model):
         null = True,
     )
 
+    is_cs_gst = models.BooleanField(
+        db_index = True,
+        choices = user_constants.IS_TRUE,
+        default = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_org_gst_num = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_org_gst_type =  models.CharField(
+        max_length=2,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_org_gst_state =  models.CharField(
+        max_length=5,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    purchase_delete_status = models.IntegerField(
+        db_index = True,
+        default=0,
+        blank = False,
+        null = False,
+    )
     def __str__(self):
         return "{} - {}".format(self.vendor,self.id) 
 
@@ -235,14 +267,6 @@ class PurchaseEntryItems(models.Model):
     )
 
     tax = models.CharField(
-        max_length=11,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    
-    tax_amount = models.CharField(
         max_length=11,
         db_index = True,
         blank = True,

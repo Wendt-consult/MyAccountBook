@@ -1576,9 +1576,6 @@ $(document).ready(function(){
     $('#Attachment').change(function(e){
         $('#invoice_filename').hide()
         $(this).css('width','50%')
-        // var fileName = e.target.files[0].name;
-        // alert('The file "' + fileName +  '" has been selected.');
-
     });
 });
 /********************************************************************/

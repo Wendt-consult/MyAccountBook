@@ -93,17 +93,6 @@ function float_value(event, a) {
 var purchase_number = 1
 var count = 0
 
-// Disable Mouse scrolling
-$('input[type=number]').on('mousewheel',function(e){ $(this).blur(); });
-// Disable keyboard scrolling
-$('input[type=number]').on('keydown',function(e) {
-    var key = e.charCode || e.keyCode;
-    // Disable Up and Down Arrows on Keyboard
-    if(key == 38 || key == 40 || key == 69 || key == 189) {
-        e.preventDefault();
-    } else return true;
-});
-
 function add_single_row(a){
     if(count == 0){
         purchase_number +=a
@@ -428,7 +417,6 @@ function product(a) {
 /********************************************************************/
 // PRUCHASE_ORDER PRODUCT MODEL SAVE USING AJAX
 /********************************************************************/
-
 
 function purchase_product_form(save_type){
 	form_d = $("#add_purchase_product_form")[0];
@@ -817,8 +805,6 @@ function state_compare(){
                     $('#gst_type').val('')
                 }
                 vendor_gstin = data.gstin
-
-                // vendor_state = data.vendor_state
                 check_gst_status('user_side')
             },
         });
@@ -826,10 +812,6 @@ function state_compare(){
         $('#mail').val('')
         $('#gst_type').val('')
         vendor_gstin = ''
-        // $('#purchase_table').find('.tax').attr('readonly', true)
-        // $('#purchase_table').find('.tax').val('')
-        // vendor_state = ''
-        // sub_total()
         check_gst_status('user_side')
     }
 }

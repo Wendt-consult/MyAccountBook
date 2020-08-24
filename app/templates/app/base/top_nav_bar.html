@@ -71,13 +71,16 @@
         <!--                <i class="material-icons">add_to_queue</i>-->
                     </a>
                     {% elif breadcrumb_title == 'EXPENSES' and type == 'view' %}
-                    <a href="{% url 'add_expense' %}"  class="btn btn-success-sm btn-sm" style="">NEW
+                    <a href="{% url 'add_expense' %}"  class="btn btn-success-sm btn-sm">NEW
         <!--                 <i class="material-icons">add_to_queue</i>-->
                    </a>
                    {% elif breadcrumb_title == 'PURCHASE ENTRY' and type == 'view' %}
-                    <a href="{% url 'add_purchase_entry' 0 %}" class="btn btn-success-sm btn-sm" style="" >NEW
+                    <a href="{% url 'add_purchase_entry' 0 %}" class="btn btn-success-sm btn-sm">NEW
                     </a>
-                   {% endif %}
+                   {% elif breadcrumb_title == 'JOURNAL ENTRY' and type == 'view' %}
+                   <a href="{% url 'add_journalentry' 0 %}" class="btn btn-success-sm btn-sm">NEW
+                   </a>
+                  {% endif %}
                 </div>
             </div>
         </div>

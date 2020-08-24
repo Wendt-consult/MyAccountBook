@@ -432,6 +432,99 @@ td{padding:5px;}
 </div>
 
 
+<div class="row">
+    <div class="col-lg-12" style="padding:0px">
+        <div class="card">
+            <div class="card-header card-header-primary" style="padding-bottom:10px">
+                <h5 class="card-title">
+                    Bank Accounts
+                    <span data-toggle="modal" data-target="#org_contact_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
+                        <button class="btn  mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
+                    </span>
+                    <!-- <span onclick="del_all_entries(0)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
+                        <i class="material-icons" style="font-size:20px; color: #FF0000; background:#FFFFFF; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right">delete_forever</i>
+                    </span> -->
+                </h5>
+            </div> 
+            <div class="card-body"> 
+                <table class="table-responsive table-bordered">
+                    <tbody style="width:100%; display:inline-table;">
+                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Account Holder</td>
+                            <td class="text-center" style="width: 9%;border: 1px solid black;color: black;">Account Number</td>
+                            <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">IFSC Code</td>
+                            <td class="text-center" style="width: 11%;border: 1px solid black;color: black;">Branch Name</td>
+                            <td class="text-center" style="width: 1%;border: 1px solid black;color: black;">Bank Name</td>                         
+                            <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
+                        </tr>  
+                        {% for i in address_details %}
+                        
+                            <tr id="table-{{forloop.counter}}" style="font-size:12px">
+                                
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.phone|default_if_none:""|safe|truncatechars:20}}
+                                </td>                  
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.email|default_if_none:""|safe|truncatechars:20 }}
+                                </td>  
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.website|default_if_none:""|safe|truncatechars:20 }}
+                                </td>               
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.fax|default_if_none:""|safe|truncatechars:20 }}
+                                </td>   
+                                <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                    {{ i.skype|default_if_none:""|safe|truncatechars:20 }}
+                                </td>      
+                                 
+                                <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
+                                    <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" data-toggle="modal"  data-target="#editAccountModal-{{forloop.counter}}">create</i>
+                                    <i title="Delete" class="material-icons" data-toggle="modal" data-target="#account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
+                                </td>      
+                                <!-- delete model popup -->
+                                <div class="modal " tabindex="-1" role="dialog" id="account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                    <div class="modal-dialog" role="document" style="border-top: none;">
+                                        <div class="modal-content" style="border-top: none;background-color: white;position:bottom">
+                                            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                
+                                            </div>
+                                            <div class="modal-body" style="border-top: none;position: bottom;">
+                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting contact details will not affect reports or historical transactions. </font></b></h4>
+                                            </div>
+                                            
+                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                <center><button onclick="delete_org_account({{i.id}})" class="btn mr-2" style="align-content: left;margin-left: 150px;background-color: #598ebb">Yes</button></center>
+                                                <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </tr>
+                        {% endfor %}    
+                    </tbody>
+                </table>
+                <!-- <div class="pagination" style="float: right;">
+                    <span class="step-links">
+                        {% if address_details.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ address_details.previous_page_number }}">Previous</a>
+                        {% endif %}
+                
+                        <span class="current">
+                            Page {{ address_details.number }} of {{ address_details.paginator.num_pages }}.
+                        </span>
+                
+                        {% if address_details.has_next %}
+                            <a href="?page={{ address_details.next_page_number }}">Next</a>
+                            <a href="?page={{ address_details.paginator.num_pages }}">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div> -->
+            </div>            
+        </div>
+    </div>
+</div>
+
 
 
 <!-- delete model popup -->

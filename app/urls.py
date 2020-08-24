@@ -9,7 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
-    profile, purchase_order, expense, reports, purchasentry
+    profile, purchase_order, expense, reports, purchasentry, journal_entry
 
 
 
@@ -254,10 +254,23 @@ urlpatterns += [
 urlpatterns += [
     path('view_purchase_entry/', never_cache(login_required(purchasentry.PurchaseEntry.as_view())), name = 'Purchase_entry'),
     path('purchase_entry/add_purchase_entry/<slug:slug>/', never_cache(login_required(purchasentry.add_purchase_entry)), name = 'add_purchase_entry'),
+    path('purchase_entry/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(purchasentry.unique_entry_number)), name = 'unique_entry_number'),
+    path('purchase_entry/save_purchase_entry/', never_cache(login_required(purchasentry.save_purchase_entry)), name = 'save_purchase_entry'),
+    path('purchase_entry/delete/<int:ins>/', never_cache(login_required(purchasentry.delete_purchase_entry)), name = 'delete_purchase_entry'),
+    path('purchase_entry/edit_purchase_entry/<int:ins>/', never_cache(login_required(purchasentry.EditPurchaseEntry.as_view())), name = 'edit_purchase_entry'),
 ]
 
-
+# Journal_entry
+urlpatterns += [
+    path('journalentry/', never_cache(login_required(journal_entry.view_journalentry)), name = 'view_journalentry'),
+    path('journalentry/add_journalentry/<int:ins>/', never_cache(login_required(journal_entry.JournalEntry)), name = 'add_journalentry'),
+    path('journalentry/save_journalentry/', never_cache(login_required(journal_entry.SaveJournalEntry)), name = 'SaveJournalEntry'),
+    path('journalentry/edit_journalentry/<int:ins>/', never_cache(login_required(journal_entry.EditJournal.as_view())), name = 'edit_journalentry'),
+    path('journalentry/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(journal_entry.unique_journal_number)), name = 'unique_journal_number'),
+    path('journalentry/delete/<int:ins>/', never_cache(login_required(journal_entry.journalentry_delete)), name = 'journalentry_delete'),
+]
 #
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 else:
