@@ -260,6 +260,9 @@ def customize_view_list(request, ins):
         elif(ins == 6):
             CustomizeExpenseView.objects.filter(customize_view_name = customize_name[0].id).update(expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
                                                 expense_method = data['method'],expense_amount = data['amount'])
+        elif(ins == 7):
+            CustomizePurchaseEntryView.objects.filter(customize_view_name = customize_name[0].id).update(entry_number = data['number'],entry_reference = data['reference'],entry_vendor = data['vendor'],
+                                                entry_date = data['date'], entry_due_date = data['due_date'], entry_advance = data['advance'], entry_total = data['amount'])
     elif(len(customize_name) == 0):
         customize_module_name = CustomizeModuleName(user = request.user, customize_name = int(ins))
         customize_module_name.save()
@@ -287,6 +290,10 @@ def customize_view_list(request, ins):
             view_expense = CustomizeExpenseView(customize_view_name = customize_module_name,expense_vocher = data['vocher'],expense_date = data['date'],expense_vendor = data['vendor'],expense_payment = data['payment'],
                                                 expense_method = data['method'],expense_amount = data['amount'])
             view_expense.save()
+        elif(ins == 7):
+            view_purchase_entry = CustomizePurchaseEntryView(customize_view_name = customize_module_name,entry_number = data['number'],entry_reference = data['reference'],entry_vendor = data['vendor'],
+                                                entry_date = data['date'], entry_due_date = data['due_date'], entry_advance = data['advance'], entry_total = data['amount'])
+            view_purchase_entry.save()
     return JsonResponse(data)
 
 #**********************************************************************************************

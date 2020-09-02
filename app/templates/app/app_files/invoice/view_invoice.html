@@ -169,7 +169,11 @@ thead th{
                                     {% endif %}
                                     {% if customize.invoice_status != 0 %}
                                     <td align="center" class="customize_status" id="status_{{i.id}}">
+                                        {% if i.invoice_status == 1%}
+                                        {{i.get_invoice_status_display}} {{i.inovice_over_due_count}}
+                                        {% else %}
                                         {{i.get_invoice_status_display}}
+                                        {% endif %}
                                     </td>
                                     {% else %}
                                     <td align="center" class="customize_status" style="display: none;" id="status_{{i.id}}">

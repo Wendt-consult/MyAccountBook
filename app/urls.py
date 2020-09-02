@@ -9,7 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
-    profile, purchase_order, expense, reports, purchasentry, journal_entry
+    profile, purchase_order, expense, reports, purchasentry, journal_entry,scheduler
 
 
 
@@ -205,6 +205,9 @@ urlpatterns += [
     path('profile/org_address_inactive/<int:ins>/', never_cache(login_required(profile.org_address_inactive)), name = 'org_address_inactive'),
     path('profile/org_address_check/', never_cache(login_required(profile.org_address_check)), name = 'org_address_check'),
     path('profile/org_address_inactive_check/', never_cache(login_required(profile.org_address_inactive_check)), name = 'org_address_inactive_check'),
+    path('profile/add_organisation_bank_account/', never_cache(login_required(profile.add_organisation_bank_account)), name = 'add_organisation_bank_account'),
+    path('profile/edit_organisation_bank_account/<int:ins>/', never_cache(login_required(profile.edit_organisation_bank_account)), name = 'edit_organisation_bank_account'),
+    path('profile/delete_org_bank_account/<int:ins>/', never_cache(login_required(profile.delete_org_bank_account)), name = 'delete_org_bank_account'),
 ]
 
 # Purchase Order
@@ -253,7 +256,7 @@ urlpatterns += [
 # Purchase Entry
 urlpatterns += [
     path('view_purchase_entry/', never_cache(login_required(purchasentry.PurchaseEntry.as_view())), name = 'Purchase_entry'),
-    path('purchase_entry/add_purchase_entry/<slug:slug>/', never_cache(login_required(purchasentry.add_purchase_entry)), name = 'add_purchase_entry'),
+    path('purchase_entry/add_purchase_entry/<int:ins>/<slug:slug>/', never_cache(login_required(purchasentry.add_purchase_entry)), name = 'add_purchase_entry'),
     path('purchase_entry/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(purchasentry.unique_entry_number)), name = 'unique_entry_number'),
     path('purchase_entry/save_purchase_entry/', never_cache(login_required(purchasentry.save_purchase_entry)), name = 'save_purchase_entry'),
     path('purchase_entry/delete/<int:ins>/', never_cache(login_required(purchasentry.delete_purchase_entry)), name = 'delete_purchase_entry'),
@@ -268,6 +271,7 @@ urlpatterns += [
     path('journalentry/edit_journalentry/<int:ins>/', never_cache(login_required(journal_entry.EditJournal.as_view())), name = 'edit_journalentry'),
     path('journalentry/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(journal_entry.unique_journal_number)), name = 'unique_journal_number'),
     path('journalentry/delete/<int:ins>/', never_cache(login_required(journal_entry.journalentry_delete)), name = 'journalentry_delete'),
+    path('journalentry/print/<int:ins>/', never_cache(login_required(journal_entry.print_jounal_entry)), name = 'print_jounal_entry'),
 ]
 #
 

@@ -492,22 +492,9 @@ def save_purchase_order(request):
         
         subtotal = request.POST.get("SubTotal")
         distotal = request.POST.get("purchase_Discountotal")
-        # subtotal = request.POST.get("SubTotal")
-        cgst_5 = request.POST.get("CGST_5")
-        sgst_5 = request.POST.get("SGST_5")
-        igst_5 = request.POST.get("IGST_5")
-        cgst_12 = request.POST.get("CGST_12")
-        sgst_12 = request.POST.get("SGST_12")
-        igst_12 = request.POST.get("IGST_12")
-        cgst_18 = request.POST.get("CGST_18")
-        sgst_18 = request.POST.get("SGST_18")
-        igst_18 = request.POST.get("IGST_18")
-        cgst_28 = request.POST.get("CGST_28")
-        sgst_28 = request.POST.get("SGST_28")
-        igst_28 = request.POST.get("IGST_28")
-        cgst_other = request.POST.get("CGST_other")
-        sgst_other = request.POST.get("SGST_other")
-        igst_other = request.POST.get("IGST_other")
+        cgst = request.POST.get("CGST")
+        sgst = request.POST.get("SGST")
+        igst = request.POST.get("IGST")
         total_amount = request.POST.get("Total")
         freight_charges = request.POST.get("Freight_Charges")
         advance = request.POST.get("advance")
@@ -554,15 +541,44 @@ def save_purchase_order(request):
 
         contact = Contacts.objects.get(user = request.user, pk = int(vendor))
 
-        purchase_order = PurchaseOrder(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
-                        save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
-                        contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
-                        sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
-                        cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
-                        total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
-                        advacne_payment_method = hidden_advance_method,advacne_note= hidden_advance_notes,
-                        purchase_org_gst_num = org_gst_number,purchase_org_gst_type = org_gst_reg_type,purchase_org_gst_state = single_gst_code,)
+        purchase_order = PurchaseOrder(
+            user= request.user, 
+            vendor = contact, 
+            purchase_order_number = order_number, 
+            purchase_number_check = check_order_number,
+            save_type=save_type,
+            purchase_order_date = or_date,
+            purchase_delivery_date = deli_date,
+            purchase_refrence = reference, 
+            delivery_address = delivery_address,
+            is_organisation_delivary = is_org,
+            is_customer_delivary = is_cutomer,
+            customer= customer,
+            attention= attention,
+            country_code = country_code,
+            contact_number=contact_no,
+            terms_and_condition = term_condition, 
+            Note=message,
+            sub_total=subtotal,
+            total_discount=distotal,
+            cgst = cgst,
+            sgst = sgst,
+            igst = igst,
+            total_amount = total_amount,
+            freight_charges=freight_charges,
+            advance=advance,
+            total_balance=total_balance,
+            advacne_payment_method = hidden_advance_method,
+            advacne_note= hidden_advance_notes,
+            purchase_org_gst_num = org_gst_number,
+            purchase_org_gst_type = org_gst_reg_type,
+            purchase_org_gst_state = single_gst_code,
+            )
+        if(cgst != '' or sgst != ''):
+            purchase_order.is_cs_gst = True
+        elif(igst != ''):
+            purchase_order.is_cs_gst = False
+
         if(hidden_advance_date != ''):
             purchase_order.advance_payment_date=hidden_advance_date
 
@@ -573,9 +589,9 @@ def save_purchase_order(request):
             
         purchase_order.save()               
 
-        igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
-        cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
-        sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
+        # igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
+        # cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
+        # sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
 
         product_name = request.POST.getlist('ItemName[]',None)
         product_desc = request.POST.getlist('desc[]',None)
@@ -586,7 +602,11 @@ def save_purchase_order(request):
         product_discount = request.POST.getlist('Discount[]',None)
         product_discount_type = request.POST.getlist('Dis[]',None)
         product_tax = request.POST.getlist('tax[]')
+        product_cgst = request.POST.getlist('row_cgst[]',None)
+        product_sgst = request.POST.getlist('row_sgst[]',None)
+        product_igst = request.POST.getlist('row_igst[]',None)
         product_amount = request.POST.getlist('Amount[]',None)
+        product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
         count = len(product_name)
 
@@ -606,10 +626,11 @@ def save_purchase_order(request):
                     discount_type = product_discount_type[i],
                     discount=product_discount[i],
                     tax=product_tax[i],
+                    cgst_amount = product_cgst[i],
+                    sgst_amount = product_sgst[i],
+                    igst_amount = product_igst[i],
                     amount=product_amount[i],
-                    igst_amount = float(igst[i]) if len(igst) > 0 else 0,
-                    cgst_amount = float(cgst[i]) if len(cgst) > 0 else 0,
-                    sgst_amount = float(sgst[i]) if len(sgst) > 0 else 0,
+                    amount_inc = product_amount_inc[i],   
                 )
                 purchase_item.save()  
 
@@ -633,7 +654,7 @@ def save_purchase_order(request):
 
 
 #=====================================================================================
-#   EDIT CREDITNOTE 
+#   EDIT PURCHASE ORDER
 #=====================================================================================
 #
 class EditPurchaseOrder(View):
@@ -767,22 +788,9 @@ class EditPurchaseOrder(View):
             
             subtotal = request.POST.get("SubTotal")
             distotal = request.POST.get("purchase_Discountotal")
-            # subtotal = request.POST.get("SubTotal")
-            cgst_5 = request.POST.get("CGST_5")
-            sgst_5 = request.POST.get("SGST_5")
-            igst_5 = request.POST.get("IGST_5")
-            cgst_12 = request.POST.get("CGST_12")
-            sgst_12 = request.POST.get("SGST_12")
-            igst_12 = request.POST.get("IGST_12")
-            cgst_18 = request.POST.get("CGST_18")
-            sgst_18 = request.POST.get("SGST_18")
-            igst_18 = request.POST.get("IGST_18")
-            cgst_28 = request.POST.get("CGST_28")
-            sgst_28 = request.POST.get("SGST_28")
-            igst_28 = request.POST.get("IGST_28")
-            cgst_other = request.POST.get("CGST_other")
-            sgst_other = request.POST.get("SGST_other")
-            igst_other = request.POST.get("IGST_other")
+            cgst = request.POST.get("CGST")
+            sgst = request.POST.get("SGST")
+            igst = request.POST.get("IGST")
             total_amount = request.POST.get("Total")
             freight_charges = request.POST.get("Freight_Charges")
             advance = request.POST.get("advance")
@@ -830,15 +838,44 @@ class EditPurchaseOrder(View):
 
             
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(vendor)))
-            PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, vendor = contact, purchase_order_number = order_number, purchase_number_check = check_order_number,
-                        save_type=save_type,purchase_order_date = or_date,purchase_delivery_date = deli_date,purchase_refrence = reference, delivery_address = delivery_address,
-                        is_organisation_delivary = is_org,is_customer_delivary = is_cutomer,customer= customer,attention= attention,country_code = country_code,
-                        contact_number=contact_no,terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,cgst_5 = cgst_5 ,igst_5 = igst_5,
-                        sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,
-                        cgst_28 = cgst_28,igst_28 = igst_28,sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,
-                        total_amount = total_amount,freight_charges=freight_charges,advance=advance,total_balance=total_balance,
-                        advacne_payment_method=hidden_advance_method,advacne_note=hidden_advance_notes,purchase_org_gst_num = org_gst_number,
-                        purchase_org_gst_type = org_gst_reg_type,purchase_org_gst_state = single_gst_code,)
+            PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(
+                user= request.user, 
+                vendor = contact, 
+                purchase_order_number = order_number, 
+                purchase_number_check = check_order_number,
+                save_type=save_type,
+                purchase_order_date = or_date,
+                purchase_delivery_date = deli_date,
+                purchase_refrence = reference, 
+                delivery_address = delivery_address,
+                is_organisation_delivary = is_org,
+                is_customer_delivary = is_cutomer,
+                customer= customer,
+                attention= attention,
+                country_code = country_code,
+                contact_number=contact_no,
+                terms_and_condition = term_condition, 
+                Note=message,
+                sub_total=subtotal,
+                total_discount=distotal,
+                cgst = cgst,
+                sgst = sgst,
+                igst = igst,
+                total_amount = total_amount,
+                freight_charges=freight_charges,
+                advance=advance,
+                total_balance=total_balance,
+                advacne_payment_method=hidden_advance_method,
+                advacne_note=hidden_advance_notes,
+                purchase_org_gst_num = org_gst_number,
+                purchase_org_gst_type = org_gst_reg_type,
+                purchase_org_gst_state = single_gst_code,
+                )
+            if(cgst != '' or sgst != ''):
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
+            elif(igst != ''):
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = False)
+
             if(hidden_advance_date != ''):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(advance_payment_date = hidden_advance_date)
 
@@ -858,7 +895,11 @@ class EditPurchaseOrder(View):
             product_discount = request.POST.getlist('Discount[]',None)
             product_discount_type = request.POST.getlist('Dis[]',None)
             product_tax = request.POST.getlist('tax[]',None)
+            product_cgst = request.POST.getlist('row_cgst[]',None)
+            product_sgst = request.POST.getlist('row_sgst[]',None)
+            product_igst = request.POST.getlist('row_igst[]',None)
             product_amount = request.POST.getlist('Amount[]',None)
+            product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
             Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order)).delete()
 
@@ -867,9 +908,24 @@ class EditPurchaseOrder(View):
 
                 products = ProductsModel.objects.get(pk = int(product_name[i]))
                 account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
-                purchase_item = Purchase_Items(user= request.user,purchase_item_list = purchase_order,product = products,description=product_desc[i],
-                                account=account,price=product_price[i],unit=product_unit[i],quantity=product_quantity[i],discount_type = product_discount_type[i],
-                                discount=product_discount[i],tax=product_tax[i],amount=product_amount[i])
+                purchase_item = Purchase_Items(
+                    user= request.user,
+                    purchase_item_list = purchase_order,
+                    product = products,
+                    description=product_desc[i],
+                    account=account,
+                    price=product_price[i],
+                    unit=product_unit[i],
+                    quantity=product_quantity[i],
+                    discount_type = product_discount_type[i],
+                    discount=product_discount[i],
+                    tax=product_tax[i],
+                    cgst_amount = product_cgst[i],
+                    sgst_amount = product_sgst[i],
+                    igst_amount = product_igst[i],
+                    amount=product_amount[i],
+                    amount_inc = product_amount_inc[i],
+                    )
                 purchase_item.save()   
             
             if(save_type == 4):  

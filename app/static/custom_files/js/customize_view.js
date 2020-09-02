@@ -174,7 +174,6 @@ function void_status_purchase(id){
         }
 
     }else if(ids == 5){
-        console.log('aaaaaaaaaaaaaaaaaa')
         if($('#first #customize_invoice_number').length){
             data['number'] = 1
         }else{
@@ -209,6 +208,49 @@ function void_status_purchase(id){
         }else{
             data['amount'] = 0
         }
+    }else if(ids == 7){
+
+        if($('#first #customize_entry_number').length){
+            data['number'] = 1
+        }else{
+            data['number'] = 0
+        }
+        if($('#first #customize_entry_reference').length){
+            data['reference'] = 1
+        }else{
+            data['reference'] = 0
+        }
+
+        if($('#first #customize_entry_vendor').length){
+            data['vendor'] = 1
+        }else{
+            data['vendor'] = 0
+        }
+
+        if($('#first #customize_entry_date').length){
+            data['date'] = 1
+        }else{
+            data['date'] = 0
+        }
+
+        if($('#first #customize_entry_due_date').length){
+            data['due_date'] = 1
+        }else{
+            data['due_date'] = 0
+        }
+
+        if($('#first #customize_entry_advance').length){
+            data['advance'] = 1
+        }else{
+            data['advance'] = 0
+        }
+
+        if($('#first #customize_entry_amount').length){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
+
     }
     
      $.ajax({
@@ -390,6 +432,50 @@ function void_status_purchase(id){
                 $('.customize_total').show()
             }else{
                 $('.customize_total').hide()
+            }
+    
+        }else if(ids == 7){
+    
+            if(data['number'] == 1){
+                $('.customize_entry_number').show()
+            }else{
+                $('.customize_entry_number').hide()
+            }
+
+            if(data['reference'] == 1){
+                $('.customize_entry_reference').show()
+            }else{
+                $('.customize_entry_reference').hide()
+            }
+    
+            if(data['vendor'] == 1){
+                $('.customize_entry_vendor').show()
+            }else{
+                $('.customize_entry_vendor').hide()
+            }
+
+            if(data['date'] == 1){
+                $('.customize_entry_date').show()
+            }else{
+                $('.customize_entry_date').hide()
+            }
+
+            if(data['due_date'] == 1){
+                $('.customize_entry_due_date').show()
+            }else{
+                $('.customize_entry_due_date').hide()
+            }
+
+            if(data['advance'] == 1){
+                $('.customize_entry_advance').show()
+            }else{
+                $('.customize_entry_advance').hide()
+            }
+    
+            if(data['amount'] == 1){
+                $('.customize_entry_amount').show()
+            }else{
+                $('.customize_entry_amount').hide()
             }
     
         }

@@ -128,6 +128,13 @@ class InvoiceModel(models.Model):
         null= True,
     )
 
+    invoice_recurring_count = models.IntegerField(
+        default=0,
+        db_index = True,
+        blank=True,
+        null=True,
+    )
+
     invoice_recurring_end_date = models.DateField(
         auto_now=False,
         auto_now_add=False, 
@@ -136,8 +143,7 @@ class InvoiceModel(models.Model):
         null= True,
     )
 
-    invoice_recurring_repeat = models.CharField(
-        max_length = 100,
+    invoice_recurring_repeat = models.IntegerField(
         db_index = True,
         blank=True,
         null=True,
@@ -164,7 +170,7 @@ class InvoiceModel(models.Model):
         blank = True,
     )
 
-    invoice_state_supply=  models.CharField(
+    invoice_state_supply = models.CharField(
         max_length=15,
         db_index = True,
         null = True,
@@ -177,6 +183,12 @@ class InvoiceModel(models.Model):
         blank = True,
         null = True,
         choices = payment_constants.PAYMENT_STATUS
+    )
+    inovice_over_due_count = models.IntegerField(
+        default = 0,
+        db_index = True,
+        blank = True,
+        null = True,
     )
 
     terms_and_condition = models.CharField(

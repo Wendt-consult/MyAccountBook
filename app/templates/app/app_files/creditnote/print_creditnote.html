@@ -275,16 +275,31 @@ footer {
       <table style="table-layout:fixed;">
         <thead>
           <tr style="background-color: #0087C3;color: black;">
-            <!-- <th style="width: 10%;text-align: left;border: 1px solid black;">#</th> -->
-            <th style="width: 20%;text-align: left;border: 1px solid black;">ITEM / DESCRIPTION</th>
+            {% if credit_note.is_cs_gst == True %}
+            <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
+            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
             <th style="text-align: left;border: 1px solid black;">TYPE</th>
             <th style="text-align: left;border: 1px solid black;">PRICE</th>
             <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
             <th style="text-align: left;border: 1px solid black;">UNIT</th>
             <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
-            <th style="text-align: left;border: 1px solid black;">TAX</th>
-            <th style="text-align: left;border: 1px solid black;">AMOUNT</th>
-            <!-- <th class="total" style="">TOTAL</th> -->
+            <th style="text-align: left;border: 1px solid black;width: 7%;">TAX(In %)</th>
+            <th style="text-align: left;border: 1px solid black;">CGST</th>
+            <th style="text-align: left;border: 1px solid black;">SGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
+            {% elif credit_note.is_cs_gst == False %} 
+            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;">TYPE</th>
+            <th style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
+            <th style="text-align: left;border: 1px solid black;">UNIT</th>
+            <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
+            <th style="text-align: left;border: 1px solid black;">TAX(in %)</th>
+            <th style="text-align: left;border: 1px solid black;">IGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -306,7 +321,16 @@ footer {
               {% endif %}
             </td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
+            {% if credit_note.is_cs_gst == True %}
+            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.cgst_amount}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.sgst_amount}}</td>
+            {% elif credit_note.is_cs_gst == False %}
+            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.igst_amount}}</td>
+            {% endif %}
             <td class="unit" style="text-align: left;border: 1px solid black;">{{item.amount}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">
+              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+            </td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
           {% endfor %}
@@ -387,196 +411,44 @@ footer {
               <h5><b>{{credit_note.sub_total}}</b></h5>
             </div>
           </div>
-          {% if credit_note.cgst_5 and credit_note.sgst_5 %}
+
+          {% if credit_note.cgst and credit_note.sgst %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>CGST @ on 2.5</h5>
+              <h5><b>CGST</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.cgst_5}}</h5>
+              <h5><b>{{credit_note.cgst}}</b></h5>
             </div>
           </div>
 
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>SGST @ on 2.5</h5>
+              <h5><b>SGST</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.sgst_5}}</h5>
+              <h5><b>{{credit_note.sgst}}</b></h5>
             </div>
           </div>
-          {% elif credit_note.igst_5 %}
+          {% elif credit_note.igst %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
-              <h5>IGST @ on 5</h5>
+              <h5><b>IGST</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
+              <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.igst_5}}</h5>
+              <h5><b>{{credit_note.igst}}</b></h5>
             </div>
           </div>
           {% endif %}
-
-          {% if credit_note.cgst_12 and credit_note.sgst_12 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>CGST @ on 6</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.cgst_12}}</h5>
-            </div>
-          </div>
-
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>SGST @ on 6</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.sgst_12}}</h5>
-            </div>
-          </div>
-          {% elif credit_note.igst_12 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>IGST @ on 12</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.igst_12}}</h5>
-            </div>
-          </div>
-          {% endif %}
-
-          {% if credit_note.cgst_18 and credit_note.sgst_18 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>CGST @ on 9</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.cgst_18}}</h5>
-            </div>
-          </div>
-
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>SGST @ on 9</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.sgst_18}}</h5>
-            </div>
-          </div>
-          {% elif credit_note.igst_18 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>IGST @ on 18</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.igst_18}}</h5>
-            </div>
-          </div>
-          {% endif %}
-
-          {% if credit_note.cgst_28 and credit_note.sgst_28 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>CGST @ on 14</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.cgst_28}}</h5>
-            </div>
-          </div>
-
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>SGST @ on 14</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.sgst_28}}</h5>
-            </div>
-          </div>
-          {% elif credit_note.igst_28 %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>IGST @ on 28</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.igst_28}}</h5>
-            </div>
-          </div>
-          {% endif %}
-
-          {% if credit_note.cgst_other and credit_note.sgst_other %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>CGST @ on others</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.cgst_other}}</h5>
-            </div>
-          </div>
-
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>SGST @ on others</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.sgst_other}}</h5>
-            </div>
-          </div>
-          {% elif credit_note.igst_other %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5>IGST @ on others</h5>
-            </div>
-            <div class="col-1" style="padding-right: 0%;">
-              <label><h5>₹</h5></label>
-            </div>
-            <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5>{{credit_note.igst_other}}</h5>
-            </div>
-          </div>
-          {% endif %}
-
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5><b>Total:-</b></h5>

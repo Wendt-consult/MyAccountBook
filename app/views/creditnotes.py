@@ -294,21 +294,24 @@ def save_credit_note(request):
         # amount = request.POST.get("amo")
         # description = request.POST.get("description")
         subtotal = request.POST.get("SubTotal")
-        cgst_5 = request.POST.get("CGST_5")
-        sgst_5 = request.POST.get("SGST_5")
-        igst_5 = request.POST.get("IGST_5")
-        cgst_12 = request.POST.get("CGST_12")
-        sgst_12 = request.POST.get("SGST_12")
-        igst_12 = request.POST.get("IGST_12")
-        cgst_18 = request.POST.get("CGST_18")
-        sgst_18 = request.POST.get("SGST_18")
-        igst_18 = request.POST.get("IGST_18")
-        cgst_28 = request.POST.get("CGST_28")
-        sgst_28 = request.POST.get("SGST_28")
-        igst_28 = request.POST.get("IGST_28")
-        cgst_other = request.POST.get("CGST_other")
-        sgst_other = request.POST.get("SGST_other")
-        igst_other = request.POST.get("IGST_other")
+        # cgst_5 = request.POST.get("CGST_5")
+        # sgst_5 = request.POST.get("SGST_5")
+        # igst_5 = request.POST.get("IGST_5")
+        # cgst_12 = request.POST.get("CGST_12")
+        # sgst_12 = request.POST.get("SGST_12")
+        # igst_12 = request.POST.get("IGST_12")
+        # cgst_18 = request.POST.get("CGST_18")
+        # sgst_18 = request.POST.get("SGST_18")
+        # igst_18 = request.POST.get("IGST_18")
+        # cgst_28 = request.POST.get("CGST_28")
+        # sgst_28 = request.POST.get("SGST_28")
+        # igst_28 = request.POST.get("IGST_28")
+        # cgst_other = request.POST.get("CGST_other")
+        # sgst_other = request.POST.get("SGST_other")
+        # igst_other = request.POST.get("IGST_other")
+        cgst = request.POST.get("CGST")
+        sgst = request.POST.get("SGST")
+        igst = request.POST.get("IGST")
         total = request.POST.get("Total","None")
         default = request.POST.get('default','off')
         creditnote_default_notes = request.POST.get('creditnote_default_notes','off')
@@ -359,32 +362,25 @@ def save_credit_note(request):
             Note=message,
             attachements=attachement,
             sub_total=subtotal,
-            cgst_5 = cgst_5 ,
-            igst_5 = igst_5,
-            sgst_5 = sgst_5,
-            cgst_12 = cgst_12,
-            igst_12 = igst_12,
-            sgst_12 = sgst_12,
-            cgst_18 = cgst_18,
-            igst_18 = igst_18,
-            sgst_18 = sgst_18,
-            cgst_28 = cgst_28,
-            igst_28 = igst_28,
-            sgst_28 = sgst_28,
-            cgst_other=cgst_other,
-            igst_other = igst_other,
-            sgst_other = sgst_other,
+            cgst = cgst,
+            sgst = sgst,
+            igst = igst,
             total=total,
             creditnote_org_gst_num = org_gst_number,
             creditnote_org_gst_type = org_gst_reg_type,
             creditnote_org_gst_state = single_gst_code,
         )
+        if(cgst != '' or sgst != ''):
+            credit.is_cs_gst = True
+        elif(igst != ''):
+            credit.is_cs_gst = False
+
         credit.save()     
         
         
-        igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
-        cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
-        sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
+        # igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
+        # cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
+        # sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
         # print(igst, cgst, sgst)
 
 
@@ -398,7 +394,11 @@ def save_credit_note(request):
         product_discount = request.POST.getlist('Discount[]',None)
         product_discount_type = request.POST.getlist('Dis[]',None)
         product_tax = request.POST.getlist('tax[]',None)
+        product_cgst = request.POST.getlist('row_cgst[]',None)
+        product_sgst = request.POST.getlist('row_sgst[]',None)
+        product_igst = request.POST.getlist('row_igst[]',None)
         product_amount = request.POST.getlist('Amount[]',None)
+        product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
         count = len(product_name)
         for i in range(0,count):
@@ -423,11 +423,11 @@ def save_credit_note(request):
                     discount_type = product_discount_type[i],
                     discount = product_discount[i],
                     tax = product_tax[i],
+                    cgst_amount = product_cgst[i],
+                    sgst_amount = product_sgst[i],
+                    igst_amount = product_igst[i],
                     amount = product_amount[i],
-                    tax_amount = (float(product_tax[i])if len(product_tax[i]) > 0 else 0/100)*float(product_amount[i]), 
-                    igst_amount = float(igst[i]) if len(igst) > 0 else 0,
-                    cgst_amount = float(cgst[i]) if len(cgst) > 0 else 0,
-                    sgst_amount = float(sgst[i]) if len(sgst) > 0 else 0,
+                    amount_inc = product_amount_inc[i],
                 )
 
                 creditnote_item.save() 
@@ -584,21 +584,24 @@ class EditCreditnote(View):
             message = request.POST.get("Message")
             attachement = request.POST.get("Attachment")
             subtotal = request.POST.get("SubTotal")
-            cgst_5 = request.POST.get("CGST_5")
-            sgst_5 = request.POST.get("SGST_5")
-            igst_5 = request.POST.get("IGST_5")
-            cgst_12 = request.POST.get("CGST_12")
-            sgst_12 = request.POST.get("SGST_12")
-            igst_12 = request.POST.get("IGST_12")
-            cgst_18 = request.POST.get("CGST_18")
-            sgst_18 = request.POST.get("SGST_18")
-            igst_18 = request.POST.get("IGST_18")
-            cgst_28 = request.POST.get("CGST_28")
-            sgst_28 = request.POST.get("SGST_28")
-            igst_28 = request.POST.get("IGST_28")
-            cgst_other = request.POST.get("CGST_other")
-            sgst_other = request.POST.get("SGST_other")
-            igst_other = request.POST.get("IGST_other")
+            # cgst_5 = request.POST.get("CGST_5")
+            # sgst_5 = request.POST.get("SGST_5")
+            # igst_5 = request.POST.get("IGST_5")
+            # cgst_12 = request.POST.get("CGST_12")
+            # sgst_12 = request.POST.get("SGST_12")
+            # igst_12 = request.POST.get("IGST_12")
+            # cgst_18 = request.POST.get("CGST_18")
+            # sgst_18 = request.POST.get("SGST_18")
+            # igst_18 = request.POST.get("IGST_18")
+            # cgst_28 = request.POST.get("CGST_28")
+            # sgst_28 = request.POST.get("SGST_28")
+            # igst_28 = request.POST.get("IGST_28")
+            # cgst_other = request.POST.get("CGST_other")
+            # sgst_other = request.POST.get("SGST_other")
+            # igst_other = request.POST.get("IGST_other")
+            cgst = request.POST.get("CGST")
+            sgst = request.POST.get("SGST")
+            igst = request.POST.get("IGST")
             total = request.POST.get("Total","None")
             default = request.POST.get('default','off')
             creditnote_default_notes = request.POST.get('creditnote_default_notes','off')
@@ -630,13 +633,33 @@ class EditCreditnote(View):
                 save_type = 3
             
             contact = Contacts.objects.get(Q(user = request.user) & Q(pk = int(name)))
-            CreditNode.objects.filter(pk = int(kwargs["ins"])).update(contact_name = contact,save_type = save_type,email=email,cc_email=cc_email,billing_address=address,
-                                credit_date=creditnote_date,state_supply= supply,invoice_refrence=invoice_reference,credit_number=credit_number,
-                                creditnote_number_check=creditnote_number,terms_and_condition=term_condition,Note=message,attachements=attachement,
-                                sub_total=subtotal,cgst_5 = cgst_5 ,igst_5 = igst_5,sgst_5 = sgst_5,cgst_12 = cgst_12,igst_12 = igst_12,
-                                sgst_12 = sgst_12,cgst_18 = cgst_18,igst_18 = igst_18,sgst_18 = sgst_18,cgst_28 = cgst_28,igst_28 = igst_28,
-                                sgst_28 = sgst_28,cgst_other=cgst_other,igst_other = igst_other,sgst_other = sgst_other,total=total,creditnote_org_gst_num = org_gst_number,
-                                creditnote_org_gst_type = org_gst_reg_type,creditnote_org_gst_state = single_gst_code,)
+            CreditNode.objects.filter(pk = int(kwargs["ins"])).update(
+                contact_name = contact,
+                save_type = save_type,
+                email=email,
+                cc_email=cc_email,
+                billing_address=address,
+                credit_date=creditnote_date,
+                state_supply= supply,
+                invoice_refrence=invoice_reference,
+                credit_number=credit_number,
+                creditnote_number_check=creditnote_number,
+                terms_and_condition=term_condition,
+                Note=message,
+                attachements=attachement,
+                sub_total=subtotal,
+                cgst = cgst,
+                sgst = sgst,
+                igst = igst,
+                total=total,
+                creditnote_org_gst_num = org_gst_number,
+                creditnote_org_gst_type = org_gst_reg_type,
+                creditnote_org_gst_state = single_gst_code,
+                )
+            if(cgst != '' or sgst != ''):
+                CreditNode.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
+            else:
+                CreditNode.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = False)
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -648,7 +671,11 @@ class EditCreditnote(View):
             product_discount = request.POST.getlist('Discount[]',None)
             product_discount_type = request.POST.getlist('Dis[]',None)
             product_tax = request.POST.getlist('tax[]',None)
+            product_cgst = request.POST.getlist('row_cgst[]',None)
+            product_sgst = request.POST.getlist('row_sgst[]',None)
+            product_igst = request.POST.getlist('row_igst[]',None)
             product_amount = request.POST.getlist('Amount[]',None)
+            product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
             creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote)).delete()
 
@@ -665,10 +692,24 @@ class EditCreditnote(View):
                     
                 else:
                     products = ProductsModel.objects.get(pk = int(product_name[i]))
-                    creditnote_item = creditnote_Items(user= request.user,credit_inventory= creditnote,product=products,description=product_desc[i],
-                                                product_type=product_type[i],price=product_price[i],unit=product_unit[i],
-                                                quantity=product_quantity[i],discount_type = product_discount_type[i],discount=product_discount[i],
-                                                tax=product_tax[i],amount=product_amount[i])
+                    creditnote_item = creditnote_Items(
+                        user = request.user,
+                        credit_inventory = creditnote,
+                        product = products,
+                        description = product_desc[i],
+                        product_type = product_type[i],
+                        price = product_price[i],
+                        unit = product_unit[i],
+                        quantity = product_quantity[i],
+                        discount_type = product_discount_type[i],
+                        discount = product_discount[i],
+                        tax = product_tax[i],
+                        cgst_amount = product_cgst[i],
+                        sgst_amount = product_sgst[i],
+                        igst_amount = product_igst[i],
+                        amount = product_amount[i],
+                        amount_inc = product_amount_inc[i],
+                    )
                     creditnote_item.save()   
 
 
@@ -676,29 +717,29 @@ class EditCreditnote(View):
             #  Added By Lawrence : Execute On Credit Note Edit
             #******************************************************************************
             #
-            credit_note = CreditNode.objects.get(pk = int(kwargs["ins"]))
+            # credit_note = CreditNode.objects.get(pk = int(kwargs["ins"]))
 
-            igst_amount = list(filter(None, [credit_note.igst_5, credit_note.igst_12, credit_note.igst_18, credit_note.igst_28, credit_note.igst_other]))
-            cgst_amount = list(filter(None, [credit_note.cgst_5, credit_note.cgst_12, credit_note.cgst_18, credit_note.cgst_28, credit_note.cgst_other]))
-            sgst_amount = list(filter(None, [credit_note.sgst_5, credit_note.sgst_12, credit_note.sgst_18, credit_note.sgst_28, credit_note.sgst_other]))
+            # igst_amount = list(filter(None, [credit_note.igst_5, credit_note.igst_12, credit_note.igst_18, credit_note.igst_28, credit_note.igst_other]))
+            # cgst_amount = list(filter(None, [credit_note.cgst_5, credit_note.cgst_12, credit_note.cgst_18, credit_note.cgst_28, credit_note.cgst_other]))
+            # sgst_amount = list(filter(None, [credit_note.sgst_5, credit_note.sgst_12, credit_note.sgst_18, credit_note.sgst_28, credit_note.sgst_other]))
             
-            igst_amount = [ float(i) for i in igst_amount]
-            cgst_amount = [ float(i) for i in cgst_amount]
-            sgst_amount = [ float(i) for i in sgst_amount]
+            # igst_amount = [ float(i) for i in igst_amount]
+            # cgst_amount = [ float(i) for i in cgst_amount]
+            # sgst_amount = [ float(i) for i in sgst_amount]
 
 
-            gst_ledger = gst_ledger_model.GST_Ledger.objects.get(creditnote=credit_note)
+            # gst_ledger = gst_ledger_model.GST_Ledger.objects.get(creditnote=credit_note)
 
-            gst_ledger.gst_number = credit_note.creditnote_org_gst_num
-            gst_ledger.cgst_amount = sum(cgst_amount)
-            gst_ledger.sgst_amount = sum(sgst_amount)
-            gst_ledger.igst_amount = sum(igst_amount)
-            gst_ledger.is_creditnote = True
-            gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+            # gst_ledger.gst_number = credit_note.creditnote_org_gst_num
+            # gst_ledger.cgst_amount = sum(cgst_amount)
+            # gst_ledger.sgst_amount = sum(sgst_amount)
+            # gst_ledger.igst_amount = sum(igst_amount)
+            # gst_ledger.is_creditnote = True
+            # gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
 
-            gst_ledger.user = credit_note.user
+            # gst_ledger.user = credit_note.user
 
-            gst_ledger.save()
+            # gst_ledger.save()
 
             #******************************************************************************
             # Code End

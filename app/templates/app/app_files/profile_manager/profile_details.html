@@ -431,14 +431,14 @@ td{padding:5px;}
     </div>
 </div>
 
-
+<!-- bank acount table -->
 <div class="row">
     <div class="col-lg-12" style="padding:0px">
         <div class="card">
             <div class="card-header card-header-primary" style="padding-bottom:10px">
                 <h5 class="card-title">
                     Bank Accounts
-                    <span data-toggle="modal" data-target="#org_contact_add_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
+                    <span data-toggle="modal" data-target="#org_bank_account_modal" title="Add New" class="pull-right" style="margin-right:65px; cursor:pointer">
                         <button class="btn  mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
                     </span>
                     <!-- <span onclick="del_all_entries(0)" title="Delete All" class="pull-right" style="margin-right:30px; cursor:pointer">
@@ -450,50 +450,51 @@ td{padding:5px;}
                 <table class="table-responsive table-bordered">
                     <tbody style="width:100%; display:inline-table;">
                         <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Account Holder</td>
-                            <td class="text-center" style="width: 9%;border: 1px solid black;color: black;">Account Number</td>
-                            <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">IFSC Code</td>
-                            <td class="text-center" style="width: 11%;border: 1px solid black;color: black;">Branch Name</td>
-                            <td class="text-center" style="width: 1%;border: 1px solid black;color: black;">Bank Name</td>                         
+                            <td class="text-center" style="width: 19%;border: 1px solid black;color: black;">Account Holder</td>
+                            <td class="text-center" style="width: 22%;border: 1px solid black;color: black;">Account Number</td>
+                            <td class="text-center" style="width: 13%;border: 1px solid black;color: black;">IFSC Code</td>
+                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Branch Name</td>
+                            <td class="text-center" style="width: 22%;border: 1px solid black;color: black;">Bank Name</td>                         
                             <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
                         </tr>  
-                        {% for i in address_details %}
+                        {% for i in org_bank_detials %}
                         
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                 
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.phone|default_if_none:""|safe|truncatechars:20}}
+                                    {{ i.account_holder_name|default_if_none:""|safe|truncatechars:20}}
                                 </td>                  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.email|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.account_number|default_if_none:""}}
                                 </td>  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.website|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.ifsc_code|default_if_none:""|safe|truncatechars:20 }}
                                 </td>               
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.fax|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.bank_branch_name|default_if_none:""|safe|truncatechars:20 }}
                                 </td>   
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.skype|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.bank_name|default_if_none:""|safe|truncatechars:20 }}
                                 </td>      
                                  
                                 <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
-                                    <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" data-toggle="modal"  data-target="#editAccountModal-{{forloop.counter}}">create</i>
-                                    <i title="Delete" class="material-icons" data-toggle="modal" data-target="#account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
+                                    <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="set_bankaccount_switch('{{forloop.counter}}','{{i.default_bank}}')">create</i>
+                                    <!-- data-toggle="modal"  data-target="#editBankModal-{{forloop.counter}}" -->
+                                    <i title="Delete" class="material-icons" data-toggle="modal" data-target="#bank_account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
                                 </td>      
                                 <!-- delete model popup -->
-                                <div class="modal " tabindex="-1" role="dialog" id="account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                <div class="modal " tabindex="-1" role="dialog" id="bank_account_del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                     <div class="modal-dialog" role="document" style="border-top: none;">
                                         <div class="modal-content" style="border-top: none;background-color: white;position:bottom">
                                             <div class="modal-header" style="border-bottom: none;padding:5px;">
                                                 
                                             </div>
                                             <div class="modal-body" style="border-top: none;position: bottom;">
-                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting contact details will not affect reports or historical transactions. </font></b></h4>
+                                                <h4 align="center"><b><font color="black">Are you sure you want to delete. Deleting bank details will not affect reports or historical transactions. </font></b></h4>
                                             </div>
                                             
                                             <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                <center><button onclick="delete_org_account({{i.id}})" class="btn mr-2" style="align-content: left;margin-left: 150px;background-color: #598ebb">Yes</button></center>
+                                                <center><a class="btn mr-2" href="{% url 'delete_org_bank_account' i.id %}" style="align-content: left;margin-left: 150px;background-color: #598ebb">Yes</a></center>
                                                 <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;">No</button>
                                             </div>
                                         </div>
@@ -565,6 +566,91 @@ td{padding:5px;}
     </div>
 </div>
 
+<!-- Add Organisation Bank details popup -->
+<div class="modal " tabindex="-1" role="dialog" id="org_bank_account_modal">
+    <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
+        <form method="post" action="{% url 'add_organisation_bank_account' %}">
+			<div class="modal-content" style="background-color:#598ebb;">            
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">
+                        ADD ORGANISATION BANK DETAILS
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ids}}" name="org_bank_ids">
+
+                    <div class="row" style="margin-left: 1%;">
+                        <label class="switch" style="margin-top: -3px;margin-right: 7px;">                                        
+                            <input type="checkbox" onclick="set_bank_default('add')" id="add_switch_bank">
+                            <span class="slider round"></span>
+                        </label>
+                        Set default bank details
+                    </div>
+                    <input type="hidden" value="no" id="default_bank_switch" name="add_default_bank_switch">
+                    <table class="table-responsive">
+
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Account Holder
+                                </td>
+                                <td style="border:0px;">
+                                    {{bank_account_form.account_holder_name}}
+                                </td> 
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Account Number
+                                </td>
+                                <td style="border:0px;">
+                                    {{bank_account_form.account_number}}
+                                </td>   
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    IFSC Code
+                                </td>
+                                <td style="border:0px;">
+                                    {{bank_account_form.ifsc_code}}
+                                </td>  
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Branch Name
+                                </td>
+                                <td style="border:0px;">
+                                    {{bank_account_form.bank_branch_name}}
+                                </td> 
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Bank Name
+                                </td>
+                                <td style="border:0px;">
+                                    {{bank_account_form.bank_name}}
+                                </td>          
+								<!-- <td style="color:black;border:0px;" class="error_field"></td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                    <button type="submit" class="btn mr-2 save_button" style="align-content: left;margin-left:260px;background-color:#598ebb;" disabled>Submit</button>
+                    <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;margin-left: 5px;">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Add Organisation Contact popup -->
 <div class="modal " tabindex="-1" role="dialog" id="org_contact_add_modal" style="">
     <div class="modal-dialog modal-lg" role="document" style="border-top: none;">
@@ -953,6 +1039,91 @@ td{padding:5px;}
 </div>
 {% endfor %}
 
+<!-- EDIT ORGANIZATION BANK ACCOUNT MODAL -->
+
+{% for i in org_bank_form %}
+
+<div class="modal fade" id="editBankModal-{{forloop.counter}}" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#fff">
+            <form method="post" style="margin:0px" action="{% url 'edit_organisation_bank_account' ids %}">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Edit Bank Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{contact_ins}}" name="ids">
+                    <div class="row" style="margin-left: 1%;">
+                        <label class="switch" style="margin-top: -3px;margin-right: 7px;">                                        
+                            <input type="checkbox" onclick="set_bank_default('{{forloop.counter}}')" id="edit_bank_switch{{forloop.counter}}">
+                            <span class="slider round"></span>
+                        </label>
+                        Set default bank details
+                    </div>
+                    <input type="hidden" id="default_bank_switch{{forloop.counter}}" name="edit_default_bank_switch">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Account Holder
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.account_holder_name}}
+                                </td> 
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Account Number
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.account_number}}
+                                </td>   
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    IFSC Code
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.ifsc_code}}
+                                </td>  
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Branch Name
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.bank_branch_name}}
+                                </td> 
+								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Bank Name
+                                </td>
+                                <td style="border:0px;">
+                                    {{i.bank_name}}
+                                </td>          
+								<!-- <td style="color:black;border:0px;" class="error_field"></td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm save_button" style="background-color: #598ebb;" onclick="return check()">Update</button>
+                    <button class="btn btn-sm" type="button" style="background-color: #9095a2;" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 <!-- EDIT ORGANIZATION ACCOUNT MODAL -->
 
 {% for i in org_account_form %}

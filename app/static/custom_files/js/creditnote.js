@@ -37,25 +37,34 @@ function creditnote_addRow(a) {
             }  
         } 
     });
-       
-
-
-
-        var html = '<tr id="creditnote_row'+creditnote_number+'">'
-        html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+'),validation()" style="width: 174.6px;padding-left:0px"><option value="-------">None</option></select>'
-        html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
-        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
-        html +='<td style="border:1px solid black;"><div class="row" style="padding-top:9px;"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+'),validation()" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:1%"></div></div></td>'
-        html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+'), validation()" name="Quantity[]"></td>'
-        html +='<td style="border:1px solid black;"><input class="form-control" onchange="validation()" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Discount'+creditnote_number+'" name="Discount[]"></div>'
-        html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+creditnote_number+'" name="Dis[]" onchange="dicount_type('+creditnote_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="creditnote_tax_cacultion()" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
-        html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Amount'+creditnote_number+'">₹</label></div>'
-        html +='<div class="col"><input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,\'Amount'+creditnote_number+'\')" id="Amount'+creditnote_number+'" name="Amount[]" style="margin-top:1%;"></div></div></td>'
-        html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+creditnote_number+'" name="'+creditnote_number+'" onclick="creditnote_removeRow('+creditnote_number+')" style="cursor: default;">delete_forever</span></td></tr>'
+    var state = $("#supplyPlace1").val()
+    var org_state = $('#single_gst_code option:selected').text()
+    var html = '<tr id="creditnote_row'+creditnote_number+'">'
+    html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+')" style="padding-left:0px" required><option value="">None</option></select>'
+    html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
+    html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'" style="margin-top:5px">₹</label></div>'
+    html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:8%" required></div></div></td>'
+    html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" name="Quantity[]" required></td>'
+    html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Discount'+creditnote_number+'" name="Discount[]"></div>'
+    html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+creditnote_number+'" name="Dis[]" onchange="dicount_type('+creditnote_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+creditnote_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+    html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
+    if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
+        html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+creditnote_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
+        html +='<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+creditnote_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
+        html +='<td class="row_i_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+creditnote_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'
+    }else if(org_state.toLowerCase() != state.toLowerCase()){
+        html += '<td class="row_cs_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+creditnote_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
+        html +='<td class="row_cs_gst" style="border:1px solid black;display:none;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_sgst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_sgst" id="row_sgst'+creditnote_number+'" name="row_sgst[]" style="margin-top: 1%;" readonly></div></div></td>'
+        html +='<td class="row_i_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_igst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_igst" id="row_igst'+creditnote_number+'" name="row_igst[]" style="margin-top: 1%;" readonly></div></div></td>'    
+    }
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Amount'+creditnote_number+'">₹</label></div>'
+    html +='<div class="col"><input type="text" class="form-control amount" id="Amount'+creditnote_number+'" name="Amount[]" style="margin-top:1%;" readonly></div></div></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Amount_inc'+creditnote_number+'">₹</label></div>'
+    html +='<div class="col"><input type="text" class="form-control amount_inc" id="Amount_inc'+creditnote_number+'" name="Amount_inc[]" style="margin-top:1%;" readonly></div></div></td>'
+    html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+creditnote_number+'" name="'+creditnote_number+'" onclick=" return creditnote_removeRow('+creditnote_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         $('#creditnote_table').append(html)
         
         // SELECT PLUGIN
@@ -446,8 +455,11 @@ function sub_total(){
     //     creditnote_tax_cacultion()
     // }
     // else{
-        $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
-        creditnote_tax_cacultion()
+        if(parseFloat(sub_total) != 0.00){
+            $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        }
+        change_state()
+        // creditnote_tax_cacultion()
     // }
     
 }
@@ -559,150 +571,37 @@ function customer_gst_type(){
 // creditnote_tax_cacultion()
 // sub_total()
 function creditnote_tax_cacultion(){
-    var state = $("#supplyPlace1").val()
+    var state = $('#supplyPlace1').val()
     var org_state = $('#single_gst_code option:selected').text()
-    var cgst_5 = 0
-    var sgst_5 = 0
-    var igst_5 = 0
-    var cgst_12 = 0
-    var sgst_12 = 0
-    var igst_12 = 0
-    var cgst_18 = 0
-    var sgst_18 = 0
-    var igst_18 = 0
-    var cgst_28 = 0
-    var sgst_28 = 0
-    var igst_28 = 0
-    var cgst_other = 0
-    var sgst_other = 0
-    var igst_other = 0
+    var csgst = 0
+    var igst = 0
+
     if(org_state.toLowerCase() == state.toLowerCase()){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
 
-            if($('#'+tax_id+'').val() < parseFloat(100.00)){
-
-                var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
-                var half = (parseFloat(tax_val)/2).toFixed(2);
-                if($('#'+tax_id+'').val() == '5' & half != 'NaN'){
-                    cgst_5 += parseFloat(half)
-                    sgst_5 += parseFloat(half)
-                }
-                else if($('#'+tax_id+'').val() == '12' & half != 'NaN'){
-                    cgst_12 += parseFloat(half)
-                    sgst_12 += parseFloat(half)
-                }
-                else if($('#'+tax_id+'').val() == '18' & half != 'NaN'){
-                    cgst_18 += parseFloat(half)
-                    sgst_18 += parseFloat(half)
-                }
-                else if($('#'+tax_id+'').val() == '28' & half != 'NaN'){
-                    cgst_28 += parseFloat(half)
-                    sgst_28 += parseFloat(half)
-                }
-                else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & half != 'NaN' ){
-                    cgst_other += parseFloat(half)
-                    sgst_other += parseFloat(half)
-                }
-            }else{
-                alert('Please enter valid Tax value')
-                $('#'+tax_id+'').val('')
-            }
-            
+            var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
+            var half = (parseFloat(tax_val)/2).toFixed(2);
+            if(half != 'NaN'){
+                csgst += parseFloat(half)
+            }   
         });
-        if(cgst_5 != 0 & sgst_5 != 0 & cgst_5 != 0.0 & sgst_5 != 0.0 ){
-            $('#CGST_5').val(cgst_5)
-            $('#SGST_5').val(sgst_5)
-            $('#gst_5').show()
+        if(csgst != 0 & csgst != 0.0){
+            $('#CGST').val(parseFloat(csgst).toFixed(2))
+            $('#SGST').val(parseFloat(csgst).toFixed(2))
+            $('#cs_gst').show()
         }else{
-            $('#gst_5').hide()
+            $('#CGST').val('')
+            $('#SGST').val('')
+            $('#cs_gst').hide()
         }
-        if(cgst_12 != 0 & sgst_12 != 0 & cgst_12 != 0.0 & sgst_12 != 0.0){
-            $('#CGST_12').val(cgst_12)
-            $('#SGST_12').val(sgst_12)
-            $('#gst_12').show()
-
-        }else{
-            $('#gst_12').hide()
-        }
-        if(cgst_18 != 0 & sgst_18 != 0 & cgst_18 != 0.0 & sgst_18 != 0.0){
-            $('#CGST_18').val(cgst_18)
-            $('#SGST_18').val(sgst_18)
-            $('#gst_18').show()
-
-        }else{
-            $('#gst_18').hide()
-        }
-        if(cgst_28 != 0 & sgst_28 != 0 & cgst_28 != 0.0 & sgst_28 != 0.0){
-            $('#CGST_28').val(cgst_28)
-            $('#SGST_28').val(sgst_28)
-            $('#gst_28').show()
-
-        }else{
-            $('#gst_28').hide()
-        }
-        if(cgst_other != 0 & sgst_other != 0 & cgst_other != 0.0 & sgst_other != 0.0){
-            $('#CGST_other').val(cgst_other)
-            $('#SGST_other').val(sgst_other)
-            $('#gst_other').show()
-
-        }else{
-            $('#gst_other').hide()
-        }
-
-        if($("#gst_5").is(":visible")){
-            var a = '0'
-        }else{
-            $('#CGST_5').val('')
-            $('#SGST_5').val('')
-        }
-
-        if($("#gst_12").is(":visible")){
-            var a = '0'
-        }else{
-            $('#CGST_12').val('')
-            $('#SGST_12').val('')
-        }
-
-        if($("#gst_18").is(":visible")){
-            var a = '0'
-        }else{
-            $('#CGST_18').val('')
-            $('#SGST_18').val('')
-        }
-
-        if($("#gst_28").is(":visible")){
-            var a = '0'
-        }else{
-            $('#CGST_28').val('')
-            $('#SGST_28').val('')
-        }
-
-        if($("#gst_other").is(":visible")){
-            var a = '0'
-        }else{
-            $('#CGST_other').val('')
-            $('#SGST_other').val('')
-        }
-        $('#igst_5').hide()
-        $('#igst_5').val('')
-
-        $('#igst_12').hide()
-        $('#igst_12').val('')
-
-        $('#igst_18').hide()
-        $('#igst_18').val('')
-
-        $('#igst_28').hide()
-        $('#igst_28').val('')
-
-        $('#igst_other').hide()
-        $('#igst_other').val('')
+            $('#i_gst').hide()
+            $('#IGST').val('')
 
         var sub_total = $('#SubTotal').val()
         
-        var sc_total = (parseFloat(sub_total) + parseFloat(cgst_5) + parseFloat(sgst_5) + parseFloat(cgst_12) + parseFloat(sgst_12) + parseFloat(cgst_18) + parseFloat(sgst_18) + parseFloat(cgst_28) + parseFloat(sgst_28) +parseFloat(cgst_other) + parseFloat(sgst_other)).toFixed(2)
+        var sc_total = (parseFloat(sub_total) + parseFloat(csgst) + parseFloat(csgst)).toFixed(2)
         if(sc_total == 'NaN'){
             $('#Total').val('')
         }else{
@@ -710,132 +609,118 @@ function creditnote_tax_cacultion(){
         }
         
     }
-    else if(org_state.toLowerCase() != state.toLowerCase() ){
+    else if(org_state.toLowerCase() != state.toLowerCase()){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
             var amount_id = 'Amount'+tax_id.slice(3)+''
-
-            if($('#'+tax_id+'').val() < parseFloat(100.00)){
-
-                var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
-                if($('#'+tax_id+'').val() == '5' & tax_val != 'NaN' ){
-                    igst_5 += parseFloat(tax_val)
-                }
-                else if($('#'+tax_id+'').val() == '12' & tax_val != 'NaN'){
-                    igst_12 += parseFloat(tax_val)
-                }
-                else if($('#'+tax_id+'').val() == '18' & tax_val != 'NaN'){
-                    igst_18 += parseFloat(tax_val)
-                }
-                else if($('#'+tax_id+'').val() == '28' & tax_val != 'NaN'){
-                    igst_28 += parseFloat(tax_val)
-                }else if($('#'+tax_id+'').val() != '' & $('#'+tax_id+'').val() != '5' & $('#'+tax_id+'').val() != '12' &$('#'+tax_id+'').val() != '18' & $('#'+tax_id+'').val() != '28' & tax_val != 'NaN'){
-                    igst_other += parseFloat(tax_val)
-                }
-            }else{
-                alert('Please enter valid Tax value')
-                $('#'+tax_id+'').val('')
+            var tax_val = (parseFloat($('#'+amount_id+'').val()) * (parseFloat($('#'+tax_id+'').val()) / 100)).toFixed(2);
+            if(tax_val != 'NaN'){
+                igst += parseFloat(tax_val)
             }
-        
         });
-        if(igst_5 != 0 & igst_5 != 0.0){
-            $('#IGST_5').val(igst_5)
-            $('#igst_5').show()
-
+        if(igst != 0 & igst != 0.0){
+            $('#IGST').val(parseFloat(igst).toFixed(2))
+            $('#i_gst').show()
         }else{
-            $('#igst_5').hide()
+            $('#IGST').val()
+            $('#i_gst').hide()
         }
-        if(igst_12 != 0 & igst_12 != 0.0){
-            $('#IGST_12').val(igst_12)
-            $('#igst_12').show()
-
-        }else{
-            $('#igst_12').hide()
-        }
-        if(igst_18 != 0 & igst_18 != 0.0){
-            $('#IGST_18').val(igst_18)
-            $('#igst_18').show()
-
-        }else{
-            $('#igst_18').hide()
-        }
-        if(igst_28 != 0 & igst_28 != 0.0){
-            $('#IGST_28').val(igst_28)
-            $('#igst_28').show()
-
-        }else{
-            $('#igst_28').hide()
-        }
-        if(igst_other != 0 & igst_other != 0.0 ){
-            $('#IGST_other').val(igst_other)
-            $('#igst_other').show()
-
-        }else{
-            $('#igst_other').hide()
-        }
-
-        if($("#igst_5").is(":visible")){
-            var a = '0'
-        }else{
-            $('#IGST_5').val('')
-
-        }
-
-        if($("#igst_12").is(":visible")){
-            var a = '0'
-        }else{
-            $('#IGST_12').val('')
-
-        }
-
-        if($("#igst_18").is(":visible")){
-            var a = '0'
-        }else{
-            $('#IGST_18').val('')
-
-        }
-
-        if($("#igst_28").is(":visible")){
-            var a = '0'
-        }else{
-            $('#IGST_28').val('')
-
-        }
-
-        if($("#igst_other").is(":visible")){
-            var a = '0'
-        }else{
-            $('#IGST_other').val('')
-
-        }
-        $('#gst_5').hide()
-        $('#CGST_5').val('')
-        $('#SGST_5').val('')
-
-        $('#gst_12').hide()
-        $('#CGST_12').val('')
-        $('#SGST_12').val('')
-
-        $('#gst_18').hide()
-        $('#CGST_18').val('')
-        $('#SGST_18').val('')
-
-        $('#gst_28').hide()
-        $('#CGST_28').val('')
-        $('#SGST_28').val('')
-
-        $('#gst_other').hide()
-        $('#CGST_other').val('')
-        $('#SGST_other').val('')
+        $('#cs_gst').hide()
+        $('#CGST').val('')
+        $('#SGST').val('')
 
         var sub_total = $('#SubTotal').val()
-        var i_total = (parseFloat(sub_total) + parseFloat(igst_5) + parseFloat(igst_12) + parseFloat(igst_18) + parseFloat(igst_28) + parseFloat(igst_other)).toFixed(2)
+        var i_total = (parseFloat(sub_total) + parseFloat(igst)).toFixed(2)
         if(i_total == 'NaN'){
             $('#Total').val('')
         }
         else{
             $('#Total').val(i_total)
         }
+    }
+}
+/********************************************************************/
+// CHANGE CGST SGST TO IGST
+/********************************************************************/
+
+function change_state(){
+    var state = $('#supplyPlace1').val()
+    var org_state = $('#single_gst_code option:selected').text()
+    if(org_state != '' & state != ''){
+        if(org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
+            $('#creditnote_table').find('.row_i_gst').hide()
+            $('#creditnote_table').find('.row_igst').val('')
+            $('#creditnote_table').find('.row_cs_gst').show()
+            $('#creditnote_table').find('.price_header').css('width','7%')
+            $('#creditnote_table').find('.unit_header').css('width','11%')
+            $('#creditnote_table').find('.quantity_header').css('width','5%')
+            $('#creditnote_table').find('.tax_header').css('width','7%')
+        }else if(org_state.toLowerCase() != state.toLowerCase()){
+            $('#creditnote_table').find('.row_cs_gst').hide()
+            $('#creditnote_table').find('.row_cgst, .row_sgst').val('')
+            $('#creditnote_table').find('.row_i_gst').show()
+            $('#creditnote_table').find('.price_header').css('width','8%')
+            $('#creditnote_table').find('.unit_header').css('width','12%')
+            $('#creditnote_table').find('.quantity_header').css('width','6%')
+            $('#creditnote_table').find('.tax_header').css('width','8%')
+        }
+    }
+    $(".credit_note_item").each(function(){
+
+        var ids = $(this).attr('id');
+        ids = ids.substring(ids.length - 1, ids.length);
+        single_row_gst_cal = 'state'
+        var check = row_gst_cal(ids);
+    });
+    creditnote_tax_cacultion()
+}
+/********************************************************************/
+// EACH ROW TAX CALCULATION
+/********************************************************************/
+
+var single_row_gst_cal = ''
+function row_gst_cal(ids){
+    var state = $('#supplyPlace1').val()
+    var org_state = $('#single_gst_code option:selected').text()
+    if($('#tax'+ids+'').val() < parseFloat(100.00)){
+        var gst =  (parseFloat($('#Amount'+ids+'').val()) * (parseFloat($('#tax'+ids+'').val()) / 100));
+        var amount = $('#Amount'+ids+'').val()
+        var incl_tax = parseFloat(amount) + parseFloat(gst)
+        if(org_state.toLowerCase() == state.toLowerCase()){
+            var half = (parseFloat(gst)/2).toFixed(2);
+
+            if(half != 'NaN' & half != 0 & half != 0 & half != 0.0 & half != 0.0){
+                $('#row_cgst'+ids+'').val(half)
+                $('#row_sgst'+ids+'').val(half)
+                $('#Amount_inc'+ids+'').val()
+            }else{
+                $('#row_cgst'+ids+'').val('')
+                $('#row_sgst'+ids+'').val('')
+            }
+        }else if(org_state.toLowerCase() != state.toLowerCase()){
+            if(gst.toString() != 'NaN' & gst != 0 & gst != 0 & gst != 0.0 & gst != 0.0){
+                $('#row_igst'+ids+'').val((parseFloat(gst)).toFixed(2))
+            }else{
+                $('#row_igst'+ids+'').val('')
+            }
+        }
+
+        if(incl_tax.toString() != 'NaN' & incl_tax != 0 & incl_tax != 0 & incl_tax != 0.0 & incl_tax != 0.0){
+            $('#Amount_inc'+ids+'').val(parseFloat(incl_tax).toFixed(2))
+        }else{
+            $('#Amount_inc'+ids+'').val('')
+        }
+    
+        if(single_row_gst_cal == 'state'){
+            single_row_gst_cal = ''
+            var complete = 'done'
+            return complete
+        }else{
+            creditnote_tax_cacultion()
+        }
+    }else{
+        alert('Please enter valid Tax value')
+        $('#tax'+ids+'').val('')
     }
 }
 /********************************************************************/

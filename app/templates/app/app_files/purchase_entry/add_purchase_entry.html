@@ -247,6 +247,42 @@ optgroup{color :black; }
 #common_gst:hover{
     color:white!important;
 }
+.dropbtn {
+  color: #000000db;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  margin-left: -144px;
+  margin-top: -6px;
+  display: none;
+  position: absolute;
+  background-color: #000000db;
+  min-width: 328px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+#tool_tip_link:hover{
+    color: white!important;
+}
 </style>
 
 <form method="post" action="{% url 'save_purchase_entry' %}" autocomplete="off" enctype="multipart/form-data">
@@ -260,15 +296,24 @@ optgroup{color :black; }
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
                     {% if is_gst != 'no' %}
                         {% if is_signle_gst == 'yes' %}
+                            {% if order_gst == 'active' %}
+                            <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{purchase_order.purchase_org_gst_num}}.</h6>
+                            {% else %}
                             <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
+                            {% endif %}
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
+                            {% if order_gst == 'active' %}
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{purchase_order.purchase_org_gst_num}}. Do you want to create this purchase entry with another GST number</h6>&nbsp;
+                            {% else %}
                             <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this purchase entry with another GST number</h6>&nbsp;
+                            {% endif %}
                             <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
                     {% else %}
                     <div class="row" style="margin-left: 0px;" id="change_update_gst">
+
                         <h6 style="color: white;font-size: x-small;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
                         <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
                     </div>
@@ -278,6 +323,16 @@ optgroup{color :black; }
                     {% endif %}
                 </div>
             <div style="margin-top: 4%;margin-left: 2%;">
+                {% if order_gst == 'active' %}
+                <input class="form-control" type="hidden"  value="{{purchase_order.purchase_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{purchase_order.purchase_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if purchase_order.purchase_org_gst_state == i.0 %} selected {% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
                 <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
                 <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
                 <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
@@ -286,6 +341,7 @@ optgroup{color :black; }
                     <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
                     {% endfor %}
                 </select>
+                {% endif %}
                 <div class="container" >
                     <div class="row">
                         <!-- left -->
@@ -315,16 +371,62 @@ optgroup{color :black; }
                                 <div class="col-4">
                                     <label for="invoice_customer">Vendor Name</label>
                                 </div>
-                                <div class="col-8" style="margin-top:-1%">
-                                    <select class="form-control entry_vendor" id="entry_vendor" name="entry_vendor" onchange="state_compare()" required>
+                                <div class="col-7" style="margin-top:-1%">
+                                    <select class="form-control entry_vendor" id="entry_vendor" name="entry_vendor" onchange="state_compare(),vendor_info()" required>
                                         <option value="">None</option>
         
                                         {% for contact in contacts %}
                                         {% if contact.customer_type == 2%}
-                                        <option value="{{contact.id}}">{{contact}}</option>
+                                        <option value="{{contact.id}}" {% if purchase_order.vendor == contact %} selected {% endif %} >{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
                                    </select>
+                                </div>
+                                <div class="col-1 dropdown" style="margin-bottom: -6%;">
+
+                                    <span class="material-icons dropbtn" style="font-size: x-large;margin-left: -14px;">info</span>
+
+                                    <div class="dropdown-content" id="vendor_details">
+                                        <div id="v_question">
+                                            <p style="text-align: center;color: white;">?</p>
+                                        </div>
+                                        <div id="v_info" style="display: none;color: white;margin-top: 2%;margin-right: 3%;margin-bottom: 2%; margin-left: 3%;">
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_name" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Organisation Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_org" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Address:-
+                                                </div>
+                                                <div class="col-md-8" id="v_addr" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row" style="display: none;">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GST Type:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gst_type" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GSTIN:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gstin" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <a href="#" id="tool_tip_link" data-toggle="modal" data-target="#contact_gst_change" style="text-decoration: underline;">Want to Update GST number?</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -341,7 +443,15 @@ optgroup{color :black; }
                                     </select>
                                 </div>
                             </div>
-        
+                            <!-- mail -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label for="mail">mail</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" id="mail" name="mail">
+                                </div>
+                            </div>
                             <!-- gst_type -->
                             <div class="row" style="display: none;">
                                 <div class="col-4">
@@ -371,7 +481,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_ref">Reference#</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref">
+                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref" value="{{purchase_order.purchase_order_number}}">
                                 </div>
                             </div>
 
@@ -389,7 +499,9 @@ optgroup{color :black; }
 
                     <table class="table" id="p_entry_table" style="width: 100%;margin-left: 1.5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
-                          
+                        {% if link_purchase_order == 'yes' %}
+                            {% if purchase_order.is_cs_gst == True %}
+                        
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
@@ -402,9 +514,205 @@ optgroup{color :black; }
                             <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;display: none;">IGST</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
-                          
+                            {% elif purchase_order.is_cs_gst == False %} 
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 8%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 6%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 8%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                            {% endif %}
+                        {% elif link_purchase_order == 'no' %}
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 5%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 7%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;display: none;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                        {% endif %}  
                         </thead>
                         <tbody>
+                        {% if link_purchase_order == 'yes' %}
+                        <!-- for link purhase order to purchase entry -->
+                        {% for items in purchase_item %}
+                          <tr id="entry_row{{forloop.counter}}">
+                            <td style="border:1px solid black;padding-bottom: 0%;">
+                                
+                                <select class="form-control select entry_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="padding-left: 0px;">
+                                    
+                                    <option value="">None</option>
+                                    
+                                    {% for product in intproducts %}
+                                            {% if items.product_id|lower == product.id|lower %}
+                                            <option value="{{product.id}}" {% if items.product_id|lower == product.id|lower %} selected {% endif %}>{{product}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% for product in products %}
+    
+                                            {% if items.product_id|lower != product.id|lower %}
+                                            <option value="{{product.id}}">{{product}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                </select>
+                                
+                                <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                
+                            </td>
+                            <td style="border:1px solid black;">
+                                <select class="form-control purchase_entry_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()" required>
+                                    <option value="">None</option>
+                                    
+                                    {% for acc_group in acc_ledger_income %}
+                                        <option value="{{acc_group.id}}"  {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>                  
+
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="Price{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" >
+                                    </div>
+                                </div>  
+                            </td>
+                            <td style="border:1px solid black;">
+                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" >
+                            </td>
+                            <td style="border:1px solid black;">
+                                <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-7" style="padding-right: 3px;">
+                                        <input type="text" value="{{items.discount}}"  onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount{{forloop.counter}}" name="Discount[]">
+                                    </div>
+                                    <div class="col-5" style="padding-left:1px;">
+                                        <select class="form-control" align="right"  id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
+                                            <option value="%" {% if items.discount_type == '%' %} selected {% endif %}>%</option>
+                                            <option value="₹" {% if items.discount_type == '₹' %} selected {% endif %}>₹</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-8" style="padding-right: 3px;">
+                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
+                                        <datalist id="tax">
+                                            {% for i in gst %}
+                                            <option value="{{i.taxname_percent}}">
+                                            {% endfor %}
+                                        </datalist>  
+                                    </div>
+                                    <div class="col" style="padding-left: 0%;padding-right: 0%;">
+                                        <font style="color: black;">%</font>
+                                    </div>
+                                </div>  
+                            </td>
+                            {% if purchase_order.is_cs_gst == True %}
+                            <td class="row_cs_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_cgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_cgst" value="{{items.cgst_amount}}"  id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_cs_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_sgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_sgst" value="{{items.sgst_amount}}" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_i_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_igst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_igst" id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            {% elif purchase_order.is_cs_gst == False %}
+                            <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_cgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_cgst" id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_sgst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_sgst" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_i_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_igst{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_igst" value="{{items.igst_amount}}"  id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endif %}
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="Amount{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="{{items.amount}}" class="form-control amount" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="Amount_inc{{forloop.counter}}">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" value="{{items.amount_inc}}" class="form-control amount_inc" id="Amount_inc{{forloop.counter}}" name="Amount_inc[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}"  onclick=" return creditnote_removeRow('{{forloop.counter}}')" style="cursor: default;">delete_forever</span></td>
+                          </tr>
+                          {% endfor %}
+                        {% elif link_purchase_order == 'no' %}
+                        <!-- for direct generate purchase entry -->
                           <tr id="entry_row1">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
@@ -514,7 +822,6 @@ optgroup{color :black; }
                                         <input type="text" class="form-control amount" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
-                                
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
@@ -524,19 +831,22 @@ optgroup{color :black; }
                                     <div class="col">
                                         <input type="text" class="form-control amount_inc" id="Amount_inc1" name="Amount_inc[]" style="margin-top: 1%;" readonly>
                                     </div>
-                                </div>
-                                
+                                </div>   
                             </td>
                             <td><span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span></td>
                           </tr>
-                          
+                        {% endif %}
                         </tbody>
                     </table>
                
             <div class="container">
                 <div class="row">
                     <div class="col">
+                        {% if link_purchase_order == 'yes' %}
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row({{item_count}})" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                        {% elif link_purchase_order == 'no' %}
                         <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row">
@@ -551,7 +861,7 @@ optgroup{color :black; }
     
                         <div class="row">
                             <div class="col">
-                                <textarea  id="entry_notes" name="entry_notes" rows="4" maxlength="400" size="400" style="width: 55%;"></textarea>
+                                <textarea  id="entry_notes" name="entry_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{purchase_order.Note|default_if_none:""}}</textarea>
                             </div>
                         </div>
 
@@ -577,7 +887,7 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" readonly>
+                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" value="{{purchase_order.sub_total}}" readonly>
                             </div>
                         </div>
 
@@ -589,11 +899,113 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" readonly>
+                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" value="{{purchase_order.total_discount}}" readonly>
                             </div>
                         </div>
 
                         <!-- 5% GST -->
+                        {% if link_purchase_order == 'yes' %}
+                        <!-- for link between purchase entry and purchase order -->
+                        {% if purchase_order.cgst and purchase_order.sgst %}
+                        <div id="cs_gst">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{purchase_order.cgst}}" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{purchase_order.sgst}}" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% else %}
+                        <div id="cs_gst" style="display: none;">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% endif %}
+                        {% if purchase_order.igst %}
+                        <div class="row" id="i_gst">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" value="{{purchase_order.igst}}" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% else %}
+                        <div class="row" id="i_gst" style="display: none;">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="Freight_Charges">Freight Charges:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color:black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="Freight_Charges" name="Freight_Charges" value="{{purchase_order.freight_charges|default_if_none:'0.00'}}" readonly>
+                            </div> 
+                        </div> 
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="entry_advance">Advance:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="entry_advance" name="entry_advance" value="{{purchase_order.advance|default_if_none:'0.00'}}" readonly>
+                            </div> 
+                        </div> 
+                        {% elif link_purchase_order == 'no' %}
+                        <!-- direct purchase entry create -->
                         <div id="cs_gst" style="display: none;">
                             <div class="row">
                                 <div class="col-4">
@@ -629,18 +1041,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="IGST" name="IGST" readonly>
                             </div> 
                         </div>
-
-                        <div class="row">
-                            <div class="col-4">
-                                <label for="entry_advance">Advance:</label>
-                            </div>
-                            <div class="col-1" style="padding-right: 0%;">
-                                <label>₹</label>
-                            </div>
-                            <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="entry_advance" name="entry_advance"  onkeypress="return restrictAlphabets(event), float_value(event,'entry_advance')">
-                            </div> 
-                        </div> 
+                        {% endif %}
 
                         <div class="row">
                             <div class="col-4">
@@ -650,10 +1051,15 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="Total" name="Total" readonly>
+                                <input type="text" class="form-control" id="Total" name="Total" value="{{purchase_order.total_balance}}" readonly>
                             </div> 
                         </div>
-
+                        <!-- check its link with purchase order or not -->
+                        {% if link_purchase_order == 'yes' %}
+                        <input type="hidden" id="purchase_order_connect" name="purchase_order_connect" value="yes">
+                        {% elif link_purchase_order == 'no' %}
+                        <input type="hidden" id="purchase_order_connect" name="purchase_order_connect" value="no">
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -1633,6 +2039,54 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+<!-- vendor gst update -->
+<div class="modal fade" id="contact_gst_change" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form method="post" style="margin:0px" id="vendor_gst_update">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add GST</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="vendor_ids" id="vendor_ids">
+                    <div class="row ">
+                        <div class="col-2">
+                            <label for="vendor_gst_type">GST Type</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <select class="form-control" name="vendor_gst_type" id="vendor_gst_type" required>
+                                <option value="">None</option>
+                                {% for i in gst_r_type %}
+                                <option value="{{i.0}}">{{i.1}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row single_gst_field">
+                        <div class="col-2">
+                            <label for="vendor_gst">GSTIN</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <input class="form-control" id="vendor_gst" name="vendor_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this))" required>
+                        </div>
+                        <div class="col-6">
+                            <p id="vendor_error_field" style="color: black;"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm " id="vendor_gst_save" onclick="v_gst_save()" style="background-color:#598ebb;">Update</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- chosse GST model popup -->
 {% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
 
@@ -1648,6 +2102,11 @@ optgroup{color :black; }
     // document.getElementById("add_more_accounts").readonly = true;
 
     csrf_token = '{{csrf_token}}';
+    $(document).ready(function(){
+        if($('#purchase_order_connect').val() == 'yes'){
+            state_compare()
+        }
+    });
 </script>
 
 

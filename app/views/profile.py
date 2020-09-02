@@ -69,6 +69,9 @@ class Profile(View):
         self.data["org_address_form"] = contact_forms.EditOrgAddressForm()
         self.data["gst_form"] = tax_form.OrganisationTaxForm()
 
+        #  bank acount form
+        self.data["bank_account_form"] = contact_forms.OrgAccountDetailsForm()
+
         if organisation_form is not None:
             org_contacts = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
             # cont_paginator = Paginator(org_contacts, 5)
@@ -98,6 +101,9 @@ class Profile(View):
             self.data["org_address_details"] = org_address_active
             # self.data["page"] = page 
 
+            org_bank_detials = users_model.User_Account_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
+
+            self.data['org_bank_detials'] = org_bank_detials
             # org_address inactive
             org_address_inactive = users_model.User_Address_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True,is_active = False)
             self.data["org_address_details_inactive"] = org_address_inactive
@@ -114,6 +120,18 @@ class Profile(View):
         
         for i in range(c_count):
             self.data["contact_address_form"].append(contact_forms.EditOrgAddressForm(instance = contact_address_form[i], prefix = 'form_{}'.format(contact_address_form[i].id)))
+
+        # edit org bank account
+
+        org_bank_form = users_model.User_Account_Details.objects.filter(organisation = organisation_form, is_user = True, is_organisation = True)
+        bank_count = len(org_bank_form)
+
+        self.data["bank_count"] = [i for i in range(bank_count)]
+            
+        self.data["org_bank_form"] = []
+        
+        for i in range(bank_count):
+            self.data["org_bank_form"].append(contact_forms.OrgAccountDetailsForm(instance = org_bank_form[i], prefix = 'form_{}'.format(org_bank_form[i].id)))
 
         #   edit org account
         org_account = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
@@ -206,7 +224,38 @@ def add_organisation_addres(request):
             ins.save()
 
     return redirect("/profile/",permanent = False)
+#=======================================================================================
+#   ADD BANK ACCOUNT DETAILS FORM
+#=======================================================================================
+#
+def add_organisation_bank_account(request):
 
+    if request.POST:
+
+        try:
+            org_ins = users_model.Organisations.objects.get(pk = int(request.POST["org_bank_ids"]))
+        except:
+            # pass
+            return redirect('/unauthorized/', permanent = False)
+
+        bank_form = contact_forms.OrgAccountDetailsForm(request.POST)
+
+        if(request.POST['add_default_bank_switch'] == 'yes'):
+            users_model.User_Account_Details.objects.filter(is_user = True,is_organisation = True,organisation = org_ins).update(default_bank = False)
+        
+        if bank_form.is_valid():            
+        
+            ins = bank_form.save(commit = False)
+            ins.is_user = True
+            ins.organisation = org_ins
+            ins.is_organisation = True
+            if(request.POST['add_default_bank_switch'] == 'yes'):
+                ins.default_bank = True
+            else:
+                ins.default_bank = False
+            ins.save()
+
+    return redirect("/profile/",permanent = False)
 #=======================================================================================
 #   EDIT ADDRESS DETAILS
 #=======================================================================================
@@ -269,7 +318,7 @@ def edit_org_address_details_form(request, ins):
         return redirect("/profile/",permanent = False)
 
 #=======================================================================================
-#   EDIT ADDRESS DETAILS
+#   EDIT ACCOUNT DETAILS
 #=======================================================================================
 #
 def edit_org_account_details_form(request, ins):
@@ -296,6 +345,39 @@ def edit_org_account_details_form(request, ins):
         
         return redirect("/profile/",permanent = False)
 
+#=======================================================================================
+#   EDIT ORG BANK ACCOUNT DETAILS
+#=======================================================================================
+#
+def edit_organisation_bank_account(request, ins):
+    if request.POST:
+# form_1-account_holder_name
+        keys = [i for i in request.POST.keys() if "account_holder_name" in i]
+
+        prefix = keys[0].replace("-account_holder_name", "").replace("form_", "")
+
+        try:
+            obj = users_model.User_Account_Details.objects.get(pk = int(prefix))    
+        except:
+            return redirect("/unauthorized/",permanent=False)
+
+        bank_form = contact_forms.OrgAccountDetailsForm(request.POST, prefix='form_'+prefix, instance = obj)
+
+        if(request.POST['edit_default_bank_switch'] == 'yes'):
+            users_model.User_Account_Details.objects.filter(is_user = True,is_organisation = True,organisation = org_ins).update(default_bank = False)
+        
+        if bank_form.is_valid():        
+            ins = bank_form.save(commit = False)
+            ins.is_user = True
+            ins.organisation = obj.organisation
+            ins.is_organisation = True
+            if(request.POST['edit_default_bank_switch'] == 'yes'):
+                ins.default_bank = True
+            else:
+                ins.default_bank = False
+            ins.save()  
+        
+        return redirect("/profile/",permanent = False)
 #===================================================================================================
 # DELETE ORGANIZATION ACCOUNT
 #===================================================================================================
@@ -311,7 +393,22 @@ def delete_org_account(request, ins = None):
         
         return HttpResponse(1)
     return HttpResponse(1)
-    
+
+#===================================================================================================
+# DELETE ORGANIZATION BANK ACCOUNT
+#===================================================================================================
+#
+
+def delete_org_bank_account(request, ins = None):
+
+    if ins is not None:
+        try:
+            users_model.User_Account_Details.objects.filter(pk = int(ins)).delete()
+        except:
+            return redirect('/unauthorized/', permanent=False)
+        
+        return redirect('/profile/', permanent=False)
+    return redirect('/unauthorized/', permanent=False)
 #===================================================================================================
 # CHECK EXISTING GST
 #===================================================================================================

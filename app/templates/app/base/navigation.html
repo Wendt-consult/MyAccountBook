@@ -52,6 +52,58 @@
         width: 100%!important;
     }
     </style>
+{% elif breadcrumb_title == 'PURCHASE ORDER' and type != 'view' %}
+<style>
+    .sidebar .sidebar-wrapper {
+        position: relative;
+        height: calc(100vh - 75px);
+        overflow: auto;
+        width: 75px;
+        z-index: 4;
+        padding-bottom: 30px;
+        scrollbar-color: rebeccapurple white;
+        scrollbar-width: none;
+    }
+    
+    .sidebar .sidebar-wrapper::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    .sidebar{
+        width: 85px!important;
+    }
+    .main-panel {
+        float: left!important;
+        margin-left: 2%!important;
+        width: 100%!important;
+    }
+    </style>
+{% elif breadcrumb_title == 'CREDIT NOTE' and type != 'view' %}
+<style>
+    .sidebar .sidebar-wrapper {
+        position: relative;
+        height: calc(100vh - 75px);
+        overflow: auto;
+        width: 75px;
+        z-index: 4;
+        padding-bottom: 30px;
+        scrollbar-color: rebeccapurple white;
+        scrollbar-width: none;
+    }
+    
+    .sidebar .sidebar-wrapper::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    .sidebar{
+        width: 85px!important;
+    }
+    .main-panel {
+        float: left!important;
+        margin-left: 2%!important;
+        width: 100%!important;
+    }
+    </style>
 {% else %}
 <style>
     .sidebar .sidebar-wrapper {

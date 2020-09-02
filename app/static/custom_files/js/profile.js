@@ -348,7 +348,7 @@ function float_value(event, elem) {
 };
 
 /********************************************************************/
-// baisc setting gst less then 100 percent
+// basic setting gst less then 100 percent
 /********************************************************************/
 
 function check_percent(elem){
@@ -357,4 +357,65 @@ function check_percent(elem){
 		alert("Pelase enter valid tax")
 		$(elem).val('')
 	}
+}
+
+/******************************************************************/
+// set default bank account
+/******************************************************************/
+
+function set_bank_default(bank_type){
+	if(bank_type == 'add'){
+		if($('#org_bank_account_modal').find('#add_switch_bank').is(':checked')){
+			c_box = confirm('You want to set this bank details as default bank details');
+			if(c_box){
+				$('#org_bank_account_modal').find('#default_bank_switch').val('yes');
+				$('#org_bank_account_modal').find('#add_switch_bank').prop('checked', true)
+			}else{
+				$('#org_bank_account_modal').find('#default_bank_switch').val('no');
+				$('#org_bank_account_modal').find('#add_switch_bank').prop('checked', false)
+			}
+		}else{
+			c_box = confirm('You want to unset this bank details');
+			if(c_box){
+				$('#org_bank_account_modal').find('#default_bank_switch').val('no');
+				$('#org_bank_account_modal').find('#add_switch_bank').prop('checked', false)
+			}else{
+				$('#org_bank_account_modal').find('#default_bank_switch').val('yes');
+				$('#org_bank_account_modal').find('#add_switch_bank').prop('checked', true)
+			}
+		}
+	}else{
+		console.log(bank_type)
+		console.log($('#edit_bank_switch'+bank_type).attr('id'))
+		if($('#edit_bank_switch'+bank_type).is(':checked')){
+			c_box = confirm('You want to set this bank details as default bank details');
+			if(c_box){
+				$('#editBankModal-'+bank_type).find('#default_bank_switch'+bank_type).val('yes');
+				$('#editBankModal-'+bank_type).find('#edit_bank_switch'+bank_type).prop('checked', true)
+			}else{
+				$('#editBankModal-'+bank_type).find('#default_bank_switch'+bank_type).val('no');
+				$('#editBankModal-'+bank_type).find('#edit_bank_switch'+bank_type).prop('checked', false)
+			}
+		}else{
+			c_box = confirm('You want to unset this bank details');
+			if(c_box){
+				$('#editBankModal-'+bank_type).find('#default_bank_switch'+bank_type).val('no');
+				$('#editBankModal-'+bank_type).find('#edit_bank_switch'+bank_type).prop('checked', false)
+			}else{
+				$('#editBankModal-'+bank_type).find('#default_bank_switch'+bank_type).val('yes');
+				$('#editBankModal-'+bank_type).find('#edit_bank_switch'+bank_type).prop('checked', true)
+			}
+		}
+	}
+}
+
+function set_bankaccount_switch(model_number,is_deafult){
+	if(is_deafult == 'True'){
+		$('#editBankModal-'+model_number).find('#edit_bank_switch'+model_number).prop('checked', true)
+		$('#editBankModal-'+model_number).find('#default_bank_switch'+model_number).val('yes');
+	}else{
+		$('#editBankModal-'+model_number).find('#default_bank_switch'+model_number).val('no');
+		$('#editBankModal-'+model_number).find('#edit_bank_switch'+model_number).prop('checked', false)
+	}
+	$('#editBankModal-'+model_number).modal('show')
 }

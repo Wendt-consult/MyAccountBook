@@ -109,26 +109,46 @@ thead th{
                 <div class="table" id="customize_table">
                     <table class=" table-bordered" id="purchase_view" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
-                            {% if customize.purchase_number != 0 %}
-                            <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%">Purchase Entry Number</th>
+                            {% if customize.entry_number != 0 %}
+                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%">Purchase Entry Number</th>
+                            {% else %}
+                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%;display: none;">Purchase Entry Number</th>
                             {% endif %}
-                            {% if customize.purchase_reference != 0 %}
-                            <th class="text-center customize_reference" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+
+                            {% if customize.entry_reference != 0 %}
+                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+                            {% else %}
+                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%;display: none;">Reference Number</th>
                             {% endif %}
-                            {% if customize.purchase_vendor != 0 %}
-                            <th class="text-center customize_vendor" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+
+                            {% if customize.entry_vendor != 0 %}
+                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+                            {% else %}
+                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%;display: none;">Vendor</th>
                             {% endif %}
-                            {% if customize.purchase_status != 0 %}
-                            <th class="text-center customize_status" style="color:#000000; font-size:11px;width: 8%">Purchase Entry Date</th>
+
+                            {% if customize.entry_date != 0 %}
+                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%">Purchase Entry Date</th>
+                            {% else %}
+                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Purchase Entry Date</th>
                             {% endif %}
-                            {% if customize.purchase_status != 0 %}
-                            <th class="text-center customize_status" style="color:#000000; font-size:11px;width: 8%">Due Date</th>
+
+                            {% if customize.entry_due_date != 0 %}
+                            <th class="text-center customize_entry_due_date" style="color:#000000; font-size:11px;width: 8%">Due Date</th>
+                            {% else %}
+                            <th class="text-center customize_entry_due_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Due Date</th>
                             {% endif %}
-                            {% if customize.purchase_total != 0 %}
-                            <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%">Advance</th>  
+
+                            {% if customize.entry_advance != 0 %}
+                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%">Advance</th> 
+                            {% else %}
+                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%;display: none;">Advance</th>  
                             {% endif %}
-                            {% if customize.purchase_date != 0 %}
-                            <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 10%">Total Amount</th>  
+
+                            {% if customize.entry_total != 0 %}
+                            <th class="text-center customize_entry_amount" style="color:#000000; font-size:11px;width: 10%">Total Amount</th> 
+                            {% else %}
+                            <th class="text-center customize_entry_amount" style="color:#000000; font-size:11px;width: 10%;display: none;">Total Amount</th> 
                             {% endif %} 
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
 
@@ -136,11 +156,22 @@ thead th{
                         <tbody>
                             {% for i in entry %}
                                 <tr>
-                                    {% if customize.purchase_number != 0 %}
-                                    <td align="center" class="customize_number">{{i.purchase_entry_number}}</td>
+                                    {% if customize.entry_number != 0 %}
+                                    <td align="center" class="customize_entry_number">{{i.purchase_entry_number|truncatechars:10}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_number" style="display: none;">{{i.purchase_entry_number|truncatechars:10}}</td>
                                     {% endif %}
-                                    {% if customize.purchase_reference != 0 %}
-                                    <td align="center" class="customize_reference">
+
+                                    {% if customize.entry_reference != 0 %}
+                                    <td align="center" class="customize_entry_reference">
+                                        {% if i.purchase_entry_refrence %}
+                                        {{i.purchase_entry_refrence}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_reference" style="display: none;">
                                         {% if i.purchase_entry_refrence %}
                                         {{i.purchase_entry_refrence}}
                                         {% else %}
@@ -148,28 +179,61 @@ thead th{
                                         {% endif %}
                                     </td>
                                     {% endif %}
-                                    {% if customize.purchase_vendor != 0 %}
-                                    <td align="center" class="customize_vendor">
-                                        {% if order.save_type == 2 %}
+
+                                    {% if customize.entry_vendor != 0 %}
+                                    <td align="center" class="customize_entry_vendor">
+                                        {% if i.save_type == 2 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="contact_name" id="hover" href="#" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.vendor}}
+                                        <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.vendor|truncatechars:15}}
+                                        </a>
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_vendor" style="display: none;">
+                                        {% if i.save_type == 2 %}
+                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                        {% endif %}
+                                        <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.vendor|truncatechars:15}}
                                         </a>
                                     </td>
                                     {% endif %}
-                                    {% if customize.purchase_status != 0 %}
-                                    <td align="center" class="customize_status" id="status_{{order.id}}">{{i.purchase_entry_date|date:"d-m-Y"}}</td>
+
+                                    {% if customize.entry_date != 0 %}
+                                    <td align="center" class="customize_entry_date" >{{i.purchase_entry_date|date:"d-m-Y"}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_date" style="display: none;">{{i.purchase_entry_date|date:"d-m-Y"}}</td>
                                     {% endif %}
-                                    <td align="center" class="customize_date">
+
+                                    {% if customize.entry_due_date != 0 %}
+                                    <td align="center" class="customize_entry_due_date">
                                         {% if i.purchase_entry_due_date %}
                                         {{i.purchase_entry_due_date|date:"d-m-Y"}}
                                         {% else %}
                                         None
                                         {% endif %}
                                     </td>
-                                    {% if customize.purchase_total != 0 %}
-                                    <td align="center" class="customize_total">
+                                    {% else %}
+                                    <td align="center" class="customize_entry_due_date" style="display: none;">
+                                        {% if i.purchase_entry_due_date %}
+                                        {{i.purchase_entry_due_date|date:"d-m-Y"}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+
+                                    {% if customize.entry_advance != 0 %}
+                                    <td align="center" class="customize_entry_advance">
+                                        {% if i.advance %}
+                                        ₹{{i.advance}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_advance" style="display: none;">
                                         {% if i.advance %}
                                         ₹{{i.advance}}
                                         {% else %}
@@ -178,9 +242,15 @@ thead th{
                                     </td>
                                     {% endif %}
 
-                                    <td align="center" class="customize_total">
+                                    {% if customize.entry_total != 0 %}
+                                    <td align="center" class="customize_entry_amount">
                                         ₹{{i.total_balance}}
                                     </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_amount">
+                                        ₹{{i.total_balance}}
+                                    </td>
+                                    {% endif %}
                                     
                                     <td class="text-center" align="center" > 
 
@@ -188,7 +258,7 @@ thead th{
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item" title="Edit Purchase Entry" href="#" style="padding: 5px 5px;">
+                                                <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
                                                 <a class="dropdown-item" title="Delete" data-toggle="modal" data-target="#del{{i.id}}" style="padding: 5px 5px;">
@@ -196,7 +266,7 @@ thead th{
                                                 </a>   
                                             </div> 
 
-                                            <div class="modal " tabindex="-1" role="dialog" id="del{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                            <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="border-top: none;background:white;position:bottom">
                                                         <div class="modal-header" style="border-bottom: none;padding:5px;">
@@ -241,53 +311,59 @@ thead th{
                     <h5 style="color: black;text-align: center;margin-bottom: 1%;">Drag and drop be column name you want to show or hide</h5>
                     <ol data-draggable="target" id="first">
                         <h4 style="text-decoration: underline;">Show Column</h4>
-                        {% if customize.purchase_number != 0 %}
-                        <li data-draggable="item" id="customize_order_number">Purchase Order Number</li>
+                        {% if customize.entry_number != 0 %}
+                        <li data-draggable="item" id="customize_entry_number">Purchase Entry Number</li>
                         {% endif %}
-                        {% if customize.purchase_reference != 0 %}
-                        <li data-draggable="item" id="customize_order_reference">Reference No.</li>
+                        {% if customize.entry_reference != 0 %}
+                        <li data-draggable="item" id="customize_entry_reference">Reference No.</li>
                         {% endif %}
-                        {% if customize.purchase_vendor != 0 %}
-                        <li data-draggable="item" id="customize_order_vendor">Vendor</li>
+                        {% if customize.entry_vendor != 0 %}
+                        <li data-draggable="item" id="customize_entry_vendor">Vendor</li>
                         {% endif %}
-                        {% if customize.purchase_status != 0 %}
-                        <li data-draggable="item" id="customize_order_status">Status</li>
+                        {% if customize.entry_date != 0 %}
+                        <li data-draggable="item" id="customize_entry_date">Purchase Entry Date</li>
                         {% endif %}
-                        {% if customize.purchase_total != 0 %}
-                        <li data-draggable="item" id="customize_order_total">Total Amount</li>
+                        {% if customize.entry_due_date != 0 %}
+                        <li data-draggable="item" id="customize_entry_due_date">Due Date</li>
                         {% endif %}
-                        {% if customize.purchase_date != 0 %}
-                        <li data-draggable="item" id="customize_order_date">Delivery Date</li>
+                        {% if customize.entry_advance != 0 %}
+                        <li data-draggable="item" id="customize_entry_advance">Purchase Advance</li>
+                        {% endif %}
+                        {% if customize.entry_total != 0 %}
+                        <li data-draggable="item" id="customize_entry_amount">Total Amount</li>
                         {% endif %}
                       </ol>
                       
                       <ol data-draggable="target" id="seconde">
                         <h4 style="text-decoration: underline;">Hide Column</h4>
-                          {% if customize.purchase_number == 0 %}
-                          <li data-draggable="item" id="customize_order_number">Purchase Order Number</li>
-                          {% endif %}
-                          {% if customize.purchase_reference == 0 %}
-                          <li data-draggable="item" id="customize_order_reference">Reference No.</li>
-                          {% endif %}
-                          {% if customize.purchase_vendor == 0 %}
-                          <li data-draggable="item" id="customize_order_vendor">Vendor</li>
-                          {% endif %}
-                          {% if customize.purchase_status == 0 %}
-                          <li data-draggable="item" id="customize_order_status">Status</li>
-                          {% endif %}
-                          {% if customize.purchase_total == 0 %}
-                          <li data-draggable="item" id="customize_order_total">Total Amount</li>
-                          {% endif %}
-                          {% if customize.purchase_date == 0 %}
-                          <li data-draggable="item" id="customize_order_date">Delivery Date</li>
-                          {% endif %}
+                        {% if customize.entry_number == 0 %}
+                        <li data-draggable="item" id="customize_entry_number">Purchase Entry Number</li>
+                        {% endif %}
+                        {% if customize.entry_reference == 0 %}
+                        <li data-draggable="item" id="customize_entry_reference">Reference No.</li>
+                        {% endif %}
+                        {% if customize.entry_vendor == 0 %}
+                        <li data-draggable="item" id="customize_entry_vendor">Vendor</li>
+                        {% endif %}
+                        {% if customize.entry_date == 0 %}
+                        <li data-draggable="item" id="customize_entry_date">Purchase Entry Date</li>
+                        {% endif %}
+                        {% if customize.entry_due_date == 0 %}
+                        <li data-draggable="item" id="customize_entry_due_date">Due Date</li>
+                        {% endif %}
+                        {% if customize.entry_advance == 0 %}
+                        <li data-draggable="item" id="customize_entry_advance">Purchase Advance</li>
+                        {% endif %}
+                        {% if customize.entry_total == 0 %}
+                        <li data-draggable="item" id="customize_entry_amount">Total Amount</li>
+                        {% endif %}
                       </ol>
                       
                       
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm " type="button" onclick="customize_view(4)" style="background-color: #598ebb;">apply</button>
-                    <a class="btn btn-sm " href="{% url 'purchase_order'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
+                    <button class="btn btn-sm " type="button" onclick="customize_view(7)" style="background-color: #598ebb;">apply</button>
+                    <a class="btn btn-sm " href="{% url 'Purchase_entry'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
                 </div>
             </form>
         </div>

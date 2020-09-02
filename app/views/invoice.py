@@ -24,19 +24,32 @@ from app.other_constants import user_constants,country_list
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import Q
-import datetime
 
+import datetime
+from datetime import datetime
 import json, os, csv
 
 from app.helpers import email_helper
 
-from datetime import datetime
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from app.views.scheduler import test_fun
 from django.conf import settings
+
+#=====================================================================================
+#   BACKGROUND RUNNING
+#=====================================================================================
+# 
+sched = BackgroundScheduler()
+
+# sched.add_job(test_fun, 'cron', hour=0)
+sched.add_job(test_fun, 'interval', minutes=1)
+
+sched.start()
 #=====================================================================================
 #   INVOICE VIEW
 #=====================================================================================
-#
+# 
+
 
 class Invoice(View):
 
@@ -1154,6 +1167,7 @@ def print_invoice(request, ins):
         invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
         contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
         address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
+        org_bank_details = users_model.User_Account_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_bank = True)) 
 
         customer_gst = User_Tax_Details.objects.get(contact = invoice.invoice_customer_id)
         customer_address = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id) & Q(default_address = True))
@@ -1171,6 +1185,15 @@ def print_invoice(request, ins):
     data["invoice_item"] = invoice_item
     data['organisation'] = organisation
 
+    # for org bank details 
+    if(len(org_bank_details) == 1):
+        data['org_bank'] = org_bank_details[0]
+    elif(len(org_bank_details) == 0):
+        org_bank = users_model.User_Account_Details.objects.filter(Q(organisation = organisation))
+        if(len(org_bank) != 0):
+            data['org_bank'] = org_bank[0]
+
+    # for org address
     if(len(address) == 1):
         data['org_address'] = address[0]
         data['state'] = address[0].get_state_display()
@@ -1181,6 +1204,7 @@ def print_invoice(request, ins):
             data['org_address'] = org_address[0]
             data['state'] = org_address[0].get_state_display()
             data['country'] = org_address[0].get_country_display()
+
     data['organisation_contact'] = organisation_contact
     data['contact'] = contact
     

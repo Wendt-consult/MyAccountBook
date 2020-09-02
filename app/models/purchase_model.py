@@ -205,111 +205,139 @@ class PurchaseOrder(models.Model):
         blank = True,
         null = True,
     )
-    cgst_5 = models.CharField(
+    # cgst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # igst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # sgst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # cgst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # igst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # sgst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # cgst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # igst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # sgst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # cgst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # igst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # sgst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # cgst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # igst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
+    # sgst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+    cgst = models.CharField(
         max_length=30,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    igst_5 = models.CharField(
+    sgst= models.CharField(
         max_length=30,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    sgst_5 = models.CharField(
+    igst= models.CharField(
         max_length=30,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    cgst_12 = models.CharField(
-        max_length=30,
+    is_cs_gst = models.BooleanField(
         db_index = True,
+        choices = user_constants.IS_TRUE,
+        default = True,
         blank = True,
         null = True,
     )
-
-    igst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
+    
     advance_payment_date = models.DateField(
         auto_now=False,
         auto_now_add=False, 
@@ -363,13 +391,9 @@ class PurchaseOrder(models.Model):
 
     class Meta:
         verbose_name_plural = 'purchase_order_tbl'
-#**************************************************************************
-#   PURCHASE ORDER ADVANCE TABLE
-#**************************************************************************
-
 
 #**************************************************************************
-#   ADD PURCHASE_ORDER ITEM'S DATA
+#   ADD PURCHASE_ENTRY ITEM'S DATA
 #**************************************************************************
 
 class Purchase_Items(models.Model):       
@@ -472,6 +496,13 @@ class Purchase_Items(models.Model):
     )
     
     amount = models.CharField(
+        max_length=11,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    amount_inc = models.CharField(
         max_length=11,
         db_index = True,
         blank = True,

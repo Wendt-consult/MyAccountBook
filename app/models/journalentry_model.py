@@ -135,7 +135,7 @@ class JournalEntry_Items(models.Model):
         on_delete = models.CASCADE,
     )
 
-    description =  models.CharField(
+    description =  models.TextField(
         db_index = True,
         max_length=250,
         blank = True,

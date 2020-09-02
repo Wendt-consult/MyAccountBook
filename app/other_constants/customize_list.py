@@ -9,6 +9,7 @@ customize_name = (
     (4, 'Purhase Order'),
     (5, 'Invoice'),
     (6, 'Expense'),
+    (7, 'Purchase Entry'),
     # (7, 'Deemed Exports -EOU’s, STP’s , EHTP’s etc'),
     # (8, 'Composite GST')
 )

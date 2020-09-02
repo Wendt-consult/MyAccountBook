@@ -139,6 +139,10 @@ class Expense(admin.ModelAdmin):
 class PurchaseEntry(admin.ModelAdmin):
     model = PurchaseEntry
 
+@admin.register(PurchaseEntryItems)
+class PurchaseEntryItems(admin.ModelAdmin):
+    model = PurchaseEntryItems
+
 @admin.register(JournalEntry)
 class JournalEntry(admin.ModelAdmin):
     model = JournalEntry

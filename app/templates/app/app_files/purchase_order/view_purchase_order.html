@@ -186,14 +186,19 @@ thead th{
 
                                                 <a class="dropdown-item" title="Print Purchase Order" href="{% url 'print_purchase_order' order.id %}" target="_black" style="padding: 5px 5px;">
                                                     Print
-                                                 </a> 
+                                                </a> 
 
                                                 <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_purchase_order' order.id %}" style="padding: 5px 5px;">
-                                                    Make a Copy
-                                                 </a> 
-                                                 <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{order.id}}" style="padding: 5px 5px;">
+                                                   Make a Copy
+                                                </a>
+                                                {% if order.vendor.is_active == True %} 
+                                                <a class="dropdown-item" title="Make Purchase Entry" href="{% url 'add_purchase_entry' 0 order.id %}" style="padding: 5px 5px;">
+                                                    Make Purchase Entry
+                                                </a> 
+                                                {% endif %}
+                                                <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{order.id}}" style="padding: 5px 5px;">
                                                     Delete
-                                                 </a>   
+                                                </a>   
                                             </div> 
 
                                             <div class="modal " tabindex="-1" role="dialog" id="del{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">

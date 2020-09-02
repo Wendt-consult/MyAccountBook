@@ -189,7 +189,7 @@ function product_row_creator(p_entry_number){
 
 function get_func(next_id, acc_group_name_htm, products_htm){
 
-    $.get("/purchase_order/add_purchase_order/"+1+"/", function(data){
+    $.get("/purchase_entry/add_purchase_entry/"+1+"/NA/", function(data){
         if(data){
             if(data.acc_group_name.length > 0){  
                 // for account_ledger details
@@ -239,7 +239,7 @@ function get_func(next_id, acc_group_name_htm, products_htm){
             });
 
             $(function () {
-                $(".prodduct_purchase_account").select2();
+                $(".purchase_entry_account").select2();
                 $('.select2-container--default').css('padding-bottom','16px')
             });
             check_gst_status('vendor_side')
@@ -678,7 +678,9 @@ function sub_total(){
     //     freight_advance_totalamount()
     // }
     // else{
-        $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        if(parseFloat(sub_total) != 0.00){
+            $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        }
         change_state()
         total_discount()
         entry_tax_cacultion()
@@ -723,17 +725,62 @@ function total_discount(){
     }
 }
 /********************************************************************/
-// Advacne in purchase entry
+// link with purchase order then calculate advance and frigh charges
 /********************************************************************/
 function purchase_entry_advance(){
-    var advance = $('#entry_advance').val()
     var subtotal = $('#SubTotal').val()
     var cgst = $('#CGST').val()
     var sgst = $('#SGST').val()
-    var igst = $('IGST').val()
-    console.log('sub_total:'+subtotal+',cgst:'+cgst+',sgst:'+sgst+',igst:'+igst+'')
-    if(subtotal !='' & cgst == '' & sgst == ''& igst == ''){
+    var igst = $('#IGST').val() 
+    var freight_charges = $('#Freight_Charges').val()
+    var advance = $('#entry_advance').val()
+    var final_val = 0
+    // this if statement for calculate freight charges
+    if(freight_charges != '' & advance == ''){
+        if(parseFloat(subtotal) != 0.00 & subtotal != ''){
+            if($('#CGST').is(":visible") & $('#SGST').is(':visible')){
+                final_val += (parseFloat(subtotal) + parseFloat(cgst) + parseFloat(sgst) + parseFloat(freight_charges))
+            }else if($('#IGST').is(":visible")){
+                final_val += (parseFloat(subtotal) + parseFloat(igst) + parseFloat(freight_charges))
+            }else{
+                final_val += (parseFloat(subtotal) + parseFloat(freight_charges))
+            }
+    
+            if(final_val.toString() != 'NaN' & parseFloat(final_val) != 0.00){
+                $('#Total').val(parseFloat(final_val).toFixed(2))
+            }
+        }
+        // this if statement for calculate advance
+    }else if(advance != '' & freight_charges == ''){
 
+        if(parseFloat(subtotal) != 0.00 & subtotal != ''){
+            if($('#CGST').is(":visible") & $('#SGST').is(':visible')){
+                final_val += ((parseFloat(subtotal) + parseFloat(cgst) + parseFloat(sgst)) - parseFloat(advance))
+            }else if($('#IGST').is(":visible")){
+                final_val += ((parseFloat(subtotal) + parseFloat(igst)) - parseFloat(advance))
+            }else{
+                final_val += (parseFloat(subtotal) - parseFloat(advance))
+            }
+    
+            if(final_val.toString() != 'NaN' & parseFloat(final_val) != 0.00){
+                $('#Total').val(parseFloat(final_val).toFixed(2))
+            }
+        }
+    }else{
+        // this if statement for calculate both avance and freight_charges
+        if(parseFloat(subtotal) != 0.00 & subtotal != ''){
+            if($('#CGST').is(":visible") & $('#SGST').is(':visible')){
+                final_val += ((parseFloat(subtotal) + parseFloat(cgst) + parseFloat(sgst) + parseFloat(freight_charges)) - parseFloat(advance))
+            }else if($('#IGST').is(":visible")){
+                final_val += ((parseFloat(subtotal) + parseFloat(igst) + parseFloat(freight_charges)) - parseFloat(advance))
+            }else{
+                final_val += ((parseFloat(subtotal) + parseFloat(freight_charges)) - parseFloat(advance))
+            }
+    
+            if(final_val.toString() != 'NaN' & parseFloat(final_val) != 0.00){
+                $('#Total').val(parseFloat(final_val).toFixed(2))
+            }
+        }
     }
 }
 /********************************************************************/
@@ -748,9 +795,9 @@ function state_compare(){
             url: "/purchase_order/vendor_state/"+ids+"/",
             dataType: "json",
             success: function(data){
-                // if(data.mail != null){
-                //     $('#mail').val(data.mail)
-                // }
+                if(data.mail != null){
+                    $('#mail').val(data.mail)
+                }
                 // gst = data.gst_type
                 if(data.gst_type != null){
                     $('#gst_type').val(data.gst_type)
@@ -762,7 +809,7 @@ function state_compare(){
             },
         });
     }else{
-        // $('#mail').val('')
+        $('#mail').val('')
         $('#gst_type').val('')
         vendor_gstin = ''
         check_gst_status('user_side')
@@ -801,7 +848,7 @@ function check_gst_status(cat){
     
 }
 /********************************************************************/
-// invoice SGST CGST AND IGST CALCULATION 
+// purchase entry SGST CGST AND IGST CALCULATION 
 /********************************************************************/
 
 function entry_tax_cacultion(){
@@ -842,11 +889,14 @@ function entry_tax_cacultion(){
         var sc_total = (parseFloat(sub_total) + parseFloat(csgst) + parseFloat(csgst)).toFixed(2)
         if(sc_total == 'NaN'){
             $('#Total').val('')
-            invoice_total = ''
+            // invoice_total = ''
             // invoice_shipping_charges()
         }else{
             $('#Total').val(sc_total)
-            invoice_total = sc_total
+            if($('#Freight_Charges').length > 0 & $('#entry_advance').length > 0){
+                purchase_entry_advance()
+            }
+            // invoice_total = sc_total
             // invoice_shipping_charges()
         }
         
@@ -876,12 +926,15 @@ function entry_tax_cacultion(){
         var i_total = (parseFloat(sub_total) + parseFloat(igst)).toFixed(2)
         if(i_total == 'NaN'){
             $('#Total').val('')
-            invoice_total = ''
+            // invoice_total = ''
             // invoice_shipping_charges()
         }
         else{
             $('#Total').val(i_total)
-            invoice_total = i_total
+            if($('#Freight_Charges').length > 0 & $('#entry_advance').length > 0){
+                purchase_entry_advance()
+            }
+            // invoice_total = i_total
             // invoice_shipping_charges()
         }
     }
@@ -1196,4 +1249,117 @@ function order_check(){
     }else{
         return true
     }
+}
+/********************************************************************/
+// CELAN ATTACHEMENT
+/********************************************************************/
+function clean(){
+    $("#Attachment").val('')
+    $('#invoice_filename').text('')
+}
+$(document).ready(function(){
+    $('#Attachment').change(function(e){
+        $('#invoice_filename').hide()
+        $(this).css('width','50%')
+    });
+});
+/********************************************************************/
+// CHOOSE FILE SIZE VALIDATION
+/********************************************************************/
+
+window.addEventListener('load', function() {
+    document.querySelector('#Attachment').addEventListener('change', function() {
+        
+            //  Image file size less then 1MB
+            if(this.files[0].size > 25000000){
+                alert('File size less than 25MB');
+                $('#Attachment').val("");
+                
+            }
+        
+    });
+  });
+
+/*********************************************************************** */
+// MOUSE HOVER
+/*********************************************************************** */
+vendor_info()
+function vendor_info(){
+    var ins = $('#entry_vendor').val()
+    if(ins != ''){
+        $.get("/purchase_order/vendor_details/"+ins+"/",function(data){
+            var name 
+            var organization
+            var mail
+            var number
+            var address
+        
+            if(data.name == null){
+                name = ''
+            }
+            else if(data.name != null){
+                name = data.name
+            }
+
+            if(data.oganization_name == null){
+                organization = ''
+            }
+            else if(data.oganization_name != null){
+                organization = data.oganization_name
+            }
+            if(data.mail == null){
+                mail = ''
+            }
+            else if(data.mail != null){
+                mail = data.mail
+            }
+            if(data.number == null){
+                number = ''
+            }
+            else if(data.number != null){
+                number = data.number   
+            }
+
+            if(data.address == null){
+                address = ''
+            }
+            else if(data.address != null){
+                address = data.address
+            }
+                
+            if(data.gstin == null){
+                gstin = ''
+            }
+            else if(data.gstin != null){
+                gstin = data.gstin
+            }
+            if(data.gst_type == null){
+                gst_type = ''
+            }
+            else if(data.gst_type != null){
+                gst_type = data.gst_type
+            }
+            $("#v_info").find('#v_name').text(name)
+            $("#v_info").find('#v_org').text(organization)
+            $("#v_info").find('#v_addr').text(address)
+            $("#v_info").find('#v_gst_type').text(gst_type)
+            $("#v_info").find('#v_gstin').text(gstin)
+            $("#v_info").show()
+            $('#v_question').hide()
+            $("#contact_gst_change option:contains("+gst_type+")").attr('selected', true);
+            $('#contact_gst_change').find('#vendor_gst').val(gstin)
+            $('#vendor_ids').val(ins)
+        });
+    }else{
+        $("#v_info").hide()
+        $('#v_question').show()
+        $("#v_info").find('#v_name').text('')
+        $("#v_info").find('#v_org').text('')
+        $("#v_info").find('#v_addr').text('')
+        $("#v_info").find('#v_gst_type').text('')
+        $("#v_info").find('#v_gstin').text('')
+        $('#contact_gst_change').find('#vendor_gst_type').val(0).change()
+        $('#contact_gst_change').find('#vendor_gst').val('')
+    }
+    
 }

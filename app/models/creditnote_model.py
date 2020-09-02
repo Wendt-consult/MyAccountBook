@@ -252,6 +252,35 @@ class CreditNode(models.Model):
         blank = True,
         null = True,
     )
+    is_cs_gst = models.BooleanField(
+        db_index = True,
+        choices = user_constants.IS_TRUE,
+        default = True,
+        blank = True,
+        null = True,
+    )
+
+    cgst = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    sgst= models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    igst= models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     total = models.CharField(
         max_length=30,
         db_index = True,
@@ -379,12 +408,12 @@ class creditnote_Items(models.Model):
         null = True,
     )
 
-    tax_amount = models.CharField(
-        max_length=11,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # tax_amount = models.CharField(
+    #     max_length=11,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
     cgst_amount = models.CharField(
         max_length=11,
@@ -414,6 +443,12 @@ class creditnote_Items(models.Model):
         null = True,
     )
 
+    amount_inc = models.CharField(
+        max_length=11,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
     
     def __str__(self):
         return "{} ({})".format(self.credit_inventory,self.product) 

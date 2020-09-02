@@ -136,7 +136,7 @@ optgroup{color :black; }
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Edit Journal entry</h4>
+                    <h4 class="card-title ">Edit Journal Entry</h4>
                 </div>  
                 
             <div style="margin-top: 4%;">
@@ -147,7 +147,7 @@ optgroup{color :black; }
                             
                             <div class="row">
                                 <div class="col-3">
-                                    <label for="journalnumber">journal#</label>
+                                    <label for="journalnumber">Journal#</label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" class="form-control" value="{{jornalentry.journalentry_number}}" name="journalnumber" value="" id="journalnumber" required>
@@ -181,7 +181,7 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="CreditNoteDate">Journal entry Date</label>
+                                    <label for="CreditNoteDate">Journal entry date</label>
                                 </div>
                                 <div class="col-7">
                                     <input type="date" class="form-control" value="{{jornalentry.journalentry_date|date:'Y-m-d'}}" id="Journalentrydate" name="Journalentrydate" required>
@@ -220,7 +220,7 @@ optgroup{color :black; }
                             </td>
 
                             <td style="border:1px solid black;">
-                                <input class="form-control" id="details{{forloop.counter}}" name="details[]" value="{{i.description}}" style="padding-left: 0px;" required>
+                                <textarea id="details{{forloop.counter}}" name="details[]"  rows="2" placeholder="Max character 250" style="padding-left: 0px;width: 100%;" required>{{i.description|default_if_none:""}}</textarea>
                             </td>                            
                             
                             <td style="border:1px solid black;">
@@ -234,14 +234,13 @@ optgroup{color :black; }
                                 </select>
                             </td>
                             
-                            
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="debit{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control debit" value="{{i.debit}}" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'debit{{forloop.counter}}')" id="debit{{forloop.counter}}" name="debit[]" style="margin-top: 1%;"required>
+                                        <input type="text" class="form-control debit" value="{{i.debit}}" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'debit{{forloop.counter}}')" id="debit{{forloop.counter}}" name="debit[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>
@@ -251,7 +250,7 @@ optgroup{color :black; }
                                         <label for="credit{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control credit" value="{{i.credit}}" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'credit{{forloop.counter}}')" onkeyup="balnk_credit()" id="credit{{forloop.counter}}" name="credit[]" style="margin-top: 1%;" required>
+                                        <input type="text" class="form-control credit" value="{{i.credit}}" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'credit{{forloop.counter}}')" onkeyup="balnk_credit()" id="credit{{forloop.counter}}" name="credit[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>
@@ -308,7 +307,7 @@ optgroup{color :black; }
      
                              <div class="row">
                                  <div class="col">
-                                     <textarea class="" id="Message" name="Message" rows="4" maxlength="400" size="400" style="width:73%;">{{jornalentry.Note}}</textarea>
+                                     <textarea class="" id="Message" name="Message" rows="4" maxlength="400" size="400" style="width:73%;">{{jornalentry.Notedefault_if_none:""}}</textarea>
                                  </div>
                              </div>
                              
@@ -349,7 +348,7 @@ optgroup{color :black; }
                       
                 <div class="card-footer text-center" style="justify-content: center;">
                     <div class="btn-group dropup" role="group">
-                        <button class="dropdown-item btn " name="save_close" id="save" style="padding: 0px 5px 0px 5px;background-color:#598ebb">
+                        <button class="dropdown-item btn " name="save_close" id="save" onclick="return journal_check()" style="padding: 0px 5px 0px 5px;background-color:#598ebb">
                             Save and Close
                         </button>
                         <button type="button" class="btn  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
@@ -364,10 +363,10 @@ optgroup{color :black; }
                           <!-- <button class="dropdown-item btn btn-success" name="save_close" id="save" onclick="return savebtn()" style="margin: 0% 0% 4% 4%;width: 93%;">
                             <i class="material-icons" style="margin: 0px 12px 0px -20px;font-size: 23px;">save</i>Save and Close 
                         </button> -->
-                        <button class="dropdown-item btn " name="save_draft" id="draft" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                        <button class="dropdown-item btn " name="save_draft" id="draft" onclick="return journal_check()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
                             <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
                         </button>
-                        <button class="dropdown-item btn " name="save_downaload" id="save_downaload" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                        <button class="dropdown-item btn " name="save_downaload" id="save_downaload" onclick="return journal_check()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
                             <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">cloud_download</i>Save and download 
                         </button>
                         </div>

@@ -27,7 +27,7 @@ def get_selling_tax(user):
     #print(qset)
 
     for x in qset:
-        html.append('<option value="'+str(x[0])+'">'+str(x[1])+'</option>')
+        html.append('<option value="'+str(x[1])+'">'+str(x[1])+'</option>')
 
     return ''.join(html)
 

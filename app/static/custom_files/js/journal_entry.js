@@ -77,10 +77,10 @@ function journal_addRow(a) {
        
         var html = '<tr id="journal_row'+journal_number+'">'
         html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control journal_item" id="account_header'+journal_number+'" name="account_header[]"  style="margin-top:-10px;padding-left: 0px;width: 174.6px;" required><option value="">-------</option></select></td>'
-        html +='<td style="border:1px solid black;"><input class="form-control" id="details'+journal_number+'" name="details[]"  style="padding-left: 0px;" required></td>'
+        html +='<td style="border:1px solid black;"><textarea id="details'+journal_number+'" name="details[]" rows="2" placeholder="Max character 250" style="padding-left: 0px;width: 100%;" required></textarea></td>'
         html +='<td style="border:1px solid black;"><select class="form-control " id="contactname'+journal_number+'" name="contactname[]"  style="padding-left: 0px;width: 174.6px;" required> <option value="">-------</option></select></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="debit'+journal_number+'">₹</label> </div><div class="col"><input type="text" class="form-control debit" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'debit'+journal_number+'\')"  id="debit'+journal_number+'" name="debit[]" style="margin-top: 1%;" required></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="credit'+journal_number+'">₹</label> </div><div class="col"> <input type="text" class="form-control credit" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'credit'+journal_number+'\')" id="credit'+journal_number+'" name="credit[]" style="margin-top: 1%;" required></div></div></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="debit'+journal_number+'">₹</label> </div><div class="col"><input type="text" class="form-control debit" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'debit'+journal_number+'\')"  id="debit'+journal_number+'" name="debit[]" style="margin-top: 1%;"></div></div></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="credit'+journal_number+'">₹</label> </div><div class="col"> <input type="text" class="form-control credit" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'credit'+journal_number+'\')" id="credit'+journal_number+'" name="credit[]" style="margin-top: 1%;"></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+journal_number+'" name="'+journal_number+'" onclick="journal_removeRow('+journal_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         // $('#journal_table').append(html)
         $(html).insertBefore( "#total_debit_credit" );
@@ -154,6 +154,9 @@ function debit_total(){
     var debit = 0
     $('.debit').each(function(){
         var val =  $(this).val()
+        if(val == ''){
+            val = 0.00
+        }
         debit += parseFloat(val)
     });
     if(debit.toString() != 'NaN'){
@@ -167,6 +170,9 @@ function credit_total(){
     var credit = 0
     $('.credit').each(function(){
         var val =  $(this).val()
+        if(val == ''){
+            val = 0.00
+        }
         credit += parseFloat(val)
     });
     if(credit.toString() != 'NaN'){
@@ -217,3 +223,19 @@ $("#journalnumber").focusout(function(){
         },
     });
   });
+
+/*********************************************************************** */
+// BEFORE SVAE CHECK JOURNAL ENTRY DEBIT AND CREDIT ARE SAME 
+/*********************************************************************** */
+
+function journal_check(){
+    if($('#debit_SubTotal').val() == '' || $('#credit_SubTotal').val() == ''){
+        alert('Can not save blank journal entry')
+        return false
+    }else if($('#debit_SubTotal').val() == $('#credit_SubTotal').val()){
+        return true
+    }else{
+        alert('Journal entry debit amount and credit amount must be same')
+        return false
+    }
+}

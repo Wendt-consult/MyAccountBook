@@ -445,14 +445,16 @@ footer {
               </label>
            </div>
           </div>
+          {% if org_bank %}
           <div class="row" style="margin-top: 1%;">
             <div class="col-8">
-                <h6>Bank Account No. 50200019138049</h6>
-                <h6>Bank Name: HDFC Bank</h6>
-                <h6>Branch Name: Mumbai - Marol</h6>
-                <h6>IFS Code: HDFC0000592</h6>
+                <h6>Bank Account No. {{org_bank.account_number}}</h6>
+                <h6>Bank Name: {{org_bank.bank_name}}</h6>
+                <h6>Branch Name: {{org_bank.bank_branch_name}}</h6>
+                <h6>IFSC Code: {{org_bank.ifsc_code}}</h6>
             </div>
           </div>
+          {% endif %}
 
            <div class="row" style="margin-top: 2%;">
             <div class="col">

@@ -281,6 +281,28 @@ class User_Account_Details(models.Model):
         on_delete = models.CASCADE
     )
 
+    is_organisation = models.BooleanField(
+        db_index = True,
+        default = False,
+        choices = user_constants.IS_TRUE,
+    )
+    
+    organisation = models.ForeignKey(
+        Organisations,
+        db_index = True,
+        on_delete = models.CASCADE,
+        null = True,
+        blank = True,
+    )
+
+    default_bank = models.BooleanField(
+        db_index = True,
+        default = False,
+        choices = user_constants.IS_TRUE,
+        blank = True,
+        null = True,
+    )
+
     account_number = models.CharField(
         max_length = 250,
         blank = True,

@@ -2,7 +2,7 @@ $(document).ready(function(){
 
     $("#id_selling_tax").empty().append(selling_tax);
 
-    $("#id_selling_tax").val(selling_tax_old);
+    // $("#id_selling_tax").val(selling_tax_old);
 
 })
 

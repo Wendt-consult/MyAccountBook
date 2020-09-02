@@ -267,7 +267,7 @@ class CustomizePurchaseView(models.Model):
         blank = True,
     )
 #=========================================================================================
-# customize purchase order names
+# customize expnes names
 #=========================================================================================
 #
 class CustomizeExpenseView(models.Model):
@@ -383,6 +383,74 @@ class CustomizeInvoiceView(models.Model):
     )
 
     invoice_amount = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+#=========================================================================================
+# customize purchase entry names
+#=========================================================================================
+#
+class CustomizePurchaseEntryView(models.Model):
+
+    customize_view_name = models.ForeignKey(
+        CustomizeModuleName,
+        on_delete=models.CASCADE,
+        null = False,
+        blank = False,
+    )
+
+    entry_number = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_reference = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_vendor = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_due_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_advance = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    entry_total = models.IntegerField(
         db_index = True,
         choices = user_constants.IS_NUM_CHOICE,
         default = 0,

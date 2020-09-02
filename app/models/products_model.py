@@ -110,8 +110,8 @@ class ProductsModel(models.Model):
         db_index = True,
         default=0,
         choices = products_constant.PRODUCT_TYPE,
-        blank = False,
-        null = False,
+        blank = True,
+        null = True,
     )
 
     product_delete_status = models.IntegerField(

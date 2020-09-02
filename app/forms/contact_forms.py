@@ -133,6 +133,18 @@ class AccountDetailsForm(ModelForm):
             'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm',}),
         }
 
+class OrgAccountDetailsForm(ModelForm):
+    class Meta:
+        model = users_model.User_Account_Details
+        fields = ('account_number', 'account_holder_name', 'ifsc_code', 'bank_name', 'bank_branch_name')
+
+        widgets = {
+            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]'}),
+            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm',}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this))'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm',}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm',}),
+        }
 
 class ContactsExtraForm(ModelForm):
     class Meta:

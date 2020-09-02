@@ -55,7 +55,7 @@ class PurchaseEntry(models.Model):
 
     save_type = models.IntegerField(        
         db_index = True,
-        default = 2,
+        default = 1,
         choices = SAVE_TYPES,
     )
 
@@ -117,6 +117,13 @@ class PurchaseEntry(models.Model):
         null = True,
     )
 
+    freight_charges = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     advance = models.CharField(
         max_length=20,
         db_index = True,
@@ -124,6 +131,14 @@ class PurchaseEntry(models.Model):
         null = True,
     )
 
+    connect_purchase_order = models.CharField(
+        max_length=5,
+        default= 'NO',
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+    
     total_balance = models.CharField(
         max_length=20,
         db_index = True,

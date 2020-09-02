@@ -336,3 +336,56 @@ def journalentry_delete(request, ins):
 
         return redirect('/journalentry/', permanent=False)
     return redirect('/unauthorized/', permanent=False)
+
+#=====================================================================================
+#   PRINT JOURNAL ENTRY VOUCHER
+#=====================================================================================
+#
+def print_jounal_entry(request, ins):
+
+    template_name = 'app/app_files/journal_entry/print_journal.html'
+    # Initialize 
+    data = defaultdict()
+    try:
+        journal_entry = journalentry_model.JournalEntry.objects.get(pk = int(ins))
+        organisation = Organisations.objects.get(user = request.user)
+        organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
+        
+        journal_entry_item = journalentry_model.JournalEntry_Items.objects.filter(Q(user= request.user) & Q(journalentry = journal_entry))
+        # contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
+        address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
+        # org_bank_details = users_model.User_Account_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_bank = True)) 
+
+        # customer_gst = User_Tax_Details.objects.get(contact = invoice.invoice_customer_id)
+        # customer_address = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id) & Q(default_address = True))
+
+            
+    except:
+        return redirect('/unauthorized/', permanent=False)
+
+    
+
+    # data["contact_name"] = invoice.invoice_customer
+        
+    data["journal_entry"] = journal_entry
+    
+    data["journal_entry_item"] = journal_entry_item
+    data['organisation'] = organisation
+
+    # for org address
+    if(len(address) == 1):
+        data['org_address'] = address[0]
+        data['state'] = address[0].get_state_display()
+        data['country'] = address[0].get_country_display()
+    elif(len(address) == 0):
+        org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
+        if(len(org_address) != 0):
+            data['org_address'] = org_address[0]
+            data['state'] = org_address[0].get_state_display()
+            data['country'] = org_address[0].get_country_display()
+
+    data['organisation_contact'] = organisation_contact[0]
+    # data['contact'] = contact
+    
+    
+    return render(request,template_name,data)
