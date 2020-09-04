@@ -37,11 +37,11 @@ def get_reports_pdf(request):
 
 class GSTLedgerReportsView(View):
     # Template 
-    template_name = 'app/app_files/profile_manager/index.html'
+    template_name = 'app/app_files/reports/index.html'
 
     # Initialize 
     data = defaultdict()
-    data["active_link"] = 'Reports'
+    data["active_link"] = 'GST Report'
     data["breadcrumb_title"] = 'GST Ledger Reports'
 
     # Custom CSS/JS Files For Inclusion into template

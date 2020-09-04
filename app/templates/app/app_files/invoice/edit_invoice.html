@@ -412,7 +412,7 @@ textarea{
                                     <label for="Invoice_one_due_date">Due Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" value="{{invoice.invoice_new_due_date|date:'d-m-Y'}}" name="Invoice_one_due_date" id="Invoice_one_due_date">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_new_due_date|date:'d-m-Y'}}" name="Invoice_one_due_date" id="Invoice_one_due_date" required>
                                 </div>
                             </div>
 
@@ -449,7 +449,7 @@ textarea{
                                     <label for="Invoice_one_due_date">Due Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="Invoice_one_due_date" id="Invoice_one_due_date" required>
+                                    <input type="text" class="form-control" name="Invoice_one_due_date" id="Invoice_one_due_date">
                                 </div>
                             </div>
 
@@ -469,7 +469,7 @@ textarea{
                                     <label for="Invoice_recurring_start">Start Date</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" value="{{invoice.invoice_recurring_start_date|date:'d-m-Y'}}" name="Invoice_recurring_start" id="Invoice_recurring_start">
+                                    <input type="text" class="form-control" value="{{invoice.invoice_recurring_start_date|date:'d-m-Y'}}" name="Invoice_recurring_start" id="Invoice_recurring_start" required>
                                 </div>
                             </div>
 
@@ -478,7 +478,7 @@ textarea{
                                     <label for="invoice_recurring_Frequency">Frequency</label>
                                 </div>
                                 <div class="col-3 input" style="padding-right: 5px;">
-                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
+                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;" required>
                                         <option value="">None</option>
                                         {% for i in invoice_frequency %}
                                         <option value="{{i.1}}" {% if invoice.invoice_recurring_frequency == i.1 %} selected {% endif %}>{{i.1}}</option>
@@ -489,7 +489,24 @@ textarea{
                                     <label for="Invoice_recurring_repeat">Repeat for</label>
                                 </div>
                                 <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
-                                    <input type="number" class="form-control" value="{{invoice.invoice_recurring_repeat}}" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
+                                    <input type="number" class="form-control" value="{{invoice.invoice_recurring_repeat}}" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_pay">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" name="Invoice_recurring_pay" id="Invoice_recurring_pay" style="padding-left: 9px;" required>
+                                        <option value="">None</option>
+                                        <option value="On Due Date" {% if invoice.invoice_recurring_pay == 'On Due Date' %} selected {% endif %}>On Due Date</option>
+                                        <option value="10 Days" {% if invoice.invoice_recurring_pay == '10 Days' %} selected {% endif %}>10 Days</option>
+                                        <option value="20 Days" {% if invoice.invoice_recurring_pay == '20 Days' %} selected {% endif %}>20 Days</option>
+                                        <option value="30 Days" {% if invoice.invoice_recurring_pay == '30 Days' %} selected {% endif %}>30 Days</option>
+                                        <option value="60 Days" {% if invoice.invoice_recurring_pay == '60 Days' %} selected {% endif %}>60 Days</option>
+                                        <option value="90 Days" {% if invoice.invoice_recurring_pay == 'Yearly' %} selected {% endif %}>90 Days</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -562,6 +579,23 @@ textarea{
                                 </div>
                                 <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
                                     <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="Invoice_recurring_pay">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" name="Invoice_recurring_pay" id="Invoice_recurring_pay" style="padding-left: 9px;">
+                                        <option value="">None</option>
+                                        <option value="On Due Date">On Due Date</option>
+                                        <option value="10 Days">10 Days</option>
+                                        <option value="20 Days">20 Days</option>
+                                        <option value="30 Days">30 Days</option>
+                                        <option value="60 Days">60 Days</option>
+                                        <option value="90 Days">90 Days</option>
+                                    </select>
                                 </div>
                             </div>
 

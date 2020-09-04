@@ -163,6 +163,13 @@ class InvoiceModel(models.Model):
         null=True,
     )
 
+    invoice_recurring_pay = models.CharField(
+        max_length=50,
+        db_index = True,
+        blank=True,
+        null=True,
+    )
+
     invoice_salesperson =  models.CharField(
         max_length=10,
         db_index = True,

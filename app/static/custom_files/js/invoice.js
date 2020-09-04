@@ -538,6 +538,7 @@ function invoice_type(type){
         $('#Invoice_recurring_repeat').val('')
         $('#invoice_recurring_Frequency').val('')
         $('#Invoice_recurring_end').val('')
+        $('#Invoice_recurring_pay').val('')
         $('#Invoice_recurring_start').prop('required',false);
         $('#Invoice_recurring_repeat').prop('required',false);
         $('#invoice_recurring_Frequency').prop('required',false);
@@ -555,6 +556,7 @@ function invoice_type(type){
         $('#Invoice_recurring_start').prop('required',true);
         $('#Invoice_recurring_repeat').prop('required',true);
         $('#invoice_recurring_Frequency').prop('required',true);
+        $('#Invoice_recurring_pay').prop('required',true);
         
     }
 }

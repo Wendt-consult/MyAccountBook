@@ -41,15 +41,14 @@ from django.conf import settings
 # 
 sched = BackgroundScheduler()
 
-# sched.add_job(test_fun, 'cron', hour=0)
-sched.add_job(test_fun, 'interval', minutes=1)
+sched.add_job(test_fun, 'cron', hour=0)
+# sched.add_job(test_fun, 'interval', seconds=30)
 
 sched.start()
 #=====================================================================================
 #   INVOICE VIEW
 #=====================================================================================
 # 
-
 
 class Invoice(View):
 
@@ -229,37 +228,6 @@ def add_invoice(request, slug):
 #=====================================================================================
 #
 
-def unique_invoice_number(request, ins, number):
-    data = defaultdict()
-    if(ins == 0):
-        purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user)
-
-        count = len(purchase_order)
-
-        if(count == 0):
-            data['purchase_number'] = 'PO-0001'
-        else:
-            inc = count+1
-            for i in range(0,count):
-                a = 'PO-000'+str(inc)
-                result = purchase_order.filter(Q(user = request.user) & Q(purchase_order_number__iexact = a)).exists() 
-                if(result == True):
-                    inc += 1
-                elif(result == False):
-                    data['purchase_number'] = 'PO-000'+str(inc)
-                    break
-        
-        return JsonResponse(data)
-    elif (ins == 1):
-        # check credit note number is unquie
-        purchase_order = purchase_model.PurchaseOrder.objects.filter(Q(user = request.user) & Q(purchase_order_number = number))
-        count = len(purchase_order)
-        if(count == 0):
-            data['unique'] = 0
-        else:
-            data['unique'] = 1
-        return JsonResponse(data)
-
 def org_address_state(request):
     # Initialize 
     data = defaultdict()
@@ -311,7 +279,8 @@ def save_invoice(request):
 
             invoice_Frequency = request.POST.get("invoice_recurring_Frequency")   
             invoice_repeat = request.POST.get("Invoice_recurring_repeat")       
-            invoice_advance = request.POST.get("Invoice_recurring_advance")        
+            invoice_advance = request.POST.get("Invoice_recurring_advance")       
+            invoice_recur_pay = request.POST.get("Invoice_recurring_pay")  
 
         invoice_employee = request.POST.get("invoice_seales_person")
         invoice_state_supply = request.POST.get("invoice_state_supply")
@@ -406,6 +375,7 @@ def save_invoice(request):
             invoice.invoice_recurring_repeat = invoice_repeat
             invoice.invoice_recurring_frequency = invoice_Frequency
             invoice.invoice_recurring_advance = invoice_advance
+            invoice.invoice_recurring_pay = invoice_recur_pay
         invoice.save()               
 
 
@@ -525,7 +495,7 @@ def save_invoice(request):
         return redirect('/invoice/', permanent = False)
 
 #=====================================================================================
-#   CHECK PURCHASE_ORDER UNIQUR AND SET DEFULT
+#   CHECK INVOICE UNIQUR AND SET DEFULT
 #=====================================================================================
 #
 
@@ -701,7 +671,8 @@ class EditInvoice(View):
 
                 invoice_Frequency = request.POST.get("invoice_recurring_Frequency")   
                 invoice_repeat = request.POST.get("Invoice_recurring_repeat")       
-                invoice_advance = request.POST.get("Invoice_recurring_advance")        
+                invoice_advance = request.POST.get("Invoice_recurring_advance")      
+                invoice_recur_pay = request.POST.get("Invoice_recurring_pay")    
 
             invoice_employee = request.POST.get("invoice_seales_person")
             invoice_state_supply = request.POST.get("invoice_state_supply")
@@ -769,10 +740,11 @@ class EditInvoice(View):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(invoice_new_pay_terms = None,invoice_new_due_date = None)
             if(invoice_recurring == 'on'):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(invoice_recurring_start_date = recurring_start_date,invoice_recurring_end_date = recurring_end_date,
-                                            invoice_recurring_repeat = invoice_repeat,invoice_recurring_frequency = invoice_Frequency,invoice_recurring_advance = invoice_advance)
+                                            invoice_recurring_repeat = invoice_repeat,invoice_recurring_frequency = invoice_Frequency,invoice_recurring_advance = invoice_advance,
+                                            invoice_recurring_pay = invoice_recur_pay)
             else:
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(invoice_recurring_start_date = None,invoice_recurring_end_date = None,
-                                            invoice_recurring_repeat = None,invoice_recurring_frequency = None,invoice_recurring_advance = None)
+                                            invoice_recurring_repeat = None,invoice_recurring_frequency = None,invoice_recurring_advance = None,invoice_recurring_pay = None)
 
 
             #******************************************************************************
