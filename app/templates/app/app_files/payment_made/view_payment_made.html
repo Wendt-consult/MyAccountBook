@@ -1,0 +1,398 @@
+
+<style>
+
+    /* loader */
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #3498db;
+      width: 120px;
+      height: 120px;
+      -webkit-animation: spin 2s linear infinite; /* Safari */
+      animation: spin 2s linear infinite;
+      margin-left: 42%;
+    }
+    
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .icons{
+        cursor: default;
+    }
+    .icons:hover{
+    color: white!important;
+    }
+    
+    /* draggable targets */
+    [data-draggable="target"]
+    {
+        float:left;
+        list-style-type:none;
+        
+        width:48%;
+        height:14.5em;
+        overflow-y:auto;
+        
+        margin:0 0.5em 0.5em 0;
+        padding:0.5em;
+        
+        border:2px solid #888;
+        border-radius:0.2em;
+        
+        background:  #c3c3c3;
+        color: black;
+    }
+    
+    /* draggable items */
+    [data-draggable="item"]
+    {
+        display:block;
+        list-style-type:none;
+        
+        margin:0 0 2px 0;
+        padding:0.2em 0.4em;
+        
+        border-radius:0.2em;
+        
+        line-height:1.3;
+    }
+    /* #purchase_view_length{
+        margin-left: 60%;
+    }
+    
+    @media screen and (min-width: 480px) {
+        #purchase_view_length{
+        margin-left: 71%;
+    }
+    } */
+    @media screen and (max-width: 1000px) and (min-width: 480px) {
+      #purchase_view_length {
+       margin-left:71%;
+      }
+    }
+    .pagination{
+        margin-top: -7px;
+    }
+    #hover:hover{
+        color: #598ebb;
+    }
+    thead th{
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background-color:#c3c3c3;
+        }
+    </style>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+    <!--            <div class="card-header card-header-primary">-->
+    <!--                <div class="row" style="margin-bottom: -1%;">-->
+    <!--                    <div class="col">-->
+    <!--                        <h4 class="card-title ">View Purchase Order</h4>-->
+    <!--                    </div>-->
+    <!--                    <div class="col-1">-->
+    <!--                        <span class="material-icons icons" data-toggle="modal" data-target="#CustomizeViewModel" style="color: rgba(190, 186, 186, 0.781);">settings</span>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+                <div class="card-body">
+                    <div class="loader" style="display: none;"></div>
+                    <div class="table" id="customize_table">
+                        <table class=" table-bordered" id="purchase_view" width="100%" cellspacing="0">
+                            <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
+                                {% if customize.entry_number != 0 %}
+                                <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%">Purchase Entry Number</th>
+                                {% else %}
+                                <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%;display: none;">Purchase Entry Number</th>
+                                {% endif %}
+    
+                                {% if customize.entry_reference != 0 %}
+                                <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+                                {% else %}
+                                <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%;display: none;">Reference Number</th>
+                                {% endif %}
+    
+                                {% if customize.entry_vendor != 0 %}
+                                <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+                                {% else %}
+                                <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%;display: none;">Vendor</th>
+                                {% endif %}
+
+                                {% if customize.entry_reference != 0 %}
+                                <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%">Payment Number</th>
+                                {% else %}
+                                <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%;display: none;">Payment Number</th>
+                                {% endif %}
+    
+                                {% if customize.entry_date != 0 %}
+                                <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%">Payment Date</th>
+                                {% else %}
+                                <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Payment Date</th>
+                                {% endif %}
+    
+                                {% if customize.entry_status != 0 %}
+                                <th class="text-center customize_entry_status" style="color:#000000; font-size:11px;width: 8%">Payment Type</th>
+                                {% else %}
+                                <th class="text-center customize_entry_status" style="color:#000000; font-size:11px;width: 8%;display: none;">Payment Type</th>
+                                {% endif %}
+    
+                                {% if customize.entry_total != 0 %}
+                                <th class="text-center customize_entry_amount" style="color:#000000; font-size:11px;width: 10%">Amount</th> 
+                                {% else %}
+                                <th class="text-center customize_entry_amount" style="color:#000000; font-size:11px;width: 10%;display: none;">Amount</th> 
+                                {% endif %} 
+    
+    
+                                <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
+    
+                            </thead>
+                            <tbody>
+                                {% for i in pay %}
+                                    <tr>
+                                        {% if customize.entry_number != 0 %}
+                                        <td align="center" class="customize_entry_number">{{i.purchase_entry_reference.purchase_entry_number|truncatechars:10}}</td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_number" style="display: none;">{{i.purchase_entry_reference.purchase_entry_number|truncatechars:10}}</td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_reference != 0 %}
+                                        <td align="center" class="customize_entry_reference">
+                                            {% if i.payment_reference %}
+                                            {{i.payment_reference}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_reference" style="display: none;">
+                                            {% if i.payment_reference %}
+                                            {{i.payment_reference}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_vendor != 0 %}
+                                        <td align="center" class="customize_entry_vendor">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_vendor" style="display: none;">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_date != 0 %}
+                                        <td align="center" class="customize_entry_date" >{{i.payment_number}}</td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_date" style="display: none;">{{i.payment_number}}</td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_status != 0 %}
+                                        <td align="center" class="customize_entry_status">
+                                            {% if i.payment_date %}
+                                            {{i.payment_date|date:"d-m-Y"}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_status">
+                                            {% if i.payment_date %}
+                                            {{i.payment_date|date:"d-m-Y"}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_due_date != 0 %}
+                                        <td align="center" class="customize_entry_due_date">
+                                            {% if i.payment_mode %}
+                                            {{i.payment_mode|date:"d-m-Y"}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_due_date" style="display: none;">
+                                            {% if i.payment_mode %}
+                                            {{i.payment_mode|date:"d-m-Y"}}
+                                            {% else %}
+                                            None
+                                            {% endif %}
+                                        </td>
+                                        {% endif %}
+    
+                                        {% if customize.entry_total != 0 %}
+                                        <td align="center" class="customize_entry_amount">
+                                            ₹{{i.Amount}}
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_amount">
+                                            ₹{{i.Amount}}
+                                        </td>
+                                        {% endif %}
+                                        
+                                        <td class="text-center" align="center" > 
+    
+                                            <div class="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
+    
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
+                                                        Edit
+                                                    </a>
+                                                    <a class="dropdown-item" title="Delete" data-toggle="modal" data-target="#del{{i.id}}" style="padding: 5px 5px;">
+                                                        Delete
+                                                    </a>   
+                                                </div> 
+    
+                                                <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                                    <div class="modal-dialog" role="document" style="border-top: none;">
+                                                        <div class="modal-content" style="border-top: none;background:white;position:bottom">
+                                                            <div class="modal-header" style="border-bottom: none;padding:5px;">
+                                                                
+                                                            </div>
+                                                            <div class="modal-body" style="border-top: none;position: bottom;">
+                                                                <h4><b><font color="black">Are you sure you want to delete {{i.purchase_entry_number |truncatechars:10 }}. Deleting purchase entry will not affect reports or historical transactions.</font></b></h4>
+                                                            </div>
+                                                            
+                                                            <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                                                                <center><a class="btn  mr-2" href="{% url 'delete_purchase_entry' i.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                                <a class="btn " data-dismiss="modal" aria-label="Close"><font color="white" >No</font></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                              
+                                            </div>       
+                                        </td>                   
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>   
+                    </div>
+                </div>
+            </div>    
+        </div>     
+    </div>
+    <!-- customize view -->
+    <div class="modal fade" id="CustomizeViewModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="background-color:#202940">
+                <form method="post" style="margin:0px" action="{% url 'edit_tax_details_form' %}">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title" style="color:#000000; font-weight:bold;">Customize List</h5>
+                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> -->
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <h5 style="color: black;text-align: center;margin-bottom: 1%;">Drag and drop be column name you want to show or hide</h5>
+                        <ol data-draggable="target" id="first">
+                            <h4 style="text-decoration: underline;">Show Column</h4>
+                            {% if customize.entry_number != 0 %}
+                            <li data-draggable="item" id="customize_entry_number">Purchase Entry Number</li>
+                            {% endif %}
+                            {% if customize.entry_reference != 0 %}
+                            <li data-draggable="item" id="customize_entry_reference">Reference No.</li>
+                            {% endif %}
+                            {% if customize.entry_vendor != 0 %}
+                            <li data-draggable="item" id="customize_entry_vendor">Vendor</li>
+                            {% endif %}
+                            {% if customize.entry_date != 0 %}
+                            <li data-draggable="item" id="customize_entry_date">Purchase Entry Date</li>
+                            {% endif %}
+                            {% if customize.entry_due_date != 0 %}
+                            <li data-draggable="item" id="customize_entry_due_date">Due Date</li>
+                            {% endif %}
+                            {% if customize.entry_advance != 0 %}
+                            <li data-draggable="item" id="customize_entry_advance">Purchase Advance</li>
+                            {% endif %}
+                            {% if customize.entry_total != 0 %}
+                            <li data-draggable="item" id="customize_entry_amount">Total Amount</li>
+                            {% endif %}
+                          </ol>
+                          
+                          <ol data-draggable="target" id="seconde">
+                            <h4 style="text-decoration: underline;">Hide Column</h4>
+                            {% if customize.entry_number == 0 %}
+                            <li data-draggable="item" id="customize_entry_number">Purchase Entry Number</li>
+                            {% endif %}
+                            {% if customize.entry_reference == 0 %}
+                            <li data-draggable="item" id="customize_entry_reference">Reference No.</li>
+                            {% endif %}
+                            {% if customize.entry_vendor == 0 %}
+                            <li data-draggable="item" id="customize_entry_vendor">Vendor</li>
+                            {% endif %}
+                            {% if customize.entry_date == 0 %}
+                            <li data-draggable="item" id="customize_entry_date">Purchase Entry Date</li>
+                            {% endif %}
+                            {% if customize.entry_due_date == 0 %}
+                            <li data-draggable="item" id="customize_entry_due_date">Due Date</li>
+                            {% endif %}
+                            {% if customize.entry_advance == 0 %}
+                            <li data-draggable="item" id="customize_entry_advance">Purchase Advance</li>
+                            {% endif %}
+                            {% if customize.entry_total == 0 %}
+                            <li data-draggable="item" id="customize_entry_amount">Total Amount</li>
+                            {% endif %}
+                          </ol>
+                          
+                          
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm " type="button" onclick="customize_view(7)" style="background-color: #598ebb;">apply</button>
+                        <a class="btn btn-sm " href="{% url 'Purchase_entry'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script>
+        csrf_token = '{{csrf_token}}';
+    $(document).ready( function () {
+        $('#purchase_view').DataTable({
+            searching: false,
+            dom:"<'row '<'col-12'tr>>"+ "<'row'<'col-6 leftplug'><'col-6'<'row'<'col-3 lengh'l><'col-5 information'i><'col-4 pagination'p>>>>", 
+            language : {
+            sLengthMenu: "_MENU_"
+            },
+            sStripeEven: '', 
+            sStripeOdd: '',
+            bSort: false,
+            "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
+        });
+        //add margin to the right and reset clear
+    $(".dataTables_length").css('clear', 'none');
+    // $(".dataTables_length").css('margin-left', '20px');
+    
+    //reset clear and padding
+    $(".dataTables_info").css('clear', 'none');
+    $(".dataTables_info").css('padding', '0');
+    });
+    
+    </script> -->

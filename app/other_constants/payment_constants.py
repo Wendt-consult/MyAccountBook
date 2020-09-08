@@ -86,3 +86,11 @@ purchse_status = (
     (2, 'Cancelled'),
     (3, 'Send Mail'),
 )
+
+purchase_entry_status = (
+    (0, 'Due'),
+    (1, 'Over Due By'),
+    (2, 'Drafted'),
+    (3, 'Paid'),
+    (4, 'Partially Paid'),
+)

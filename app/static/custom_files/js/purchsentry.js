@@ -2,42 +2,101 @@
 // Date Picker
 /********************************************************************/
 
+$(document).ready(function(){
+    if($('#edit_purchase_entry_date').length > 0){
+        edit_date = $('#edit_purchase_entry_date').val()
+        $('#edit_purchase_entry_date').datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", $.datepicker.parseDate( "dd-mm-yy", ""+edit_date+"" ));
+        
+        $("#edit_purchase_entry_date").datepicker({ 
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+            // minDate: new Date(),
+            maxDate: '+2y',
+            onSelect: function(date){
+        
+                var endDate = $('#edit_purchase_entry_date').datepicker('getDate', '+1d');
+                endDate.setDate(endDate.getDate()+1); 
+        
+                $("#purchase_entry_due_date").datepicker( "option", "minDate", endDate );
+                $("#purchase_entry_due_date").datepicker( "option", "maxDate", '+2y' );
+        
+            }
+        });
+        $("#purchase_entry_due_date").datepicker({ 
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+            minDate: edit_date,
+        });
+    }else{
+        $("#purchase_entry_date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
+        
+        $("#purchase_entry_date").datepicker({ 
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+            // minDate: new Date(),
+            maxDate: '+2y',
+            onSelect: function(date){
+        
+                var endDate = $('#purchase_entry_date').datepicker('getDate', '+1d'); 
+                endDate.setDate(endDate.getDate()+1); 
+        
+                $("#purchase_entry_due_date").datepicker( "option", "minDate", endDate );
+                $("#purchase_entry_due_date").datepicker( "option", "maxDate", '+2y' );
+        
+            }
+        });
 
-$("#purchase_entry_date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
-$("#purchase_entry_date").datepicker({dateFormat: 'dd-mm-yy'})
-$('#purchase_entry_date,#purchase_entry_due_date').keypress(function(event) {
-    event.preventDefault();
+        $("#purchase_entry_due_date").datepicker({ 
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+            minDate: new Date(),
+        });
+    }
+    
+    $('#purchase_entry_date,#edit_purchase_entry_date,#purchase_entry_due_date').keypress(function(event) {
+        event.preventDefault();
+    });
 });
 
+function set_min_date(){
+    if($('#edit_purchase_entry_date').length > 0){
+        min_date = $('#edit_purchase_entry_date').val()
+    }else{
+        min_date = $('#purchase_entry_date').val()
+    }
+    $("#purchase_entry_due_date").datepicker( "option", "minDate", min_date );
+}
+
 //  PURCHASE ENTRY PAYMENT TERMS
-    $('#purchase_entry_date').change(function() {
+    $('#purchase_entry_date,#edit_purchase_entry_date').change(function() {
         invoice_pay_date()
+        set_min_date()
     });
 //  ON CHANGE TO SET NEW INVOICE DUE DATE
 function invoice_pay_date(){
     var pay_terms = $('#entry_pay_terms').val()
     if(pay_terms == 'On Due Date'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+0d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+0d'); 
         endDate.setDate(endDate.getDate()+0); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '10 Days'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+9d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+9d'); 
         endDate.setDate(endDate.getDate()+9); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '20 Days'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+19d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+19d'); 
         endDate.setDate(endDate.getDate()+19); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '30 Days'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+31d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+31d'); 
         endDate.setDate(endDate.getDate()+31); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '60 Days'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+59d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+59d'); 
         endDate.setDate(endDate.getDate()+59); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == '90 Days'){
-        var endDate = $('#purchase_entry_date').datepicker('getDate', '+89d'); 
+        var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+89d'); 
         endDate.setDate(endDate.getDate()+89); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
     }else if(pay_terms == 'Custom'){
@@ -48,10 +107,14 @@ function invoice_pay_date(){
 // on change in new invoice due date
 
 $('#purchase_entry_due_date').change(function() {
-
-    var start = $('#purchase_entry_date').datepicker('getDate');
+    if($('#edit_purchase_entry_date').length > 0){
+        var start = $('#edit_purchase_entry_date').datepicker('getDate');
+    }else{
+        var start = $('#purchase_entry_date').datepicker('getDate');
+    }
     var end = $('#purchase_entry_due_date').datepicker('getDate');
     var days = (end - start)/1000/60/60/24;
+
     // $('#hasil').val(days);
     if(days == 0){
         $('#entry_pay_terms').val('On Due Date').change();

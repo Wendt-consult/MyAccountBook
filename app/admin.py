@@ -9,6 +9,7 @@ from app.models.customize_model import *
 from app.models.invoice_model import *
 from app.models.expense_model import *
 from app.models.purchasentry_model import *
+from app.models.payment_made_model import *
 from app.models.journalentry_model import *
 from app.models import *
 
@@ -146,3 +147,7 @@ class PurchaseEntryItems(admin.ModelAdmin):
 @admin.register(JournalEntry)
 class JournalEntry(admin.ModelAdmin):
     model = JournalEntry
+
+@admin.register(PurchasePayment)
+class PurchasePayment(admin.ModelAdmin):
+    model = PurchasePayment

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from app.models.users_model import *
 from app.models.products_model import *
 from app.models.contacts_model import *
+from app.models.purchase_model import *
 from app.other_constants import payment_constants
 
 from uuid import uuid4
@@ -131,6 +132,27 @@ class PurchaseEntry(models.Model):
         null = True,
     )
 
+    total = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    balance_due = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    total_balance = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     connect_purchase_order = models.CharField(
         max_length=5,
         default= 'NO',
@@ -138,9 +160,10 @@ class PurchaseEntry(models.Model):
         blank = True,
         null = True,
     )
-    
-    total_balance = models.CharField(
-        max_length=20,
+
+    purchase_order = models.ForeignKey(
+        PurchaseOrder,
+        on_delete=models.CASCADE,
         db_index = True,
         blank = True,
         null = True,
@@ -201,6 +224,20 @@ class PurchaseEntry(models.Model):
         default=0,
         blank = False,
         null = False,
+    )
+
+    entry_status =  models.IntegerField(
+        db_index = True,
+        blank = True,
+        null = True,
+        choices = payment_constants.purchase_entry_status
+    )
+    
+    entry_date_count = models.IntegerField(
+        db_index=True,
+        default=0,
+        blank=True,
+        null=True,
     )
     def __str__(self):
         return "{} - {}".format(self.vendor,self.id) 

@@ -424,7 +424,7 @@ function product(a) {
         $("#Amount"+a+"").val("")
         sub_total()
         total_discount()
-        freight_advance_totalamount()
+        // freight_advance_totalamount()
     }
    
 };
@@ -702,7 +702,7 @@ function sub_total(){
         change_state()
         purchase_tax_cacultion()
         total_discount()
-        freight_advance_totalamount()
+        // freight_advance_totalamount()
     // }
     
 }
@@ -749,15 +749,20 @@ function total_discount(){
 
 var advance_count = 0
 function freight_advance_totalamount(){
+
     var freight_charges = $('#Freight_Charges').val()
-    var advance = $('#advance_info').find('#advance_value').val()
+    if($('#advance_info').find('#advance_value').is(":visible")){
+        var advance = $('#advance_info').find('#advance_value').val()
+    }else{
+        var advance = $('#advance').val()
+    }
     var total_amount = $('#Total').val()
     var total_balance = 0
     if(advance == '' & freight_charges != '' & total_amount != ''){
-        
         total_balance += (parseFloat(total_amount) + parseFloat(freight_charges))
     }
     else if(freight_charges == '' & advance != '' & total_amount != ''){
+
         if(parseFloat(advance) < parseFloat(total_amount)){
             total_balance += (parseFloat(total_amount) - parseFloat(advance))
         }
@@ -770,6 +775,7 @@ function freight_advance_totalamount(){
         
     }
     else if(freight_charges != '' & advance != '' & total_amount != ''){
+
         if(parseFloat(advance) < parseFloat($('#total_balance').val())){
             total_balance += (parseFloat(freight_charges) + parseFloat(total_amount)) - (parseFloat(advance))
         }
@@ -782,6 +788,7 @@ function freight_advance_totalamount(){
         }   
     }
     else if(freight_charges == '' & advance == '' & total_amount != ''){
+
         total_balance += parseFloat(total_amount)
     }
     if(total_balance.toString() != 'NaN'){

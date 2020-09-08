@@ -9,7 +9,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
-    profile, purchase_order, expense, reports, purchasentry, journal_entry,scheduler
+    profile, purchase_order, expense, reports, purchasentry, journal_entry,scheduler, \
+    payment_made
 
 
 
@@ -28,8 +29,6 @@ urlpatterns += [
     path('system/config/', never_cache(login_required(system_settings.SettingsView.as_view())), name = 'settings_view'),
     path('system/config/db_operations/', never_cache(login_required(system_settings.DatabaseOperations.as_view())), name = 'settings_load_initial_data'),
     path('system/config/load_initial_data/', never_cache(login_required(system_settings.load_initial_data)), name = 'load_initial_data'),
-
-
 ]
 
 # Dashboard
@@ -274,6 +273,13 @@ urlpatterns += [
     path('journalentry/print/<int:ins>/', never_cache(login_required(journal_entry.print_jounal_entry)), name = 'print_jounal_entry'),
 ]
 #
+
+#
+# Payment Made
+#
+urlpatterns += [
+    path('paymentmade/', never_cache(login_required(payment_made.PaymentMade.as_view())), name = 'payment_made'),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

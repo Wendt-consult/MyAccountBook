@@ -414,7 +414,7 @@ optgroup{color :black; }
                                     <label for="entry_pay_terms">Payment Terms</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="entry_pay_terms" name="entry_pay_terms" style="padding-left: 9px;" onchange="invoice_pay_date()">
+                                    <select class="form-control" id="entry_pay_terms" name="entry_pay_terms" style="padding-left: 9px;" onchange="invoice_pay_date()" required>
                                         <option value="">None</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}"{% if entry.purchase_entry_pay_terms == i.1 %} selected {% endif %}>{{i.1}}</option>
@@ -449,10 +449,10 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="entry_date">Purchase Date</label>
+                                    <label for="edit_purchase_entry_date">Purchase Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_entry_date" id="purchase_entry_date" value="{{entry.purchase_entry_date|date:'d-m-Y'}}" required>
+                                    <input type="text" class="form-control" name="purchase_entry_date" id="edit_purchase_entry_date" value="{{entry.purchase_entry_date|date:'d-m-Y'}}" required>
                                 </div>
                             </div>
 
@@ -470,7 +470,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_due_date">Due Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date" value="{{entry.purchase_entry_due_date|date:'d-m-Y'}}">
+                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date" value="{{entry.purchase_entry_due_date|date:'d-m-Y'}}" required>
                                 </div>
                             </div>
                         </div>

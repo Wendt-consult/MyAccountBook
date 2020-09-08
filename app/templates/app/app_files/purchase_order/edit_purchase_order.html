@@ -1928,7 +1928,7 @@ optgroup{color :black; }
                                 <label for="advance_value">Advance</label>
                             </div>
                             <div class="col-7 input">
-                                <input class="form-control" name="advance_value" id="advance_value" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
+                                <input class="form-control" value="{{purchase_order.advance}}" name="advance_value" id="advance_value" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
                             </div>
                         </div>
 

@@ -435,7 +435,7 @@ optgroup{color :black; }
                                     <label for="entry_pay_terms">Payment Terms</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <select class="form-control" id="entry_pay_terms" name="entry_pay_terms" style="padding-left: 9px;" onchange="invoice_pay_date()">
+                                    <select class="form-control" id="entry_pay_terms" name="entry_pay_terms" style="padding-left: 9px;" onchange="invoice_pay_date()" required>
                                         <option value="">None</option>
                                         {% for i in payment_terms %}
                                         <option value="{{i.1}}">{{i.1}}</option>
@@ -490,7 +490,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_due_date">Due Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date">
+                                    <input type="text" class="form-control" name="purchase_entry_due_date" id="purchase_entry_due_date" required>
                                 </div>
                             </div>
                         </div>
@@ -1057,6 +1057,7 @@ optgroup{color :black; }
                         <!-- check its link with purchase order or not -->
                         {% if link_purchase_order == 'yes' %}
                         <input type="hidden" id="purchase_order_connect" name="purchase_order_connect" value="yes">
+                        <input type="hidden" id="purchase_order_id" name="purchase_order_id" value="{{purchase_order.id}}">
                         {% elif link_purchase_order == 'no' %}
                         <input type="hidden" id="purchase_order_connect" name="purchase_order_connect" value="no">
                         {% endif %}

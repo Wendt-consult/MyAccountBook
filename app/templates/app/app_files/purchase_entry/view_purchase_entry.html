@@ -110,27 +110,27 @@ thead th{
                     <table class=" table-bordered" id="purchase_view" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             {% if customize.entry_number != 0 %}
-                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%">Purchase Entry Number</th>
+                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 11%">Purchase Entry Number</th>
                             {% else %}
-                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 13%;display: none;">Purchase Entry Number</th>
+                            <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 11%;display: none;">Purchase Entry Number</th>
                             {% endif %}
 
                             {% if customize.entry_reference != 0 %}
-                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 9%">Reference Number</th>
                             {% else %}
-                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 15%;display: none;">Reference Number</th>
+                            <th class="text-center customize_entry_reference" style="color:#000000; font-size:11px;width: 9%;display: none;">Reference Number</th>
                             {% endif %}
 
                             {% if customize.entry_vendor != 0 %}
-                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 11%">Vendor</th>
                             {% else %}
-                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 15%;display: none;">Vendor</th>
+                            <th class="text-center customize_entry_vendor" style="color:#000000; font-size:11px;width: 11%;display: none;">Vendor</th>
                             {% endif %}
 
                             {% if customize.entry_date != 0 %}
-                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%">Purchase Entry Date</th>
+                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 10%">Purchase Entry Date</th>
                             {% else %}
-                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Purchase Entry Date</th>
+                            <th class="text-center customize_entry_date" style="color:#000000; font-size:11px;width: 10%;display: none;">Purchase Entry Date</th>
                             {% endif %}
 
                             {% if customize.entry_due_date != 0 %}
@@ -139,10 +139,10 @@ thead th{
                             <th class="text-center customize_entry_due_date" style="color:#000000; font-size:11px;width: 8%;display: none;">Due Date</th>
                             {% endif %}
 
-                            {% if customize.entry_advance != 0 %}
-                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%">Advance</th> 
+                            {% if customize.entry_status != 0 %}
+                            <th class="text-center customize_entry_status" style="color:#000000; font-size:11px;width: 10%">Status</th>
                             {% else %}
-                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%;display: none;">Advance</th>  
+                            <th class="text-center customize_entry_status" style="color:#000000; font-size:11px;width: 10%;display: none;">Status</th>
                             {% endif %}
 
                             {% if customize.entry_total != 0 %}
@@ -150,6 +150,13 @@ thead th{
                             {% else %}
                             <th class="text-center customize_entry_amount" style="color:#000000; font-size:11px;width: 10%;display: none;">Total Amount</th> 
                             {% endif %} 
+
+                            {% if customize.entry_advance != 0 %}
+                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%">Balance Due</th> 
+                            {% else %}
+                            <th class="text-center customize_entry_advance" style="color:#000000; font-size:11px;width: 10%;display: none;">Balance Due</th>  
+                            {% endif %}
+
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
 
                         </thead>
@@ -224,12 +231,40 @@ thead th{
                                     </td>
                                     {% endif %}
 
+                                    {% if customize.entry_status != 0 %}
+                                    <td align="center" class="customize_entry_status">
+                                        {% if i.entry_status == 1 %}
+                                        {{i.get_entry_status_display}} {{i.entry_date_count}}
+                                        {% else %}
+                                        {{i.get_entry_status_display}}
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_status">
+                                        {% if i.entry_status == 1 %}
+                                        {{i.get_entry_status_display}} {{i.entry_date_count}}
+                                        {% else %}
+                                        {{i.get_entry_status_display}}
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+
+                                    {% if customize.entry_total != 0 %}
+                                    <td align="center" class="customize_entry_amount">
+                                        ₹{{i.total}}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_entry_amount">
+                                        ₹{{i.total}}
+                                    </td>
+                                    {% endif %}
+
                                     {% if customize.entry_advance != 0 %}
                                     <td align="center" class="customize_entry_advance">
-                                        {% if i.advance %}
-                                        ₹{{i.advance}}
+                                        {% if i.balance_due %}
+                                        ₹{{i.balance_due}}
                                         {% else %}
-                                        None
+                                        0.00
                                         {% endif %}
                                     </td>
                                     {% else %}
@@ -237,18 +272,8 @@ thead th{
                                         {% if i.advance %}
                                         ₹{{i.advance}}
                                         {% else %}
-                                        None
+                                        0.00
                                         {% endif %}
-                                    </td>
-                                    {% endif %}
-
-                                    {% if customize.entry_total != 0 %}
-                                    <td align="center" class="customize_entry_amount">
-                                        ₹{{i.total_balance}}
-                                    </td>
-                                    {% else %}
-                                    <td align="center" class="customize_entry_amount">
-                                        ₹{{i.total_balance}}
                                     </td>
                                     {% endif %}
                                     
@@ -261,6 +286,11 @@ thead th{
                                                 <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
+                                                {% if i.entry_status != 3 %}
+                                                <a class="dropdown-item" title="Make Payment" data-toggle="modal" data-target="#" style="padding: 5px 5px;">
+                                                    Make Payment
+                                                </a> 
+                                                {% endif %}
                                                 <a class="dropdown-item" title="Delete" data-toggle="modal" data-target="#del{{i.id}}" style="padding: 5px 5px;">
                                                     Delete
                                                 </a>   

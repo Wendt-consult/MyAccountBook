@@ -11,6 +11,7 @@ from app.models.accounts_model import *
 from app.models.purchase_model import *
 from app.models.customize_model import *
 from app.models.purchasentry_model import *
+from app.models.payment_made_model import *
 
 from app.forms.products_form import * 
 from app.forms.contact_forms import * 
@@ -30,12 +31,12 @@ import json, os, csv
 
 from app.helpers import email_helper
 
-from datetime import datetime
+from datetime import datetime,date
 
 from django.conf import settings
 
 #=====================================================================================
-#   INVOICE VIEW
+#   PURCHAS ENTRY VIEW
 #=====================================================================================
 #
 
@@ -379,6 +380,26 @@ def save_purchase_entry(request):
             entry.freight_charges = request.POST.get("Freight_Charges")
             entry.advance = request.POST.get("entry_advance")
             entry.connect_purchase_order = 'YES'
+            purchase_order = PurchaseOrder.objects.get(pk = int(request.POST.get("purchase_order_id")))
+            entry.purchase_order = purchase_order
+            advance = request.POST.get("entry_advance")
+            if(advance != '' and advance != None):
+                a = float(total_amount) + float(advance)
+                entry.total = round(a,2)
+                entry.balance_due = total_amount
+        else:
+            entry.total = total_amount
+
+        #  for payment status
+        current_date = date.today()
+        due = datetime.strptime(pe_due_date, '%Y-%m-%d').date()
+        if(due < current_date):
+            delta = (current_date - due).days
+            entry.entry_status = 1
+            entry.entry_date_count = delta
+        else:
+            entry.entry_status = 0
+
         entry.save()               
 
         product_name = request.POST.getlist('ItemName[]',None)
@@ -422,10 +443,45 @@ def save_purchase_entry(request):
                 )
                 entry_item.save()  
 
+                # for create make payment if some advance given
+                if(entry.balance_due !='' and entry.balance_due is not None):
+                    createPayment(request, entry)
+
         return redirect('/view_purchase_entry/', permanent = False)
+#=====================================================================================
+#   MAKE PAYMENT
+#=====================================================================================
+#
+
+def createPayment(request, entry = None):
+    payment_count = PurchasePayment.objects.filter(user = request.user).count()
+    payment_number = None
+    if(payment_count > 0 ):
+        payment_number = 'PM-000'+str(payment_count + 1)
+    else:
+        payment_number = 'PM-0001'
+
+    if entry is not None:
+        payment = PurchasePayment(
+            user = request.user,
+            purchase_entry_reference = entry,
+            vendor = entry.vendor,
+            payment_number = payment_number,
+            payment_reference = entry.purchase_entry_refrence,
+            Note = entry.Note,
+            attachements = entry.attachements,
+            Amount = entry.advance,
+        )
+
+        if(entry.purchase_order.advance_payment_date != None):
+            payment.payment_date = entry.purchase_order.advance_payment_date 
+        if(entry.purchase_order.advacne_payment_method != ''):
+            payment.payment_mode = int(entry.purchase_order.advacne_payment_method)
+
+        payment.save()
 
 #=====================================================================================
-#   EDIT CREDITNOTE 
+#   EDIT PURCHASE ENTRY
 #=====================================================================================
 #
 class EditPurchaseEntry(View):
@@ -586,6 +642,24 @@ class EditPurchaseEntry(View):
 
             if(pe_due_date != ''):
                 purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(purchase_entry_due_date = pe_due_date)
+
+            advance = request.POST.get("entry_advance")
+
+            if(advance != '' and advance != None):
+                a = float(total_amount) + float(advance)
+                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = round(a,2), balance_due = total_amount)
+            else:
+                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = total_amount)
+
+            #  for payment status
+            current_date = date.today()
+
+            due = datetime.strptime(pe_due_date, '%Y-%m-%d').date()
+            if(due < current_date):
+                delta = (current_date - due).days
+                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(entry_status = 1,entry_date_count = delta)
+            else:
+                 purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(entry_status = 0)
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
