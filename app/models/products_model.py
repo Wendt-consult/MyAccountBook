@@ -193,7 +193,8 @@ class ProductsModel(models.Model):
         null = True,
     )
 
-    selling_tax = models.IntegerField(
+    selling_tax = models.CharField(
+        max_length=10,
         db_index = True,
         null=True,
         blank=True,
@@ -210,7 +211,7 @@ class ProductsModel(models.Model):
         db_index = True,
         null = True,
         blank = True,
-        choices=products_constant.SALES_ACCOUNT_CHOICES
+        # choices=products_constant.SALES_ACCOUNT_CHOICES
     )
 
     # Purchase
@@ -240,8 +241,7 @@ class ProductsModel(models.Model):
     )
 
     purchase_tax = models.CharField(
-        max_length=5,
-        default = 0.0,
+        max_length=10,
         db_index = True,
         null=True,
         blank=True,
@@ -265,7 +265,7 @@ class ProductsModel(models.Model):
         db_index = True,
         null = True,
         blank = True,
-        choices = products_constant.PURCHASE_ACCOUNT_CHOICES,
+        # choices = products_constant.PURCHASE_ACCOUNT_CHOICES,
     )
 
     discount = models.IntegerField(

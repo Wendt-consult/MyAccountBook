@@ -841,17 +841,18 @@ optgroup{color :black; }
     </div>
 </form>
 <!-- add product model popup -->
+
 <div class="modal fade" id="ProductModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_creditnote_product_form">
+            <form method="post" style="margin:0px;" enctype="multipart/form-data" id="add_creditnote_product_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Product</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="background-color:white">
                     {% csrf_token %}
                     <input type="hidden" value="{{contact_ins}}" name="ids">
                     <input type="hidden" value="{{tax_ins}}" name="obj_ins">
@@ -952,15 +953,15 @@ optgroup{color :black; }
 
                     <div class="container bundle_show">
                         <div class="row product_heading">
-                            <b>PRODUCTS IN BUNDLE</b>
+                            <b style="color:black;font-size:14px;">PRODUCTS IN BUNDLE</b>
                         </div>
 
                         <div class="row" style="margin-left: 0%;">
-                            <table class="table-primary" id="table" style="width: 100%;background-color:#202940;">
+                            <table class="table-primary" id="table" style="width: 100%;background-color:#fff;">
                                 <thead style="background-color: black;">
-                                        <th style="width: 21%;border: 1px solid white;">Product Type</th>
-                                        <th style="width: 44%;border: 1px solid white;"> Product Name</th>
-                                        <th style="border: 1px solid white;width: 20%;">Quantity</th>  
+                                        <th style="width: 21%;border: 1px solid white;color:black;font-weight: normal;font-size:14px;">Product Type</th>
+                                        <th style="width: 44%;border: 1px solid white;color:black;font-weight: normal;font-size:14px;"> Product Name</th>
+                                        <th style="border: 1px solid white;width: 20%;color:black;font-weight: normal;font-size:14px;">Quantity</th>
 
                                 </thead>
                                 <tbody>
@@ -1052,7 +1053,16 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1070,7 +1080,15 @@ optgroup{color :black; }
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
     
@@ -1133,7 +1151,15 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1160,7 +1186,15 @@ optgroup{color :black; }
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_account}}
+                                        <!-- {{add_product_form.purchase_account}} -->
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1168,8 +1202,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick="return creditnote_product_form(0)" style="margin-top:16px;background-color:#598ebb">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close"  style="margin-top:16px;background-color: #9095a2;">Cancel</button>    
+                    <button class="btn btn-sm  save_button" type="button" name="credit_note_product" onclick="return creditnote_product_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
                 </div>
             </form>
         </div>

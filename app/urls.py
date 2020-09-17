@@ -279,6 +279,9 @@ urlpatterns += [
 #
 urlpatterns += [
     path('paymentmade/', never_cache(login_required(payment_made.PaymentMade.as_view())), name = 'payment_made'),
+    path('paymentmade/make_payment/', never_cache(login_required(payment_made.makePayment)), name = 'make_payment'),
+    path('paymentmade/add_make_payment/', never_cache(login_required(payment_made.addMakePayment.as_view())), name = 'add_make_payment'),
+    path('paymentmade/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(payment_made.unique_payment_number)), name = 'unique_payment_number'),
 ]
 
 if settings.DEBUG:

@@ -353,7 +353,7 @@ optgroup{color :black; }
                                         {% endfor %}
         
                                         {% for contact in contacts %}
-                                            {% if contact.customer_type == 2%}
+                                            {% if contact.customer_type == 2 or contact.customer_type == 4 %}
                                             {% if entry.vendor_id|lower != contact.id|lower %}
                                             <option value="{{contact.id}}">{{contact}}</option>
                                             {% endif %}
@@ -540,7 +540,7 @@ optgroup{color :black; }
                                 <select class="form-control purchase_entry_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()" required>
                                     <option value="">None</option>
                                     
-                                    {% for acc_group in acc_ledger_income %}
+                                    {% for acc_group in acc_ledger_expense %}
                                         <option value="{{acc_group.id}}"  {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
                                     {% endfor %}
                                 </select>
@@ -1071,7 +1071,16 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1089,7 +1098,15 @@ optgroup{color :black; }
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
     
@@ -1152,7 +1169,15 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1179,7 +1204,15 @@ optgroup{color :black; }
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_account}}
+                                        <!-- {{add_product_form.purchase_account}} -->
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

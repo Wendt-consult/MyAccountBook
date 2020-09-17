@@ -312,7 +312,7 @@ def add_contacts(request, slug = None, ins = None):
         
         ### changes for expense start                  
         if request.POST.get('json_response'):
-            success = True if ins.customer_type == 2 else False
+            success = True if ins.customer_type == 2 or ins.customer_type == 4 else False
             data = {'success':success, 'contact_name':ins.contact_name.upper(), 'contact_id':ins.id}
             return JsonResponse(data)
                 

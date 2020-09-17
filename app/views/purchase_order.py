@@ -10,6 +10,7 @@ from app.models.products_model import *
 from app.models.accounts_model import *
 from app.models.purchase_model import *
 from app.models.customize_model import *
+from app.models.payment_made_model import *
 # from app.models.creditnote_model import *
 
 from app.forms.products_form import * 
@@ -166,13 +167,13 @@ def add_purchase_order(request, slug):
         # 
         # for account_ledger details
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
-        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         acc_group_name = []
         acc_ids =[]
-        acc_count = len(acc_ledger_income)
+        acc_count = len(acc_ledger_expense)
         for i in range(0,acc_count):
-            acc_group_name.append(acc_ledger_income[i].group_name)
-            acc_ids.append(acc_ledger_income[i].id)
+            acc_group_name.append(acc_ledger_expense[i].group_name)
+            acc_ids.append(acc_ledger_expense[i].id)
 
         # common dictionary
         data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids} 
@@ -183,11 +184,15 @@ def add_purchase_order(request, slug):
         data["products"] = products
 
         # 
-        # for account_ledger details
-        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        # for income account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_income'] = acc_ledger_income
 
+        # for expense account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_expense'] = acc_ledger_expense
 
         # org gst number
         data['is_gst'] = 'no'
@@ -511,6 +516,7 @@ def save_purchase_order(request):
         is_notes = request.POST.get('purchase_default_notes','off')
 
         hidden_advance_date = request.POST.get("hidden_advance_date")
+        hidden_order_make_payment = request.POST.get('hidden_order_make_payment','off')
         hidden_advance_method = request.POST.get('hidden_advance_method',)
         hidden_advance_notes = request.POST.get('hidden_advance_notes')
 
@@ -569,6 +575,7 @@ def save_purchase_order(request):
             advance=advance,
             total_balance=total_balance,
             advacne_payment_method = hidden_advance_method,
+            order_advance_make_pay = hidden_order_make_payment,
             advacne_note= hidden_advance_notes,
             purchase_org_gst_num = org_gst_number,
             purchase_org_gst_type = org_gst_reg_type,
@@ -635,7 +642,9 @@ def save_purchase_order(request):
                 purchase_item.save()  
 
 
-        # attach_check = request.POST.get("attach_check", False)
+        # for create make payment if some advance given
+        if(hidden_order_make_payment == 'on' and advance != ''):
+            value = createPayment(request, purchase_order)
 
         if(save_type == 4):  
             order = PurchaseOrder.objects.latest('pk')
@@ -650,8 +659,41 @@ def save_purchase_order(request):
             # else:
             purchase_order_mailer(request, purchase_order, contact, mail)
 
+
         return redirect('/view_purchase_order/', permanent = False)
 
+#=====================================================================================
+#   MAKE PAYMENT
+#=====================================================================================
+#
+
+def createPayment(request, order = None):
+    payment_count = PurchasePayment.objects.filter(user = request.user).count()
+    payment_number = None
+    if(payment_count > 0 ):
+        payment_number = 'PM-000'+str(payment_count + 1)
+    else:
+        payment_number = 'PM-0001'
+
+    if order is not None:
+        payment = PurchasePayment(
+            user = request.user,
+            vendor = order.vendor,
+            payment_number = payment_number,
+            payment_date = order.advance_payment_date,
+            payment_reference = order.purchase_order_number,
+            payment_mode = order.advacne_payment_method,
+            Note = order.advacne_note,
+            Amount = order.advance,
+        )
+
+        # if(entry.purchase_order.advance_payment_date != None):
+        #     payment.payment_date = entry.purchase_order.advance_payment_date 
+        # if(entry.purchase_order.advacne_payment_method != ''):
+        #     payment.payment_mode = int(entry.purchase_order.advacne_payment_method)
+
+        payment.save()
+    return 'done'   
 
 #=====================================================================================
 #   EDIT PURCHASE ORDER
@@ -710,7 +752,12 @@ class EditPurchaseOrder(View):
 
             purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+            acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
+            # for income account_ledger details
+            major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
             default_term_condition = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
@@ -733,6 +780,7 @@ class EditPurchaseOrder(View):
         self.data["products"] = products
         self.data["purchase_order"] = purchase_order
         self.data["purchase_item"] = purchase_item
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         self.data['acc_ledger_income'] = acc_ledger_income
         self.data["item_count"] = len(purchase_item)-1
 
@@ -808,6 +856,7 @@ class EditPurchaseOrder(View):
             # adv_date = datetime.strptime(str(hidden_advance_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             hidden_advance_method = request.POST.get('hidden_advance_method',)
             hidden_advance_notes = request.POST.get('hidden_advance_notes')
+            hidden_order_make_payment = request.POST.get('hidden_order_make_payment','off')
 
             if(is_tc == 'on'):
                 org = Organisations.objects.get(user = request.user)
@@ -866,6 +915,7 @@ class EditPurchaseOrder(View):
                 advance=advance,
                 total_balance=total_balance,
                 advacne_payment_method=hidden_advance_method,
+                order_advance_make_pay = hidden_order_make_payment,
                 advacne_note=hidden_advance_notes,
                 purchase_org_gst_num = org_gst_number,
                 purchase_org_gst_type = org_gst_reg_type,
@@ -928,6 +978,11 @@ class EditPurchaseOrder(View):
                     )
                 purchase_item.save()   
             
+            # for create make payment if some advance given
+            if(hidden_order_make_payment == 'on' and advance != ''):
+                order = PurchaseOrder.objects.get(pk = int(kwargs["ins"]))
+                value = createPayment(request, order)
+
             if(save_type == 4):  
                 ins = '/purchase_order/print/'+str(kwargs["ins"])+'/'
                 return redirect(ins, permanent = False)
@@ -995,7 +1050,12 @@ class ClonePurchaseOrder(View):
 
             purchase_item = Purchase_Items.objects.filter(Q(user= request.user) & Q(purchase_item_list = purchase_order))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+            acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
+            # for income account_ledger details
+            major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
             default_term_condition = Organisations.objects.filter(user = request.user)
             # default = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -1049,6 +1109,7 @@ class ClonePurchaseOrder(View):
         self.data["purchase_order"] = purchase_order
         # if(len(a) > 0):
         self.data["purchase_item"] = purchase_item
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         self.data['acc_ledger_income'] = acc_ledger_income
         self.data["item_count"] = len(purchase_item)-1
 

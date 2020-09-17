@@ -119,16 +119,16 @@ function product_row_creator(purchase_number){
         vendor_g = vendor_gstin.substring(0,2)
     }
 
-    var html = '<tr id="entry_row'+purchase_number+'">'
+    var html = '<tr id="purchase_row'+purchase_number+'">'
     html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select purchase_line_item" id="ItemName'+purchase_number+'" name="ItemName[]" onchange="product('+purchase_number+'),validation()" style="padding-left:0px" required><option value="">None</option></select>'
     html +='<textarea id="desc'+purchase_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><select class="form-control prodduct_purchase_account" id="product_account'+purchase_number+'" name="product_account[]" onchange="validation()" required><option value="">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-    html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
-    html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" name="Quantity[]" required></td>'
+    html +='<div class="col"><input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" id="Price'+purchase_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
+    html +='<td style="border:1px solid black;"><input type="text" class="form-control" maxlength="10" id="Quantity'+purchase_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+'),validation()" name="Quantity[]" required></td>'
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+purchase_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
-    html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
-    html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
+    html += '<div class="col-5" style="padding-left:1px;"><select class="form-control" id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+purchase_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
     if(org_state != '' || vendor_g != '' || org_state == vendor_g || $('#org_gst_reg_type').val() == ''){
@@ -213,6 +213,8 @@ function get_func(next_id, acc_group_name_htm, products_htm){
 
 // REMOVE JS TABLE
 function creditnote_removeRow(a) {
+    console.log('aaaaaaaaaa')
+    console.log(a)
     var first_row = $('#purchase_table tbody tr:first').attr('id')
     if(first_row == 'purchase_row'+a+''){
         var last_row = $('#purchase_table tbody tr:last').attr('id')
@@ -278,7 +280,7 @@ $(document).on('click','#select2-product_account1-container',function(){
     for(var i = 1;i <= purchase_number; i++){
         var a = $('#row_account'+purchase_number+'').length
         if(a == 0){
-        $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+purchase_number+'" onclick="get_purchase_account_id('+purchase_number+'),acc_product_account()" data-target="#addGroupModal" style="margin-left: -24%;">+ Add New</button>');
+        $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+purchase_number+'" onclick="get_purchase_account_id('+purchase_number+'),acc_product_account()" data-target="#addGroupModal" style="margin-left: -35%;">+ Add New</button>');
         }  
     } 
 });
@@ -325,7 +327,8 @@ function add_contact(){
 
         $('#id_customer_type').remove()
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="2" selected>VENDOR</option></select>'
+        html +='<option value="2" selected>VENDOR</option>'
+        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
@@ -362,7 +365,8 @@ function add_contact_delivary(){
     $('#id_customer_type').remove()
     var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
      html +='<option value="">---------</option><option value="1" selected="">CUSTOMER</option>'
-     html +='<option value="3">EMPLOYEE</option></select> '
+     html +='<option value="3">EMPLOYEE</option>'
+     html +='<option value="4">CUSTOMER AND VENDOR</option></select> '
     $('#con_type').append(html)
 
     $('#add_contact_type').remove()
@@ -873,8 +877,7 @@ function check_gst_status(cat){
             $('#purchase_table').find('.tax').attr('readonly', false)
             sub_total()
         }
-    }
-    
+    }  
 }
 
 /********************************************************************/
@@ -989,7 +992,9 @@ function change_state(){
     $(".purchase_line_item").each(function(){
 
         var ids = $(this).attr('id');
-        ids = ids.substring(ids.length - 1, ids.length);
+        ids = ids.match(/\d+/);
+        ids = ids[0]
+        // ids = ids.substring(ids.length - 1, ids.length);
         single_row_gst_cal = 'state'
         var check = row_gst_cal(ids);
     });
@@ -1572,6 +1577,11 @@ function show_advance_info(){
     $('#advance_value').val($('#advance').val())
     $('#advance_payment').val($('#total_balance').val())
     $('#advance_date').val($('#hidden_advance_date').val())
+    if($('#hidden_order_make_payment').is(':checked')){
+        $('#order_make_payment').prop('checked', true)
+    }else{
+        $('#order_make_payment').prop('checked', false)
+    }
     $('#advance_method').val($('#hidden_advance_method').val()).change();
     $('#advance_notes').val($('#hidden_advance_notes').val())
     if(ins != ''){
@@ -1584,11 +1594,27 @@ function show_advance_info(){
     $('#advance_info').modal('show')
 }
 function add_advance_info(){
-    $('#advance').val($('#advance_value').val())
-    $('#hidden_advance_date').val($('#advance_date').val())
-    $('#hidden_advance_method').val($('#advance_method').val()).change();
-    $('#hidden_advance_notes').val($('#advance_notes').val())
-    $('#advance_info').modal('hide')
+    if($('#advance_value').val() == ''){
+        alert('advance amount required')
+        $('#advance_value').focus()
+    }else if($('#advance_date').val() == ''){
+        alert('advance payment date required')
+        $('#advance_date').focus()
+    }else if($('#advance_method').val() == ''){
+        alert('advance payment method required')
+        $('#advance_method').focus()
+    }else{
+        if($('#order_make_payment').is(':checked')){
+            $('#hidden_order_make_payment').prop('checked', true)
+        }else{
+            $('#hidden_order_make_payment').prop('checked', false)
+        }
+        $('#advance').val(parseFloat($('#advance_value').val()).toFixed(2))
+        $('#hidden_advance_date').val($('#advance_date').val())
+        $('#hidden_advance_method').val($('#advance_method').val()).change();
+        $('#hidden_advance_notes').val($('#advance_notes').val())
+        $('#advance_info').modal('hide')
+    }
 }
 
 function clear_advance_info(){
@@ -1804,4 +1830,20 @@ function v_gst_save(){
             state_compare()
         }
     });
+}
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
+
+$("#purchase_date,#purchase_edit_date,#purchase_delivary_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+    }
 }

@@ -229,13 +229,13 @@ $("#journalnumber").focusout(function(){
 /*********************************************************************** */
 
 function journal_check(){
-    if($('#debit_SubTotal').val() == '' || $('#credit_SubTotal').val() == ''){
+    if($('#debit_SubTotal').val() == '' & $('#credit_SubTotal').val() == ''){
         alert('Can not save blank journal entry')
         return false
     }else if($('#debit_SubTotal').val() == $('#credit_SubTotal').val()){
         return true
     }else{
-        alert('Journal entry debit amount and credit amount must be same')
+        alert('Journal entry total debit amount and credit amount should be same')
         return false
     }
 }

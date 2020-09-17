@@ -77,9 +77,9 @@ color: white!important;
    margin-left:71%;
   }
 }
-.pagination{
+/* .pagination{
     margin-top: -7px;
-}
+} */
 #hover:hover{
     color: #598ebb;
 }
@@ -90,6 +90,15 @@ thead th{
     z-index: 2;
     background-color:#c3c3c3;
     }
+.previous{
+    padding:0px!important;
+} 
+.next{
+    padding:0px!important;
+}
+#purchase_view_previous{
+    margin-right: 25px;
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -176,9 +185,11 @@ thead th{
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                {% if order.order_advance_make_pay == 'off' %}
                                                 <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_purchase_order' order.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
+                                                {% endif %}
 
                                                 <a class="dropdown-item" title="Void Purchase Order" data-toggle="modal" data-target="#void{{order.id}}"href="#" style="padding: 5px 5px;">
                                                    Void
@@ -327,7 +338,7 @@ $(document).ready( function () {
         },
         sStripeEven: '', 
         sStripeOdd: '',
-        bSort: false,
+        // bSort: false,
         "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
     });
     //add margin to the right and reset clear

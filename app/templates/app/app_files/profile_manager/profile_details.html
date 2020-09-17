@@ -56,7 +56,21 @@ select.form-control option{color : #000000; }
 
 td{padding:5px;}
 
-
+/* table pagination */
+@media screen and (max-width: 1000px) and (min-width: 480px) {
+  #bank_account_table_length, #contact_table_length, #org_active_address_length, #org_inactive_address_length{
+   margin-left:71%;
+  }
+}
+.previous{
+    padding:0px!important;
+} 
+.next{
+    padding:0px!important;
+}
+#bank_account_table_previous, #contact_table_previous, #org_active_address_previous, #org_inactive_address_previous{
+    margin-right: 25px;
+}
 </style>
 <form method="post" enctype="multipart/form-data">
     <div class="card">
@@ -149,23 +163,24 @@ td{padding:5px;}
                 </h4>
             </div> 
             <div class="card-body"> 
-                <table class="table-responsive table-bordered">
-                    <tbody style="width:100%; display:inline-table;">
-                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Contact Person</td>
-                            <td class="text-center" style="width: 40%;border: 1px solid black;;color: black;">Address</td>
+                <table class="table-bordered org_address_table_active" id="org_active_address">
+                    <!-- <tbody style="width:100%; display:inline-table;"> -->
+                        <thead style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <th class="text-center" style="width: 15%;border: 1px solid black;color: black;width: 13%;">Contact Person</th>
+                            <th class="text-center" style="width: 40%;border: 1px solid black;;color: black;width: 25%;">Address</th>
                             <!-- <td class="text-center" style="width: 10%;border: 1px solid white;">Street</td>
                             <td class="text-center" style="width: 11%;border: 1px solid white;">City</td>
                             <td class="text-center" style="width: 1%;border: 1px solid white;">Pincode</td>               
                             <td class="text-center" style="width:17%;border: 1px solid white;">State</td>               
                             <td class="text-center" style="width:11%;border: 1px solid white;">Country</td>   -->
-                            <td class="text-center" style="border: 1px solid black;;color: black;">Is Shipping</td>
-                            <td class="text-center" style="border: 1px solid black;;color: black;">Is Billing</td>  
-							<td class="text-center" style="border: 1px solid black;;color: black;">GSTIN</td>							
-                            <td class="text-center" style="border: 1px solid black;">Action</td>                
-                        </tr> 
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 6%;">Is Shipping</th>
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 6%;">Is Billing</th>  
+							<th class="text-center" style="border: 1px solid black;color: black;width: 10%;">GSTIN</th>							
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 5%;">Action</th>                
+                        </thead> 
+                        <tbody>
                         {% for i in org_address_details %}
-                        <tr class="org_address_table_active" id="table-{{forloop.counter}}" style="font-size:12px">
+                        <tr class="" id="table-{{forloop.counter}}" style="font-size:12px">
                                                    
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
@@ -245,10 +260,21 @@ td{padding:5px;}
                             </td>                                   
                         </tr>  
                         {% endfor %}
-
-                         <!-- for inactive org address -->
-                         {% for i in org_address_details_inactive %}
-                         <tr class="org_address_table_inactive" id="table_inactive-{{forloop.counter}}" style="display: none;font-size:12px;">
+                        </tbody>
+                    </table>
+                    <!-- for inactive org address -->
+                    <table class="table-bordered org_address_table_inactive" style="display: none;width: 100%;" id="org_inactive_address">
+                        <thead style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <th class="text-center" style="width: 15%;border: 1px solid black;color: black;width: 13%;">Contact Person</th>
+                            <th class="text-center" style="width: 40%;border: 1px solid black;;color: black;width: 25%;">Address</th>
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 6%;">Is Shipping</th>
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 6%;">Is Billing</th>  
+							<th class="text-center" style="border: 1px solid black;color: black;width: 10%;">GSTIN</th>							
+                            <th class="text-center" style="border: 1px solid black;color: black;width: 5%;">Action</th>                
+                        </thead> 
+                         <tbody>
+                            {% for i in org_address_details_inactive %}
+                         <tr class="" id="table_inactive-{{forloop.counter}}" style="font-size:12px;">
                                                     
                              <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                  {{ i.contact_person|default_if_none:""|truncatechars:15 }}
@@ -306,8 +332,8 @@ td{padding:5px;}
                                  </div>                                 
                          </tr>  
                          {% endfor %}
-                    </tbody>
-                </table>
+                         </tbody>
+                    </table>
                 <!-- <div class="pagination" style="float: right;">
                     <span class="step-links">
                         {% if org_address_details.has_previous %}
@@ -346,20 +372,21 @@ td{padding:5px;}
                 </h5>
             </div> 
             <div class="card-body"> 
-                <table class="table-responsive table-bordered">
-                    <tbody style="width:100%; display:inline-table;">
-                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Phone</td>
-                            <td class="text-center" style="width: 9%;border: 1px solid black;color: black;">Email</td>
-                            <td class="text-center" style="width: 10%;border: 1px solid black;color: black;">Website</td>
-                            <td class="text-center" style="width: 11%;border: 1px solid black;color: black;">Fax</td>
-                            <td class="text-center" style="width: 1%;border: 1px solid black;color: black;">Skype</td>               
-                            <td class="text-center" style="width:17%;border: 1px solid black;color: black;">Linkedin</td>               
-                            <td class="text-center" style="width:11%;border: 1px solid black;color: black;">Facebook</td>            
-                            <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
-                        </tr>  
+                <table class="table-responsive table-bordered" id="contact_table">
+                    <thead style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                        <!-- <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;"> -->
+                            <th class="text-center" style="width: 15%;border: 1px solid black;color: black;">Phone</th>
+                            <th class="text-center" style="width: 16%;border: 1px solid black;color: black;">Email</th>
+                            <th class="text-center" style="width: 16%;border: 1px solid black;color: black;">Website</th>
+                            <th class="text-center" style="width: 11%;border: 1px solid black;color: black;">Fax</th>
+                            <th class="text-center" style="width: 9%;border: 1px solid black;color: black;">Skype</th>               
+                            <th class="text-center" style="width:15%;border: 1px solid black;color: black;">Linkedin</th>               
+                            <th class="text-center" style="width:11%;border: 1px solid black;color: black;">Facebook</th>            
+                            <th class="text-center" style="border: 1px solid black;color:black; width:80px !important">Action</th>                
+                        <!-- </tr> -->
+                    </thead>  
                         {% for i in address_details %}
-                        
+                        <tbody>
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                 
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
@@ -406,8 +433,8 @@ td{padding:5px;}
                                     </div>
                                 </div>                                
                             </tr>
-                        {% endfor %}    
-                    </tbody>
+                            {% endfor %}    
+                        </tbody>
                 </table>
                 <!-- <div class="pagination" style="float: right;">
                     <span class="step-links">
@@ -447,17 +474,18 @@ td{padding:5px;}
                 </h5>
             </div> 
             <div class="card-body"> 
-                <table class="table-responsive table-bordered">
-                    <tbody style="width:100%; display:inline-table;">
-                        <tr style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
-                            <td class="text-center" style="width: 19%;border: 1px solid black;color: black;">Account Holder</td>
-                            <td class="text-center" style="width: 22%;border: 1px solid black;color: black;">Account Number</td>
-                            <td class="text-center" style="width: 13%;border: 1px solid black;color: black;">IFSC Code</td>
-                            <td class="text-center" style="width: 15%;border: 1px solid black;color: black;">Branch Name</td>
-                            <td class="text-center" style="width: 22%;border: 1px solid black;color: black;">Bank Name</td>                         
-                            <td class="text-center" style="border: 1px solid black; width:80px !important">Action</td>                
-                        </tr>  
-                        {% for i in org_bank_detials %}
+                <table class="table-responsive table-bordered" id="bank_account_table" style="width: 100%;">
+                    <!-- <tbody style="width:100%; display:inline-table;"> -->
+                        <thead style="width:100%; background-color: #EEEEEE; color:#000000; font-size:11px; font-weight:bold;">
+                            <th class="text-center" style="width: 20%;border: 1px solid black;color: black;">Account Holder</th>
+                            <th class="text-center" style="width: 22%;border: 1px solid black;color: black;">Account Number</th>
+                            <th class="text-center" style="width: 13%;border: 1px solid black;color: black;">IFSC Code</th>
+                            <th class="text-center" style="width: 16%;border: 1px solid black;color: black;">Branch Name</th>
+                            <th class="text-center" style="width: 22%;border: 1px solid black;color: black;">Bank Name</th>                         
+                            <th class="text-center" style="border: 1px solid black;color: black; width:80px !important">Action</th>                
+                        </thead>  
+                        <tbody>
+                            {% for i in org_bank_detials %}
                         
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                 
@@ -501,7 +529,7 @@ td{padding:5px;}
                                     </div>
                                 </div>                                
                             </tr>
-                        {% endfor %}    
+                            {% endfor %}    
                     </tbody>
                 </table>
                 <!-- <div class="pagination" style="float: right;">
@@ -1220,7 +1248,37 @@ td{padding:5px;}
 </div>
 {% endfor %}
 
-<script>
+<!-- <script>
 organisation_id = {{ids}};
 csrf_token = '{{csrf_token}}';
+</script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    organisation_id = {{ids}};
+    csrf_token = '{{csrf_token}}';
+$(document).ready( function () {
+    $('#bank_account_table,#contact_table,#org_active_address,#org_inactive_address').DataTable({
+        searching: false,
+        dom:"<'row '<'col-12'tr>>"+ "<'row'<'col-6 leftplug'><'col-6'<'row'<'col-3 lengh'l><'col-5 information'i><'col-4 pagination'p>>>>", 
+        language : {
+        sLengthMenu: "_MENU_"
+        },
+        sStripeEven: '', 
+        sStripeOdd: '',
+        bSort: false,
+        "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
+    });
+    //add margin to the right and reset clear
+$(".dataTables_length").css('clear', 'none');
+// $(".dataTables_length").css('margin-left', '20px');
+
+//reset clear and padding
+$(".dataTables_info").css('clear', 'none');
+$(".dataTables_info").css('padding', '0');
+});
+$(document).ready( function () {
+    $('#org_inactive_address_length').hide()
+    $('#org_inactive_address_info').hide()
+    $('#org_inactive_address_paginate').hide()
+});
 </script>

@@ -253,11 +253,28 @@ function show_table_row(category){
 		$('.org_address_table_inactive').show()
 		$('#active_row').show()
 		$('#inactive_row').hide()
+		// for table hide active
+		$('#org_active_address_length').hide()
+		$('#org_active_address_info').hide()
+		$('#org_active_address_paginate').hide()
+		// for table show inactive
+		$('#org_inactive_address_length').show()
+		$('#org_inactive_address_info').show()
+		$('#org_inactive_address_paginate').show()
 	}else if(category == 'show_active'){
 		$('.org_address_table_active').show()
 		$('.org_address_table_inactive').hide()
 		$('#active_row').hide()
 		$('#inactive_row').show()
+
+		// for table show active
+		$('#org_active_address_length').show()
+		$('#org_active_address_info').show()
+		$('#org_active_address_paginate').show()
+		// for table hide inactive
+		$('#org_inactive_address_length').hide()
+		$('#org_inactive_address_info').hide()
+		$('#org_inactive_address_paginate').hide()
 	}
 
 }
@@ -321,7 +338,7 @@ function exit_address(elem){
 /********************************************************************/
 // decimal point
 /********************************************************************/
-function float_value(event, elem) { 
+function float_profile(event, elem) { 
     // var $this = $(this);
     
     if ((event.which != 46 || $(elem).val().indexOf('.') != -1) &&
@@ -385,8 +402,6 @@ function set_bank_default(bank_type){
 			}
 		}
 	}else{
-		console.log(bank_type)
-		console.log($('#edit_bank_switch'+bank_type).attr('id'))
 		if($('#edit_bank_switch'+bank_type).is(':checked')){
 			c_box = confirm('You want to set this bank details as default bank details');
 			if(c_box){

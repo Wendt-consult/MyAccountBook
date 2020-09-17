@@ -481,7 +481,8 @@ function add_contact(){
 
         $('#id_customer_type').remove()
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="1">CUSTOMER</option></select>'
+        html +='<option value="1">CUSTOMER</option>'
+        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
@@ -542,6 +543,7 @@ function invoice_type(type){
         $('#Invoice_recurring_start').prop('required',false);
         $('#Invoice_recurring_repeat').prop('required',false);
         $('#invoice_recurring_Frequency').prop('required',false);
+        $('#Invoice_recurring_pay').prop('required',false);
         $('#invoice_pay_terms').prop('required',true);
         $('#Invoice_one_due_date').prop('required',true);
 
@@ -1191,7 +1193,9 @@ function change_state(){
     $(".invoice_line_item").each(function(){
 
         var ids = $(this).attr('id');
-        ids = ids.substring(ids.length - 1, ids.length);
+        ids = ids.match(/\d+/);
+        ids = ids[0]
+        // ids = ids.substring(ids.length - 1, ids.length);
         single_row_gst_cal = 'state'
         var check = row_gst_cal(ids);
     });
@@ -1257,9 +1261,31 @@ $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date
 //  REVERSE TRACKING
 $('#Invoice_date').change(function() {
     if($('#one_radio').is(':checked') & $("#invoice_pay_terms").is(":visible")){
-        invoice_pay_date()
+        var date =  dateValidation($(this));
+        if(date == 'pass'){
+            invoice_pay_date()
+        }
     }
 });
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
+
+$("#Invoice_recurring_start,#Invoice_one_due_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+        return 'fail'
+    }else{
+        return 'pass'
+    }
+}
 //  ON CHANGE TO SET NEW INVOICE DUE DATE
 function invoice_pay_date(){
     var pay_terms = $('#invoice_pay_terms').val()
@@ -1713,3 +1739,4 @@ function update_single_gst(){
 $('#Invoice_date,#Invoice_one_due_date,#Invoice_recurring_start').keypress(function(event) {
     event.preventDefault();
 });
+

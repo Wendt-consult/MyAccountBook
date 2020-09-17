@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
-    $("#id_selling_tax").empty().append(selling_tax);
-
+    // $("#id_selling_tax").empty().append(selling_tax);
+    // $('#id_purchase_tax').empty().append(selling_tax);
     // $("#id_selling_tax").val(selling_tax_old);
 
 })
@@ -10,20 +10,20 @@ $(document).ready(function(){
 
 $("#id_is_sales").on("click", function(){
     if($(this).prop("checked") === true){
-        $("#id_selling_price, #id_sales_account, #sales_tax, #id_selling_tax,#id_preferred_currency").prop("disabled", false);
+        $("#id_selling_price, #id_sales_account, #id_edit_sales_account, #sales_tax, #id_selling_tax,#id_preferred_currency").prop("disabled", false);
         
         $('#id_selling_price').prop('required', true)
         $('#id_selling_tax').prop('required', true)
-        $('#id_sales_account').prop('required', true)
+        $('#id_sales_account,#id_edit_sales_account').prop('required', true)
     }else if($('#id_is_purchase').prop("checked") === true){
-        $("#id_selling_price, #id_sales_account, #sales_tax, #id_selling_tax,#id_preferred_currency").prop("disabled", true);
+        $("#id_selling_price, #id_sales_account, #id_edit_sales_account, #sales_tax, #id_selling_tax,#id_preferred_currency").prop("disabled", true);
         $('#sales_tax').prop('checked',false)
         $('#id_selling_price').prop('required', false)
         $('#id_selling_tax').prop('required', false)
         $('#id_sales_account').prop('required', false)
         $('#id_selling_price').val('')
         $('#id_selling_tax').val('')
-        $('#id_sales_account').val('').change()
+        $('#id_sales_account,#id_edit_sales_account').val('').change()
         calculate()
     }else{
         alert('Please fill at least one information between sales and purchase')
@@ -52,13 +52,13 @@ if($('#id_is_purchase').prop("checked") === true){
 
 $("#id_is_purchase").on("click", function(){
     if($(this).prop("checked") === true){
-        $("#id_purchase_currency, #id_purchase_price,#purchase_tax,#id_purchase_tax,#id_reverse_charges,#id_purchase_account").prop("disabled", false);
+        $("#id_purchase_currency, #id_purchase_price,#purchase_tax,#id_purchase_tax,#id_reverse_charges,#id_purchase_account,#id_edit_purchase_account").prop("disabled", false);
         
         $('#id_purchase_price').prop('required', true)
         $('#id_purchase_tax').prop('required', true)
         $('#id_purchase_account').prop('required', true)
     }else if($('#id_is_sales').prop("checked") === true){
-        $("#id_purchase_currency, #id_purchase_price,#purchase_tax,#id_purchase_tax,#id_reverse_charges,#id_purchase_account").prop("disabled", true);
+        $("#id_purchase_currency, #id_purchase_price,#purchase_tax,#id_purchase_tax,#id_reverse_charges,#id_purchase_account,#id_edit_purchase_account").prop("disabled", true);
         $('#purchase_tax').prop('checked',false)
         $('#id_purchase_price').prop('required', false)
         $('#id_purchase_tax').prop('required', false)
@@ -647,19 +647,21 @@ function calculate(){
 
 function change_SP(){
     var gst = $("#id_selling_tax").val()
-    var selling_price = $("#id_selling_price").val();
-	if ($('#sales_tax').is(":checked")){
-        temp = $("#id_selling_price").val();
-        var cal = (parseFloat(selling_price) + (parseFloat(selling_price)*(parseFloat(gst) / 100))).toFixed(2);
-        if(cal == 'NaN'){
+    if(gst != ''){
+        var selling_price = $("#id_selling_price").val();
+        if ($('#sales_tax').is(":checked")){
+            temp = $("#id_selling_price").val();
+            var cal = (parseFloat(selling_price) + (parseFloat(selling_price)*(parseFloat(gst) / 100))).toFixed(2);
+            if(cal == 'NaN'){
+                $("#id_inclusive_tax").val('');
+            }else{
+                $("#id_inclusive_tax").val(parseFloat(cal));
+            }	
+        }
+        else{
+            
             $("#id_inclusive_tax").val('');
-        }else{
-            $("#id_inclusive_tax").val(parseFloat(cal));
-        }	
-	}
-	else{
-		
-		$("#id_inclusive_tax").val('');
+        }
     }
 }
 
@@ -675,20 +677,22 @@ function calculate_pc(){
 }
 function change_PC(){
     var purchase_tax = $("#id_purchase_tax").val()
-    var purchase_price = $("#id_purchase_price").val();
-    if ($('#purchase_tax').is(":checked")){
-        temp2 = $("#id_purchase_price").val();
-        var cal = (parseFloat(purchase_price) + (parseFloat(purchase_price)*(parseFloat(purchase_tax) / 100))).toFixed(2);
-        if(cal == 'NaN'){
+    if(purchase_tax != ''){
+        var purchase_price = $("#id_purchase_price").val();
+        if ($('#purchase_tax').is(":checked")){
+            temp2 = $("#id_purchase_price").val();
+            var cal = (parseFloat(purchase_price) + (parseFloat(purchase_price)*(parseFloat(purchase_tax) / 100))).toFixed(2);
+            if(cal == 'NaN'){
+                $("#id_inclusive_purchase_tax").val('');
+            }else{
+                $("#id_inclusive_purchase_tax").val(parseFloat(cal));
+            }	
+        }
+        else{
+            
             $("#id_inclusive_purchase_tax").val('');
-        }else{
-            $("#id_inclusive_purchase_tax").val(parseFloat(cal));
-        }	
-	}
-	else{
-		
-		$("#id_inclusive_purchase_tax").val('');
-	}
+        }
+    }
 }
 /********************************************************************/
 // PRODUCT CHECK
@@ -733,61 +737,6 @@ function restrictAlphabets(e){
         return true;
     else
         return false;
-}
-
-
-/**********************************************************/
-// SELECT SEARCH BAR AND BUTTON
-/**********************************************************/
-
-$(document).ready(function() {
-    // $('.mdb-select').materialSelect();
-    $("#set_major_head").text("Income");
-    $(function () {
-        $("#id_sales_account1").select2();
-      });
-    });
-
-// var button = 1
-$(document).on('click','#select2-id_sales_account-container',function(){
-    console.log("A");
-    var a = $('#GroupModal').length
-    if(a == 0){
-        $('.select2-search').append('<button class="btn btn-link" data-toggle="modal" id="GroupModal"  onclick="leger_c()" value="-1" data-target="#addGroupModal" style="margin-left: -5%;">+ Add New</button>');
-    }
-});
-
-function leger_c(){
-    console.log("C");
-    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
-    $(document).ready(function() {
-        $(function () {
-            $("#id_sales_account").select2();
-          });
-        });
-}
-
-function add_group_form(save_type){
-    
-    var name = $("#id_group_name").val()
-    if(name == ''){
-        document.getElementById('error_name').innerHTML = '*Please enter the group name'
-        return false
-    }
-    else{
-        event.preventDefault()
-        $.post("/ledger/add/",$("#add_group_form").serialize(), function(data){
-            //console.log(data);
-        if(data != '0'){
-        //    ajax_get_predefined_groups($("#id_major_heads").val());
-            $('<option/>').val(data).html(name).appendTo('#id_sales_account');
-            var ins = $('#id_major_heads option').filter(':selected').val()
-            $("#select2-id_sales_account-container").text(name)
-            $("#addGroupModal").modal('hide');
-            info(ins,name)
-        }
-    });
-    } 
 }
 
 /**********************************************************/
@@ -866,3 +815,110 @@ $('#id_tds').keyup(function(){
         $(this).val('')
     }
 });
+/********************************************************************/
+// SALES_ACCOUNT SEARCH AND BUTTON INSIDE SELECT TAG 
+/********************************************************************/
+
+$(document).ready(function() {
+    $(function () {
+        $("#id_sales_account").select2();
+        // $('.select2-container--default').css('padding-bottom','16px')
+      });
+    });
+
+$(document).on('click','#select2-id_sales_account-container',function(){
+    var a = $('#addProductIncome').length
+        if(a == 0){
+            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="product_income_sales()" id="addProductIncome" data-target="#addGroupModalIncome" style="margin-left: -8%;">+ Add Income</button>');
+        }
+        });
+
+function product_income_sales(){
+    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+    $(document).ready(function() {
+        $(function () {
+            $("#id_sales_account").select2();
+          });
+        });
+} 
+
+/********************************************************************/
+// PURCHASE_ACCOUNT SEARCH AND BUTTON INSIDE SELECT TAG 
+/********************************************************************/
+
+$(document).ready(function() {
+    $(function () {
+        $("#id_purchase_account").select2();
+        $('.select2-container--default').css('margin-top','-4px')
+      });
+    });
+
+$(document).on('click','#select2-id_purchase_account-container',function(){
+    var a = $('#addProductExpence').length
+        if(a == 0){
+            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="product_expence_sales()" id="addProductExpence" data-target="#addGroupModalExpense" style="margin-left: -8%;">+ Add Expense</button>');
+        }
+        });
+
+function product_expence_sales(){
+    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+    $(document).ready(function() {
+        $(function () {
+            $("#id_purchase_account").select2();
+          });
+        });
+} 
+/********************************************************************/
+// AJAX USE TO SAVE PRODUCT INCOME FORM
+/********************************************************************/
+function add_group_income_form(save_type){
+  
+    event.preventDefault()
+
+    if($('#addGroupModalIncome').find('#id_group_name').val() == ''){
+        alert('group name is requried')
+        $('#addGroupModalIncome').find('#id_group_name').focus()
+        return false
+    }
+
+    $.post("/add_ledger_group/",$("#add_group_income").serialize(), function(data){
+    if(data != '0'){
+        
+        $.get("/purchase_order/account_group_fetch/",function(data){
+
+            $('<option/>').val(data.ids).html(data.group_name).appendTo($("#id_sales_account optgroup"));
+            $('#id_sales_account').val(data.ids).change(); 
+            
+        });
+        $("#addGroupModalIncome").modal('hide');
+    }
+  
+});
+}
+/********************************************************************/
+// AJAX USE TO SAVE PRODUCT INCOME FORM
+/********************************************************************/
+function add_group_expence_form(save_type){
+  
+    event.preventDefault()
+
+    if($('#addGroupModalExpense').find('#id_group_name').val() == ''){
+        alert('group name is requried')
+        $('#addGroupModalExpense').find('#id_group_name').focus()
+        return false
+    }
+
+    $.post("/add_ledger_group/",$("#add_group_expense").serialize(), function(data){
+    if(data != '0'){
+        
+        $.get("/purchase_order/account_group_fetch/",function(data){
+
+            $('<option/>').val(data.ids).html(data.group_name).appendTo($("#id_purchase_account optgroup"));
+            $('#id_purchase_account').val(data.ids).change(); 
+            
+        });
+        $("#addGroupModalExpense").modal('hide');
+    }
+  
+});
+}

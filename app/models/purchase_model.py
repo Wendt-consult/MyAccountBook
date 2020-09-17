@@ -198,6 +198,14 @@ class PurchaseOrder(models.Model):
         blank = True,
         null = True,
     )
+    order_advance_make_pay = models.CharField(
+        db_index = True,
+        max_length=4,
+        default = 'off',
+        choices = TYPE,
+        blank=True,
+        null=True,
+    )
 
     total_balance = models.CharField(
         max_length=20,

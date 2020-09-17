@@ -284,7 +284,16 @@ table{
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -302,7 +311,16 @@ table{
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        
                                     </div>
                                 </div>
     
@@ -365,7 +383,15 @@ table{
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -399,7 +425,15 @@ table{
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.purchase_account}}
+                                        <!-- {{add_product_form.purchase_account}} -->
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

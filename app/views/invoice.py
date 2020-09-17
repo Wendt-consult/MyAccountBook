@@ -198,7 +198,13 @@ def add_invoice(request, slug):
         # for account_ledger details
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
-        
+        data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_expense'] = acc_ledger_expense
+
         # org gst number
         data['is_gst'] = 'no'
         data['is_signle_gst']  = 'no'
@@ -221,7 +227,6 @@ def add_invoice(request, slug):
                 data['is_gst'] = org_gst_num[0].gstin
                 data['org_gst_type'] = org_gst_num[0].gst_reg_type
 
-        data['acc_ledger_income'] = acc_ledger_income
         return render(request, template_name, data)
 #=====================================================================================
 #   CHECK PURCHASE_ORDER UNIQUR AND SET DEFULT
@@ -588,6 +593,10 @@ class EditInvoice(View):
 
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+            # for purchase account_ledger details
+            major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+            acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+            
             default_term_condition = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
@@ -617,6 +626,7 @@ class EditInvoice(View):
         self.data["invoice"] = invoice
         self.data["invoice_item"] = invoice_item
         self.data['acc_ledger_income'] = acc_ledger_income
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         self.data["item_count"] = len(invoice_row)-1
         self.data['item_header_count'] = len(invoice_row_header)
 
@@ -934,6 +944,10 @@ class CloneInvoice(View):
             invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+            # for purchase account_ledger details
+            major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+            acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
             default_term_condition = Organisations.objects.filter(user = request.user)
             # default = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
@@ -995,6 +1009,7 @@ class CloneInvoice(View):
 
         self.data["invoice_item"] = invoice_item
         self.data['acc_ledger_income'] = acc_ledger_income
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         # if(len(a) == 0):
         #     self.data["item_count"] = 0
         # else:
@@ -1267,7 +1282,6 @@ def customer_gst(request, ins):
     contact = Contacts.objects.get(pk = int(ins))
     gst = User_Tax_Details.objects.get(contact = contact)
     data['contact_bill'] = ''
-    print(gst.bills_terms)
     if(gst.bills_terms is not None):
         data['contact_bill'] =  gst.bills_terms
     data['gst_type'] = gst.gst_reg_type

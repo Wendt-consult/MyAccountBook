@@ -36,6 +36,14 @@ class PurchasePayment(models.Model):
         blank = True,
     )
 
+    account = models.ForeignKey(
+        AccGroups,
+        on_delete = models.SET_NULL,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     vendor = models.ForeignKey(
         Contacts, 
         on_delete = models.SET_NULL, 

@@ -57,7 +57,25 @@ $(document).ready(function(){
         event.preventDefault();
     });
 });
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
 
+$("#purchase_entry_due_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+        return 'fail'
+    }else{
+        return 'pass'
+    }
+}
 function set_min_date(){
     if($('#edit_purchase_entry_date').length > 0){
         min_date = $('#edit_purchase_entry_date').val()
@@ -69,8 +87,11 @@ function set_min_date(){
 
 //  PURCHASE ENTRY PAYMENT TERMS
     $('#purchase_entry_date,#edit_purchase_entry_date').change(function() {
-        invoice_pay_date()
-        set_min_date()
+        var date =  dateValidation($(this));
+        if(date == 'pass'){
+            invoice_pay_date()
+            set_min_date()
+        }
     });
 //  ON CHANGE TO SET NEW INVOICE DUE DATE
 function invoice_pay_date(){
@@ -424,7 +445,8 @@ function add_contact(){
 
         $('#id_customer_type').remove()
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="2" selected>VENDOR</option></select>'
+        html +='<option value="2" selected>VENDOR</option>'
+        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
@@ -1034,7 +1056,9 @@ function change_state(){
     $(".entry_line_item").each(function(){
 
         var ids = $(this).attr('id');
-        ids = ids.substring(ids.length - 1, ids.length);
+        ids = ids.match(/\d+/);
+        ids = ids[0]
+        // ids = ids.substring(ids.length - 1, ids.length);
         single_row_gst_cal = 'state'
         var check = row_gst_cal(ids);
     });

@@ -196,5 +196,18 @@ def test_fun():
                         a.invoice_item_list = invoice_newone
                         a.save()
 
+    purchase_entry = purchase_entry.PurchaseEntry.objects.exclude(entry_status = 3,save_type = 2)
+    entry_count = len(purchase_entry)
+    for j in range(0,entry_count):
+        entry_due_date = purchase_entry[0].purchase_entry_due_date
+        if(purchase_entry[0].entry_status == 0):
+            if(entry_due_date < current_date):
+                remaining_date = (current_date - entry_due_date).days
+                purchase_entry.PurchaseEntry.objects.filter(pk = purchase_entry[i].id).update(entry_status = 1,entry_date_count = delta)
+        elif(purchase_entry[0].entry_status == 1 or purchase_entry[0].entry_status == 4):
+            if(entry_due_date > current_date):
+                remaining_date = (current_date - current_date).days
+                purchase_entry.PurchaseEntry.objects.filter(pk = purchase_entry[i].id).update(entry_status = 1,entry_date_count = remaining_date)
+
     data = "data"
     return data

@@ -9,6 +9,7 @@
 
 {% block content %}
 <style>
+@import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
 select.form-control, input.form-control, textarea.form-control{
     padding:0px 10px;
 }
@@ -71,6 +72,26 @@ width:95px;
     margin-bottom: 2%;
     margin-top: 1%;
 
+}
+
+.select2-selection--single{
+    /* background-color: #fff!important; */
+    border-top-style: hidden!important;
+    border-left-style: hidden!important;
+    border-right-style: hidden!important;
+    border-bottom-left-radius: 0px!important;
+    border-bottom-right-radius: 0px!important;
+    border-bottom-color: #aaa!important;
+    /* margin-top: -18px!important; */
+}
+/* .select2-selection__arrow{
+    margin-top: -7%;
+} */
+
+.select2-selection__rendered{
+    color: black!important;
+    font-weight: 400!important;
+    margin-top: -5px!important;
 }
 </style>
 
@@ -261,7 +282,15 @@ width:95px;
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{product.selling_tax}}
+                                        <!-- {{product.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in selling_taxes %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}" {% if a.selling_tax == i.taxname_percent %} selected{% endif %}>{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -279,7 +308,15 @@ width:95px;
                                         <label>Income Account</label>
                                     </div> 
                                     <div class="col">
-                                        {{product.sales_account}}
+                                        <select name="sales_account" class="form-control input-sm" id="id_sales_account" required="" style="width: 342px;">
+                                            <optgroup label="Income">
+                                                <option value="None">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}" {% if a.sales_account == income.id %} selected {% endif %}>{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        <!-- {{product.sales_account}} -->
                                     </div>
                                 </div>
     
@@ -308,7 +345,7 @@ width:95px;
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
@@ -358,7 +395,15 @@ width:95px;
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{product.purchase_tax}}
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in selling_taxes %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}" {% if a.purchase_tax == i.taxname_percent %} selected{% endif %}>{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <!-- {{product.purchase_tax}} -->
                                     </div>
                                 </div>
 
@@ -392,7 +437,15 @@ width:95px;
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col">
-                                        {{product.purchase_account}}
+                                        <select name="purchase_account" class="form-control input-sm" id="id_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}" {% if a.purchase_account == expense.id %} selected {% endif %}>{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        <!-- {{product.purchase_account}} -->
                                     </div>
                                 </div>
 

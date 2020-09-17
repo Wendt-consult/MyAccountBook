@@ -72,14 +72,7 @@ color: white!important;
     margin-left: 71%;
 }
 } */
-@media screen and (max-width: 1000px) and (min-width: 480px) {
-  #purchase_view_length {
-   margin-left:71%;
-  }
-}
-.pagination{
-    margin-top: -7px;
-}
+
 #hover:hover{
     color: #598ebb;
 }
@@ -90,6 +83,21 @@ thead th{
     z-index: 2;
     background-color:#c3c3c3;
     }
+    
+@media screen and (max-width: 1000px) and (min-width: 480px) {
+  #entry_view_length {
+   margin-left:71%;
+  }
+}
+.previous{
+    padding:0px!important;
+} 
+.next{
+    padding:0px!important;
+}
+#entry_view_previous{
+    margin-right: 25px;
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -107,7 +115,7 @@ thead th{
             <div class="card-body">
                 <div class="loader" style="display: none;"></div>
                 <div class="table" id="customize_table">
-                    <table class=" table-bordered" id="purchase_view" width="100%" cellspacing="0">
+                    <table class=" table-bordered" id="entry_view" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             {% if customize.entry_number != 0 %}
                             <th class="text-center customize_entry_number" style="color:#000000; font-size:11px;width: 11%">Purchase Entry Number</th>
@@ -186,25 +194,46 @@ thead th{
                                         {% endif %}
                                     </td>
                                     {% endif %}
-
-                                    {% if customize.entry_vendor != 0 %}
-                                    <td align="center" class="customize_entry_vendor">
-                                        {% if i.save_type == 2 %}
-                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                    {% if i.entry_status != 3 and i.entry != 1  %}
+                                        {% if customize.entry_vendor != 0 %}
+                                        <td align="center" class="customize_entry_vendor">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_vendor" style="display: none;">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
                                         {% endif %}
-                                        <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.vendor|truncatechars:15}}
-                                        </a>
-                                    </td>
                                     {% else %}
-                                    <td align="center" class="customize_entry_vendor" style="display: none;">
-                                        {% if i.save_type == 2 %}
-                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                        {% if customize.entry_vendor != 0 %}
+                                        <td align="center" class="customize_entry_vendor">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="#" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
+                                        {% else %}
+                                        <td align="center" class="customize_entry_vendor" style="display: none;">
+                                            {% if i.save_type == 2 %}
+                                            <i class="fa fa-tags" style="color: gray;"></i>
+                                            {% endif %}
+                                            <a class="contact_name" id="hover" href="#" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:15}}
+                                            </a>
+                                        </td>
                                         {% endif %}
-                                        <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.vendor|truncatechars:15}}
-                                        </a>
-                                    </td>
                                     {% endif %}
 
                                     {% if customize.entry_date != 0 %}
@@ -234,7 +263,7 @@ thead th{
                                     {% if customize.entry_status != 0 %}
                                     <td align="center" class="customize_entry_status">
                                         {% if i.entry_status == 1 %}
-                                        {{i.get_entry_status_display}} {{i.entry_date_count}}
+                                        {{i.get_entry_status_display}} {{i.entry_date_count}} days
                                         {% else %}
                                         {{i.get_entry_status_display}}
                                         {% endif %}
@@ -242,7 +271,7 @@ thead th{
                                     {% else %}
                                     <td align="center" class="customize_entry_status">
                                         {% if i.entry_status == 1 %}
-                                        {{i.get_entry_status_display}} {{i.entry_date_count}}
+                                        {{i.get_entry_status_display}} {{i.entry_date_count}} days
                                         {% else %}
                                         {{i.get_entry_status_display}}
                                         {% endif %}
@@ -269,8 +298,8 @@ thead th{
                                     </td>
                                     {% else %}
                                     <td align="center" class="customize_entry_advance" style="display: none;">
-                                        {% if i.advance %}
-                                        ₹{{i.advance}}
+                                        {% if i.balance_due %}
+                                        ₹{{i.balance_due}}
                                         {% else %}
                                         0.00
                                         {% endif %}
@@ -283,11 +312,13 @@ thead th{
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                {% if i.entry_status != 3 and i.entry != 1 %}
                                                 <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
-                                                {% if i.entry_status != 3 %}
-                                                <a class="dropdown-item" title="Make Payment" data-toggle="modal" data-target="#" style="padding: 5px 5px;">
+                                                {% endif %}
+                                                {% if i.entry_status != 3 and i.entry != 2 %}
+                                                <a class="dropdown-item" title="Make Payment" data-toggle="modal" data-target="#paymentModel-{{i.id}}" style="padding: 5px 5px;cursor: pointer;">
                                                     Make Payment
                                                 </a> 
                                                 {% endif %}
@@ -295,7 +326,7 @@ thead th{
                                                     Delete
                                                 </a>   
                                             </div> 
-
+                                            <!-- for delete purchase entry -->
                                             <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="border-top: none;background:white;position:bottom">
@@ -310,6 +341,117 @@ thead th{
                                                             <center><a class="btn  mr-2" href="{% url 'delete_purchase_entry' i.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
                                                             <a class="btn " data-dismiss="modal" aria-label="Close"><font color="white" >No</font></a>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- for make payment -->
+                                            <div class="modal " tabindex="-1" role="dialog" id="paymentModel-{{i.id}}" style="border-top: none;top:100px;">
+                                                <div class="modal-dialog" role="document" style="border-top: none;">
+                                                    <div class="modal-content" style="background-color:#202940;width: 143%;">
+                                                        <form method="post" action="{% url 'make_payment' %}" style="margin:0px" enctype="multipart/form-data" id="makePayment-{{i.id}}">
+                                                            <div class="modal-header bg-warning">
+                                                                <h5 class="modal-title" style="color:#000000; font-weight:bold;">Make Payment</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body" style="border-top: none;position: bottom;">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="entry_id" value="{{i.id}}">
+                                                                <input type="hidden" name="venodr_id" value="{{i.vendor.id}}">
+                                                                <input type="hidden" name="entry_balance" id="entry_balance-{{i.id}}" value="{{i.balance_due}}">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <!-- left -->
+                                                                        <div class="col" style="padding-left: 0px;">
+                                                                            <table class="table-responsive" >
+                                                                                <tbody style=" width: 100%; display: inline-table;">
+                                                                                    <tr style="float: left;">
+                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 27px;">
+                                                                                            Payment Amount
+                                                                                        </td>
+                                                                                        <td style="border:0px;">
+                                                                                            <input class="form-control" type="text"{% if i.balance_due != none%} value="{{i.balance_due}}" {% else %} value="0.00" {% endif %} name="pay_amount" id="pay_amount-{{i.id}}" onkeypress="return restrictAlphabets(event), float_value(event,$(this))" required>
+                                                                                        </td>                                    
+                                                                                    </tr>
+                                                                                    <tr style="float: left;">
+                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 44px;">
+                                                                                            Payment Type
+                                                                                        </td>
+                                                                                        <td style="border:0px;">
+                                                                                            <select class="form-control" name="payment_type" id="payment_type-{{i.id}}" style="width:200%;" required>
+                                                                                                <option value="">None</option>
+                                                                                                {% for type in payment_type %}
+                                                                                                <option value="{{type.0}}">{{type.1}}</option>
+                                                                                                {% endfor %}
+                                                                                            </select>
+                                                                                        </td>                                    
+                                                                                    </tr>
+                                                                                    <tr style="float: left;">
+                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 61px;">
+                                                                                            Reference#
+                                                                                        </td>
+                                                                                        <td style="border:0px;">
+                                                                                            <input class="form-control" value="{{i.purchase_entry_refrence}}" type="text" id="pay_reference-{{i.id}}" name="pay_reference">
+                                                                                        </td>                                    
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        <!-- right -->
+                                                                        <div class="col" style="padding-left: 0px;">
+                                                                            <table class="table-responsive" >
+                                                                                <tbody style=" width: 100%; display: inline-table;">
+                                                                                    <tr style="float: left;">
+                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 27px;">
+                                                                                            Payment Date
+                                                                                        </td>
+                                                                                        <td style="border:0px;">
+                                                                                            <input class="form-control pay_date" type="text" name="pay_date" id="pay_date-{{i.id}}" required>
+                                                                                        </td>                                    
+                                                                                    </tr>
+                                                                                    <tr style="float: left;">
+                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 66px;">
+                                                                                            Account
+                                                                                        </td>
+                                                                                        <td style="border:0px;">
+                                                                                            <select class="form-control" name="pay_account" id="pay_account-{{i.id}}" style="width: 139%;" required>
+                                                                                                <option value="">None</option>
+                                                                                                {% for i in acc_ledger_assets %}
+                                                                                                <option value="{{i.id}}">{{i.group_name}}</option>
+                                                                                                {% endfor %}
+                                                                                            </select>
+                                                                                        </td>                                    
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row" style="margin-left: -7px;">
+                                                                        <label for="">Notes</label>
+                                                                    </div>
+                                                                    <div class="row" style="margin-left: -7px;">
+                                                                        <textarea rows="3" id="pay_notes-{{i.id}}" name="pay_notes" style="width: 50%;"></textarea>
+                                                                    </div>
+                                                                    <div class="row" style="margin-left: -7px;margin-top: 12px;">
+                                                                        <div class="col-2" style="padding-left: 0px;">
+                                                                            <label for="" style="float: left;">Attachment</label>
+                                                                        </div>
+                                                                        <div class="col-5" style="margin-left: -5%;">
+                                                                            <input class="form-control" type="file" id="pay_file-{{i.id}}" name="pay_file">
+                                                                            <font style="font-size:x-small;margin-left: -48%;color: black;">File Size Less Than: 20 MB </font>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div style="float: right;">
+                                                                    <button class="btn mr-2 btn-sm" type="submit" onclick="return check_amount({{i.id}})" style="align-content: left;margin-left:150px;background-color:#598ebb">Pay</button>
+                                                                    <button type="button" class="btn btn-sm" data-dismiss="modal" aria-label="Close">Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -400,10 +542,10 @@ thead th{
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- <script>
+<script>
     csrf_token = '{{csrf_token}}';
 $(document).ready( function () {
-    $('#purchase_view').DataTable({
+    $('#entry_view').DataTable({
         searching: false,
         dom:"<'row '<'col-12'tr>>"+ "<'row'<'col-6 leftplug'><'col-6'<'row'<'col-3 lengh'l><'col-5 information'i><'col-4 pagination'p>>>>", 
         language : {
@@ -411,7 +553,7 @@ $(document).ready( function () {
         },
         sStripeEven: '', 
         sStripeOdd: '',
-        bSort: false,
+        // bSort: false,
         "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
     });
     //add margin to the right and reset clear
@@ -423,4 +565,4 @@ $(".dataTables_info").css('clear', 'none');
 $(".dataTables_info").css('padding', '0');
 });
 
-</script> -->
+</script>

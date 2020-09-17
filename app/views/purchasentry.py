@@ -21,7 +21,7 @@ from app.forms.accounts_ledger_forms import *
 
 
 from app.other_constants import creditnote_constant
-from app.other_constants import user_constants,country_list
+from app.other_constants import user_constants,country_list,payment_constants
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import Q
@@ -34,6 +34,7 @@ from app.helpers import email_helper
 from datetime import datetime,date
 
 from django.conf import settings
+
 
 #=====================================================================================
 #   PURCHAS ENTRY VIEW
@@ -54,7 +55,7 @@ class PurchaseEntry(View):
     data['type'] = 'view'
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
-    data["js_files"] = ['custom_files/js/customize_view.js']
+    data["js_files"] = ['custom_files/js/customize_view.js','custom_files/js/make_payment.js']
 
     data["included_template"] = 'app/app_files/purchase_entry/view_purchase_entry.html'
     
@@ -65,6 +66,15 @@ class PurchaseEntry(View):
         entry = purchasentry_model.PurchaseEntry.objects.filter(user = request.user,purchase_delete_status = 0)
 
         self.data["entry"] = entry
+
+        # for make payment
+        self.data['payment_type'] = payment_constants.PAYMENT_TYPE
+
+        # for make payment account
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Assets')
+        acc_ledger_assets = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_assets'] = acc_ledger_assets
+        
     
         # CUSTOMIZE VIEW CODE
         customize_entry = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 7))
@@ -177,13 +187,13 @@ def add_purchase_entry(request,ins,slug):
         # 
         # for account_ledger details
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
-        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         acc_group_name = []
         acc_ids =[]
-        acc_count = len(acc_ledger_income)
+        acc_count = len(acc_ledger_expense)
         for i in range(0,acc_count):
-            acc_group_name.append(acc_ledger_income[i].group_name)
-            acc_ids.append(acc_ledger_income[i].id)
+            acc_group_name.append(acc_ledger_expense[i].group_name)
+            acc_ids.append(acc_ledger_expense[i].id)
 
         # common dictionary
         data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids} 
@@ -194,9 +204,15 @@ def add_purchase_entry(request,ins,slug):
         data["products"] = products
 
         # 
-        # for account_ledger details
-        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        # for income account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
         acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_income'] = acc_ledger_income
+
+        # for expense account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_expense'] = acc_ledger_expense
         
         # link to purchase order to purchase entry
         if(slug != 'NA'):
@@ -385,10 +401,14 @@ def save_purchase_entry(request):
             advance = request.POST.get("entry_advance")
             if(advance != '' and advance != None):
                 a = float(total_amount) + float(advance)
-                entry.total = round(a,2)
+                entry.total = '%.2f' % a
+                entry.balance_due = total_amount
+            else:
+                entry.total = total_amount
                 entry.balance_due = total_amount
         else:
             entry.total = total_amount
+            entry.balance_due = total_amount
 
         #  for payment status
         current_date = date.today()
@@ -444,7 +464,8 @@ def save_purchase_entry(request):
                 entry_item.save()  
 
                 # for create make payment if some advance given
-                if(entry.balance_due !='' and entry.balance_due is not None):
+                is_check = request.POST.get("purchase_order_advance_check")
+                if(entry.advance !='' and entry.advance is not None and is_check == 'off'):
                     createPayment(request, entry)
 
         return redirect('/view_purchase_entry/', permanent = False)
@@ -537,7 +558,12 @@ class EditPurchaseEntry(View):
             entry_item = purchasentry_model.PurchaseEntryItems.objects.filter(Q(user= request.user) & Q(purchase_entry_list = entry))
 
             major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+            acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
+            # for income account_ledger details
+            major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
             acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
         except:
@@ -553,6 +579,7 @@ class EditPurchaseEntry(View):
         self.data["products"] = products
         self.data["entry"] = entry
         self.data["entry_item"] = entry_item
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         self.data['acc_ledger_income'] = acc_ledger_income
         self.data["item_count"] = len(entry_item)
 
@@ -647,9 +674,9 @@ class EditPurchaseEntry(View):
 
             if(advance != '' and advance != None):
                 a = float(total_amount) + float(advance)
-                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = round(a,2), balance_due = total_amount)
+                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = '%.2f' % a, balance_due = total_amount)
             else:
-                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = total_amount)
+                purchasentry_model.PurchaseEntry.objects.filter(pk = int(kwargs["ins"])).update(total = total_amount,balance_due = total_amount)
 
             #  for payment status
             current_date = date.today()

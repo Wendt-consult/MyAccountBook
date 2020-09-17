@@ -1,6 +1,6 @@
 // datepicker 
 $("#start_date").datepicker({ 
-    dateFormat: 'yy-mm-dd',
+    dateFormat: 'dd-mm-yy',
     changeMonth: true,
     // minDate: new Date(),
     maxDate: '+2y',
@@ -19,7 +19,7 @@ $("#start_date").datepicker({
 });
 
 $("#end_date").datepicker({ 
-    dateFormat: 'yy-mm-dd',
+    dateFormat: 'dd-mm-yy',
     changeMonth: true,
     minDate: new Date(),
 });
@@ -62,11 +62,10 @@ $(document).ready(function(){
         $("#year, #h_month").prop("required", true);
     }
 
+    $('#org_name').val($('#hidden_org_name').text())
     $("#html_content").val($("#table_content").html());
 
 });
-
-
 
 function show_hide_custom_dates(elem){
     var xx = $(elem).val();
@@ -110,4 +109,23 @@ function show_hide_custom_dates(elem){
 }
 
 
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
 
+$("#end_date").on('change', function(event){
+    dateValidation($(this));
+});
+
+$("input[id=start_date]").on('change', function(event){
+    dateValidation($(this));
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+    }
+}

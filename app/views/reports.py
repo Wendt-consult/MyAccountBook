@@ -30,7 +30,7 @@ from easy_pdf.rendering import render_to_pdf_response
 
 def get_reports_pdf(request):
     template_name = 'app/app_files/reports/pdf_report.html'
-    context = {'html_data': request.POST["html_content"]} 
+    context = {'html_data': request.POST["html_content"],'title': request.POST['org_name']} 
     return render_to_pdf_response(request,template_name,context)
 
 
@@ -181,7 +181,7 @@ class GSTLedgerReportsView(View):
         user = User.objects.get(pk = request.user.id)
         organisation = users_model.Organisations.objects.get(user = user)
         name = user.username
-        organisation_name = organisation.organisation_name
+        organisation_name = organisation.organisation_legal_name
 
         try:
             organ_addr = users_model.User_Address_Details.objects.get(
@@ -223,12 +223,12 @@ class GSTLedgerReportsView(View):
             self.data["gst_reports_show"] = True
             self.data["pdf_btn"] = True
 
-            start_date = request.GET.get("start_date", "")
+            s_date = request.GET.get("start_date", "")
             # change start date formate
-            # start_date = datetime.strptime(str(s_date), '%d-%m-%Y').strftime('%Y-%m-%d')
-            end_date = request.GET.get("end_date", "")
+            start_date = datetime.strptime(str(s_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            e_date = request.GET.get("end_date", "")
             # change end date formate
-            # end_date = datetime.strptime(str(e_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            end_date = datetime.strptime(str(e_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             account_type = request.GET.get("account_type", None)
             time_period = request.GET.get("time_period", False)
             year_t = request.GET.get("year", None)
@@ -236,16 +236,15 @@ class GSTLedgerReportsView(View):
             month_tq = request.GET.get("q_month", None)
             month_th = request.GET.get("h_month", None)
 
-            self.data["start_date"] = start_date
-            self.data["end_date"] = end_date
+            self.data["start_date"] = s_date
+            self.data["end_date"] = e_date
             self.data["account_type"] = account_type
             self.data["time_period"] = time_period
             self.data["year_t"] = year_t
             self.data["month_t"] = month_t
             self.data["month_tq"] = month_tq
             self.data["month_th"] = month_th
-
-            filename = "Reports.xlsx"
+            filename = organisation_name+".xlsx"
 
             if time_period == '0':
                 time_period = False
@@ -289,25 +288,25 @@ class GSTLedgerReportsView(View):
                 if time_period == '1' and month_t is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month = month_t) \
                             .order_by('created_on__month')
-
-                    filename = "Output_Monthly.xlsx"
+                
+                    filename = organisation_name+"_Output_Monthly.xlsx"
 
                 # Quaterly -ALL 0
                 if time_period == '2' and month_tq is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_tq_l) \
                             .order_by('created_on__month')
-                    filename = "Output_Quaterly.xlsx"
+                    filename = organisation_name+"_Output_Quaterly.xlsx"
 
                 # Half Yearly -ALL 0
                 if time_period == '3' and month_th is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_th_l[month_th]) \
                             .order_by('created_on__month')
-                    filename = "Output_Quaterly.xlsx"                                                                
+                    filename = organisation_name+"_Output_Half_Yearly.xlsx"                                                                
 
                 # Yearly - ALL 0
                 if time_period == '4':
                     gst_reports = gst_reports.filter(created_on__year = year_t).order_by('created_on__month')
-                    filename = "Output_Yearly.xlsx"
+                    filename = organisation_name+"_Output_Yearly.xlsx"
 
                 if len(gst_reports) > 0:  
 
@@ -356,24 +355,24 @@ class GSTLedgerReportsView(View):
                 if time_period == '1' and month_t is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month = month_t) \
                             .order_by('created_on__month')
-                    filename = "All_Input_Monthly.xlsx"
+                    filename = organisation_name+"_Input_Monthly.xlsx"
 
                 # Quaterly - ALL 1
                 if time_period == '2' and month_tq is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_tq_l) \
                             .order_by('created_on__month')
-                    filename = "Input_Quaterly.xlsx"
+                    filename = organisation_name+"_Input_Quaterly.xlsx"
 
                 # Half Yearly -ALL 0
                 if time_period == '3' and month_th is not None:
                     gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_th_l[month_th]) \
                             .order_by('created_on__month')
-                    filename = "Input_Quaterly.xlsx" 
+                    filename = organisation_name+"_Input_Half_Yearly.xlsx" 
 
                 # Yearly - ALL 1
                 if time_period == '4':
                     gst_reports = gst_reports.filter(created_on__year = year_xx).order_by('created_on__month') 
-                    filename = "All_Input_Yearly.xlsx"
+                    filename = organisation_name+"_Input_Yearly.xlsx"
                     
                 if len(gst_reports) > 0:  
                     xls_reports = gst_reports.values_list('created_on','invoice__invoice_customer__contact_name','invoice__invoice_number','total_tax')
@@ -483,30 +482,34 @@ class GSTLedgerReportsView(View):
                 if splitr[0] == '0':                    
 
                     gst_reports = gst_reports.filter(input_tab = True) 
-
+                    re_type = ''
                     if splitr[1] == 'cgst':
-                        gst_reports = gst_reports.filter(cgst_amount__gte = 1)                            
-                        filename = "Output_CGST.xlsx"                
+                        gst_reports = gst_reports.filter(cgst_amount__gte = 1)        
+                        # filename = organisation_name+re_type                
 
                     if splitr[1] == 'sgst':
                         gst_reports = gst_reports.filter(sgst_amount__gte = 1)
-                        filename = "Output_SGST.xlsx"
+                        # filename = organisation_name+"_Intput_SGST.xlsx"
 
                     if splitr[1] == 'igst':
                         gst_reports = gst_reports.filter(igst_amount__gte = 1)
-                        filename = "Output_IGST.xlsx"
+                        # filename = organisation_name+"_Intput_IGST.xlsx"
 
                     if time_period == '1':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month = month_t)  
+                        filename = organisation_name+"_Input_Monthly.xlsx"
 
                     if time_period == '2':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_tq)
+                        filename = organisation_name+"_Input_Quaterly.xlsx"
 
                     if time_period == '3':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_th_l[month_th])
+                        filename = organisation_name+"_Input_Half_Yearly.xlsx"
 
                     if time_period == '4':
                         gst_reports = gst_reports.filter(created_on__year = year_t)    
+                        filename = organisation_name+"_Input_Yearly.xlsx"
 
                     xls_reports = gst_reports.values_list('is_creditnote', 'created_on','creditnote__contact_name__contact_name','creditnote__credit_number','total_tax','is_expense','expense__vendor__contact_name','expense__exp_number')
 
@@ -546,28 +549,28 @@ class GSTLedgerReportsView(View):
 
                     if splitr[1] == 'cgst':
                         gst_reports = gst_reports.filter(cgst_amount__gte = 1)
-                        filename = "Input_CGST.xlsx"
+                        # filename = organisation_name+"_Output_CGST.xlsx"
 
                     if splitr[1] == 'sgst':
                         gst_reports = gst_reports.filter(sgst_amount__gte = 1)
-                        filename = "Input_SGST.xlsx"
+                        # filename = organisation_name+"_Output_SGST.xlsx"
 
                     if splitr[1] == 'igst':
                         gst_reports = gst_reports.filter(igst_amount__gte = 1)
-                        filename = "Input_IGST.xlsx"
+                        # filename = organisation_name+"_Output_IGST.xlsx"
                 
                     if time_period == '1':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month = month_t)  
-
+                        filename = organisation_name+"_Output_Monthly.xlsx"
                     if time_period == '2':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_tq)
-
+                        filename = organisation_name+"_Output_Quaterly.xlsx"
                     if time_period == '3':
                         gst_reports = gst_reports.filter(created_on__year = year_t, created_on__month__in = month_th_l[month_th])
-
+                        filename = organisation_name+"_Output_Half_Yearly.xlsx"
                     if time_period == '4':
                         gst_reports = gst_reports.filter(created_on__year = year_t) 
-
+                        filename = organisation_name+"_Output_Yearly.xlsx"
                     xls_reports = gst_reports.values_list('created_on','invoice__invoice_customer__contact_name','invoice__invoice_number','total_tax')
 
                     main = []

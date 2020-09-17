@@ -25,6 +25,7 @@ class Expense(models.Model):
 	payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
 	notes = models.TextField(null=True, blank=True)
 
+
 	cgst_5 = models.CharField(
         max_length=30,
         db_index = True,
@@ -104,6 +105,27 @@ class Expense(models.Model):
 
 	sgst_28 = models.CharField(
         max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	expense_org_gst_num = models.CharField(
+        max_length=30,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	expense_org_gst_type = models.CharField(
+        max_length=2,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+	expense_org_gst_state = models.CharField(
+        max_length=5,
         db_index = True,
         blank = True,
         null = True,

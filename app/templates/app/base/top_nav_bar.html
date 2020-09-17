@@ -105,8 +105,8 @@
                    {% elif breadcrumb_title == 'JOURNAL ENTRY' and type == 'view' %}
                    <a href="{% url 'add_journalentry' 0 %}" class="btn btn-success-sm btn-sm">NEW
                    </a>
-                   {% elif breadcrumb_title == 'PAYMENT MADE' and type == 'view' %}
-                   <a href="" class="btn btn-success-sm btn-sm">NEW</a>
+                   {% elif breadcrumb_title == 'MAKE PAYMENT' and type == 'view' %}
+                   <a href="{% url 'add_make_payment' %}" class="btn btn-success-sm btn-sm">NEW</a>
                    {% endif %}
                 </div>
             </div>

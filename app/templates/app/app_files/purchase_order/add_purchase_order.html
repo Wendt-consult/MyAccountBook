@@ -274,7 +274,7 @@ optgroup{color :black; }
                                         <option value="">None</option>
         
                                         {% for contact in contacts %}
-                                        {% if contact.customer_type == 2%}
+                                        {% if contact.customer_type == 2 or contact.customer_type == 4 %}
                                         <option value="{{contact.id}}">{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
@@ -351,7 +351,7 @@ optgroup{color :black; }
                                     <label for="">Reference#</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" id="purchase_reference" name="purchase_reference">
+                                    <input type="text" class="form-control" id="purchase_reference" maxlength="10" name="purchase_reference">
                                 </div>
                             </div>
         
@@ -463,7 +463,7 @@ optgroup{color :black; }
                                         <option value="">None</option>
 
                                         {% for contact in contacts %}
-                                        {% if contact.customer_type == 1 or contact.customer_type == 3 %}
+                                        {% if contact.customer_type == 1 or contact.customer_type == 3 or contact.customer_type == 4 %}
                                         <option value="{{contact.id}}">{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
@@ -499,7 +499,7 @@ optgroup{color :black; }
                                     <label for="">Attention</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_attention" name="purchase_attention">
+                                    <input type="text" class="form-control" id="purchase_attention" maxlength="10" name="purchase_attention">
                                 </div>
 
                             </div>
@@ -572,7 +572,7 @@ optgroup{color :black; }
                                 <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" onchange="validation()">
                                     <option value="">None</option>
                                     
-                                    {% for acc_group in acc_ledger_income %}
+                                    {% for acc_group in acc_ledger_expense %}
                                         <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
                                     {% endfor %}
                                 </select>
@@ -584,13 +584,13 @@ optgroup{color :black; }
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='purchase_calculate(1),validation()' id="Quantity1" name="Quantity[]">
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" maxlength="10" onkeyup='purchase_calculate(1),validation()' id="Quantity1" name="Quantity[]">
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -598,7 +598,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount1" name="Discount[]">
+                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" maxlength="10" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount1" name="Discount[]">
                                     </div>
                                     <div class="col-5" style="padding-left:1px;">
                                         <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
@@ -870,6 +870,16 @@ optgroup{color :black; }
                                 <input class="form-control" type="date" id="hidden_advance_date" name="hidden_advance_date"> 
                             </div> 
                         </div>
+
+                        <div class="form-check" style="margin-top: 3px;display: none;">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="hidden_order_make_payment" name="hidden_order_make_payment">
+                                Do you want make advance payment
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
                         <div class="row" style="display: none;">
                             <div class="col-4">
                                 <label for="hidden_advance_method">Payment Method</label>
@@ -1114,7 +1124,16 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1132,7 +1151,15 @@ optgroup{color :black; }
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
     
@@ -1161,7 +1188,7 @@ optgroup{color :black; }
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
@@ -1195,7 +1222,15 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1222,7 +1257,15 @@ optgroup{color :black; }
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_account}}
+                                        <!-- {{add_product_form.purchase_account}} -->
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1772,7 +1815,18 @@ optgroup{color :black; }
                                 <label for="advance_value">Advance</label>
                             </div>
                             <div class="col-7 input">
-                                <input class="form-control" name="advance_value" id="advance_value" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
+                                <input type="text" class="form-control" name="advance_value" id="advance_value" maxlength="10" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
+                                <div>
+                                    <div class="form-check" style="margin-top: 3px;">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" id="order_make_payment" name="order_make_payment">
+                                            Do you want make advance payment
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

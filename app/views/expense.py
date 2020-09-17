@@ -16,6 +16,9 @@ from app.forms.inc_fomsets import *
 from app.forms.accounts_ledger_forms import *
 from app.models.users_model import Organisations, Organisation_Contact
 from app.models.customize_model import *
+from app.models.accounts_model import *
+
+from app.other_constants import user_constants,country_list
 
 from app.forms.expense_form import ExpenseForm, ExpenseCategoryForm, ExpenseItemForm
 from app.models.expense_model import Expense, ExpenseCategoryLineItem, ExpenseLineItem, PaymentMethod
@@ -130,8 +133,50 @@ class AddExpense(View):
                             'custom_files/js/contacts.js',
                             'custom_files/js/ledger.js',                           
                         ],
-			'css_files' : ['custom_files/css/add_expense.css']
+			'css_files' : ['custom_files/css/add_expense.css'],
+    		'gst_code' : country_list.GST_STATE_CODE,
 		}
+
+		context['is_add_clone'] = 'no'
+		# org gst number
+		if(title == 'Add Expense' or title == 'Make a Copy'):
+			context['is_add_clone'] = 'yes'
+			context['is_gst'] = 'no'
+			context['is_signle_gst'] = 'no'
+			context['org_gst_type'] = None
+			org = Organisations.objects.get(user = request.user)
+
+			org_gst_num = User_Tax_Details.objects.filter(organisation = org.id,is_active = True)
+
+			context['org_id'] = org.id
+			if(len(org_gst_num) == 1):
+				context['is_signle_gst'] = 'yes'
+				context['is_gst'] = org_gst_num[0].gstin
+				context['org_gst_type'] = org_gst_num[0].gst_reg_type
+			elif(len(org_gst_num) > 0):
+				default = org_gst_num.filter(default_gstin = True,is_active = True)
+				if(len(default) != 0):
+					context['is_gst'] = default[0].gstin
+					context['org_gst_type'] = default[0].gst_reg_type
+				else:
+					context['is_gst'] = org_gst_num[0].gstin
+					context['org_gst_type'] = org_gst_num[0].gst_reg_type
+		else:
+			context['expense'] = expense
+
+		# for sales account_ledger details
+		major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+		acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+		context['acc_ledger_income'] = acc_ledger_income
+		
+		# for purchase account_ledger details
+		major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+		acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+		context['acc_ledger_expense'] = acc_ledger_expense
+
+		gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+		context["gst"] = gst
+	
 		return render(request, self.template_name, context)
 
 	def post(self, request, pk=None, clone=None):
@@ -164,8 +209,7 @@ class AddExpense(View):
                 #button = int(request.POST.get('button'))
 				remove_file = request.POST.get('remove_file')
 				object_dict = {}
-				print('aaaaaaaaaaaaaaaa')
-				print(expense_form)
+
 				expense = expense_form.save(commit=False)
 				expense.user = request.user
 				expense.cgst_5 = request.POST.get('CGST_5')
@@ -411,7 +455,7 @@ def get_product_details_view(request):
 	data = {
 		'product_description' : product.product_description,
 		'product_rate' : int(float(product.selling_price)) if product.selling_price else 0,
-		'product_tax' : int(float(product.tax)) if product.tax else 0,
+		'product_tax' : int(float(product.tax)) if product.selling_tax else 0,
 		'product_unit' : product.get_unit_display()
 	}
 	return JsonResponse(data)

@@ -28,40 +28,118 @@ $('.cancel_file_btn').hide();
 /********************************************************************/
 //  org state
 /********************************************************************/
-var expenss_user_state =''
-$.ajax({
-    type:"GET",
-    url: "/creditnote/state_compare/",
-    dataType: "json",
-    success: function(data){
-        if(data.state == null){
-            expenss_user_state  = 'null'
+// var expenss_user_state =''
+// $.ajax({
+//     type:"GET",
+//     url: "/creditnote/state_compare/",
+//     dataType: "json",
+//     success: function(data){
+//         if(data.state == null){
+//             expenss_user_state  = 'null'
+//         }else{
+//             expenss_user_state = data.state
+//         }
+//     },  
+// });
+
+var vendor_gstin =''
+var vendor_gst_type = ''
+function state_compare(){
+    var ids = $('#select_vendor').val()
+    if(ids != ''){
+        $.ajax({
+            type:"GET",
+            url: "/purchase_order/vendor_state/"+ids+"/",
+            dataType: "json",
+            success: function(data){
+                // if(data.mail != null){
+                    // $('#mail').val(data.mail)
+                // }
+                // gst = data.gst_type
+                if(data.gst_type != null){
+                    vendor_gst_type = data.gst_type
+                    // $('#gst_type').val(data.gst_type)
+                }else{
+                    vendor_gst_type = ''
+                    // $('#gst_type').val('')
+                }
+                vendor_gstin = data.gstin
+                check_gst_status('user_side')
+            },
+        });
+    }else{
+        // $('#mail').val('')
+        // $('#gst_type').val('')
+        vendor_gst_type = ''
+        vendor_gstin = ''
+        check_gst_status('user_side')
+    }
+}
+
+function check_gst_status(cat){
+    if(cat == 'user_side'){
+        // for organization and vendor not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || vendor_gst_type == 0 || vendor_gst_type == 3 || vendor_gst_type == 5 || vendor_gst_type == ''){
+            $('.category_table').find('.cate_tax').attr('readonly', true)
+            $('.category_table').find('.cate_tax').val('0').change()
+
+            $('.item_table').find('.item_tax').attr('disabled', true)
+            $('.item_table').find('.item_tax').val('0').change()
+
+            // sub_total()
+            show_taxes()
+            if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
+                alert('Organization not register GST')
+            }else if(vendor_gst_type == 0 ||  vendor_gst_type == 3 ||  vendor_gst_type == 5){
+                alert('Vendor not register GST')
+            }else if(vendor_gst_type == ''){
+                alert('Vendor not selected')
+            }
         }else{
-            expenss_user_state = data.state
+            $('.category_table').find('.cate_tax').attr('readonly', false)
+            $('.item_table').find('.item_tax').attr('disabled', false)
+            // sub_total()
+            show_taxes()
         }
-    },  
-});
+    }else if(cat == 'vendor_side'){
+        // for organization and vendor not register
+        if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == '' || vendor_gst_type == 0 || vendor_gst_type == 3 || vendor_gst_type == 5 || vendor_gst_type == ''){
+            $('.category_table').find('.cate_tax').attr('readonly', true)
+            $('.category_table').find('.cate_tax').val('0').change()
+
+            $('.item_table').find('.item_tax').attr('disabled', true)
+            $('.item_table').find('.item_tax').val('0').change()
+            show_taxes()
+            // sub_total()
+        }else{
+            $('.category_table').find('.cate_tax').attr('readonly', false)
+            $('.item_table').find('.item_tax').attr('disabled', false)
+            // sub_total()
+            show_taxes()
+        }
+    }  
+}
 
 /********************************************************************/
 //  org vendor state
 /********************************************************************/
 
-var expenss_state = ''
+// var expenss_state = ''
 
-function expenss_vendor(){
-    var ids = $('#select_vendor').val()
-    if(ids != ''){
-        $.get("/expense/vendor_state/"+ids+"/", function(data){
-            if(data){
-                expenss_state = data.vendor_state  
-                show_taxes()
-            }
-        });
-    }else{
-        expenss_state = ''
-        show_taxes()
-    }
-}
+// function expenss_vendor(){
+//     var ids = $('#select_vendor').val()
+//     if(ids != ''){
+//         $.get("/expense/vendor_state/"+ids+"/", function(data){
+//             if(data){
+//                 expenss_state = data.vendor_state  
+//                 show_taxes()
+//             }
+//         });
+//     }else{
+//         expenss_state = ''
+//         show_taxes()
+//     }
+// }
 
 $('[type=cate]').filter(function(){
     var select_tag = $(this).find('select').first();
@@ -98,13 +176,13 @@ if (edit_expense == 'True'){
             $("#id_category-"+form_id+'-tax').prop('required', false);
             $("#id_category-"+form_id+'-tax').prop('disabled', true);
             $("#id_category-"+form_id+'-amount').prop('readonly', true);
-            expenss_vendor()
+            state_compare()
             show_taxes();
 
         }
         $('#delete_cate_btn_'+i).on('click', function(){
             deleteCategoryForm($(this), true);
-            expenss_vendor()
+            state_compare()
             show_taxes();
         });
         $('.item_form_'+i).filter(function(){
@@ -122,7 +200,7 @@ if (edit_expense == 'True'){
                     $('#id_category-'+form_id+'-tax').prop('disabled', false);
                     $('#id_category-'+form_id+'-amount').prop('readonly', false);
                 }
-                expenss_vendor()
+                state_compare()
                 show_taxes();
             });
             item = $(this).find('input[type=hidden]').attr('id').replace('item'+i,'');
@@ -147,7 +225,7 @@ if (edit_expense == 'True'){
                     $('#id_category-'+form_id+'-tax').prop('disabled', false);
                     $('#id_category-'+form_id+'-amount').prop('readonly', false);
                 }
-                expenss_vendor()
+                state_compare()
                 show_taxes();
             }
 
@@ -482,6 +560,7 @@ $('#add_category_btn').on('click', function(){
     addNewLedger();
 
     numberValidatuion('.cate_amount', false);
+    check_gst_status('vendor_side')
 });
 
 // Delete a Category Form
@@ -545,6 +624,7 @@ $('#add_item_btn').on('click', function(){
         numberValidatuion('.item_rate', false);
         numberValidatuion('.item_quantity', true);
     }
+    check_gst_status('vendor_side')
 });
 
 // Show Cancel Button After Adding Bill
@@ -795,7 +875,6 @@ function CalCategoryTotalAmount(id){
     $('#id_category-'+id+'-amount').change(function(){
         var amount = parseInt($(this).val());
         var tax = Number($('#id_category-'+id+'-tax').val());
-        
         if (tax == 0){
             var total_amount = amount;
         }
@@ -961,6 +1040,12 @@ function CalItemTotalAmount(tax_id, rate_id, quantity_id, amount_id, total_amoun
 
 function show_taxes(){
     all_taxes = {'5':0,'2':0,'12':0,'6':0,'18':0,'9':0,'28':0,'14':0}
+    var org_state = $('#single_gst_code option:selected').val()
+    var vendor_g = ''
+    if(vendor_gstin != ''){
+        vendor_g = vendor_gstin.substring(0,2)
+    }
+
     var all_cate_form = $('[type=cate]');
     $('[type=cate]').filter(function(){
         if ($(this).attr('id')){
@@ -970,7 +1055,7 @@ function show_taxes(){
                 var cate_tax = Number($('#id_category-'+cate_id+'-tax').val());
                 var cate_amount = $('#id_category-'+cate_id+'-amount').val() ? Number($('#id_category-'+cate_id+'-amount').val()) : 0;
                 var cate_tax_amount = cate_amount * (cate_tax/100);
-                if(expenss_user_state.toLowerCase() == expenss_state.toLowerCase() || expenss_state == ''){
+                if(org_state == vendor_g){
                     var half = cate_tax_amount/2
                     if(cate_tax == 5){
                         all_taxes[2] += half
@@ -981,7 +1066,8 @@ function show_taxes(){
                     }else if(cate_tax == 28){
                         all_taxes[14] += half
                     }
-                }else if(expenss_user_state.toLowerCase() != expenss_state.toLowerCase()){
+                }
+                else if(org_state != vendor_g){
                     all_taxes[cate_tax] += cate_tax_amount
                 }
             }
@@ -991,7 +1077,7 @@ function show_taxes(){
                     var item_tax = Number($('#'+item_id+'tax').val());
                     var item_amount = $('#'+item_id+'amount').val() ? Number($('#'+item_id+'amount').val()) : 0;
                     var item_tax_amount = item_amount * (item_tax/100)
-                    if(expenss_user_state.toLowerCase() == expenss_state.toLowerCase() || expenss_state == ''){
+                    if(org_state == vendor_g){
                         var half = item_tax_amount/2
                         if(item_tax == 5){
                             all_taxes[2] += half
@@ -1002,7 +1088,7 @@ function show_taxes(){
                         }else if(item_tax == 28){
                             all_taxes[14] += half
                         }
-                    }else if(expenss_user_state.toLowerCase() != expenss_state.toLowerCase()){
+                    }else if(org_state != vendor_g){
                         all_taxes[item_tax] += item_tax_amount
                     }
                 });
@@ -1126,3 +1212,115 @@ function dateValidation(element){
 }
 
 
+/********************************************************************/
+// INVOICE GST CHANGES
+/********************************************************************/
+$('#multiple_gst_link').click(function(){
+
+    $.get("/gst_number/", function(data){
+        $(".gst_row").each(function(){
+                        
+            $(this).remove()
+        });
+        for(var i = 0;i < data.gst_number.length;i++){
+            var html = '<tr class="gst_row" id="choose_gst_row_'+i+'"><td style="border:1px solid black;" align="center"><label class="form-check-label" style="margin-left:27%;">'
+                html+='<input class="form-check-input choose_gst" type="radio" name="radio" id="choose_gst_'+(parseInt(i)+1)+'" onclick="radio_click($(this))" value="on" style="margin-top:-2%"><span class="circle"><span class="check"></span></span></label></td>'
+                html +='<td style="border:1px solid black;" id="c_gst_number'+(parseInt(i)+1)+'" align="center">'+data.gst_number[i]+'</td>'
+                html +='<td style="border:1px solid black;display:none;" id="c_gst_type'+(parseInt(i)+1)+'" align="center">'+data.gst_type[i]+'</td>'
+                $('#GST_table').append(html)
+        }
+        $('#invoice_multi_gst').modal('show')
+    });
+});
+
+/********************************************************************/
+// choose GST
+/********************************************************************/
+
+function radio_click(elem){
+    var names = $(elem).attr('id')
+    names = names.substring(names.length-1,names.length)
+    $('#org_gst_number').val($('#c_gst_number'+names).text())
+    $('#org_gst_reg_type').val($('#c_gst_type'+names).text())
+};
+
+
+function button_click(category){
+    if(category = 'multiple'){
+        var checkbox_count = 0
+        $('.choose_gst').each(function(){
+            if($(this).prop("checked") == true){
+                checkbox_count +=1
+            }
+        })
+        if(checkbox_count == 0){
+            alert('Please first choose the GST')
+            return false
+        }
+        var gst = $('#org_gst_number').val()
+        $('#multiple_gst').text("Your default Organization gst number:-"+gst+". Do you want to create this invoice with another GST number.")
+        gst = gst.substring(0,2)
+		if($("#single_gst_code option[value="+gst+"]").length > 0){
+
+            $('#single_gst_code').val(gst).change()
+        }
+        check_gst_status('user_side')
+        $('#invoice_multi_gst').modal('hide')
+    }
+}
+$(document).ready(function(){
+    if($('#org_gst_reg_type') == '8'){
+        alert('Organization is register under composite scheme, it can not choose delivery address of different state.')
+    }
+});
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function gst_state_code(elem){
+	if($('#error_field').text() == '' & $(elem).val() != ''){
+		var str = $(elem).val()
+		str = str.substring(0,2)
+		if($("#single_gst_code option[value="+str+"]").length > 0){
+			var state = $("#single_gst_code option[value="+str+"]").text()
+			var org_id = $('#org_id').val()
+			$.post("/org/gst_state_code/",{'state':state, 'org_id':org_id,'csrfmiddlewaretoken':csrf_token},function(data){
+				if(data == 0){
+					$('#error_field').text('GST state code not matching with existing address state') 
+					$('#org_single_gst_save').prop('disabled', true)
+				}else{
+                    $('#gst_state').val($("#single_gst_code option[value="+str+"]").text())
+                    $('#single_gst_code').val(str).change()
+				}
+			});
+		}else{
+			$('#error_field').text('GST state code not matching with existing address state') 
+			$('#org_single_gst_save').prop('disabled', true)
+		}
+	}
+}
+
+$('.mul_cancel_gst').click(function(){
+	$('#error_field').text('') 
+	$('.multiple_update').prop('disabled', false)
+})
+
+/********************************************************************/
+// GST STATE ADDRESS CHECK
+/********************************************************************/
+
+function update_single_gst(){
+    event.preventDefault()
+    $.post("/profile/gst_configuration/",$("#org_gst_update").serialize(), function(data){
+        if(data != '0'){
+            var gst_num = $('#single_gst').val()
+            $('#org_gst_reg_type').val($('#single_gst_type').val())
+            $('#replace_change_update').find('h6').text('Your default Organization gst number:-'+gst_num+'.')
+            $('#change_update_gst').hide()
+            $('#replace_change_update').show()
+            $('#org_gst_number').val(gst_num)
+            $('#add_gst_number').modal('hide')
+            check_gst_status('user_side')
+        }
+    });
+}

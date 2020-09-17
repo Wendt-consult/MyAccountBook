@@ -11,10 +11,10 @@ class ExpenseForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		user = kwargs.pop('user', None)
 		super(ExpenseForm, self).__init__(*args, **kwargs)
-		self.fields['vendor'].queryset = Contacts.objects.filter(user=user._wrapped,customer_type = 2)
+		self.fields['vendor'].queryset = Contacts.objects.filter(user=user._wrapped,customer_type__in = [2,4])
 		self.fields['payment_method'].queryset = PaymentMethod.objects.filter(user=user._wrapped)
 
-	vendor = forms.ModelChoiceField(queryset=Contacts.objects.none(), widget=forms.Select(attrs={'class':'form-control input-sm col-md-7', 'id':'select_vendor', 'onchange':'expenss_vendor()'}))
+	vendor = forms.ModelChoiceField(queryset=Contacts.objects.none(), widget=forms.Select(attrs={'class':'form-control input-sm col-md-7', 'id':'select_vendor', 'onchange':'state_compare()'}))
 	exp_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker1'}, format="%d/%m/%Y"))
 	payment_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker2'}, format="%d/%m/%Y"), required=False)
 	payment_method = forms.ModelChoiceField(queryset=PaymentMethod.objects.none(), widget=forms.Select(attrs={'class':'form-control col-md-7 input-sm','id':'add_payment_method'}))

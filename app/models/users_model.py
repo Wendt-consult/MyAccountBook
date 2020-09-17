@@ -304,14 +304,14 @@ class User_Account_Details(models.Model):
     )
 
     account_number = models.CharField(
-        max_length = 250,
+        max_length = 25,
         blank = True,
         db_index = True,
         null = True,
     )
 
     account_holder_name = models.CharField(
-        max_length = 250,
+        max_length = 100,
         blank = True,
         db_index = True,
         null = True,
@@ -325,14 +325,14 @@ class User_Account_Details(models.Model):
     )
 
     bank_name = models.CharField(
-        max_length = 250,
+        max_length = 100,
         db_index = True,
         blank = True,
         null = True,
     )
 
     bank_branch_name = models.CharField(
-        max_length = 250,
+        max_length = 100,
         db_index = True,
         blank = True,
         null = True,
@@ -537,7 +537,7 @@ class User_Tax_Details(models.Model):
     )
 
     opening_balance = models.CharField(
-        max_length = 250,
+        max_length = 20,
         blank = True,
         null = True,
         db_index = True,

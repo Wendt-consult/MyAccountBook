@@ -41,7 +41,7 @@ function creditnote_addRow(a) {
     var org_state = $('#single_gst_code option:selected').text()
     var html = '<tr id="creditnote_row'+creditnote_number+'">'
     html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+')" style="padding-left:0px" required><option value="">None</option></select>'
-    html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 174.6px;margin-top:1px;"></textarea></td>'
+    html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'" style="margin-top:5px">₹</label></div>'
     html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:8%" required></div></div></td>'
@@ -884,7 +884,8 @@ function add_contact(){
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
         html+='<option value="1" selected="">CUSTOMER</option>'
         html +='<option value="2">VENDOR</option>'
-        html+='<option value="3">EMPLOYEE</option></select>'
+        html+='<option value="3">EMPLOYEE</option>'
+        html +='<option value="4">CUSTOMER AND VENDOR</select>'
        $('#con_type').append(html)
 }
 

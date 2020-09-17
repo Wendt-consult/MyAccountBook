@@ -72,6 +72,20 @@ thead th{
     z-index: 2;
     background-color:#c3c3c3;
     }
+@media screen and (max-width: 1000px) and (min-width: 480px) {
+  #credit_view_length {
+   margin-left:71%;
+  }
+}
+.previous{
+    padding:0px!important;
+} 
+.next{
+    padding:0px!important;
+}
+#credit_view_previous{
+    margin-right: 25px;
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -89,7 +103,7 @@ thead th{
             <div class="card-body">
                 <div class="loader" style="display: none;"></div>
                 <div class="table" id="customize_table">
-                    <table class=" table-bordered" width="100%" cellspacing="0">
+                    <table class=" table-bordered" width="100%" cellspacing="0" id="credit_view">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
                             {% if customize.credit_note != 0 %}
                             <th class="text-center customize_note" style="color:#000000; font-size:11px;width: 13%">Credit Note No.</th>
@@ -282,6 +296,28 @@ thead th{
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     csrf_token = '{{csrf_token}}';
+$(document).ready( function () {
+    $('#credit_view').DataTable({
+        searching: false,
+        dom:"<'row '<'col-12'tr>>"+ "<'row'<'col-6 leftplug'><'col-6'<'row'<'col-3 lengh'l><'col-5 information'i><'col-4 pagination'p>>>>", 
+        language : {
+        sLengthMenu: "_MENU_"
+        },
+        sStripeEven: '', 
+        sStripeOdd: '',
+        // bSort: false,
+        "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
+    });
+    //add margin to the right and reset clear
+$(".dataTables_length").css('clear', 'none');
+// $(".dataTables_length").css('margin-left', '20px');
+
+//reset clear and padding
+$(".dataTables_info").css('clear', 'none');
+$(".dataTables_info").css('padding', '0');
+});
+
 </script>

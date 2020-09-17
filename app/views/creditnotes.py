@@ -157,6 +157,16 @@ def add_creditnote(request, slug ):
         products = ProductsModel.objects.filter(user = request.user, is_active = True, product_delete_status = 0)
         data["products"] = products
 
+        # for account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        data['acc_ledger_expense'] = acc_ledger_expense
+
         # org gst number
         data['is_gst'] = 'no'
         data['is_signle_gst']  = 'no'
@@ -178,6 +188,8 @@ def add_creditnote(request, slug ):
             else:
                 data['is_gst'] = org_gst_num[0].gstin
                 data['org_gst_type'] = org_gst_num[0].gst_reg_type
+
+        
 
         return render(request, template_name, data)
 
@@ -532,6 +544,16 @@ class EditCreditnote(View):
         except:
             return redirect('/unauthorized/', permanent=False)
 
+        # for account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_expense'] = acc_ledger_expense
+
         self.data["contacts"] = contacts
         self.data["state"] = country_list.STATE_LIST_CHOICES
         self.data['gst_r_type'] = user_constants.org_GST_REG_TYPE
@@ -814,6 +836,16 @@ class CloneCreditnote(View):
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
         except:
             return redirect('/unauthorized/', permanent=False)
+
+        # for account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_expense'] = acc_ledger_expense
 
         # check we make a copy or note 
         strg1 = str(creditnote.contact_name)

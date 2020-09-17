@@ -5,7 +5,7 @@ from django.contrib.sessions.models import Session
 from collections import OrderedDict, defaultdict
 from django.db.models import *
 from app.models import *
-from app.models import products_model 
+from app.models import products_model,accounts_model
 from app.models.customize_model import * 
 from app.forms.products_form import * 
 from app.forms import *
@@ -25,9 +25,10 @@ def get_selling_tax(user):
 
     qset = users_model.OrganisationGSTSettings.objects.filter(user = user).values_list('id', 'taxname_percent')
     #print(qset)
-
+    html.append('<option value="">---------</option>')
     for x in qset:
-        html.append('<option value="'+str(x[1])+'">'+str(x[1])+'</option>')
+        if(x[1] != '0'):
+            html.append('<option value="'+str(x[1])+'">'+str(x[1])+'</option>')
 
     return ''.join(html)
 
@@ -191,7 +192,20 @@ class AddProducts(View):
         elif request.session.has_key('product_filter_active'):
             del request.session['product_filter_active']
 
-        self.data["selling_taxes"] = get_selling_tax(request.user)
+        gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+
+        self.data["selling_taxes"] = gst
+        # get_selling_tax(request.user)
+
+        # for sales account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_expense'] = acc_ledger_expense
 
         self.data["add_product_form"] = ProductForm(request.user)
 
@@ -375,8 +389,22 @@ class EditProducts(View):
             self.data["add_bundle_product_form"] = BundleProductForm(request.user, kwargs["ins"])
             self.data['bundle_count'] = len(self.data["bundle_products"]) - 1
 
-        self.data["selling_tax_old"] = product.selling_tax
-        self.data["selling_taxes"] = get_selling_tax(request.user)
+        # self.data["selling_tax_old"] = product.selling_tax
+        # self.data["selling_taxes"] = get_selling_tax(request.user)
+        gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+
+        self.data["selling_taxes"] = gst
+        # get_selling_tax(request.user)
+
+        # for sales account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         
         return render(request, self.template_name, self.data)
 
@@ -588,7 +616,20 @@ class CloneProduct(View):
             self.data["selling_GST"] = product.inclusive_tax
             self.data["purchase_GST"] = product.inclusive_purchase_tax
             
-            
+        gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
+        self.data['a'] = product
+        self.data["selling_taxes"] = gst
+        # get_selling_tax(request.user)
+
+        # for sales account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_income'] = acc_ledger_income
+
+        # for purchase account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
+        acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        self.data['acc_ledger_expense'] = acc_ledger_expense
         return render(request, self.template_name, self.data)
 
     #

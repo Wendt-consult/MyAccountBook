@@ -98,21 +98,30 @@ width:210px
 }
 
 .select2-selection--single{
-    background-color: #fff!important;
+    /* background-color: #fff!important; */
     border-top-style: hidden!important;
     border-left-style: hidden!important;
     border-right-style: hidden!important;
     border-bottom-left-radius: 0px!important;
     border-bottom-right-radius: 0px!important;
-    border-bottom-color: #d2d2d21a!important;
+    border-bottom-color: #aaa!important;
     /* margin-top: -18px!important; */
 }
-.select2-selection__arrow{
-    /* margin-top: -7%; */
-}
+/* .select2-selection__arrow{
+    margin-top: -7%;
+} */
+/* #id_sales_account{
+    width: 158px;
+    overflow-x: auto;
+}*/
+/* #id_purchase_account{
+    width:auto;
+    overflow-x: auto;
+}  */
 .select2-selection__rendered{
-    color: white!important;
+    color: black!important;
     font-weight: 400!important;
+    margin-top: -5px!important;
 }
 .left{
     padding-left: 1px;
@@ -339,7 +348,16 @@ width:210px
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.selling_tax}}
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in selling_taxes %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
+                                        <!-- {{add_product_form.selling_tax}} -->
                                     </div>
                                 </div>
 
@@ -357,7 +375,15 @@ width:210px
                                         <label>Income Account</label>
                                     </div> 
                                     <div class="col">
-                                        {{add_product_form.sales_account}}
+                                        <select name="sales_account" class="form-control input-sm" id="id_sales_account" required="" style="width: 342px;">
+                                            <optgroup label="Income">
+                                                <option value="None">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        <!-- {{add_product_form.sales_account}} -->
                                     </div>
                                 </div>
     
@@ -386,7 +412,7 @@ width:210px
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
@@ -420,7 +446,15 @@ width:210px
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in selling_taxes %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -454,7 +488,15 @@ width:210px
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col">
-                                        {{add_product_form.purchase_account}}
+                                        <select name="purchase_account" class="form-control input-sm" id="id_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        <!-- {{add_product_form.purchase_account}} -->
                                     </div>
                                 </div>
                             </div>
@@ -472,12 +514,12 @@ width:210px
 
 
 
-<!-- MODAL -->
+<!-- MODAL FOR INCOME -->
 
-<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="addGroupModalIncome" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="background-color:#fff;margin-left: 11%;margin-top: 25%;">
-                <form method="post" style="margin:0px" id="add_group_form">
+            <div class="modal-content" style="background-color:#202940;margin-left: 11%;margin-top: 25%;">
+                <form method="post" style="margin:0px" id="add_group_income">
                     {% csrf_token %}
                     <div class="modal-header bg-warning">
                         <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add New Group</h5>
@@ -486,14 +528,14 @@ width:210px
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" value="{{major_ins}}" name="ids" id="major_head_ins">
-                        <table class="table-responsive">
+                        <input type="hidden" value="1" name="ids" id="major_head_ins">
+                        <table class="table-responsive" style="color: black;">
                             <tbody style=" width: 100%; display: inline-table;">
                                 <tr>
                                     <td style="border:0px; width:150px;">
                                         Major Head
                                     </td>
-                                    <td style="border:0px;" id="set_major_head"></td>
+                                    <td style="border:0px;" id="set_major_head">Income</td>
                                 </tr>
                                 <tr>
                                     <td style="border:0px; width:150px;">
@@ -518,36 +560,66 @@ width:210px
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <!-- <button class="btn btn-sm btn-success save_button" type="button" >Save</button> -->
-                        <div class="btn-group dropup" style="margin-right: 1%;">
-                            <!-- <button class="btn btn-sm btn-success save_button" name="save_select" onclick="return add_group_form(0)" style="padding: 4%;width: 69%;">save & select</button>
-                            <button type="button" class="btn btn-success btn-sm  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
-                              aria-expanded="false" style="border-left: 2px solid;margin-right: 3%;">
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button> -->
-                            <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
-    
-
-
-                              <!-- <button class="dropdown-item btn btn-success" name="save_select" onclick="return add_group_form(0)" style="color: black;margin: 3% 0% 3% 2%;padding-right: 7%;">
-                                  <i class="material-icons" style="margin: 0px 12px 0px -3px;">add_box</i>save & select
-                              </button>
-    
-                              <button class="dropdown-item btn btn-success" name="save_new"onclick="return add_group()" style="color: black;margin: 3% 10% 3% 2%">
-                                  <i class="material-icons" style="margin: 0px 16px 0px -2px;">add_to_queue</i>save & new
-                              </button> -->
-                              <!-- <a class="dropdown-item" href="#">Something else here</a>
-                              <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" href="#">Separated link</a> -->
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-info save_button" type="button" onclick="add_group_form(1)">Save</button>
+                        <button class="btn btn-sm btn-info save_button" type="button" onclick="add_group_income_form()">Save</button>
                         <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal" aria-label="Close">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+<!-- MODAL FOR Expense -->
+
+<div class="modal fade" id="addGroupModalExpense" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;margin-left: 11%;margin-top: 25%;">
+            <form method="post" style="margin:0px" id="add_group_expense">
+                {% csrf_token %}
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add New Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="2" name="ids" id="major_head_ins">
+                    <table class="table-responsive" style="color: black;">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    Major Head
+                                </td>
+                                <td style="border:0px;" id="set_major_head">Expense</td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    Group Name
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_name }}
+                                </td>
+                                <td style="border:0px;" >
+                                    <font id="error_name" style="color: red;"></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    Group Info
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_info }}                                
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-info save_button" type="button" onclick="add_group_expence_form()">Save</button>
+                    <button class="btn btn-sm btn-danger" type="reset" data-dismiss="modal" aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <script>
         selling_tax = '{{selling_taxes|safe}}';

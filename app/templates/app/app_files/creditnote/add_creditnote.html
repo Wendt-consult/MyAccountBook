@@ -11,7 +11,7 @@
 <style>
 @import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
 .select{
-    width: 174.6px;
+    width: 158px;
 }
 select.form-control{padding:0px 10px;}
 select.form-control option{color : #000000; }
@@ -323,7 +323,7 @@ optgroup{color :black; }
                             <!-- <td scope="row" style="border:1px solid white;">1</td> -->
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 174.6px;">
+                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 158px;">
                                     
                                     <option value="-------">None</option>
                                     
@@ -332,7 +332,7 @@ optgroup{color :black; }
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;"></textarea>
+                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;"></textarea>
                                 
                             </td>
                             <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
@@ -834,7 +834,16 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -852,7 +861,15 @@ optgroup{color :black; }
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
     
@@ -915,7 +932,15 @@ optgroup{color :black; }
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -942,7 +967,15 @@ optgroup{color :black; }
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_account}}
+                                        <!-- {{add_product_form.purchase_account}} -->
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

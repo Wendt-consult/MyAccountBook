@@ -322,7 +322,7 @@ textarea{
                                         {% endfor %}
 
                                         {% for contact in contacts %}
-                                            {% if contact.customer_type == 1%}
+                                            {% if contact.customer_type == 1 or contact.customer_type == 4 %}
                                             {% if invoice.invoice_customer_id|lower != contact.id|lower %}
                                             <option value="{{contact.id}}">{{contact}}</option>
                                             {% endif %}
@@ -1396,7 +1396,16 @@ textarea{
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.selling_tax}}
+                                        <!-- {{add_product_form.selling_tax}} -->
+                                        <select name="selling_tax" class="form-control input-sm" onchange="change_SP()" id="id_selling_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1414,7 +1423,15 @@ textarea{
                                         <label>Income Accounts</label>
                                     </div> 
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.sales_account}}
+                                        <!-- {{add_product_form.sales_account}} -->
+                                        <select name="sales_account" class="form-control input-sm" id="id_edit_sales_account" required="">
+                                            <optgroup label="Income">
+                                                <option value="">---------</option>
+                                                {% for income in acc_ledger_income %}
+                                                <option value="{{income.id}}">{{income.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
                                     </div>
                                 </div>
     
@@ -1443,7 +1460,7 @@ textarea{
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
@@ -1477,7 +1494,15 @@ textarea{
                                         <label for=""> Tax %</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_tax}}
+                                        <!-- {{add_product_form.purchase_tax}} -->
+                                        <select name="purchase_tax" class="form-control input-sm" onchange="change_PC()" id="id_purchase_tax" required="">
+                                            <option value="">---------</option>
+                                            {% for i in gst %}
+                                            {% if i.taxname_percent != '0' %}
+                                            <option value="{{i.taxname_percent}}">{{i.taxname_percent}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
 
@@ -1504,7 +1529,15 @@ textarea{
                                         <label for="">Expense Account</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
-                                        {{add_product_form.purchase_account}}
+                                        <select name="purchase_account" class="form-control input-sm" id="id_edit_purchase_account" required="">
+                                            <optgroup label="Expense">
+                                                <option value="" selected="">---------</option>
+                                                {% for expense in acc_ledger_expense %}
+                                                <option value="{{expense.id}}">{{expense.group_name}}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        </select>
+                                        <!-- {{add_product_form.purchase_account}} -->
                                     </div>
                                 </div>
                             </div>
@@ -1512,7 +1545,7 @@ textarea{
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" type="button" name="purchase_product" onclick="return invoice_product_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return invoice_product_form(0)" style="background-color:#598ebb">Save</button>
                     <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
                 </div>
             </form>
