@@ -128,10 +128,11 @@ def create_gstlegder_invoice(sender, instance, created, **kwargs):
     
 
         invoice = invoice_model.InvoiceModel.objects.get(pk = instance.pk)
-
-        igst_amount = float(invoice.igst) if invoice.igst !="" else 0
-        cgst_amount = float(invoice.cgst) if invoice.cgst !="" else 0
-        sgst_amount = float(invoice.sgst) if invoice.sgst !="" else 0
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        print(invoice.igst)
+        igst_amount = float(invoice.igst) if invoice.igst !="" and invoice.igst != None else 0
+        cgst_amount = float(invoice.cgst) if invoice.cgst !="" and invoice.cgst != None else 0
+        sgst_amount = float(invoice.sgst) if invoice.sgst !="" and invoice.sgst != None else 0
         #print(igst, cgst, sgst)
 
         gst_ledger.gst_number = invoice.invoice_org_gst_num

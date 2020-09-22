@@ -177,9 +177,30 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
+                                    <label for="supplyPlace1">Credit Note#</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control"  name="CreditNoteNumber" value="" id="CreditNoteNumber" required>
+                                    <div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" id="creditnote_number_default" name="creditnote_number_default" value="on">
+                                                Do you want to use default credit note number
+                                                <span class="form-check-sign">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
                                     <label for="customerName1">Contact Name</label>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-8">
                                     <select class="form-control select1" id="customerName"  name="customerName" onchange="data($(this)),customer_gst_type()" required> 
                                         <option value="">None</option>
                                         {% for contact in contacts %}
@@ -193,7 +214,7 @@ optgroup{color :black; }
                                 <div class="col-4">
                                     <label for="BillingAddress">Billing Address</label>
                                 </div>
-                                <div class="col-7">
+                                <div class="col-8">
                                     <textarea rows="3" placeholder="Billing address" id="BillingAddress1" name="BillingAddress" style="width: 100%;" required>{% if creditnote_contact_status2 == 'YES' %} {{credit_note.billing_address|default_if_none:''}} {% endif %}</textarea>
                                     <!-- <input list="BillingAddress" class="form-control" {% if creditnote_contact_status2 == 'YES' %} value="{{credit_note.billing_address|default_if_none:''}}" {% endif %} name="BillingAddress" id="BillingAddress1">
                                     <datalist id="BillingAddress">
@@ -204,6 +225,18 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
+                                    <label for="Reference">Reference#</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control"  id="Reference" name="Reference" value="{{credit_note.invoice_refrence}}">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="col" style="margin-left: 5%;">
+
+                            <div class="row">
+                                <div class="col-4">
                                     <label for="CreditNoteDate">Credit Note Date</label>
                                 </div>
                                 <div class="col-7">
@@ -211,20 +244,8 @@ optgroup{color :black; }
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" style="margin-top: 27px;">
                                 <div class="col-4">
-                                    <label for="Reference">Reference#</label>
-                                </div>
-                                <div class="col-7">
-                                    <input type="text" class="form-control"  id="Reference" name="Reference" value="{{credit_note.invoice_refrence}}">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- right -->
-                        <div class="col">
-
-                            <div class="row">
-                                <div class="col-3">
                                     <label for="email">Send to Email</label>
                                 </div>
                                 <div class="col-7">
@@ -236,7 +257,7 @@ optgroup{color :black; }
                             </div>
                             {% if credit_note.cc_email %}
                             <div class="row ccemail" style="margin-top: 10px;">
-                                <div class="col-3">
+                                <div class="col-4">
                                     <label for="ccemail">CC Email</label>
                                 </div>
                                 <div class="col-7">
@@ -252,7 +273,7 @@ optgroup{color :black; }
                             </div>
                             {% else %}
                             <div class="row ccemail" style="display: none;margin-top: 10px;">
-                                <div class="col-3">
+                                <div class="col-4">
                                     <label for="ccemail">CC Email</label>
                                 </div>
                                 <div class="col-7">
@@ -269,8 +290,8 @@ optgroup{color :black; }
 
                             {% endif %}
 
-                            <div class="row">
-                                <div class="col-3">
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-4">
                                     <label for="supplyPlace1">State of Supply</label>
                                 </div>
                                 <div class="col-7">
@@ -280,27 +301,6 @@ optgroup{color :black; }
                                             <option value="{{i.0}}" {% if credit_note.state_supply == i.0 %} selected {% endif %}>{{i.1}}</option>
                                         {% endfor %}
                                     </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-3">
-                                    <label for="supplyPlace1">Credit Note#</label>
-                                </div>
-                                <div class="col-7">
-                                    <input type="text" class="form-control"  name="CreditNoteNumber" value="" id="CreditNoteNumber" required>
-                                    <div>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" id="creditnote_number_default" name="creditnote_number_default" value="on">
-                                                Do you want to use default credit note number
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -1315,7 +1315,7 @@ optgroup{color :black; }
                                     <td style="width: 44%;border:0px;padding-top: 2%;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -1339,7 +1339,7 @@ optgroup{color :black; }
                                             </div>
                                         </div>                                     
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>     
 
                                 <tr>
@@ -1377,7 +1377,7 @@ optgroup{color :black; }
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
@@ -1394,7 +1394,7 @@ optgroup{color :black; }
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                     </tr>
 
                                                     </tbody>
@@ -1593,7 +1593,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1625,7 +1625,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1634,7 +1634,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1643,7 +1643,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">

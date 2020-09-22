@@ -25,6 +25,9 @@ from app.models.expense_model import Expense, ExpenseCategoryLineItem, ExpenseLi
 
 from django.db.models import Q
 
+import datetime
+from datetime import datetime,date
+
 @method_decorator(login_required, name='dispatch')
 class ExpenseView(View):
 	template_name = 'app/app_files/expense/expense.html'
@@ -48,7 +51,17 @@ class ExpenseView(View):
 			'active_link' : 'Expense',
 			'customize' : customize,
 			'type' : 'view',
+			'js_files' : ['custom_files/js/make_payment.js',],
 		}
+
+		# for make payment
+		context['payment_type'] = payment_constants.PAYMENT_TYPE
+
+        # for make payment account
+		major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Assets')
+		acc_ledger_assets = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+		context['acc_ledger_assets'] = acc_ledger_assets
+
 		return render(request, self.template_name, context)
 
 
@@ -203,7 +216,6 @@ class AddExpense(View):
 				for index, cate_obj in enumerate(expense.expensecategorylineitem_set.all(), 1):
 					item_formset = ExpenseItemFormset(request.POST, prefix='item'+str(index), instance=cate_obj, form_kwargs={'user': request.user})
 					ex_item_form.append(item_formset)
-
 			if expense_form.is_valid() and ex_cat_form.is_valid() and new_ex_item_form.is_valid():
 				button = int(request.POST.get('button')) if request.POST.get('button') !='' else 0 
                 #button = int(request.POST.get('button'))
@@ -212,6 +224,10 @@ class AddExpense(View):
 
 				expense = expense_form.save(commit=False)
 				expense.user = request.user
+				expense.expense_org_gst_num = request.POST.get('org_gst_number')
+				expense.expense_org_gst_type = request.POST.get('org_gst_reg_type')
+				expense.expense_org_gst_state = request.POST.get('single_gst_code')
+
 				expense.cgst_5 = request.POST.get('CGST_5')
 				expense.sgst_5 = request.POST.get('SGST_5')
 				expense.igst_5 = request.POST.get('IGST_5')
@@ -224,6 +240,18 @@ class AddExpense(View):
 				expense.cgst_28 = request.POST.get('CGST_28')
 				expense.sgst_28 = request.POST.get('SGST_28')
 				expense.igst_28 = request.POST.get('IGST_28')
+				expense.total_balance = expense_form.data["exp_total"]
+
+				#  for payment status
+				current_date = date.today()
+				due = datetime.strptime(str(expense_form.data["payment_date"]), '%d-%m-%Y').strftime('%Y-%m-%d')
+				due = datetime.strptime(due, '%Y-%m-%d').date()
+				if(due < current_date):
+					delta = (current_date - due).days
+					expense.status = 1
+					expense.expense_date_count = delta
+				else:
+					expense.status = 0
 				
 				if remove_file == 'True':
 					expense.exp_bill = ''
@@ -289,6 +317,10 @@ class AddExpense(View):
 				object_dict = {}
 				expense = expense_form.save(commit=False)
 				expense.user = request.user
+				expense.expense_org_gst_num = request.POST.get('org_gst_number')
+				expense.expense_org_gst_type = request.POST.get('org_gst_reg_type')
+				expense.expense_org_gst_state = request.POST.get('single_gst_code')
+				
 				expense.cgst_5 = request.POST.get('CGST_5')
 				expense.sgst_5 = request.POST.get('SGST_5')
 				expense.igst_5 = request.POST.get('IGST_5')
@@ -301,6 +333,19 @@ class AddExpense(View):
 				expense.cgst_28 = request.POST.get('CGST_28')
 				expense.sgst_28 = request.POST.get('SGST_28')
 				expense.igst_28 = request.POST.get('IGST_28')
+				expense.total_balance = expense_form.data["exp_total"]
+
+				#  for payment status
+				current_date = date.today()
+				due = datetime.strptime(str(expense_form.data["payment_date"]), '%d-%m-%Y').strftime('%Y-%m-%d')
+				due = datetime.strptime(due, '%Y-%m-%d').date()
+				if(due < current_date):
+					delta = (current_date - due).days
+					expense.status = 1
+					expense.expense_date_count = delta
+				else:
+					expense.status = 0
+
 				expense.save()
 				
 				for form in ex_cat_form:
@@ -331,6 +376,9 @@ class AddExpense(View):
 						'active_link' : 'Expense'
 					}
 					return render(request, 'app/app_files/expense/expense.html', context)
+			else:
+				print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+				print(expense_form.errors.as_data())
 
 		return redirect(request.path)
 

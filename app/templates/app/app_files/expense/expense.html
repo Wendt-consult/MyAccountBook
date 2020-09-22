@@ -292,20 +292,23 @@ thead th{
                             {% if customize.expense_vocher != 0 %}
                             <th class="text-center customize_vocher">Expense Voucher</th>
                             {% endif %}
-                            {% if customize.expense_date != 0 %}
-                            <th class="text-center customize_date">Expense Date</th>
-                            {% endif %}
                             {% if customize.expense_vendor != 0 %}
                             <th class="text-center customize_vendor">Vendor</th> 
                             {% endif %}
+                            {% if customize.expense_date != 0 %}
+                            <th class="text-center customize_date">Expense Date</th>
+                            {% endif %}
                             {% if customize.expense_payment != 0 %}
-                            <th class="text-center customize_payment">Payment Date</th>
+                            <th class="text-center customize_payment">Due Date</th>
                             {% endif %}
                             {% if customize.expense_method != 0 %}
-                            <th class="text-center customize_method">Payment Method</th>
+                            <th class="text-center customize_method">Status</th>
                             {% endif %}
                             {% if customize.expense_amount != 0 %}
                             <th class="text-center customize_amount">Total Amount</th>
+                            {% endif %}
+                            {% if customize.expense_amount != 0 %}
+                            <th class="text-center customize_amount">Balance Due</th>
                             {% endif %}
                             <th class="text-center">Action</th>                
                         </thead>
@@ -315,9 +318,6 @@ thead th{
                                     {% if customize.expense_vocher != 0 %}
                                     <td class="text-center customize_vocher">{{ expense.exp_number }}</td>
                                     {% endif %}
-                                    {% if customize.expense_date != 0 %}
-                                    <td class="text-center customize_date">{{ expense.exp_date|date:"d/m/Y" }}</td>
-                                    {% endif %}
                                     {% if customize.expense_vendor != 0 %}
                                     <td class="text-center customize_vendor">
                                         <a class="vendor_name" id="expense_hover" href="{% url 'edit_expense' expense.id %}" style="color: #8b92a9;text-decoration: underline;">
@@ -325,22 +325,41 @@ thead th{
                                         </a>
                                     </td>
                                     {% endif %}
+                                    {% if customize.expense_date != 0 %}
+                                    <td class="text-center customize_date">{{ expense.exp_date|date:"d/m/Y" }}</td>
+                                    {% endif %}
                                     {% if customize.expense_payment != 0 %}
-                                    <td class="text-center customize_payment">{% if expense.payment_date %} {{ expense.payment_date|date:"d/m/Y" }} {% else %} - {% endif %}</td>
+                                    <td class="text-center customize_payment">{{ expense.payment_date|date:"d/m/Y" }}</td>
                                     {% endif %}
                                     {% if customize.expense_method != 0 %}
-                                    <td class="text-center customize_method">{% if expense.payment_method %} {{ expense.payment_method }} {% else %} - {% endif %}</td>
+                                    <td class="text-center customize_method">
+                                        {% if expense.status == 1 %}
+                                            {{ expense.get_status_display }} {{expense.expense_date_count}} days
+                                        {% else %}
+                                            {{ expense.get_status_display }}
+                                        {% endif %}
+                                    </td>
                                     {% endif %}
                                     {% if customize.expense_amount != 0 %}
                                     <td class="text-center customize_amount">{{ expense.exp_total }}</td>
+                                    {% endif %}
+                                    {% if customize.expense_amount != 0 %}
+                                    <td class="text-center customize_amount">{{ expense.total_balance }}</td>
                                     {% endif %}
                                     <td class="text-center">
                                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
                                         
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            {% if expense.status != 3 and expense.status != 1 and expense.status != 4 %}
                                             <a class="dropdown-item" title="Edit Expense" href="{% url 'edit_expense' expense.id %}" class="btn btn-primary btn-sm" style="padding:5px 5px;">
                                                 Edit
                                             </a>
+                                            {% endif %}
+                                            {% if expense.status != 3 and expense.status != 2 %}
+                                                <a class="dropdown-item" title="Make Payment" data-toggle="modal" data-target="#expensePaymentModel-{{expense.id}}" style="padding: 5px 5px;cursor: pointer;">
+                                                    Make Payment
+                                                </a> 
+                                            {% endif %}
                                             <button class="dropdown-item delete_expense" title="Delete Expense" type="button" id="{{ expense.id }}" class="btn btn-primary btn-sm" style="padding:5px 5px;outline:none;">
                                                 Delete
                                             </button>
@@ -351,8 +370,119 @@ thead th{
                                                 Make a Copy
                                             </a>
                                         </div> 
+                                        <!-- for make payment -->
+                                <div class="modal " tabindex="-1" role="dialog" id="expensePaymentModel-{{expense.id}}" style="border-top: none;top:100px;">
+                                    <div class="modal-dialog" role="document" style="border-top: none;">
+                                        <div class="modal-content" style="background-color:#202940;width: 143%;">
+                                            <form method="post" action="{% url 'make_payment' 'expense' %}" style="margin:0px" enctype="multipart/form-data" id="makePayment-{{expense.id}}">
+                                                <div class="modal-header bg-warning">
+                                                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Make Payment</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body" style="border-top: none;position: bottom;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="entry_id" value="{{expense.id}}">
+                                                    <input type="hidden" name="venodr_id" value="{{expense.vendor.id}}">
+                                                    <input type="hidden" name="entry_balance" id="entry_balance-{{expense.id}}" value="{{expense.total_balance}}">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <!-- left -->
+                                                            <div class="col" style="padding-left: 0px;">
+                                                                <table class="table-responsive" >
+                                                                    <tbody style=" width: 100%; display: inline-table;">
+                                                                        <tr style="float: left;background-color: aliceblue;">
+                                                                            <td style="border:0px; vertical-align: bottom;">
+                                                                                Payment Amount
+                                                                            </td>
+                                                                            <td style="border:0px;">
+                                                                                <input class="form-control" type="text"{% if expense.total_balance != none %} value="{{expense.total_balance}}" {% else %} value="0.00" {% endif %} name="pay_amount" id="pay_amount-{{expense.id}}" onkeypress="return restrictAlphabets(event), float_value(event,$(this))" required>
+                                                                            </td>                                    
+                                                                        </tr>
+                                                                        <tr style="float: left;background-color: aliceblue;">
+                                                                            <td style="border:0px; vertical-align: bottom;padding-right: 26px;">
+                                                                                Payment Type
+                                                                            </td>
+                                                                            <td style="border:0px;">
+                                                                                <select class="form-control" name="payment_type" id="payment_type-{{expense.id}}" style="width:200%;" required>
+                                                                                    <option value="">None</option>
+                                                                                    {% for type in payment_type %}
+                                                                                    <option value="{{type.0}}">{{type.1}}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </td>                                    
+                                                                        </tr>
+                                                                        <tr style="float: left;background-color: aliceblue;">
+                                                                            <td style="border:0px; vertical-align: bottom;padding-right: 43px;">
+                                                                                Reference#
+                                                                            </td>
+                                                                            <td style="border:0px;">
+                                                                                <input class="form-control" value="{{expense.exp_number}}" type="text" id="pay_reference-{{expense.id}}" name="pay_reference">
+                                                                            </td>                                    
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <!-- right -->
+                                                            <div class="col" style="padding-left: 0px;">
+                                                                <table class="table-responsive" >
+                                                                    <tbody style=" width: 100%; display: inline-table;">
+                                                                        <tr style="float: left;background-color: aliceblue;">
+                                                                            <td style="border:0px; vertical-align: bottom;padding-right: 27px;">
+                                                                                Payment Date
+                                                                            </td>
+                                                                            <td style="border:0px;">
+                                                                                <input class="form-control pay_date" type="text" name="pay_date" id="pay_date-{{expense.id}}" required>
+                                                                            </td>                                    
+                                                                        </tr>
+                                                                        <tr style="float: left;background-color: aliceblue;">
+                                                                            <td style="border:0px; vertical-align: bottom;padding-right: 66px;">
+                                                                                Account
+                                                                            </td>
+                                                                            <td style="border:0px;">
+                                                                                <select class="form-control" name="pay_account" id="pay_account-{{expense.id}}" style="width: 139%;" required>
+                                                                                    <option value="">None</option>
+                                                                                    {% for i in acc_ledger_assets %}
+                                                                                    <option value="{{i.id}}">{{i.group_name}}</option>
+                                                                                    {% endfor %}
+                                                                                </select>
+                                                                            </td>                                    
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="margin-left: -7px;">
+                                                            <label for="">Notes</label>
+                                                        </div>
+                                                        <div class="row" style="margin-left: -7px;">
+                                                            <textarea rows="3" id="pay_notes-{{expense.id}}" name="pay_notes" style="width: 50%;"></textarea>
+                                                        </div>
+                                                        <div class="row" style="margin-left: -7px;margin-top: 12px;">
+                                                            <div class="col-2" style="padding-left: 0px;">
+                                                                <label for="" style="float: left;">Attachment</label>
+                                                            </div>
+                                                            <div class="col-5" style="margin-left: -5%;">
+                                                                <input class="form-control" type="file" id="pay_file-{{expense.id}}" name="pay_file">
+                                                                <font style="font-size:x-small;margin-left: -48%;color: black;">File Size Less Than: 20 MB </font>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div style="float: right;">
+                                                        <button class="btn mr-2 btn-sm" type="submit" onclick="return check_amount({{expense.id}})" style="align-content: left;margin-left:150px;background-color:#598ebb">Pay</button>
+                                                        <button type="button" class="btn btn-sm" data-dismiss="modal" aria-label="Close">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                                     </td>
                                 </tr>
+                                
                             {% endfor %}
                         </tbody>
                     </table>
@@ -430,6 +560,8 @@ thead th{
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- <script src="{% static 'custom_files/js/make_payment.js' %}"></script> -->
+
 <script>
 /*******************************************************************/
 // CUSTOMIZE VIEW LIST

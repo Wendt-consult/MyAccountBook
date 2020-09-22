@@ -16,7 +16,8 @@ function get_predefined_groups(elem){
 function ajax_get_predefined_groups(ids){
     $.get("/get_predefined_groups/",{"ids":ids}, function(data){
         // $('<option/>').val(ids).html(ids).appendTo('#id_acc_group');
-        $("#id_acc_group").empty().append(data);
+        $("#id_acc_group,#id_edit_acc_group").empty().append(data);
+        $('#id_acc_group,#id_edit_acc_group').val("-----").change()
     });
 }
 
@@ -133,12 +134,12 @@ function validation(){
 $(document).ready(function() {
     // $('.mdb-select').materialSelect();
     $(function () {
-        $(".select").select2();
+        $("#id_acc_group").select2();
       });
     });
 
 // var button = 1
-$(document).on('click','.select2-container--open',function(){
+$(document).on('click','#select2-id_acc_group-container',function(){
     var a = $('#GroupModal').length
     if(a == 0){
         $('.select2-search ').append('<button class="btn btn-link" data-toggle="modal" id="GroupModal"  onclick="openNewGroupModal($(this)),leger_c()" value="-1" data-target="#addGroupModal" style="margin-left: -5%;">+ Add New</button>');
@@ -150,7 +151,7 @@ function leger_c(){
     $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
     $(document).ready(function() {
         $(function () {
-            $(".select").select2();
+            $("#id_acc_group").select2();
           });
         });
 }

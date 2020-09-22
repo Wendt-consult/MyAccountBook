@@ -621,7 +621,7 @@ optgroup{color :black; }
                                 <div class="col-4">
 
                                 </div>
-                                <div class="col-8" id="c_error_field" style="color:black;">
+                                <div class="col-8" id="c_error_field" style="color:red;">
                                     
                                 </div>
                             </div>
@@ -2004,7 +2004,7 @@ optgroup{color :black; }
                                     <td style="width: 44%;border:0px;padding-top: 2%;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -2028,7 +2028,7 @@ optgroup{color :black; }
                                             </div>
                                         </div>                                     
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>     
 
                                 <tr>
@@ -2066,7 +2066,7 @@ optgroup{color :black; }
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
@@ -2083,7 +2083,7 @@ optgroup{color :black; }
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                     </tr>
 
                                                     </tbody>
@@ -2282,7 +2282,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -2314,7 +2314,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -2323,7 +2323,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -2332,7 +2332,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -2889,7 +2889,7 @@ optgroup{color :black; }
                             <input class="form-control" id="vendor_gst" name="vendor_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this))" required>
                         </div>
                         <div class="col-6">
-                            <p id="vendor_error_field" style="color: black;"></p>
+                            <p id="vendor_error_field" style="color: red;"></p>
                         </div>
                     </div>
                     

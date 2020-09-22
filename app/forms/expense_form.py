@@ -4,6 +4,7 @@ from app.models.contacts_model import Contacts
 from app.models.accounts_model import AccLedger
 from app.models.products_model import ProductsModel
 from app.other_constants.gst_slab import gst_slab_list
+from app.other_constants import payment_constants
 import os.path
 
 
@@ -12,22 +13,23 @@ class ExpenseForm(forms.ModelForm):
 		user = kwargs.pop('user', None)
 		super(ExpenseForm, self).__init__(*args, **kwargs)
 		self.fields['vendor'].queryset = Contacts.objects.filter(user=user._wrapped,customer_type__in = [2,4])
-		self.fields['payment_method'].queryset = PaymentMethod.objects.filter(user=user._wrapped)
+		# self.fields['payment_method'].queryset = PaymentMethod.objects.filter(user=user._wrapped)
 
 	vendor = forms.ModelChoiceField(queryset=Contacts.objects.none(), widget=forms.Select(attrs={'class':'form-control input-sm col-md-7', 'id':'select_vendor', 'onchange':'state_compare()'}))
-	exp_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker1'}, format="%d/%m/%Y"))
-	payment_date = forms.DateField(input_formats=['%d/%m/%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker2'}, format="%d/%m/%Y"), required=False)
-	payment_method = forms.ModelChoiceField(queryset=PaymentMethod.objects.none(), widget=forms.Select(attrs={'class':'form-control col-md-7 input-sm','id':'add_payment_method'}))
+	exp_date = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker1','required':True,}, format="%d-%m-%Y"))
+	payment_date = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(attrs={'class':'form-control col-md-7 input-sm datepicker2','required':True,}, format="%d-%m-%Y"))
+	# payment_method = forms.ModelChoiceField(queryset=PaymentMethod.objects.none(), widget=forms.Select(attrs={'class':'form-control col-md-7 input-sm','id':'add_payment_method'}))
 
 	class Meta:
 		model = Expense
-		fields = ('exp_number','exp_date','exp_sub_total','exp_total','exp_bill','payment_date','payment_method','notes','vendor')
+		fields = ('exp_number','exp_date','exp_sub_total','exp_total','exp_bill','payment_date','notes','vendor','payment_terms')
 		widgets = {
 			'exp_number' : forms.TextInput(attrs={'class':'form-control input-sm expense_num_inp','id':'exp_number','onfocusout':'check_expense_number($(this))'}),
 			'exp_sub_total' : forms.NumberInput(attrs={'class':'form-control col-md-7 input-sm expense_sub_total','value':0,'readonly':True}),
 			'exp_total' : forms.NumberInput(attrs={'class':'form-control col-md-7 input-sm expense_total','value':0,'readonly':True}),
 			'exp_bill' : forms.FileInput(attrs={"onChange":"dragNdrop(event)", "ondragover":"drag()", "ondrop":"drop()", "id":"uploadFile",'accept':'image/jpeg, image/png, image/jpg, application/pdf'}),
-			'notes' : forms.Textarea(attrs={'class':'','rows':6, "maxlength":"600"})
+			'notes' : forms.Textarea(attrs={'class':'','rows':6, "maxlength":"600"}),
+			'payment_terms' : forms.Select(attrs = {'class':'form-control input-sm','onchange':'invoice_pay_date()','required':True,}, choices = payment_constants.PAYMENT_DAYS),
 		}
 
 

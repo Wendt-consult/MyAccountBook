@@ -196,18 +196,36 @@ def test_fun():
                         a.invoice_item_list = invoice_newone
                         a.save()
 
-    purchase_entry = purchase_entry.PurchaseEntry.objects.exclude(entry_status = 3,save_type = 2)
+    # for automatic change purchase entry  status
+
+    purchase_entry = purchasentry_model.PurchaseEntry.objects.exclude(entry_status = 3,save_type = 2)
     entry_count = len(purchase_entry)
-    for j in range(0,entry_count):
-        entry_due_date = purchase_entry[0].purchase_entry_due_date
-        if(purchase_entry[0].entry_status == 0):
-            if(entry_due_date < current_date):
-                remaining_date = (current_date - entry_due_date).days
-                purchase_entry.PurchaseEntry.objects.filter(pk = purchase_entry[i].id).update(entry_status = 1,entry_date_count = delta)
-        elif(purchase_entry[0].entry_status == 1 or purchase_entry[0].entry_status == 4):
-            if(entry_due_date > current_date):
-                remaining_date = (current_date - current_date).days
-                purchase_entry.PurchaseEntry.objects.filter(pk = purchase_entry[i].id).update(entry_status = 1,entry_date_count = remaining_date)
+    if(entry_count > 0):
+        for j in range(0,entry_count):
+            entry_due_date = purchase_entry[j].purchase_entry_due_date
+            if(purchase_entry[j].entry_status == 0):
+                if(entry_due_date < current_date):
+                    remaining_date = (current_date - entry_due_date).days
+                    purchasentry_model.PurchaseEntry.objects.filter(pk = purchase_entry[j].id).update(entry_status = 1,entry_date_count = remaining_date)
+            elif(purchase_entry[j].entry_status == 1 or purchase_entry[j].entry_status == 4):
+                if(entry_due_date > current_date):
+                    remaining_date = (entry_due_date - current_date).days
+                    purchasentry_model.PurchaseEntry.objects.filter(pk = purchase_entry[j].id).update(entry_status = 1,entry_date_count = remaining_date)
+
+    # for automatic change expense  status
+    expense = expense_model.Expense.objects.exclude(status = 3)
+    expense_count = len(expense)
+    if(expense_count > 0):
+        for k in range(0,expense_count):
+            expense_due_date = expense[k].payment_date
+            if(expense[k].status == 0):
+                if(expense_due_date < current_date):
+                    remaining_date = (current_date - expense_due_date).days
+                    expense_model.Expense.objects.filter(pk = expense[k].id).update(status = 1,expense_date_count = remaining_date)
+            elif(expense[k].status == 1 or expense[k].status == 4):
+                if(expense_due_date > current_date):
+                    remaining_date = (expense_due_date - current_date).days
+                    expense_model.Expense.objects.filter(pk = expense[k].id).update(status = 1,expense_date_count = remaining_date)
 
     data = "data"
     return data

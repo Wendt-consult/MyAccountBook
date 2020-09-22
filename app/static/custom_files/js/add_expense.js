@@ -270,13 +270,102 @@ else{
 // Datepicker Function
 $(function(){
     $('#exp_date_icon').click(function() {
-        $('.datepicker1').datepicker({ maxDate: new Date(), dateFormat: 'dd/mm/yy' });
+        // $('.datepicker1').datepicker({ dateFormat: 'dd-mm-yy' });
         $(".datepicker1").focus();
     });
     $('#payment_date_icon').click(function() {
-        $('.datepicker2').datepicker({ dateFormat: 'dd/mm/yy' });
+        // $('.datepicker2').datepicker({ dateFormat: 'dd-mm-yy' });
         $(".datepicker2").focus();
     });
+});
+expense_date = $('.datepicker1').val()
+if(expense_date !=''){
+    $('.datepicker1').datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", $.datepicker.parseDate( "dd-mm-yy", ""+expense_date+"" ));
+}
+
+$(".datepicker1").datepicker({ 
+    dateFormat: 'dd-mm-yy',
+    changeMonth: true,
+    // minDate: new Date(),
+    maxDate: '+2y',
+    onSelect: function(date){
+        // var selectedDate = new Date(date);
+        // var msecsInADay = 86400000;
+        var endDate = $('.datepicker1').datepicker('getDate', '+1d'); 
+        endDate.setDate(endDate.getDate()+0); 
+
+       //Set Minimum Date of EndDatePicker After Selected Date of StartDatePicker
+        $(".datepicker2").datepicker( "option", "minDate", endDate );
+        $(".datepicker2").datepicker( "option", "maxDate", '+2y' );
+
+    }
+});
+
+$(".datepicker2").datepicker({ 
+    dateFormat: 'dd-mm-yy',
+    changeMonth: true,
+    // minDate: new Date(),
+});
+
+//  PURCHASE ENTRY PAYMENT TERMS
+$('#id_exp_date').change(function() {
+        invoice_pay_date()
+});
+//  ON CHANGE TO SET NEW INVOICE DUE DATE
+function invoice_pay_date(){
+    var pay_terms = $('#id_payment_terms').val()
+    if(pay_terms == '1'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+0d'); 
+        endDate.setDate(endDate.getDate()+0); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '2'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+9d'); 
+        endDate.setDate(endDate.getDate()+9); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '3'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+19d'); 
+        endDate.setDate(endDate.getDate()+19); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '4'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+31d'); 
+        endDate.setDate(endDate.getDate()+31); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '5'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+59d'); 
+        endDate.setDate(endDate.getDate()+59); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '6'){
+        var endDate = $('.datepicker1').datepicker('getDate', '+89d'); 
+        endDate.setDate(endDate.getDate()+89); 
+        $(".datepicker2").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
+    }else if(pay_terms == '7'){
+        // $("#purchase_entry_due_date").val('')
+    }
+}
+
+// on change in new invoice due date
+
+$('.datepicker2').change(function() {
+    var start = $('.datepicker1').datepicker('getDate');
+    var end = $('.datepicker2').datepicker('getDate');
+    var days = (end - start)/1000/60/60/24;
+
+    // $('#hasil').val(days);
+    if(days == 0){
+        $('#id_payment_terms').val('1').change();
+    }else if(days == 9){
+        $('#id_payment_terms').val('2').change();
+    }else if(days == 19){
+        $('#id_payment_terms').val('3').change();
+    }else if(days == 31){
+        $('#id_payment_terms').val('4').change();
+    }else if(days == 59){
+        $('#id_payment_terms').val('5').change();
+    }else if(days == 89){
+        $('#id_payment_terms').val('6').change();
+    }else {
+        $('#id_payment_terms').val('7').change();
+    }
 });
 
 // Auto Fill Expense Number
@@ -291,9 +380,36 @@ $('#exp_num_check_box').on('click', function(){
 });
 
 // Add +add Button in Dropdown
-$('#select_vendor').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
+// $('#select_vendor').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
 $('.select_ledger').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
 $('.select_product').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
+
+/********************************************************************/
+// SEARCH AND BUTTON INSIDE SELECT TAG CUSTOMER NAME
+/********************************************************************/
+
+$(document).ready(function() {
+    // $('.mdb-select').materialSelect();
+    $(function () {
+        $("#select_vendor").select2();
+      });
+    });
+$(document).on('click','#select2-select_vendor-container',function(){
+
+    // $(".invoice_product").hide()
+    var a = $('#addexpensevendor').length
+        if(a == 0){
+            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_expense_contact()" id="addexpensevendor" data-target="#contactFormModal" style="margin-left: -8%;">+ Add New</button>');
+        }
+        });
+function add_expense_contact(){
+    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+    $(document).ready(function() {
+        $(function () {
+            $("#select_vendor").select2();
+          });
+        });
+    }
 
 // Ajax Request to Check Valid Expense Number 
 function check_expense_number(element){
@@ -372,41 +488,54 @@ $(".close_btn").on('click', function(){
 
 addNewLedger();
 
+
+/********************************************************************/
 // Ajax Request to Add New Contact
-$('#select_vendor').change(function() {
-    if ($(this).val() == "add"){
-        $(this).val('');
-        $('#contactFormModal').modal('show');
-        $('#contactForm').unbind('submit')
-        $('#contactForm').submit(function(e){
-            e.preventDefault();
-            var formData = $('#contactForm').serializeArray();
-            $.ajax({
-                type : "POST",
-                url : "/contacts/add/",
-                data : formData,
-                success : function(data){
-                    if (data['success']){
-                        $('#select_vendor').find('option').last().remove();
-                        $('#select_vendor').append('<option value="'+data['contact_id']+'" selected>'+data['contact_name']+'</option>');
-                        $('#select_vendor').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
-                    }
-                    else{
-                        $('#select_vendor').val('');
-                    }
-                    $('#contactFormModal').modal('hide');
-                },
-                error : function(){
-                    $('#contactFormModal').modal('hide');
+/********************************************************************/
+$('#contactForm').unbind('submit')
+
+$("#saveContactBtn").click(function(){
+    $('#contactForm').submit(function(e){
+        e.preventDefault();
+        var formData = $('#contactForm').serializeArray();
+        $.ajax({
+            type : "POST",
+            url : "/contacts/add/",
+            data : formData,
+            success : function(data){
+                if (data['success']){
+                    // $('#select_vendor').find('option').last().remove();
+                    $('#select_vendor').append('<option value="'+data['contact_id']+'" selected>'+data['contact_name']+'</option>');
+                    $('#select_vendor').val(data['contact_id']).change()
+                    // $('#select_vendor').append('<option value="add" style="color: #8e24aa;">+ Add</option>');
+                }
+                else{
                     $('#select_vendor').val('');
                 }
-            });
+                $('#contactFormModal').modal('hide');
+            },
+            error : function(){
+                $('#contactFormModal').modal('hide');
+                $('#select_vendor').val('');
+            }
         });
-    }
-    $('#cancelContactBtn').on('click', function(){
-        $('#contactFormModal').modal('hide');
     });
 });
+$('#cancelContactBtn').on('click', function(){
+    $('#contactFormModal').modal('hide');
+});
+
+
+// $('#select_vendor').change(function() {
+//     if ($(this).val() == "add"){
+//         $(this).val('');
+//         // $('#contactFormModal').modal('show');
+        
+//     }
+//     $('#cancelContactBtn').on('click', function(){
+//         $('#contactFormModal').modal('hide');
+//     });
+// });
 
 // Function to Call Ajax Request to Add New Ledger
 function addNewLedger(){
@@ -561,6 +690,7 @@ $('#add_category_btn').on('click', function(){
 
     numberValidatuion('.cate_amount', false);
     check_gst_status('vendor_side')
+
 });
 
 // Delete a Category Form

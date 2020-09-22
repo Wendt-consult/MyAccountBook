@@ -10,7 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
     profile, purchase_order, expense, reports, purchasentry, journal_entry,scheduler, \
-    payment_made
+    payment_made,debit_note
 
 
 
@@ -279,9 +279,17 @@ urlpatterns += [
 #
 urlpatterns += [
     path('paymentmade/', never_cache(login_required(payment_made.PaymentMade.as_view())), name = 'payment_made'),
-    path('paymentmade/make_payment/', never_cache(login_required(payment_made.makePayment)), name = 'make_payment'),
+    path('paymentmade/make_payment/<slug:slug>/', never_cache(login_required(payment_made.makePayment)), name = 'make_payment'),
     path('paymentmade/add_make_payment/', never_cache(login_required(payment_made.addMakePayment.as_view())), name = 'add_make_payment'),
     path('paymentmade/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(payment_made.unique_payment_number)), name = 'unique_payment_number'),
+]
+
+#
+# Debit Note
+#
+urlpatterns += [
+    path('debitnote/', never_cache(login_required(debit_note.DebitNoteView.as_view())), name = 'view_debit_note'),
+    path('debitnote/add_debit_note/', never_cache(login_required(debit_note.add_debit_note)), name = 'add_debit_note'),
 ]
 
 if settings.DEBUG:

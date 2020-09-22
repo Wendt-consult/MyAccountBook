@@ -312,12 +312,12 @@ thead th{
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                                {% if i.entry_status != 3 and i.entry != 1 %}
-                                                <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
+                                                {% if i.entry_status != 3 and i.entry_status != 1 %}
+                                                <!-- <a class="dropdown-item" title="Edit Purchase Entry" href="{% url 'edit_purchase_entry' i.id %}" style="padding: 5px 5px;">
                                                     Edit
-                                                </a>
+                                                </a> -->
                                                 {% endif %}
-                                                {% if i.entry_status != 3 and i.entry != 2 %}
+                                                {% if i.entry_status != 3 and i.entry_status != 2 %}
                                                 <a class="dropdown-item" title="Make Payment" data-toggle="modal" data-target="#paymentModel-{{i.id}}" style="padding: 5px 5px;cursor: pointer;">
                                                     Make Payment
                                                 </a> 
@@ -349,7 +349,7 @@ thead th{
                                             <div class="modal " tabindex="-1" role="dialog" id="paymentModel-{{i.id}}" style="border-top: none;top:100px;">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="background-color:#202940;width: 143%;">
-                                                        <form method="post" action="{% url 'make_payment' %}" style="margin:0px" enctype="multipart/form-data" id="makePayment-{{i.id}}">
+                                                        <form method="post" action="{% url 'make_payment' 'purchase_entry' %}" style="margin:0px" enctype="multipart/form-data" id="makePayment-{{i.id}}">
                                                             <div class="modal-header bg-warning">
                                                                 <h5 class="modal-title" style="color:#000000; font-weight:bold;">Make Payment</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

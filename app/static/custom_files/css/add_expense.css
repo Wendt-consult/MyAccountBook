@@ -1,3 +1,20 @@
+@import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
+
+.select2-selection--single{
+    /* background-color: #202940!important; */
+    border-top-style: hidden!important;
+    border-left-style: hidden!important;
+    border-right-style: hidden!important;
+    border-bottom-left-radius: 0px!important;
+    border-bottom-right-radius: 0px!important;
+    border-bottom-color: #a0a0a0a3!important;
+    /* margin-top: -18px!important; */
+}
+
+.select2-selection__rendered{
+    color: black!important;
+    font-weight: 400!important;
+}
 
 select.form-control, input.form-control, textarea.form-control{
     padding:0px 10px;

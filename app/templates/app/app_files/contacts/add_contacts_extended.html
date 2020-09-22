@@ -149,7 +149,7 @@ background-color:#4682B4;
                                     <td style="width: 44%;border:0px;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -182,7 +182,7 @@ background-color:#4682B4;
                                             </div>
                                         </div>                                       
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>     
                                 <!-- <tr>
                                     <td>
@@ -226,7 +226,7 @@ background-color:#4682B4;
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                         </tr>
                                                         <!-- <tr>
                                                             <td>
@@ -250,7 +250,7 @@ background-color:#4682B4;
                                                         <td style="width:44%;border:0px;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                     </tr>
                                                         <!--
                                                         <tr>
@@ -453,7 +453,7 @@ background-color:#4682B4;
                                                             <td style="width:44%;border:0px;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -485,7 +485,7 @@ background-color:#4682B4;
                                                             <td style="width:44%;border:0px;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -494,7 +494,7 @@ background-color:#4682B4;
                                                             <td style="width:44%;border:0px;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -503,7 +503,7 @@ background-color:#4682B4;
                                                             <td style="width:44%;border:0px;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -541,7 +541,7 @@ background-color:#4682B4;
                 {% else %}
                     <div class="modal-footer text-center"  style="justify-content: center;padding: 6px;margin-bottom: -64px;padding-left: 539px;">
                         <button class="btn btn-sm  save_button" type="submit()" style="width:11%;background-color:#598ebb;" onclick="return check()">Save</button>
-                        <a class="btn btn-sm " href="{%url 'contacts' 0 %}" style="background-color: #9095a2;"" >Cancel</a>
+                        <a class="btn btn-sm " href="{%url 'contacts' 0 %}" style="background-color: #9095a2;">Cancel</a>
                     </div>
                 {% endif %}
             </div>

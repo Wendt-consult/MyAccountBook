@@ -16,10 +16,9 @@
     margin-top: 1%;
 
 }
-
-.select2-container--default{
+/* .select2-container{
     display: none;
-}
+} */
 /* <!--.ex_cat_form{-->
 <!--background-color:#FFFFFF-->
 <!--}--> */
@@ -95,6 +94,7 @@
                         {% endfor %}
                     </select>
                     {% elif is_add_clone == 'no' %}
+                
                     <input class="form-control" type="hidden" value="{{expense.expense_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
                     <input class="form-cntrol" type="hidden" value="{{expense.expense_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
                     <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
@@ -129,16 +129,20 @@
                                 {{ expense_form.vendor }}
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-4 col-sm-4">Payment Date</label>
+                                <label class="col-md-4">Payment terms</label>
+                                {{ expense_form.payment_terms }}
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-sm-4">Due date</label>
                                 {{ expense_form.payment_date }}
                                 <div id="payment_date_icon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="col-md-4">Payment Method</label>
                                 {{ expense_form.payment_method }}
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-md-5">
                             <div class="uploadOuter">
@@ -607,8 +611,9 @@
 <!-- UPDATE GST NUMBER -->
 {% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+<!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
     var file = "{{ file }}";
 

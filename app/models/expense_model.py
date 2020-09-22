@@ -3,6 +3,7 @@ from app.models.contacts_model import Contacts
 from app.models.accounts_model import AccLedger
 from app.models.products_model import ProductsModel
 from django.contrib.auth.models import User
+from app.other_constants import payment_constants
 
 
 class PaymentMethod(models.Model):
@@ -22,9 +23,36 @@ class Expense(models.Model):
 	exp_total = models.DecimalField(max_digits=20, decimal_places=3)
 	exp_bill = models.FileField(upload_to='expense_bills/', null=True, blank=True)
 	payment_date = models.DateField(null=True, blank=True)
-	payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
+	# payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
 	notes = models.TextField(null=True, blank=True)
 
+	payment_terms = models.IntegerField(
+        db_index = True,
+        blank=True,
+        null=True,
+        choices = payment_constants.PAYMENT_DAYS,
+    ) 
+
+	status = models.IntegerField(
+        db_index = True,
+        blank = True,
+        null = True,
+        choices = payment_constants.purchase_entry_status
+    )
+    
+	expense_date_count = models.IntegerField(
+        db_index=True,
+        default=0,
+        blank=True,
+        null=True,
+    )
+
+	total_balance = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
 
 	cgst_5 = models.CharField(
         max_length=30,
@@ -155,7 +183,7 @@ class ExpenseLineItem(models.Model):
 	quantity = models.DecimalField(max_digits=10, decimal_places=2)
 	rate = models.DecimalField(max_digits=20, decimal_places=3)
 	amount = models.DecimalField(max_digits=20, decimal_places=3)
-	tax = models.IntegerField()
+	tax = models.IntegerField(null=True, blank=True)
 	total_amount = models.DecimalField(max_digits=20, decimal_places=3)
 	reference_id = models.PositiveIntegerField(null=True, blank=True)
 

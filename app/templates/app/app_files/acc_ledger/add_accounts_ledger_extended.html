@@ -62,7 +62,9 @@ table{
                                         Grouping
                                     </td>
                                     <td style="border:0px;" class="set_required">
-                                        {{ledger_form.acc_group}}                                       
+                                        <select name="acc_group" class="form-control input-sm" onchange="openNewGroupModal($(this)),check()" maxlength="200" id="id_edit_acc_group" required="required" tabindex="-1" aria-hidden="true">
+                                        </select>
+                                        <!-- {{ledger_form.acc_group}}                                        -->
                                     </td>  
                                 </tr>
                                 <tr>

@@ -11,12 +11,36 @@
 <style>
 @import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
 .select{
-    width: 158px;
+    width: 174.6px;
+    overflow-x: auto;
 }
+
 select.form-control{padding:0px 10px;}
 select.form-control option{color : #000000; }
+.form-group{
+    width: 35%;
+    margin-left: 5%;
+    
+}
+
+#select2-product_account1-results {
+    overflow-x: hidden;
+}
+
+/* #select2-product_account1-results ul li {
+    overflow-wrap: anywhere !important;
+    font-size: 16px !important;
+} */
 
 
+.select2-results__option {
+    overflow-wrap: anywhere !important;
+    font-size: 16px !important;
+}
+
+.form-control{
+    margin-top: -7px;
+}
 input[type=number]::-webkit-inner-spin-button,
 input[type=date]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button,
@@ -47,23 +71,12 @@ textarea.form-control{
     border-bottom-color: #a0a0a0a3!important;
     /* margin-top: -18px!important; */
 }
-.select2-selection__arrow{
-    /* margin-top: -7%; */
-}
+
 .select2-selection__rendered{
     color: black!important;
     font-weight: 400!important;
 }
-/* #supplyPlace1{
-    width: 95%;
-    margin-left: -9%;
-    background-color: #202940;
-    border-top-style: none;
-    border-left-style: none;
-    border-right-style: none;
-    border-bottom-color: #d2d2d21a;
-    color: white;
-} */
+
 .tbclose{
     color:red;
     text-shadow: 0 1px 0 red;
@@ -97,8 +110,12 @@ textarea.form-control{
     text-shadow: 0 1px 0 red;
 }
 #ProductModal #files{
-    padding-top: 0px;
+    padding-top: 1px;
     width: 75%!important;
+    display: flex!important;
+}
+#ContactModal #files{
+    display: flex!important;
 }
 optgroup{color :black; }
 .addrow:hover{
@@ -115,7 +132,7 @@ optgroup{color :black; }
     padding-left: 1px;
 }
 .product_heading{
-    background-color:#c3c3c3;
+    background-color:#000000;
     padding: 1% 0% 1% 1%;
     margin-bottom: 2%;
     margin-top: 1%;
@@ -128,35 +145,79 @@ optgroup{color :black; }
 .container{
     margin-left: 2%;
 }
-#show_cc:hover{
-    color: black!important;
+.input{
+    padding-top: 8px;
 }
-#close:hover{
-     color: red!important;
+.ui-datepicker{
+    z-index: 3 !important;
+}
+
+.dropbtn {
+  color: #000000db;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  margin-left: -144px;
+  margin-top: -6px;
+  display: none;
+  position: absolute;
+  background-color: #000000db;
+  min-width: 328px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* .dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+} */
+.select2-results__options{
+        font-size:14px !important;
  }
- #multiple_gst_link:hover{
+#multiple_gst_link:hover{
     color: white!important;
 }
 #common_gst:hover{
     color:white!important;
 }
+#tool_tip_link:hover{
+    color: white!important;
+}
 </style>
 
-<form method="post" action="{% url 'save_credit_note' %}" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'save_purchase_order' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="row" style="margin: 0% 5% 6% 7%;">
+    <div class="row" style="margin: 0% 5% 6% 7%">
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Add Credit Note</h4>
-                </div>  
+                    <h4 class="card-title ">Add Purchase Order</h4>
+                </div>
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
                     {% if is_gst != 'no' %}
                         {% if is_signle_gst == 'yes' %}
                             <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this credit note with another GST number</h6>&nbsp;
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this purchase order with another GST number</h6>&nbsp;
                             <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
@@ -169,7 +230,7 @@ optgroup{color :black; }
                         <h6 style="color: white;font-size: x-small;"></h6>
                     </div>
                     {% endif %}
-                </div>
+                </div>  
             <div style="margin-top: 4%;">
                 <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
                 <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
@@ -179,6 +240,183 @@ optgroup{color :black; }
                     <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
                     {% endfor %}
                 </select>
+                <div class="container" >
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="purchse_order">Purchase Order Number</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input class="form-control" id="purchse_order" name="purchse_order" required>
+                                    <div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" id="auto_purchase_number" name="auto_purchase_number">
+                                                Auto-Generate Purchase Order Number
+                                                <span class="form-check-sign">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="purchase_vendor">Vendor</label>
+                                </div>
+                                <div class="col-7">
+                                    <select class="form-control purchase_vendor" id="purchase_vendor" name="purchase_vendor" required onchange="state_compare(),vendor_info()">
+                                        <option value="">None</option>
+        
+                                        {% for contact in contacts %}
+                                        {% if contact.customer_type == 2 or contact.customer_type == 4 %}
+                                        <option value="{{contact.id}}">{{contact}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    
+                                </div>
+                                <div class="col-1 dropdown" style="margin-bottom: -6%;">
+                                    <!-- <p>
+                                        <span class="tool" tabindex="1" id="vendor_details">
+                                            <span class="material-icons">info</span>
+                                        </span>
+                                    </p> -->
+                                    <span class="material-icons dropbtn" style="font-size: x-large;margin-left: -14px;">info</span>
+                                    <!-- <button class="dropbtn">Dropdown</button> -->
+                                    <div class="dropdown-content" id="vendor_details">
+                                        <div id="v_question">
+                                            <p style="text-align: center;color: white;">?</p>
+                                        </div>
+                                        <div id="v_info" style="display: none;color: white;margin-top: 2%;margin-right: 3%;margin-bottom: 2%; margin-left: 3%;">
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_name" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Organisation Name:-
+                                                </div>
+                                                <div class="col-md-8" id="v_org" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <!-- <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Email:-
+                                                </div>
+                                                <div class="col-md-8" id="v_mail" style="padding-left: 3px;"></div>
+                                            </div> -->
+                                            <!-- <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Number:-
+                                                </div>
+                                                <div class="col-md-8" id="v_num" style="padding-left: 3px;"></div>
+                                            </div> -->
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    Address:-
+                                                </div>
+                                                <div class="col-md-8" id="v_addr" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row" style="display: none;">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GST Type:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gst_type" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4" style="padding-right: 0px;">
+                                                    GSTIN:-
+                                                </div>
+                                                <div class="col-md-8" id="v_gstin" style="padding-left: 3px;"></div>
+                                            </div>
+                                            <div class="row">
+                                                <a href="#" id="tool_tip_link" data-toggle="modal" data-target="#contact_gst_change" style="text-decoration: underline;">Want to Update GST number?</a>
+                                            </div>
+
+                                        </div>
+                                    <!-- <a href="#">Link 1</a> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-4">
+                                    <label for="">Reference#</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" id="purchase_reference" maxlength="10" name="purchase_reference">
+                                </div>
+                            </div>
+        
+                            <!-- mail -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label for="mail">mail</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" id="mail" name="mail">
+                                </div>
+                            </div>
+                            <!-- gst_type -->
+                            <div class="row" style="display: none;">
+                                <div class="col-4">
+                                    <label for="gst_type">gst_type</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <input type="text" class="form-control" id="gst_type" name="gst_type">
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <!-- right -->
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col-4">
+
+                                </div>
+                                <div class="col-7">
+
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 10%;">
+                                <div class="col-4">
+                                    <label for="purchase_date">Purchase Order Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="purchase_date" id="purchase_date" class="form-control" required >
+                                </div>
+                                <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
+                                    <i class="fa fa-calendar" id="purchase_date_icon"></i>
+                                </div> -->
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="purchase_delivary_date">Order Delivery Date</label>
+                                </div>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control">
+                                </div>
+                                <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
+                                    <i class="fa fa-calendar" id="delivary_date_icon"></i>
+                                </div> -->
+                            </div>
+
+                        </div>
+                    </div> 
+                    
+                </div>
+
                 <div class="container">
                     <div class="row">
                         <!-- left -->
@@ -186,114 +424,110 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="supplyPlace1">Credit Note#</label>
+                                    <label for="pruchase_delivary_address">Delivery Address</label>
                                 </div>
-                                <div class="col-8">
-                                    <input type="text" class="form-control"  name="CreditNoteNumber" value="" id="CreditNoteNumber" required>
-                                    <div>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" id="creditnote_number_default" name="creditnote_number_default">
-                                                Do you want to use default credit note number
-                                                <span class="form-check-sign">
-                                                    <span class="check"></span>
-                                                </span>
-                                            </label>
+                                <div class="col-8 input">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" onclick="ajax_org_address()">
+                                                    Organization
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div> 
-
+                                        <div class="col-6">
+                                            <div class="form-check form-check-radio">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" >
+                                                    Customer
+                                                    <span class="circle">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="row">
+
+                            <div class="row" id="cust_address" style="margin-top: 2%;display: none;">
                                 <div class="col-4">
-                                    <label for="customerName">Contact Name</label>
+                                    <label for="choose_customer_address"></label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control select1" id="customerName" name="customerName" onchange="data($(this)),customer_gst_type()" required> 
+                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()" style="width: 100%;">
                                         <option value="">None</option>
+
                                         {% for contact in contacts %}
+                                        {% if contact.customer_type == 1 or contact.customer_type == 3 or contact.customer_type == 4 %}
                                         <option value="{{contact.id}}">{{contact}}</option>
+                                        {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="row" style="margin-top: 10px;">
+                            <!-- hidden delivary state -->
+                            <!-- <div class="row" style="display: none;">
                                 <div class="col-4">
-                                    <label for="BillingAddress1">Billing Address</label>
+                                    <label for="order_state"></label>
                                 </div>
                                 <div class="col-8">
-                                    <textarea rows="3" placeholder="Billing address" id="BillingAddress1" name="BillingAddress" style="width: 100%;" required></textarea>
-                                    <!-- <input list="BillingAddress" role="2" class="form-control" name="BillingAddress" id="BillingAddress1" >
-                                    <datalist id="BillingAddress">
-                                        
-                                    </datalist>  -->
+                                     <input class="form-control" id="order_state" name='order_state'>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="Reference">Reference#</label>
+                                    
                                 </div>
-                                <div class="col-8">
-                                    <input type="text" class="form-control"  id="Reference" name="Reference" >
+                                <div class="col-8 input">
+                                    <textarea id="purchase_address" name="purchase_address" placeholder="Delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly></textarea>
                                 </div>
                             </div>
 
                         </div>
                         <!-- right -->
-                        <div class="col" style="margin-left: 5%;">
+                        <div class="col">
 
                             <div class="row">
+
                                 <div class="col-4">
-                                    <label for="CreditNoteDate">Credit Note Date</label>
+                                    <label for="">Attention</label>
                                 </div>
-                                <div class="col-7">
-                                    <input type="date" class="form-control"  id="CreditNoteDate" name="CreditNoteDate" required>
+                                <div class="col-7 input">
+                                    <input type="text" class="form-control" id="purchase_attention" maxlength="10" name="purchase_attention">
                                 </div>
+
                             </div>
 
-                            <div class="row" style="margin-top: 27px;">
-                                <div class="col-4">
-                                    <label for="email">Send to Email</label>
-                                </div>
-                                <div class="col-7">
-                                    <input type="email" class="form-control" id="email" name="Email_Address" multiple >
-                                    <div>
-                                        <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;color: black;"><font>Add CC</font></a>
-                                    </div>
-                                    
-                                </div>
-                            </div>
+                            <div class="row">
 
-                            <div class="row ccemail" style="display: none;margin-top: 10px;">
                                 <div class="col-4">
-                                    <label for="ccemail">CC Email</label>
+                                    <label for="purchase_contact">Contact Number</label>
                                 </div>
-                                <div class="col-7">
-                                    <div class="row">
-                                        <div class="col-11" style="padding-right: 0%;">
-                                            <input type="email" class="form-control ccemail" id="ccemail" name="CC_Email_Address" multiple>
-                                        </div>
-                                        <div class="col-1" style="padding-left: 2px;">
-                                            <a class="btn btn-link btn-danger" id="close" onclick="hide_cc_mail()" style="padding: 0%;color:red;">X</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" style="margin-top: 10px;">
-                                <div class="col-4">
-                                    <label for="supplyPlace1">State of Supply</label>
-                                </div>
-                                <div class="col-7">
-                                    <select class="form-control" name="supplyPlace" id="supplyPlace1" onchange="check_gst_status('vendor_side')">
+                                <div class="col-sm-2 input">
+                                    <select class="form-control" id="country_code" name="country_code" >
                                         <option value="">None</option>
-                                        {% for i in state %}
-                                            <option value="{{i.0}}">{{i.1}}</option>
+                                        {% for code in country_code%}
+                                        <option value="{{code.1}}" {% if code.1 == '+91' %} selected {% endif %}>{{code.1}}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                                <div class="col-md-5 input" style="padding-left: 0px;">
+                                    <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))"  >
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+
+                                </div>
+                                <div class="col-8" id="c_error_field" style="color:black;">
+                                    
                                 </div>
                             </div>
 
@@ -301,11 +535,11 @@ optgroup{color :black; }
                     </div>
                 </div>
 
-                    <table class="table" id="creditnote_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
+                    <table class="table" id="purchase_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid black;width: 10%;">Type</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
                             <th class="quantity_header" scope="col" style="border:1px solid black;width: 5%;">Quantity</th>
                             <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th>
@@ -319,47 +553,52 @@ optgroup{color :black; }
                           
                         </thead>
                         <tbody>
-                          <tr id="creditnote_row1">
-                            <!-- <td scope="row" style="border:1px solid white;">1</td> -->
+                          <tr id="purchase_row1">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 158px;">
+                                <select class="form-control select purchase_line_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
                                     
-                                    <option value="-------">None</option>
+                                    <option value="">None</option>
                                     
                                     {% for product in products %}
                                         <option value="{{product.id}}">{{product}}</option>
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;"></textarea>
+                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;"></textarea>
                                 
                             </td>
-                            <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
-                            <!-- <td style="border-bottom:1px solid white; padding-left: 3px;padding-right: 0%;width: 4%;">
-                                <input type="text" class="form-control" id="currency1" name="currency[]" readonly>
-                            </td> -->
                             <td style="border:1px solid black;">
-                                <div class="row" style="padding-top: 9px;">
+                                <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" onchange="validation()">
+                                    <option value="">None</option>
+                                    
+                                    {% for acc_group in acc_ledger_expense %}
+                                        <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>                  
+
+                            <td style="border:1px solid black;">
+                                <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='creditnote_calculate(1), validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]">
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" maxlength="10" onkeyup='purchase_calculate(1),validation()' id="Quantity1" name="Quantity[]">
                             </td>
                             <td style="border:1px solid black;">
-                                <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;" readonly>
+                                <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control " onkeyup='creditnote_calculate(1)' id="Discount1" name="Discount[]">
+                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" maxlength="10" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount1" name="Discount[]">
                                     </div>
                                     <div class="col-5" style="padding-left:1px;">
                                         <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
@@ -420,9 +659,9 @@ optgroup{color :black; }
                                         <label for="Amount1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,'Amount1')" onkeyup="balnk_credit()" id="Amount1" name="Amount[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control amount" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
-                                </div>   
+                                </div> 
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
@@ -432,208 +671,296 @@ optgroup{color :black; }
                                     <div class="col">
                                         <input type="text" class="form-control amount_inc" id="Amount_inc1" name="Amount_inc[]" style="margin-top: 1%;" readonly>
                                     </div>
-                                </div>  
+                                </div>   
                             </td>
-                            <td>
-                                <span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span>
-                            </td>
+                            <td><span class="tbclose material-icons" id="1" name="1" onclick="creditnote_removeRow(1)" style="cursor: default;">delete_forever</span></td>
                           </tr>
                           
                         </tbody>
-                      </table>
-                <!-- </div> -->
-                <div class="container">
-                
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;text-decoration: underline;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    </table>
+               
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
+                    </div>
                 </div>
-                
-                <div class="container">
-                    <div class="row">
-                        <div class="col-7 ">
-  
-                            <div class="row">
-                                <div class="col">
-                                    <label for="MessageOnStatement">Terms and Conditions</label>
-                                </div>
-                            </div>  
-     
-                             <div class="row">
-                                 <div class="col">
-                                    <textarea id="MessageOnStatement" name='t&c' rows="4" maxlength="400" size="400" style="width:73%;">{{term_msg|default_if_none:""}}</textarea>
-                                 </div>
-                             </div>
-                             {% if term_msg is None %}
-                             <div div class="row" style="margin-left: 1%;">
-                                 <div class="col form-check">
-                                     <label class="form-check-label">
-                                         <input class="form-check-input" type="checkbox" id="default" name="default" value="on">
-                                         Use this as default terms and condition
-                                         <span class="form-check-sign">
-                                             <span class="check"></span>
-                                         </span>
-                                     </label>
-                                 </div>
-                             </div>
-                             {% endif %}
-                             <div class="row">
-                                 <div class="col">
-                                     
-                                    <label for="Message">Notes</label>
+                <div class="row">
 
-                                 </div>  
-                             </div>
-     
-                             <div class="row">
-                                 <div class="col">
-                                     <textarea class="" id="Message" name="Message" rows="4" maxlength="400" size="400" style="width:73%;"></textarea>
-                                 </div>
-                             </div>
-                            
-                             {% if notes is None %}
-                             <div class="row">
-                                 <div class="col">
-                                     <div class="form-check">
-                                         <label class="form-check-label">
-                                             <input class="form-check-input" type="checkbox" id="creditnote_default_notes" name="creditnote_default_notes">
-                                             Use this as default notes
-                                             <span class="form-check-sign">
-                                                 <span class="check"></span>
-                                             </span>
-                                         </label>
-                                     </div>   
-                                 </div>
-                             </div>
-                             {% endif %}
-                             
-                            <div class="row">
-                                <div class="col-3">
-                                   <label for="Attachment">Attachment</label>
-                                </div>
-                                <div class="col" style="margin-top:6px">
-                                    <input type="file" class="form-control" id="Attachment" name="Attachment"  style="margin-left: -17px;width: 70%;">
-                                    <input type="button"  style="margin-left: 62%;position: absolute;margin-top: -23px;height: 25%;padding-top: 0%;padding-bottom: 21px;" value="Clear" onclick="clean()">
-                                    <font color="black" style="font-size:x-small;margin-left: -4%;">File Size Less Than: 20 MB </font><br>
-                                        
-                                    <!-- <label class="switch" style="padding-top: 5px;margin-left: -5%;">
-                                        <input type="checkbox" id="attach_check" name="attach_check" >
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <font style="margin-left: 6px;color: black;font-size: smaller;">Do you want to send this attachment with email?</font> -->
-                                </div>
+                    <div class="col-7">
+
+                        <div class="row">
+                            <div class="col">
+                                <label for="purchase_MessageOnStatement">Terms and Conditions</label>
+                            </div> 
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <textarea  id="purchase_MessageOnStatement" name="purchase_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
                             </div>
                         </div>
-                        
-                        <div class="col" >
-                             <div class="row">
-                                 <div class="col-4">
-                                     <label for="SubTotal">Sub Total:</label>
-                                 </div>
-                                 <div class="col-1" style="padding-right: 0%;">
-                                     <label style="color: black;;">₹</label>
-                                 </div>
-                                 <div class="col-6" style="padding-left: 0%;">
-                                     <input type="text" class="form-control" id="SubTotal"  name="SubTotal" readonly >
-                                 </div>
-                             </div>
-                             <!-- 5% GST -->
-                             <div id="cs_gst" style="display: none;">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <label for="CGST">CGST</label>
-                                    </div>
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label>₹</label>
-                                    </div>
-                                    <div class="col-6 input" style="padding-left: 0%;">
-                                        <input type="text" class="form-control" id="CGST" name="CGST" readonly>
-                                    </div> 
-                                </div> 
-                                <div class="row">
-                                    <div class="col-4">
-                                        <label for="SGST">SGST</label>
-                                    </div>
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label>₹</label>
-                                    </div>
-                                    <div class="col-6 input" style="padding-left: 0%;">
-                                        <input type="text" class="form-control" id="SGST" name="SGST" readonly>
-                                    </div> 
-                                </div> 
+                        {% if term_msg is None %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="purchase_t&c" name="purchase_t&c">
+                                        Use this as default terms and conditions
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>   
                             </div>
-                            <div class="row" id="i_gst" style="display: none;">
+                        </div>
+                        {% endif %}
+
+                        <div class="row" style="margin-top: 1%;">
+                            <div class="col">
+                                <label for="purchase_notes">Notes</label>
+                            </div> 
+                        </div>
+    
+                        <div class="row">
+                            <div class="col">
+                                <textarea  id="purchase_notes" name="purchase_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{pur_notes|default_if_none:""}}</textarea>
+                            </div>
+                        </div>
+                        {% if pur_notes is None %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" id="purchase_default_notes" name="purchase_default_notes">
+                                        Use this as default notes
+                                        <span class="form-check-sign">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>   
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col">
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="SubTotal">Sub Total:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color:black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="purchase_Discountotal">Total Discount:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color:black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" readonly>
+                            </div>
+                        </div>
+
+                        <!-- 5% GST -->
+                        <div id="cs_gst" style="display: none;">
+                            <div class="row">
                                 <div class="col-4">
-                                    <label for="IGST">IGST</label>
+                                    <label for="CGST">CGST</label>
                                 </div>
                                 <div class="col-1" style="padding-right: 0%;">
                                     <label>₹</label>
                                 </div>
                                 <div class="col-6 input" style="padding-left: 0%;">
-                                    <input type="text" class="form-control" id="IGST" name="IGST" readonly>
+                                    <input type="text" class="form-control" id="CGST" name="CGST" readonly>
                                 </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        <div class="row" id="i_gst" style="display: none;">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
                             </div>
-                             <!-- end 5% gst -->
-                             <div class="row">
-                                 <div class="col-4">
-                                     <label for="Total">Total:</label>
-                                 </div>
-                                 <div class="col-1" style="padding-right: 0%;">
-                                     <label style="color: black;">₹</label>
-                                 </div>
-                                 <div class="col-6" style="padding-left: 0%;">
-                                     <input type="text" class="form-control" id="Total" name="Total"  readonly>
-                                 </div> 
-                             </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
                         </div>
-                    </div>
-                </div>
-               
-                      
-                <div class="card-footer text-center" style="justify-content: center;">
-                    <div class="btn-group dropup" role="group">
-                        <button class="dropdown-item btn " name="save_close" id="save" onclick="return savebtn()" style="padding: 0px 5px 0px 5px;background-color:#598ebb">
-                            Save and Close
-                        </button>
-                        <button type="button" class="btn  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false" style="border-left: 2px solid;margin-right: 3%;background-color:#598ebb">
-                          <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        
-                        <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
-                        <button class="dropdown-item btn " name="save_send" type="submit" id="send" onclick="return sendbtn()" style="margin-bottom: 3%;width: 94%;background-color:#598ebb">
-                            <i class="material-icons" style="margin: 0px 11px 0px -20px;font-size: 23px;">email</i>Save and Send
-                        </button>
-                          <!-- <button class="dropdown-item btn btn-success" name="save_close" id="save" onclick="return savebtn()" style="margin: 0% 0% 4% 4%;width: 93%;">
-                            <i class="material-icons" style="margin: 0px 12px 0px -20px;font-size: 23px;">save</i>Save and Close 
-                        </button> -->
-                          <button class="dropdown-item btn " name="save_draft" id="draft" onclick="return draftbtn()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
-                            <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
-                        </button>
+                        <!-- end 5% gst -->
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="total_amount">Total Amount:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="Total" name="Total" readonly>
+                            </div> 
                         </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="Freight_Charges">Freight Charges:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="Freight_Charges" name="Freight_Charges" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'Freight_Charges')">
+                            </div> 
+                        </div> 
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="advance">Advance:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-5 input" style="padding-left: 0%;padding-right: 0%;">
+                                <input type="text" class="form-control" id="advance" name="advance" readonly>
+                            </div> 
+                            <div class="col-1" style="padding-left: 2px;padding-right: 0%;">
+                                <span class="material-icons note_add" style="color: black;cursor: default;" onclick="show_advance_info()">add_box</a>
+                            </div>
+                        </div> 
+
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="total_balance">Total Balance:</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" class="form-control" id="total_balance" name="total_balance" readonly>
+                            </div> 
+                        </div>
+
+                        <div class="row" style="display: none;">
+                            <div class="col-4">
+                                <label for="hidden_advance_date">Payment Date</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input class="form-control" type="date" id="hidden_advance_date" name="hidden_advance_date"> 
+                            </div> 
+                        </div>
+
+                        <div class="form-check" style="margin-top: 3px;display: none;">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="hidden_order_make_payment" name="hidden_order_make_payment">
+                                Do you want make advance payment
+                                <span class="form-check-sign">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="row" style="display: none;">
+                            <div class="col-4">
+                                <label for="hidden_advance_method">Payment Method</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <select class="form-control" type="date" id="hidden_advance_method" name="hidden_advance_method">
+                                    <option value="">---------</option>
+                                    <option value="1">Cash</option>
+                                    <option value="2">Card</option>
+                                    <option value="3">Cheque</option>
+                                    <option value="4">Demand Draft</option>
+                                    <option value="5">Net Banking</option>
+                                </select>
+                            </div> 
+                        </div>
+                        <div class="row" style="display: none;">
+                            <div class="col-4">
+                                <label for="hidden_advance_notes">Note</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label style="color: black;">₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <textarea id="hidden_advance_notes" name="hidden_advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
+                            </div> 
+                        </div>
+
                     </div>
-                      <a class="btn " href="{% url 'credit_note'  %}" type="reset">Cancel</a>
-                    </div>
-                    <!-- <button class="btn btn-success"  onclick="return error()" style="width: 9%;margin-right: 10px;">Save</button> -->
-                    
-                    
                 </div>
             </div>
+                      
+            <div class="card-footer text-center" id="order_buuton" style="justify-content: center;">
+                <div class="btn-group dropup order_button" role="group">
+                    <button class="dropdown-item btn " name="save_close" id="save" style="padding: 0px 5px 0px 5px;background-color:#598ebb" onclick="return order_check()">
+                        Save and Close
+                    </button>
+                    <button type="button" class="btn  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false" style="border-left: 2px solid;margin-right: 3%;background-color:#598ebb">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    
+                    <div class="dropdown-menu dropdown-menu-right" style="width: 10%!important;">
+                    <button class="dropdown-item btn " name="save_send" type="submit" id="send" onclick="return check_mail()" style="margin-bottom: 3%;width: 94%;background-color:#598ebb">
+                        <i class="material-icons" style="margin: 0px 11px 0px -20px;font-size: 23px;">email</i>Save and Send
+                    </button>
+                      <!-- <button class="dropdown-item btn btn-success" name="save_close" id="save" style="margin: 0% 0% 4% 4%;width: 93%;">
+                        <i class="material-icons" style="margin: 0px 12px 0px -20px;font-size: 23px;">save</i>Save and Close 
+                    </button> -->
+                    <button class="dropdown-item btn " name="save_draft" id="draft" onclick="return order_check()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
+                    </button>
+                    <button class="dropdown-item btn " name="save_print" id="print" onclick="return order_check()" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                        <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">print</i>Save and Print
+                    </button>
+                    </div>
+                </div>
+                  <a class="btn " href="{% url 'purchase_order'  %}" type="reset">Cancel</a>
+                </div>
+            </div>
+
             </div>
         </div>
     </div>
 </form>
+
 <!-- add product model popup -->
 
 <div class="modal fade" id="ProductModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
-            <form method="post" style="margin:0px;" enctype="multipart/form-data" id="add_creditnote_product_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Product</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="background-color:white">
+                <div class="modal-body">
                     {% csrf_token %}
                     <input type="hidden" value="{{contact_ins}}" name="ids">
                     <input type="hidden" value="{{tax_ins}}" name="obj_ins">
@@ -647,8 +974,17 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Type</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
-                                        {{add_product_form.product_type}}
+                                    <div class="col" style="padding-top:2%;">
+                                        <select name="product_type" class="form-control input-sm" onchange="show_bundle($(this))" id="id_product_type" required="">
+                                            <!-- <option value="">---------</option> -->
+                                          
+                                            <option value="0" selected="">GOODS</option>
+                                          
+                                            <option value="1">SERVICES</option>
+                                          
+                                            <!-- <option value="2">BUNDLE</option> -->
+                                          
+                                          </select>
                                     </div>
                                 </div>
 
@@ -656,7 +992,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">SKU/Product ID</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.sku}}
                                     </div>
                                 </div>
@@ -665,7 +1001,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Name</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.product_name}}
                                     </div>
                                 </div>
@@ -674,7 +1010,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">HSN/SAC Code</label>
                                     </div>
-                                    <div class="col-7" style="padding-top:1%;">
+                                    <div class="col-7" style="padding-top:2%;">
                                         {{add_product_form.hsn_code}}
                                     </div>
                                     <div class="col" style="">
@@ -689,7 +1025,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Units</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.unit}}
                                     </div>
                                 </div>
@@ -698,7 +1034,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Description</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.product_description}}
                                     </div>
                                 </div>
@@ -707,7 +1043,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">TDS%</label>
                                     </div>
-                                    <div class="col" style="padding-top:1%;">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.tds}}
                                     </div>
                                 </div>
@@ -730,52 +1066,6 @@ optgroup{color :black; }
                                 </div>
                             </div>
                         </div>   
-                    </div>
-
-                    <div class="container bundle_show">
-                        <div class="row product_heading">
-                            <b style="color:black;font-size:14px;">PRODUCTS IN BUNDLE</b>
-                        </div>
-
-                        <div class="row" style="margin-left: 0%;">
-                            <table class="table-primary" id="table" style="width: 100%;background-color:#fff;">
-                                <thead style="background-color: black;">
-                                        <th style="width: 21%;border: 1px solid white;color:black;font-weight: normal;font-size:14px;">Product Type</th>
-                                        <th style="width: 44%;border: 1px solid white;color:black;font-weight: normal;font-size:14px;"> Product Name</th>
-                                        <th style="border: 1px solid white;width: 20%;color:black;font-weight: normal;font-size:14px;">Quantity</th>
-
-                                </thead>
-                                <tbody>
-                                    <tr id="row_1">
-                                        
-                                        <td style="border: 1px solid white;padding-bottom: 2%;"> 
-                                            <select class="form-control" name="prod_type" id="product_type_1" onchange="bundle($(this),'#product_name_1',['#quantity_1'])" style="margin-top: 7%;">
-                                                <option value="-1">------</option>
-                                                <option value="0">GOODS</option>
-                                                <option value="1">SERVICES</option>
-                                            </select>
-                                        </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
-                                            <select class="form-control" id="product_name_1" name="prod_name[]" style="margin-top: 3%;">
-                                                <option value="0">------</option>
-                                            </select>
-                                        </td>
-                                        <td style="border: 1px solid white;padding-bottom: 2%;">
-                                            <input id="quantity_1" type="text" class="form-control" name="qty[]" onkeypress="return restrictAlphabets(event), float_value(event,'quantity_1')" style="margin-top: 7%;">
-                                        </td>
-                                        <td>
-                                            <span class=" material-icons tbclose" id="product_clear_row" name="product_Clear_row"  onclick="product_clear_row()">delete_forever</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="row">
-                            <button class="btn btn-link btn-sm" type="button" id="product_addrow" onclick="addRow(0)" style="text-decoration: underline;color: white;">
-                                Add Row
-                            </button>
-                        </div>
                     </div>
 
                     <div class="container">
@@ -898,7 +1188,7 @@ optgroup{color :black; }
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
@@ -983,8 +1273,8 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" type="button" name="credit_note_product" onclick="return creditnote_product_form(0)" style="background-color:#598ebb">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
+                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return purchase_product_form(0)" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
                 </div>
             </form>
         </div>
@@ -997,7 +1287,7 @@ optgroup{color :black; }
 <div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;margin-left: 8%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_creditnote_contact_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_contact_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Contact</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1024,8 +1314,17 @@ optgroup{color :black; }
                                         Contact Type
                                     </td>
                                     <td style="width: 44%;border:0px;padding-top: 2%;" id="con_type">
-                                        <!-- {{ contact_form.customer_type }} -->
-                                        {{ contact_form.fromwhere.as_hidden }}
+                                        <!-- <select name="customer_type" class="form-control input-sm" required="" id="id_customer_type" >
+                                            <option value="">---------</option>
+                                          
+                                            <option value="1" selected="">CUSTOMER</option>
+                                          
+                                            <option value="2" selected>VENDOR</option>
+                                          
+                                            <option value="3">EMPLOYEE</option>
+                                          
+                                          </select> -->
+                                          {{ contact_form.fromwhere.as_hidden }}
                                     </td>                                    
                                 </tr>
                                 <tr style="display: none;">
@@ -1098,7 +1397,7 @@ optgroup{color :black; }
                                     <td style="width: 44%;border:0px;padding-top: 2%;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
+                                    <td style="border:0px;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -1122,15 +1421,15 @@ optgroup{color :black; }
                                             </div>
                                         </div>                                     
                                     </td>   
-                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
+                                    <td style="border:0px;" class="error_field"></td>                                  
                                 </tr>     
 
                                 <tr>
                                     <td colspan="3" style="border:none; padding:0px; padding-top:30px;">
-                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#598ebb">
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding:0px;background-color:#598ebb;">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="address-tab" data-toggle="tab" href="#address-form" role="tab" aria-controls="address"
-                                                aria-selected="true">Address Details</a>
+                                                aria-selected="false">Address Details</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
@@ -1149,7 +1448,7 @@ optgroup{color :black; }
                                             </li>                                    
                                         </ul>
                                         <div class="tab-content" id="myTabContent">
-                                            <div class="tab-pane fade" id="tax-form" role="tabpanel" aria-labelledby="tax-tab" style="padding:10px 0px;">
+                                            <div class="tab-pane fade " id="tax-form" role="tabpanel" aria-labelledby="tax-tab" style="padding:10px 0px;">
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;">
                                                         <tr>
@@ -1160,7 +1459,7 @@ optgroup{color :black; }
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
+                                                            <td style="border:0px;" class="error_field"></td>                                    
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
@@ -1177,7 +1476,7 @@ optgroup{color :black; }
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
+                                                        <td style="border:0px;" class="error_field"></td>                                    
                                                     </tr>
 
                                                     </tbody>
@@ -1237,7 +1536,7 @@ optgroup{color :black; }
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class="tab-pane fade  show active" id="address-form" role="tabpanel" aria-labelledby="address-tab" style="padding:10px 0px;">
+                                            <div class="tab-pane fade show active" id="address-form" role="tabpanel" aria-labelledby="address-tab" style="padding:10px 0px;">
                     
                                                 <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right;display: none;" id="add_more_addresses" params="1" type="button">Add Another Address</button>
                                                 
@@ -1348,7 +1647,7 @@ optgroup{color :black; }
                                                 </table>                                                
                                             </div>
                                             <div class="tab-pane fade" id="accounts-form" role="tabpanel" aria-labelledby="accounts-tab" style="padding:10px 20px;">
-                                                <!-- <button class="btn btn-sm  pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
+                                                <!-- <button class="btn btn-sm pull-right" style="margin-bottom:15px; float:right" id="add_more_accounts" params="1" type="button">Add Another Account</button> -->
                                                 {{ accounts_formset.management_form }}
                                                 <table class="table-responsive">
                                                     <tbody style=" width: 100%; display: inline-table;" style="margin-left: 60px;">                                                        
@@ -1376,7 +1675,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
+                                                            <td style="border:0px;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1408,7 +1707,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
+                                                            <td style="border:0px;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1417,7 +1716,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
+                                                            <td style="border:0px;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1426,7 +1725,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
+                                                            <td style="border:0px;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1456,8 +1755,546 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" style="margin-top: -3%;">
-                    <button class="btn btn-sm  save_button" name="credit_note_product" onclick="return creditnote_contact_form(0)" style="margin-top:16px;background-color:#598ebb">Save</button>
-                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="margin-top:16px;background-color: #9095a2;">Cancel</button>
+                    <!-- <button class="btn btn-sm btn-success save_button" name="purchase_contact" id="add_contact_type" onclick="return purchase_contact_form()">Save</button> -->
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="contact_type_add" aria-label="Close" style="margin-top:16px;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Advance info -->
+<div class="modal fade" id="advance_info" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;width: 81%;margin-left: 20%;">
+            <form method="post" style="margin:0px" enctype="multipart/form-data">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Advance Option</h5>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="container">
+                        
+                        <!-- <div class="row">
+                            <div class="col-2">
+                                <label for="advance_payment">Payment Amount</label>
+                            </div>
+                            <div class="col-8 input">
+                                <input type="text" class="form-control" id="advance_payment" name="advance_payment"  readonly>
+                            </div>
+                        </div> -->
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_vendor_name">Vendor Name</label>
+                            </div>
+                            <div class="col-7 input">
+                                <input class="form-control" type="text" id="advance_vendor_name" name="advance_vendor_name" readonly> 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_vendor_mail">Vendor Email </label>
+                            </div>
+                            <div class="col-7 input">
+                                <input class="form-control" type="text" id="advance_vendor_mail" name="advance_vendor_mail" readonly> 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_vendor_contact">Vendor Contact</label>
+                            </div>
+                            <div class="col-7 input">
+                                <input class="form-control" type="text" id="advance_vendor_contact" name="advance_vendor_contact" readonly> 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_value">Advance</label>
+                            </div>
+                            <div class="col-7 input">
+                                <input type="text" class="form-control" name="advance_value" id="advance_value" maxlength="10" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
+                                <div>
+                                    <div class="form-check" style="margin-top: 3px;">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" id="order_make_payment" name="order_make_payment">
+                                            Do you want make advance payment
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_date">Payment Date</label>
+                            </div>
+                            <div class="col-7 input">
+                                <!-- <input type="text" class="form-control" name="advance_date" id="advance_date" class="form-control"> -->
+                                <input class="form-control" type="date" id="advance_date" name="advance_date"> 
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_method">Payment Method</label>
+                            </div>
+                            <div class="col-7 input">
+                                <select class="form-control" type="date" id="advance_method" name="advance_method">
+                                    <option value="">---------</option>
+                                    <option value="1">Cash</option>
+                                    <option value="2">Card</option>
+                                    <option value="3">Cheque</option>
+                                    <option value="4">Demand Draft</option>
+                                    <option value="5">Net Banking</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="advance_notes">Note</label>
+                            </div>
+                            <div class="col-7 input">
+                                <textarea id="advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm "  type='button' onclick="add_advance_info()" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="button" onclick="clear_advance_info()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- chosse address model popup -->
+
+<div class="modal fade" id="Purchase_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;width: 85%;margin-left: 15%;">
+            <form method="post" style="margin:0px" enctype="multipart/form-data">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Choose Address</h5>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+
+                    <table class="table" id="purchase_delivery_address">
+                        <thead class=" text-primary" style="background-color: black;">
+                          
+                            <th scope="col" style="border:1px solid black;width: 15%;">Choose</th>
+                            <th scope="col" style="border:1px solid black;width: 25%;">Branch</th>
+                            <th scope="col" style="border:1px solid black;">Address</th>
+
+                        </thead>
+
+                        <tbody>
+                          
+                        </tbody>
+
+                    </table>
+                   
+                </div>
+                <div class="modal-footer" id="add_button">
+                    <button class="btn btn-sm" type="button" name="select_address" id="select_address" onclick="return prefill()" style="background-color: #598ebb;">Submit</button>
+                    <!-- <button class="btn btn-sm btn-primary" type="button" name="add_address" id="button_add" onclick="org_cont_address_form()">Save</button> -->
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" id="table_close" aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- add addresses for contact -->
+
+<div class="modal fade" id="newContactAddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940">
+            <form method="post" style="margin:0px" id="add_address_contact" >
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Address Details</h5>
+                    <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="" name="ids_con" id="ids_con">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr style="display: none;">
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit">
+                                    Is Shipping Address
+                                </td>
+                                <td style="border:0px; padding:0px">     
+                                    {{ new_address_form.is_shipping_address  }}      
+                                    {{ new_address_form.is_billing_address }}
+                                                                                            
+                                    <label class="switch">                                        
+                                        <input type="checkbox" onclick="set_shipping($(this),'#id_is_shipping_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                    <span style="margin-left: 40px; position: relative; top: 5px;">
+                                        Is Billing Address
+                                    </span>
+
+                                    <label class="switch" style="margin-left: 20px;">                                        
+                                        <input type="checkbox" onclick="set_billing($(this),'#id_is_billing_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>  
+                            </tr>
+                            <tr style="display: none;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: white;">
+									Set Address As Default
+								</td>
+								<td style="border:0px;">
+									{{new_address_form.default_address}}
+									 <label class="switch" style="margin-left: 20px;">																				
+										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
+										<span class="slider round"></span>
+									</label>   
+								</td>                                    
+							</tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Contact Person
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.contact_person}}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Address Tag
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.address_tag}}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Flat/Building No.
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.flat_no }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Street
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.street }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    City
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.city }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Pincode
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.pincode }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    State
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.state }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Country
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.country }}
+                                </td>                                    
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm " type="button" id="add__addres" onclick="return save__address(event,'cont')" style="background-color:#598ebb;">Add New</button>
+                    <!-- <button class="btn btn-sm btn-success save_button" onclick="return check()">Add New</button> -->
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal" id="cancel_add_cont_address" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- add addresses for Organization -->
+
+<div class="modal fade" id="newOrgAddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940">
+            <form method="post" style="margin:0px" id="add_address_organization" >
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Address Details</h5>
+                    <button type="reset" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" value="" name="ids" id="ids">
+                    <input type="hidden" class="check_gst" name="check_gst">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+                            <tr>
+                                <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: black;">
+                                    Is Shipping Address
+                                </td>
+                                <td style="border:0px; padding:0px">     
+                                    {{ new_address_form.is_shipping_address  }}      
+                                    {{ new_address_form.is_billing_address }}
+                                                                                            
+                                    <label class="switch">                                        
+                                        <input type="checkbox" onclick="set_shipping($(this),'#id_is_shipping_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                    <span style="margin-left: 40px; position: relative; top: 5px;color: black;">
+                                        Is Billing Address
+                                    </span>
+
+                                    <label class="switch" style="margin-left: 20px;">                                        
+                                        <input type="checkbox" onclick="set_billing($(this),'#id_is_billing_address')" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>  
+                            </tr>
+							<tr style="display: none;">
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: black;;">
+									Set Address As Default
+								</td>
+								<td style="border:0px;">
+									{{new_address_form.default_address}}
+									 <label class="switch" style="margin-left: 20px;">																				
+										<input class="default_address_checkbox" type="checkbox" value="False" onclick="set_default_address($(this))">
+										<span class="slider round"></span>
+									</label>   
+								</td>                                    
+							</tr>
+							<tr>
+								<td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom;color: black;">
+									Address Tag
+								</td>
+								<td style="border:0px;">
+									{{new_address_form.address_tag}} 
+								</td>                                    
+							</tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Contact Person
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.contact_person}}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Flat/Building No.
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.flat_no }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Street
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.street }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    City
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.city }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Pincode
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.pincode }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    State
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.state }}
+                                </td>                                    
+                            </tr>
+                            <tr>
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
+                                    Country
+                                </td>
+                                <td style="border:0px;">
+                                    {{ new_address_form.country }}
+                                </td>                                    
+                            </tr>
+							<!-- <tr class="gst_tr">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GSTIN
+                                </td>
+                                <td style="border:0px;">
+                                    {{ gst_form.gstin }}
+                                </td>                                    
+                            </tr>
+							<tr class="gst_tr" style="display: none;">
+                                <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#a7a4a4">
+                                    GST Reg. Type
+                                </td>
+                                <td style="border:0px;">
+                                    {{ gst_form.gst_reg_type }}
+                                </td>                                    
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm " type="button" id="add_org_addres" onclick="return save__address(event,'org')" style="background-color:#598ebb;">Add New</button>
+                    <!-- <button class="btn btn-sm btn-success save_button" onclick="return check()">Add New</button> -->
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal" id="cancel_add_cont_address" aria-label="Close">Cancel</button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- modal account_ledger -->
+
+<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;margin-left: 11%;margin-top: 25%;">
+            <form method="post" style="margin:0px" id="add_group_form">
+                {% csrf_token %}
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add New Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="2" name="ids" id="major_head_ins">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+							<tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Major Head</label> 
+                                </td>
+                                <td style="border:0px;color:black;">Expense</td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Group Name</label> 
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_name }}
+                                </td>
+                                <td style="border:0px;" >
+                                    <font id="error_name" style="color: red;"></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    <label>Group Info</label>
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_info }}                                
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return purchase_accoun_ledger_form()" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- vendor gst update -->
+<div class="modal fade" id="contact_gst_change" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form method="post" style="margin:0px" id="vendor_gst_update">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add GST</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="vendor_ids" id="vendor_ids">
+                    <div class="row ">
+                        <div class="col-2">
+                            <label for="vendor_gst_type">GST Type</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <select class="form-control" name="vendor_gst_type" id="vendor_gst_type" required>
+                                <option value="">None</option>
+                                {% for i in gst_r_type %}
+                                <option value="{{i.0}}">{{i.1}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row single_gst_field">
+                        <div class="col-2">
+                            <label for="vendor_gst">GSTIN</label>
+                        </div>
+                        <div class="col-4" style="padding-top: 1%;">
+                            <input class="form-control" id="vendor_gst" name="vendor_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this))" required>
+                        </div>
+                        <div class="col-6">
+                            <p id="vendor_error_field" style="color: black;"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- <input type="hidden" name="gst_state" id="gst_state"> -->
+                    <!-- <input type="hidden" value="{{org_id}}" name="org_id" id="org_id"> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm " id="vendor_gst_save" onclick="v_gst_save()" style="background-color:#598ebb;">Update</button>
+                    <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    
                 </div>
             </form>
         </div>
@@ -1468,19 +2305,21 @@ optgroup{color :black; }
 
 <!-- UPDATE GST NUMBER -->
 {% include 'app/app_files/gst_changing_modal/update_gst_number_modal.html' %}
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
 
     document.getElementById("add_more_addresses").innerHTML = 'To add more addresses edit contact';
     // document.getElementById("add_more_accounts").innerHTML = 'To add more accounts edit accounts';
     //document.getElementById("cancelBtn").style.display = 'none';
-    document.getElementById("add_more_addresses").disabled = true;
-    // document.getElementById("add_more_accounts").disabled = true;
-    
+    document.getElementById("add_more_addresses").readonly = true;
+    // document.getElementById("add_more_accounts").readonly = true;
+
     csrf_token = '{{csrf_token}}';
+    
 </script>
 
 
 {% endblock %}
+
 
 

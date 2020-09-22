@@ -304,7 +304,7 @@ optgroup{color :black; }
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
                             {% if order_gst == 'active' %}
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{purchase_order.purchase_org_gst_num}}. Do you want to create this purchase entry with another GST number</h6>&nbsp;
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{purchase_order.purchase_org_gst_num}}.</h6>&nbsp;
                             {% else %}
                             <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this purchase entry with another GST number</h6>&nbsp;
                             {% endif %}
@@ -312,14 +312,14 @@ optgroup{color :black; }
                         </div>
                         {% endif %}
                     {% else %}
-                    <div class="row" style="margin-left: 0px;" id="change_update_gst">
+                    <!-- <div class="row" style="margin-left: 0px;" id="change_update_gst">
 
                         <h6 style="color: white;font-size: x-small;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
                         <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
-                    </div>
-                    <div style="display: none;" id="replace_change_update">
+                    </div> -->
+                    <!-- <div style="display: none;" id="replace_change_update">
                         <h6 style="color: white;font-size: x-small;"></h6>
-                    </div>
+                    </div> -->
                     {% endif %}
                 </div>
             <div style="margin-top: 4%;margin-left: 2%;">
@@ -372,12 +372,13 @@ optgroup{color :black; }
                                     <label for="invoice_customer">Vendor Name</label>
                                 </div>
                                 <div class="col-7" style="margin-top:-1%">
-                                    <select class="form-control entry_vendor" id="entry_vendor" name="entry_vendor" onchange="state_compare(),vendor_info()" required>
-                                        <option value="">None</option>
+                                    <select class="form-control entry_vendor" id="entry_vendor" name="entry_vendor" onchange="state_compare(),vendor_info()" required readonly>
+                                        <!-- <option value="">None</option> -->
         
                                         {% for contact in contacts %}
-                                        {% if contact.customer_type == 2 or contact.customer_type == 4 %}
-                                        <option value="{{contact.id}}" {% if purchase_order.vendor == contact %} selected {% endif %} >{{contact}}</option>
+                                        
+                                        {% if purchase_order.vendor == contact %}
+                                        <option value="{{contact.id}}" selected >{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
                                    </select>
@@ -481,7 +482,7 @@ optgroup{color :black; }
                                     <label for="purchase_entry_ref">Reference#</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref" value="{{purchase_order.purchase_order_number}}">
+                                    <input type="text" class="form-control" id="purchase_entry_ref" name="purchase_entry_ref" value="{{purchase_order.purchase_order_number}}" readonly>
                                 </div>
                             </div>
 
@@ -552,7 +553,7 @@ optgroup{color :black; }
                                 
                                 <select class="form-control select entry_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="padding-left: 0px;">
                                     
-                                    <option value="">None</option>
+                                    <!-- <option value="">None</option> -->
                                     
                                     {% for product in intproducts %}
                                             {% if items.product_id|lower == product.id|lower %}
@@ -560,12 +561,12 @@ optgroup{color :black; }
                                             {% endif %}
                                         {% endfor %}
                                         
-                                        {% for product in products %}
+                                        <!-- {% for product in products %}
     
                                             {% if items.product_id|lower != product.id|lower %}
                                             <option value="{{product.id}}">{{product}}</option>
                                             {% endif %}
-                                        {% endfor %}
+                                        {% endfor %} -->
                                 </select>
                                 
                                 <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
@@ -573,10 +574,12 @@ optgroup{color :black; }
                             </td>
                             <td style="border:1px solid black;">
                                 <select class="form-control purchase_entry_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()" required>
-                                    <option value="">None</option>
+                                    <!-- <option value="">None</option> -->
                                     
                                     {% for acc_group in acc_ledger_expense %}
-                                        <option value="{{acc_group.id}}"  {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
+                                    {% if items.account_id == acc_group.id %} 
+                                        <option value="{{acc_group.id}}" selected>{{acc_group.group_name}}</option>
+                                    {% endif %}
                                     {% endfor %}
                                 </select>
                             </td>                  
@@ -587,12 +590,12 @@ optgroup{color :black; }
                                         <label for="Price{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" >
+                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>  
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" value="{{items.quantity}}" onkeypress onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" >
+                                <input type="text" class="form-control quantity_dic" value="{{items.quantity}}" onkeypress onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='purchase_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" >
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -600,12 +603,15 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" value="{{items.discount}}"  onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount{{forloop.counter}}" name="Discount[]">
+                                        <input type="text" value="{{items.discount}}"  onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount{{forloop.counter}}" name="Discount[]" readonly>
                                     </div>
                                     <div class="col-5" style="padding-left:1px;">
                                         <select class="form-control" align="right"  id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
-                                            <option value="%" {% if items.discount_type == '%' %} selected {% endif %}>%</option>
-                                            <option value="₹" {% if items.discount_type == '₹' %} selected {% endif %}>₹</option>
+                                            {% if items.discount_type == '%' %}
+                                            <option value="%" selected>%</option>
+                                            {% else %}
+                                            <option value="₹" selected >₹</option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -615,9 +621,9 @@ optgroup{color :black; }
                                     <div class="col-8" style="padding-right: 3px;">
                                         <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
                                         <datalist id="tax">
-                                            {% for i in gst %}
+                                            <!-- {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
-                                            {% endfor %}
+                                            {% endfor %} -->
                                         </datalist>  
                                     </div>
                                     <div class="col" style="padding-left: 0%;padding-right: 0%;">
@@ -840,7 +846,7 @@ optgroup{color :black; }
                     </table>
                
             <div class="container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col">
                         {% if link_purchase_order == 'yes' %}
                         <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row({{item_count}})" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
@@ -848,7 +854,7 @@ optgroup{color :black; }
                         <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                         {% endif %}
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
 
                     <div class="col-7">
@@ -1553,7 +1559,7 @@ optgroup{color :black; }
                                     <td style="width: 44%;border:0px;padding-top: 2%;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -1577,7 +1583,7 @@ optgroup{color :black; }
                                             </div>
                                         </div>                                     
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>     
 
                                 <tr>
@@ -1615,7 +1621,7 @@ optgroup{color :black; }
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
@@ -1632,7 +1638,7 @@ optgroup{color :black; }
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                     </tr>
 
                                                     </tbody>
@@ -1831,7 +1837,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1863,7 +1869,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1872,7 +1878,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1881,7 +1887,7 @@ optgroup{color :black; }
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -2110,7 +2116,7 @@ optgroup{color :black; }
                             <input class="form-control" id="vendor_gst" name="vendor_gst" style="padding-left: 11px;" placeholder="Eg. 36ARVPS3698F1ZF" onkeyup="setMessage($(this))" onfocusout="valid_GST($(this))" required>
                         </div>
                         <div class="col-6">
-                            <p id="vendor_error_field" style="color: black;"></p>
+                            <p id="vendor_error_field" style="color: red;"></p>
                         </div>
                     </div>
                 </div>
@@ -2139,9 +2145,9 @@ optgroup{color :black; }
 
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
-        if($('#purchase_order_connect').val() == 'yes'){
-            state_compare()
-        }
+        // if($('#purchase_order_connect').val() == 'yes'){
+        //     state_compare()
+        // }
     });
 </script>
 

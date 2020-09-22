@@ -12,6 +12,7 @@ from app.models.purchase_model import *
 from app.models.customize_model import *
 from app.models.purchasentry_model import *
 from app.models.payment_made_model import *
+from app.models.expense_model import *
 
 from app.forms.contact_forms import * 
 from app.forms.tax_form import *
@@ -68,7 +69,7 @@ class PaymentMade(View):
 #=====================================================================================
 #
 
-def makePayment(request):
+def makePayment(request,slug):
     if request.POST:
         payment_count = PurchasePayment.objects.filter(user = request.user).count()
         payment_number = None
@@ -91,12 +92,14 @@ def makePayment(request):
         pay_notes = request.POST.get('pay_notes')
         pay_file = request.POST.get('pay_file')
 
-        purchase_entry = PurchaseEntry.objects.get(pk = int(request.POST.get('entry_id')))
+        if(slug == 'purchase_entry'):
+            purchase_entry = PurchaseEntry.objects.get(pk = int(request.POST.get('entry_id')))
+        elif(slug == 'expense'):
+            expense = Expense.objects.get(pk = int(request.POST.get('entry_id')))
         contact = contact = Contacts.objects.get(user = request.user, pk = int(request.POST.get('venodr_id')))
         account = accounts_model.AccGroups.objects.get(pk = int(account_ids))
         pay = PurchasePayment(
                 user = request.user,
-                purchase_entry_reference = purchase_entry,
                 vendor = contact,
                 payment_number = payment_number,
                 payment_date = pay_date,
@@ -107,19 +110,37 @@ def makePayment(request):
                 Amount = pay_amount,
                 account = account,
         )
+        if(slug == 'purchase_entry'):
+            pay.purchase_entry_reference = purchase_entry
+        elif(slug == 'expense'):
+            pay.expense = expense
+
         pay.save()
-        # some basic calculation after pay
 
-        if(float(balance_due) == float(pay_amount)):
-            PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '0.00',entry_status = 3)
-        elif(float(balance_due) > float(pay_amount)):
-            a = float(balance_due) - float(pay_amount)
-            if(purchase_entry.entry_status == 0):
-                PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '%.2f' % a,entry_status = 4)
-            else:
-                PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '%.2f' % a)
+        # some basic calculation after pay for purchase entry and expense
 
-    return redirect('/view_purchase_entry/', permanent = False)
+        if(slug == 'purchase_entry'):
+            if(float(balance_due) == float(pay_amount)):
+                PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '0.00',entry_status = 3)
+            elif(float(balance_due) > float(pay_amount)):
+                a = float(balance_due) - float(pay_amount)
+                if(purchase_entry.entry_status == 0):
+                    PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '%.2f' % a,entry_status = 4)
+                else:
+                    PurchaseEntry.objects.filter(pk = int(request.POST.get('entry_id'))).update(balance_due = '%.2f' % a)
+            return redirect('/view_purchase_entry/', permanent = False)
+        elif(slug == 'expense'):
+            if(float(balance_due) == float(pay_amount)):
+                Expense.objects.filter(pk = int(request.POST.get('entry_id'))).update(total_balance = '0.00',status = 3)
+            elif(float(balance_due) > float(pay_amount)):
+                a = float(balance_due) - float(pay_amount)
+                if(expense.status == 0):
+                    Expense.objects.filter(pk = int(request.POST.get('entry_id'))).update(total_balance = '%.2f' % a,status = 4)
+                else:
+                    Expense.objects.filter(pk = int(request.POST.get('entry_id'))).update(total_balance = '%.2f' % a)
+            return redirect('/expense/', permanent = False)
+
+    
 
 #=====================================================================================
 #   CHECK MAKE PAYMENT UNIQUR AND SET DEFULT

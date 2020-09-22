@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from app.models.users_model import *
 # from app.models.products_model import *
 from app.models.purchasentry_model import *
+from app.models.expense_model import *
 from app.models.contacts_model import *
 from app.other_constants import payment_constants
 
@@ -30,6 +31,14 @@ class PurchasePayment(models.Model):
 
     purchase_entry_reference = models.ForeignKey(
         PurchaseEntry,
+        on_delete = models.SET_NULL, 
+        db_index = True,
+        null = True,
+        blank = True,
+    )
+
+    expense = models.ForeignKey(
+        Expense,
         on_delete = models.SET_NULL, 
         db_index = True,
         null = True,

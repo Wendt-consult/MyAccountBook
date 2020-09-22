@@ -346,7 +346,7 @@ function creditnote_removeRow(a) {
     }else{
         $('#entry_row'+a+'').remove();
     }
-    // sub_total()
+    sub_total()
     // validation()
 }
 /********************************************************************/
@@ -359,27 +359,27 @@ $(document).ready(function() {
       });
     });
 
-$(document).on('click','#select2-ItemName1-container',function(){
+// $(document).on('click','#select2-ItemName1-container',function(){
 
-    for(var i = 1;i <= p_entry_number; i++){
-        var a = $('#row_ItemName'+p_entry_number+'').length
-        if(a == 0){
-        $('.select2-search').append('<button class="btn btn-link entry_product" data-toggle="modal" id="row_ItemName'+p_entry_number+'" onclick="get_purchase_product_id('+p_entry_number+'),c()" data-target="#ProductModal" style="margin-left: -11%;">+ Add New</button>');
-        }  
-    } 
-});
+//     for(var i = 1;i <= p_entry_number; i++){
+//         var a = $('#row_ItemName'+p_entry_number+'').length
+//         if(a == 0){
+//         $('.select2-search').append('<button class="btn btn-link entry_product" data-toggle="modal" id="row_ItemName'+p_entry_number+'" onclick="get_purchase_product_id('+p_entry_number+'),c()" data-target="#ProductModal" style="margin-left: -11%;">+ Add New</button>');
+//         }  
+//     } 
+// });
 
-function c(){
-    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
-    $(document).ready(function() {
-        $(function () {
-            $(".entry_line_item").select2();
-          });
-        });
-}
-function get_purchase_product_id(ids){
-    prefill_entry_product = ids
-}
+// function c(){
+//     $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+//     $(document).ready(function() {
+//         $(function () {
+//             $(".entry_line_item").select2();
+//           });
+//         });
+// }
+// function get_purchase_product_id(ids){
+//     prefill_entry_product = ids
+// }
 var prefill_entry_product 
 
 /********************************************************************/
@@ -393,28 +393,28 @@ $(document).ready(function() {
       });
     });
 
-$(document).on('click','#select2-product_account1-container',function(){
+// $(document).on('click','#select2-product_account1-container',function(){
     
-    for(var i = 1;i <= p_entry_number; i++){
-        var a = $('#row_account'+p_entry_number+'').length
-        if(a == 0){
-        $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+p_entry_number+'" onclick="get_purchase_account_id('+p_entry_number+'),acc_product_account()" data-target="#addGroupModal" style="margin-left: -24%;">+ Add New</button>');
-        }  
-    } 
-});
+//     for(var i = 1;i <= p_entry_number; i++){
+//         var a = $('#row_account'+p_entry_number+'').length
+//         if(a == 0){
+//         $('.select2-search').append('<button class="btn btn-link purchase_account" data-toggle="modal" id="row_account'+p_entry_number+'" onclick="get_purchase_account_id('+p_entry_number+'),acc_product_account()" data-target="#addGroupModal" style="margin-left: -24%;">+ Add New</button>');
+//         }  
+//     } 
+// });
 
-function acc_product_account(){
-    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
-    $(document).ready(function() {
-        $(function () {
-            $(".purchase_entry_account").select2();
-          });
-        });
-}
-function get_purchase_account_id(ids){
-    prefill_entry_account = ids
+// function acc_product_account(){
+//     $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+//     $(document).ready(function() {
+//         $(function () {
+//             $(".purchase_entry_account").select2();
+//           });
+//         });
+// }
+// function get_purchase_account_id(ids){
+//     prefill_entry_account = ids
 
-}
+// }
 var prefill_entry_account 
 
 /********************************************************************/
@@ -427,32 +427,32 @@ $(document).ready(function() {
         $("#entry_vendor").select2();
       });
     });
-$(document).on('click','#select2-entry_vendor-container',function(){
+// $(document).on('click','#select2-entry_vendor-container',function(){
 
-    $(".entry_product").hide()
-    var a = $('#addcontact').length
-        if(a == 0){
-            $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -8%;">+ Add Contact</button>');
-        }
-        });
-function add_contact(){
-    $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
-    $(document).ready(function() {
-        $(function () {
-            $("#entry_vendor").select2();
-          });
-        });
+//     $(".entry_product").hide()
+//     var a = $('#addcontact').length
+//         if(a == 0){
+//             $('.select2-search').append('<button class="btn btn-link " data-toggle="modal" onclick="add_contact()" id="addcontact" data-target="#ContactModal" style="margin-left: -8%;">+ Add Contact</button>');
+//         }
+//         });
+// function add_contact(){
+//     $(".select2-container--default").removeClass("select2-container--open","select2-container--focus");
+//     $(document).ready(function() {
+//         $(function () {
+//             $("#entry_vendor").select2();
+//           });
+//         });
 
-        $('#id_customer_type').remove()
-        var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="2" selected>VENDOR</option>'
-        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
-       $('#con_type').append(html)
+//         $('#id_customer_type').remove()
+//         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
+//         html +='<option value="2" selected>VENDOR</option>'
+//         html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
+//        $('#con_type').append(html)
 
-       $('#add_contact_type').remove()
-       var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" style="margin-top:16px;background-color: #598ebb;" onclick="return entry_contact_form()">Save</button>'
-       $( button ).insertBefore("#contact_type_add");
-    }
+//        $('#add_contact_type').remove()
+//        var button = '<button class="btn btn-sm btn-success save_button " name="purchase_contact" id="add_contact_type" style="margin-top:16px;background-color: #598ebb;" onclick="return entry_contact_form()">Save</button>'
+//        $( button ).insertBefore("#contact_type_add");
+//     }
 /************************************************************ */
 // FETCH PRODUCT account/unit/price/product description/currency
 /************************************************************ */
@@ -1450,3 +1450,25 @@ function vendor_info(){
     }
     
 }
+
+/*********************************************************************** */
+// CACHE DATA FOR QUANTITY VALIDATION
+/*********************************************************************** */
+
+var dataDic = {}
+$('.quantity_dic').each(function(){
+    dataDic[$(this).attr('id')] = $(this).val()
+});
+
+$('.quantity_dic').keyup(function(){
+    var quant = $(this).attr('id')
+    if(parseFloat($(this).val()) > parseFloat(dataDic[quant]) || parseFloat($(this).val()) == 0.00){
+        alert('You can not increase quantity or make quantity zero')
+        $('#'+quant).val(dataDic[quant])
+        // var ids = $(this).attr('id');
+        quant = quant.match(/\d+/);
+        quant = quant[0]
+        purchase_calculate(quant)
+
+    }
+});

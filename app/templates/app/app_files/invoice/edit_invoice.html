@@ -324,7 +324,7 @@ textarea{
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')" {% if invoice.invoice_type_new == 'on' %} checked {% endif %}>
+                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')" {% if invoice.invoice_type_new == 'on' %} checked {% else %} disabled {% endif %}>
                                                     One Time
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -335,7 +335,7 @@ textarea{
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="recurring_radio" id="recurring_radio" value="on" onclick="invoice_type('recurring')" {% if invoice.invoice_type_recurring == 'on' %} checked {% endif %}>
+                                                    <input class="form-check-input" type="radio" name="recurring_radio" id="recurring_radio" value="on" onclick="invoice_type('recurring')" {% if invoice.invoice_type_recurring == 'on' %} checked {% else %} disabled {% endif %}>
                                                     Recurring
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -1664,7 +1664,7 @@ textarea{
                                     <td style="width: 44%;border:0px;padding-top: 2%;">
                                         {{ contact_form.email }}
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>
                                 <!-- <tr>
                                     <td>
@@ -1688,7 +1688,7 @@ textarea{
                                             </div>
                                         </div>                                     
                                     </td>   
-                                    <td style="border:0px;" class="error_field"></td>                                  
+                                    <td style="border:0px;color: red!important;" class="error_field"></td>                                  
                                 </tr>     
 
                                 <tr>
@@ -1726,7 +1726,7 @@ textarea{
                                                                 {{ tax_form.pan }}  
                                                                 
                                                             </td>  
-                                                            <td style="border:0px;" class="error_field"></td>                                    
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                         </tr>
                                                       
                                                         <td style=" width:168px; border:0px; vertical-align: bottom">
@@ -1743,7 +1743,7 @@ textarea{
                                                         <td style="width:44%;border:0px;padding-top: 2%;">
                                                             {{ tax_form.gstin }} 
                                                         </td> 
-                                                        <td style="border:0px;" class="error_field"></td>                                    
+                                                        <td style="border:0px;color: red!important;" class="error_field"></td>                                    
                                                     </tr>
 
                                                     </tbody>
@@ -1942,7 +1942,7 @@ textarea{
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ formset.ifsc_code }}
                                                             </td>      
-                                                            <td style="border:0px;" class="error_field"></td>                              
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>                              
                                                         </tr>
                                                         <tr class="accounts_formset">
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1974,7 +1974,7 @@ textarea{
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.website }}
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1983,7 +1983,7 @@ textarea{
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.facebook }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
@@ -1992,7 +1992,7 @@ textarea{
                                                             <td style="width:44%;border:0px;padding-top: 2%;">
                                                                 {{ social_form.twitter }} 
                                                             </td>
-                                                            <td style="border:0px;" class="error_field"></td>  
+                                                            <td style="border:0px;color: red!important;" class="error_field"></td>  
                                                         </tr>
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">

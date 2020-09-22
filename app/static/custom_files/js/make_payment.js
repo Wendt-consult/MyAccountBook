@@ -57,11 +57,11 @@ function float_value(event, elem) {
 /********************************************************************/
 
 function check_amount(model_id){
-    var enter_value = $('#paymentModel-'+model_id).find('#pay_amount-'+model_id).val()
-    var balance = $('#paymentModel-'+model_id).find('#entry_balance-'+model_id).val()
+    var enter_value = $('#expensePaymentModel-'+model_id).find('#pay_amount-'+model_id).val()
+    var balance = $('#expensePaymentModel-'+model_id).find('#entry_balance-'+model_id).val()
     if(parseFloat(enter_value) == 0.00 || parseFloat(enter_value) > parseFloat(balance)){
         alert("Please enter valid amount")
-        $('#paymentModel-'+model_id).find('#pay_amount-'+model_id).focus()
+        $('#expensePaymentModel-'+model_id).find('#pay_amount-'+model_id).focus()
         return false
     }else{
         return true
