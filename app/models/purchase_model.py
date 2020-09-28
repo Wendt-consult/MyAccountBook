@@ -94,7 +94,7 @@ class PurchaseOrder(models.Model):
         null=True
     )
 
-    delivery_address = models.CharField(
+    delivery_address = models.TextField(
         max_length = 500,
         db_index = True,
         blank=True,
@@ -391,6 +391,13 @@ class PurchaseOrder(models.Model):
     purchase_delete_status = models.IntegerField(
         db_index = True,
         default=0,
+        blank = False,
+        null = False,
+    )
+
+    is_purchase_entry_maked = models.BooleanField(
+        db_index = True,
+        default=False,
         blank = False,
         null = False,
     )

@@ -151,6 +151,20 @@ class Organisations(models.Model):
         blank = True,
         null = True,
     )
+
+    debit_terms_and_condition = models.CharField(
+        max_length = 400,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
+    debit_note = models.CharField(
+        max_length = 400,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
     def __str__(self):
         return self.organisation_name
 

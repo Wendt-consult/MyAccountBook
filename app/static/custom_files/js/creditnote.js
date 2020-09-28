@@ -1,19 +1,32 @@
 
 /************************************************************ */
-// GENTRATE DATE
+// DATE PICKER
 /************************************************************ */
-var d = new Date();
-var day = d.getDate()
-var month =  (d.getMonth() + 1).toString()
-var year = d.getFullYear().toString()
-if(day < 10 ){
-    day = "0" + day.toString()
+$("#CreditNoteDate").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
+$("#edit_CreditNoteDate").datepicker({dateFormat: 'dd-mm-yy'});
+// $("#CreditNoteDate").val(date)
+
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
+
+$("#CreditNoteDate,#edit_CreditNoteDate").on('change', function(event){
+    if($(this).val() != ''){
+        dateValidation($(this));
+    }
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+    }
 }
-if(month.length < 2){
-    month = "0" + month
-}
-var date = year+ '-' + month + '-' + day.toString()
-$("#CreditNoteDate").val(date)
+$('#Journalentrydate,#edit_Journalentrydate').keypress(function(event) {
+    event.preventDefault();
+});
 
 /************************************************************ */
 // PRODUCT ROW ADD/REMOVE
@@ -44,12 +57,12 @@ function creditnote_addRow(a) {
     html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="type'+creditnote_number+'" name="type[]" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'" style="margin-top:5px">₹</label></div>'
-    html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:8%" required></div></div></td>'
+    html +='<div class="col"><input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:8%" required></div></div></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" name="Quantity[]" required></td>'
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Discount'+creditnote_number+'" name="Discount[]"></div>'
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+creditnote_number+'" name="Dis[]" onchange="dicount_type('+creditnote_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+creditnote_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax_list'+creditnote_number+'" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+creditnote_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax_list'+creditnote_number+'"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
     if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+creditnote_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+creditnote_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
@@ -103,6 +116,15 @@ function creditnote_addRow(a) {
                 // for(var i = 0;i < unit.length;i++){
                 //     $('<option/>').val(unit[i]).html(unit[i]).appendTo('#Unit'+number+'');
                 // }
+
+                if(data.gst.length > 0){
+                    var tax_option = data.gst
+                    var tax_htm 
+                    for(var k = 0; k < tax_option.length; k++){ 
+                        tax_htm += '<option value="'+tax_option[k]+'">'; 
+                    }
+                    $('#tax_list'+creditnote_number).empty().append(tax_htm)
+                }
             },
         });
     
@@ -437,31 +459,34 @@ function dicount_type(a){
 }
 
 function sub_total(){
-    var sub_total  = 0
-    
-    $(".amount").each(function(){
+    var sub_total = 0
+    if ($('#blank_credit_toggle').is(":checked")){
+            var sub = $('#blank_amount').val()
+            if(sub == ''){
+                sub_total += 0
+            }
+            else{
+                sub_total +=  parseFloat(sub)
+            }
+    }
+    else{
+        $(".amount").each(function(){
 
-        var a = $(this).val()
-        if(a == ''){
-            sub_total += 0
-        }
-        else{
-            sub_total +=  parseFloat(a)
-        }
-    });
-
-    // if(sub_total == 0){
-    //     $("#SubTotal").val('')
-    //     creditnote_tax_cacultion()
-    // }
-    // else{
-        if(parseFloat(sub_total) != 0.00){
-            $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
-        }
-        change_state()
-        // creditnote_tax_cacultion()
-    // }
-    
+            var a = $(this).val()
+            if(a == ''){
+                sub_total += 0
+            }
+            else{
+                sub_total +=  parseFloat(a)
+            }
+        });
+    }
+    if(parseFloat(sub_total) != 0.00 ){
+        $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+    }else{
+        $("#SubTotal").val('')
+    }
+    change_state()
 }
 /********************************************************************/
 // CHECK GST STATUS FOR APPLY
@@ -668,7 +693,9 @@ function change_state(){
     $(".credit_note_item").each(function(){
 
         var ids = $(this).attr('id');
-        ids = ids.substring(ids.length - 1, ids.length);
+        ids = ids.match(/\d+/);
+        ids = ids[0]
+        // ids = ids.substring(ids.length - 1, ids.length);
         single_row_gst_cal = 'state'
         var check = row_gst_cal(ids);
     });
@@ -1222,3 +1249,43 @@ function update_single_gst(){
 }
 
   
+/********************************************************************/
+//  SHOW AND HIDE balnk table and product line item
+/********************************************************************/
+function hide_table() {
+     if ($('#blank_credit_toggle').is(":checked")){
+        c_box = confirm('You want to create blank credit note');
+        if(c_box){
+            $('#blank_desc').prop('required' ,true)
+            $('#blank_amount').prop('required',true)
+            $('#blank_creditnote_table').show()
+            $('#creditnote_table').hide()
+            $('#addrow').hide()
+            $("#creditnote_table").find("tr:gt(1)").remove();
+            $('.credit_note_item').each(function(){
+               var ids = $(this).attr('id')
+               ids = ids.match(/\d+/);
+               ids = ids[0]
+               $('#ItemName'+ids).val('-------').change()
+            });
+            sub_total()
+        }else{
+            $('#blank_credit_toggle').prop('checked',false)
+        }
+     }
+     else{
+        c_box = confirm('You want to create normal credit note');
+        if(c_box){
+            $('#blank_desc').prop('required' ,false)
+            $('#blank_amount').prop('required',false)
+            $('#blank_creditnote_table').hide()
+            $('#creditnote_table').show()
+            $('#addrow').show()
+            $('#blank_desc').val('')
+            $('#blank_amount').val('')
+            sub_total()
+        }else{
+            $('#blank_credit_toggle').prop('checked',true)
+        }
+     }
+   }

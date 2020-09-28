@@ -185,9 +185,15 @@ def add_invoice(request, slug):
         for i in range(0,acc_count):
             acc_group_name.append(acc_ledger_income[i].group_name)
             acc_ids.append(acc_ledger_income[i].id)
+        
+        # for tax option
+        tax = []
+        org_gst = len(gst)
+        for i in range(0,org_gst):
+            tax.append(gst[i].taxname_percent)
 
         # common dictionary
-        data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids} 
+        data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids, 'gst':tax} 
         return JsonResponse(data)
     elif(int(slug) == 0):
         # for product details

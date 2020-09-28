@@ -154,7 +154,7 @@ thead th{
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
                                         <a class="customer_name" id="hover" href="{% url 'edit_invoice' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.invoice_customer}}
+                                            {{i.invoice_customer|truncatechars:20}}
                                         </a>
                                     </td>
                                     {% else %}
@@ -163,7 +163,7 @@ thead th{
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
                                         <a class="customer_name" id="hover" href="{% url 'edit_invoice' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.invoice_customer}}
+                                            {{i.invoice_customer|truncatechars:20}}
                                         </a>
                                     </td>
                                     {% endif %}

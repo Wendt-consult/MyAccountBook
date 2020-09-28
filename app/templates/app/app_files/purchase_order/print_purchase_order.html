@@ -28,7 +28,7 @@ a {
 
 body {
   position: relative;
-  width: 85%;  
+  width: 90%;  
   height: 29.7cm; 
   margin: 0 auto; 
   color: #555555;
@@ -140,6 +140,7 @@ table .desc {
 
 table .unit {
   background: #DDDDDD;
+  text-align: left;
 }
 
 table .qty {
@@ -327,24 +328,24 @@ footer {
           <tr style="background-color: #4682b4;color: black;">
             {% if purchase_order.is_cs_gst == True %}
             <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
-            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
-            <th style="text-align: left;border: 1px solid black;">PRICE</th>
-            <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
-            <th style="text-align: left;border: 1px solid black;">UNIT</th>
-            <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">QUANTITY</th>
+            <th style="text-align: left;border: 1px solid black;width: 9%;">UNIT</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">DISCOUNT</th>
             <th style="text-align: left;border: 1px solid black;width: 7%;">TAX(In %)</th>
-            <th style="text-align: left;border: 1px solid black;">CGST</th>
-            <th style="text-align: left;border: 1px solid black;">SGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">CGST</th>
+            <th style="text-align: left;border: 1px solid black;width:8%">SGST</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
             {% elif purchase_order.is_cs_gst == False %} 
-            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
-            <th style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
             <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
             <th style="text-align: left;border: 1px solid black;">UNIT</th>
             <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
             <th style="text-align: left;border: 1px solid black;">TAX(in %)</th>
-            <th style="text-align: left;border: 1px solid black;">IGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">IGST</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
             {% endif %}
@@ -387,7 +388,7 @@ footer {
               {% endif %}
             </td>
             {% endif %}
-            <td class="unit" style="text-align: left;border: 1px solid black;">{{item.amount}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">
               {% if item.amount_inc %}₹. {{item.amount_inc}}  {% endif %}
             </td>
@@ -458,6 +459,7 @@ footer {
             </div>
           </div>
 
+          {% if purchase_order.total_discount %}
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5><b>Total Discount:-</b></h5>
@@ -469,6 +471,7 @@ footer {
               <h5><b>{{purchase_order.total_discount}}</b></h5>
             </div>
           </div>
+          {% endif %}
 
           {% if purchase_order.cgst and purchase_order.sgst %}
           <div class="row" style="margin-left: 38%;">
@@ -519,7 +522,7 @@ footer {
               <h5><b id="final_total">{{purchase_order.total_amount}}</b></h5>
             </div>
           </div>
-          {% if purchase_order.freight_charges %}
+
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5><b>Freight Charges:-</b></h5>
@@ -528,11 +531,10 @@ footer {
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.freight_charges}}</b></h5>
+              <h5><b id="final_total">{% if purchase_order.freight_charges %}{{purchase_order.freight_charges}} {% else %} 0.00 {% endif %}</b></h5>
             </div>
           </div>
-          {% endif%}
-          {% if purchase_order.advance %}
+
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5><b>advance:-</b></h5>
@@ -541,10 +543,10 @@ footer {
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
-              <h5><b id="final_total">{{purchase_order.advance}}</b></h5>
+              <h5><b id="final_total">{% if purchase_order.advance %}{{purchase_order.advance}} {% else %} 0.00 {% endif %}</b></h5>
             </div>
           </div>
-          {% endif %}
+
           <div class="row" style="margin-left: 38%;">
             <div class="col">
               <h5><b>Total Balance:-</b></h5>

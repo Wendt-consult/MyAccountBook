@@ -79,8 +79,8 @@ function journal_addRow(a) {
         html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control journal_item" id="account_header'+journal_number+'" name="account_header[]"  style="margin-top:-10px;padding-left: 0px;width: 174.6px;" required><option value="">-------</option></select></td>'
         html +='<td style="border:1px solid black;"><textarea id="details'+journal_number+'" name="details[]" rows="2" placeholder="Max character 250" style="padding-left: 0px;width: 100%;" required></textarea></td>'
         html +='<td style="border:1px solid black;"><select class="form-control " id="contactname'+journal_number+'" name="contactname[]"  style="padding-left: 0px;width: 174.6px;" required> <option value="">-------</option></select></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="debit'+journal_number+'">₹</label> </div><div class="col"><input type="text" class="form-control debit" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'debit'+journal_number+'\')"  id="debit'+journal_number+'" name="debit[]" style="margin-top: 1%;"></div></div></td>'
-        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="credit'+journal_number+'">₹</label> </div><div class="col"> <input type="text" class="form-control credit" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'credit'+journal_number+'\')" id="credit'+journal_number+'" name="credit[]" style="margin-top: 1%;"></div></div></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="debit'+journal_number+'">₹</label> </div><div class="col"><input type="text" class="form-control debit" maxlength="10" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'debit'+journal_number+'\')"  id="debit'+journal_number+'" name="debit[]" style="margin-top: 1%;"></div></div></td>'
+        html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="credit'+journal_number+'">₹</label> </div><div class="col"> <input type="text" class="form-control credit" maxlength="10" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,\'credit'+journal_number+'\')" id="credit'+journal_number+'" name="credit[]" style="margin-top: 1%;"></div></div></td>'
         html +='<td style="border-top: none;"><span class="tbclose material-icons" id="'+journal_number+'" name="'+journal_number+'" onclick="journal_removeRow('+journal_number+')" style="cursor: default;">delete_forever</span></td></tr>'
         // $('#journal_table').append(html)
         $(html).insertBefore( "#total_debit_credit" );
@@ -201,7 +201,7 @@ $("#journal_checkbox").click(function(){
             }
         });
     }else{
-        $('#purchse_order').val('')
+        $('#journalnumber').val('')
     }  
 });
 
@@ -211,7 +211,7 @@ $("#journalnumber").focusout(function(){
     var journal_number = $("#journalnumber").val()
     $.ajax({
         type:"GET",
-        url: "/purchase_order/unique_number/"+ins+"/"+journal_number+"/",
+        url: "/journalentry/unique_number/"+ins+"/"+journal_number+"/",
         dataType: "json",
         success: function(data){
             if(data.unique != 0){
@@ -239,3 +239,32 @@ function journal_check(){
         return false
     }
 }
+
+/********************************************************************/
+// Date Picker
+/********************************************************************/
+
+
+$("#Journalentrydate").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
+$("#edit_Journalentrydate").datepicker({dateFormat: 'dd-mm-yy'});
+/********************************************************************/
+//  Datepicker validation
+/********************************************************************/
+
+$("#Journalentrydate,#edit_Journalentrydate").on('change', function(event){
+    if($(this).val() != ''){
+        dateValidation($(this));
+    }
+});
+
+function dateValidation(element){
+    var date = $(element).val();
+    var regEx = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    if(!regEx.test(date)){
+        alert('Invalid Date');
+        $(element).val('');
+    }
+}
+$('#Journalentrydate,#edit_Journalentrydate').keypress(function(event) {
+    event.preventDefault();
+});

@@ -150,7 +150,7 @@ optgroup{color :black; }
                                     <label for="journalnumber">Journal#</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" value="{{jornalentry.journalentry_number}}" name="journalnumber" value="" id="journalnumber" required>
+                                    <input type="text" class="form-control" value="{{jornalentry.journalentry_number}}" maxlength="50" name="journalnumber" value="" id="journalnumber" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
@@ -171,7 +171,7 @@ optgroup{color :black; }
                                     <label for="Reference">Reference#</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" value="{{jornalentry.journalentry_refrence}}" id="Reference" name="Reference" >
+                                    <input type="text" class="form-control" value="{{jornalentry.journalentry_refrence}}" maxlength="50" id="Reference" name="Reference" >
                                 </div>
                             </div>
 
@@ -184,7 +184,7 @@ optgroup{color :black; }
                                     <label for="CreditNoteDate">Journal entry date</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="date" class="form-control" value="{{jornalentry.journalentry_date|date:'Y-m-d'}}" id="Journalentrydate" name="Journalentrydate" required>
+                                    <input type="text" class="form-control" value="{{jornalentry.journalentry_date|date:'Y-m-d'}}" id="edit_Journalentrydate" name="Journalentrydate" required>
                                 </div>
                             </div>
 
@@ -240,7 +240,7 @@ optgroup{color :black; }
                                         <label for="debit{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control debit" value="{{i.debit}}" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'debit{{forloop.counter}}')" id="debit{{forloop.counter}}" name="debit[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control debit" value="{{i.debit}}" maxlength="10" onkeyup="debit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'debit{{forloop.counter}}')" id="debit{{forloop.counter}}" name="debit[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>
@@ -250,7 +250,7 @@ optgroup{color :black; }
                                         <label for="credit{{forloop.counter}}">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control credit" value="{{i.credit}}" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'credit{{forloop.counter}}')" onkeyup="balnk_credit()" id="credit{{forloop.counter}}" name="credit[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control credit" value="{{i.credit}}" maxlength="10" onkeyup="credit_total()" onkeypress="return restrictAlphabets(event), float_value(event,'credit{{forloop.counter}}')" onkeyup="balnk_credit()" id="credit{{forloop.counter}}" name="credit[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>
@@ -307,7 +307,7 @@ optgroup{color :black; }
      
                              <div class="row">
                                  <div class="col">
-                                     <textarea class="" id="Message" name="Message" rows="4" maxlength="400" size="400" style="width:73%;">{{jornalentry.Notedefault_if_none:""}}</textarea>
+                                     <textarea class="" id="Message" name="Message" rows="4" maxlength="100" size="100" placeholder="Max length 100 character" style="width:73%;">{{jornalentry.Note|default_if_none:""}}</textarea>
                                  </div>
                              </div>
                              

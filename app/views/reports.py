@@ -225,10 +225,12 @@ class GSTLedgerReportsView(View):
 
             s_date = request.GET.get("start_date", "")
             # change start date formate
-            start_date = datetime.strptime(str(s_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            if(s_date != ''):
+                start_date = datetime.strptime(str(s_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             e_date = request.GET.get("end_date", "")
             # change end date formate
-            end_date = datetime.strptime(str(e_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+            if(e_date != ''):
+                end_date = datetime.strptime(str(e_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             account_type = request.GET.get("account_type", None)
             time_period = request.GET.get("time_period", False)
             year_t = request.GET.get("year", None)

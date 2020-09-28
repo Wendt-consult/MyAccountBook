@@ -148,110 +148,111 @@ class CreditNode(models.Model):
         blank = True,
         null = True,
     )
-    cgst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # cgst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    igst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # igst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    sgst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # sgst_5 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    cgst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # cgst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    igst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # igst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    sgst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # sgst_12 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    cgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # cgst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    igst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # igst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    sgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # sgst_18 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    cgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # cgst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    igst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # igst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    sgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # sgst_28 = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    cgst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # cgst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    igst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # igst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
-    sgst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # sgst_other = models.CharField(
+    #     max_length=30,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
+
     is_cs_gst = models.BooleanField(
         db_index = True,
         choices = user_constants.IS_TRUE,
@@ -316,6 +317,15 @@ class CreditNode(models.Model):
         null = False,
     )
 
+    is_blank_credit = models.CharField(
+        db_index = True,
+        max_length=4,
+        default = 'off',
+        choices = CREDIT_TYPE,
+        blank=True,
+        null=True,
+    )
+
     def __str__(self):
         return "{} - {}".format(self.contact_name,self.id) 
 
@@ -326,6 +336,7 @@ class CreditNode(models.Model):
 #**************************************************************************
 
 class creditnote_Items(models.Model):       
+
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
 

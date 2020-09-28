@@ -352,7 +352,7 @@ optgroup{color :black; }
                                     <label for="invoice_number">Purchase Number</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input class="form-control" id="purchase_entry_number" name="purchase_entry_number" required>
+                                    <input class="form-control" id="purchase_entry_number" name="purchase_entry_number" maxlength="50" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
@@ -777,8 +777,8 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
-                                        <datalist id="tax">
+                                        <input list="tax_list1" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
+                                        <datalist id="tax_list1">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
                                             {% endfor %}

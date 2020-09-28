@@ -232,7 +232,7 @@ optgroup{color :black; }
                                     <label for="Reference">Reference#</label>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control"  id="Reference" name="Reference" value="{{credit_note.invoice_refrence}}">
+                                    <input type="text" class="form-control" maxlength="50" id="Reference" name="Reference" value="{{credit_note.invoice_refrence}}">
                                 </div>
                             </div>
 
@@ -245,7 +245,7 @@ optgroup{color :black; }
                                     <label for="CreditNoteDate">Credit Note Date</label>
                                 </div>
                                 <div class="col-7">
-                                    <input type="date" class="form-control"  id="edit_CreditNoteDate" value="{{credit_note.credit_date|date:'Y-m-d'}}" name="CreditNoteDate" >
+                                    <input type="text" class="form-control"  id="edit_CreditNoteDate" value="{{credit_note.credit_date|date:'d-m-Y'}}" name="CreditNoteDate" >
                                 </div>
                             </div>
 
@@ -311,7 +311,57 @@ optgroup{color :black; }
                         </div>
                     </div>
                 </div>
+
+                <div class="container">
+                    <div class="row" style="margin-left: 3px;">
+                        <label class="switch" style="padding-top: 5px;">
+                            <input type="checkbox" id="blank_credit_toggle" name="blank_credit_toggle" {% if credit_note.is_blank_credit == 'on' %} checked {% endif %} onclick="hide_table()">
+                            <span class="slider round"></span>
+                        </label><font style="margin-left: 6px;margin-top: 4px;">Blank Credit Note</font>
+                    </div>
+                </div>
+                {% if credit_note.is_blank_credit == 'on' %}
+                    <table class="table" align="center" id="blank_creditnote_table" style="width: 47%;">
+                        <thead>
+                            <th scope="col" style="border:1px solid black;width: 13%;">Description</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;" onkeyup="sub_total()">Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border:1px solid black;">
+                                    <textarea id="blank_desc" name="blank_desc" rows="2" maxlength="200"  size="200" placeholder="Description" style="width: 100%;">{{creditnote_item.0.description}}</textarea>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <input type="text" class="form-control" value="{{creditnote_item.0.amount}}" name="blank_amount" id="blank_amount" onkeypress="return restrictAlphabets(event), float_value(event,'blank_amount')" onkeyup="sub_total()">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <table class="table" align="center" id="blank_creditnote_table" style="width: 47%;display: none;">
+                        <thead>
+                            <th scope="col" style="border:1px solid black;width: 13%;">Description</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;" onkeyup="sub_total()">Amount</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border:1px solid black;">
+                                    <textarea id="blank_desc" name="blank_desc" rows="2" maxlength="200"  size="200" placeholder="Description" style="width: 100%;"></textarea>
+                                </td>
+                                <td style="border:1px solid black;">
+                                    <input type="text" class="form-control" name="blank_amount" id="blank_amount" onkeypress="return restrictAlphabets(event), float_value(event,'blank_amount')" onkeyup="sub_total()">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endif %}
+                    
+                    {% if credit_note.is_blank_credit == 'on' %}
+                    <table class="table" id="creditnote_table" style="width: 95%;margin-left: 3%;margin-top: 2%;display: none;">
+                    {% else %}
                     <table class="table" id="creditnote_table" style="width: 95%;margin-left: 3%;margin-top: 2%;">
+                    {% endif %}
+                    
                         <thead class=" text-primary" style="background-color: black;">
                           
                         {% if credit_note.is_cs_gst == True %}
@@ -344,7 +394,7 @@ optgroup{color :black; }
                           
                         </thead>
                         <tbody>
-                        {% if creditnote_item %}
+                        {% if credit_note.is_blank_credit == 'off'  %}
                         {% for items in creditnote_item %}
                           <tr id="creditnote_row{{forloop.counter}}">
                             
@@ -382,7 +432,7 @@ optgroup{color :black; }
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='creditnote_calculate({{forloop.counter}}), validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" maxlength="10" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='creditnote_calculate({{forloop.counter}}), validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
                             </td>
@@ -408,8 +458,8 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
-                                        <datalist id="tax">
+                                        <input list="tax_list{{forloop.counter}}" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
+                                        <datalist id="tax_list{{forloop.counter}}">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
                                             {% endfor %}
@@ -510,92 +560,142 @@ optgroup{color :black; }
                           
                         {% endfor %}
                         {% else %}
-                        <tr id="creditnote_row{{forloop.counter}}">
-                            
+                        <tr id="creditnote_row1">
+                            <!-- <td scope="row" style="border:1px solid white;">1</td> -->
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
+                                <select class="form-control select credit_note_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="padding-left: 0px;width: 158px;">
                                     
                                     <option value="-------">None</option>
                                     
                                     {% for product in products %}
-                                        <option value="{{product.id}}" >{{product}}</option>
+                                        <option value="{{product.id}}">{{product}}</option>
                                     {% endfor %}
                                 </select>
                                 
-                                <textarea id="desc1" name="desc[]" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{credit_note.description|default_if_none:""}}</textarea>
-
+                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;"></textarea>
+                                
                             </td>
                             <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
-                            <!-- <td style="border-bottom: 1px solid white;padding-left: 3px;padding-right: 0%;width: 4%;">
-                                <input type="text" class="form-control" id="currency1" value="" name="currency[]" readonly>
+                            <!-- <td style="border-bottom:1px solid white; padding-left: 3px;padding-right: 0%;width: 4%;">
+                                <input type="text" class="form-control" id="currency1" name="currency[]" readonly>
                             </td> -->
-                            <td style="border-bottom:1px solid black;">
+                            <td style="border:1px solid black;">
                                 <div class="row" style="padding-top: 9px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" value="" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='creditnote_calculate(1), validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='creditnote_calculate(1), validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
                                     </div>
                                 </div>
+                                
                             </td>
-                            <td style="border:1px solid black;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" class="form-control" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]"></td>
                             <td style="border:1px solid black;">
-
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]">
+                            </td>
+                            <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;" readonly>
-                                    
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" value="{{items.discount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control" onkeyup='creditnote_calculate(1)' id="Discount1" name="Discount[]">
+                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control " onkeyup='creditnote_calculate(1)' id="Discount1" name="Discount[]">
                                     </div>
-                                    <div class="col-5" style="padding-left: 1px;padding-right: 12px;">
-                                        <select class="form-control"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
+                                    <div class="col-5" style="padding-left:1px;">
+                                        <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
                                             <option value="%">%</option>
                                             <option value="₹">₹</option>
                                         </select>
                                     </div>
-                                </div> 
+                                </div>
                             </td>
                             <td style="border:1px solid black;">
-                                
                                 <div class="row">
-                                    <div class="col-8" style="padding-right:3px">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;">
-                                        <datalist id="tax">
+                                    <div class="col-8" style="padding-right: 3px;">
+                                        <input list="tax_list1" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
+                                        <datalist id="tax_list1">
                                             {% for i in gst %}
                                             <option value="{{i.taxname_percent}}">
                                             {% endfor %}
                                         </datalist>  
                                     </div>
-                                    <div class="col" style="padding-right: 0%;padding-left: 0%;">
+                                    <div class="col" style="padding-left: 0%;padding-right: 0%;">
                                         <font style="color: black;">%</font>
+                                    </div>
+                                </div>  
+                            </td>
+                            <td class="row_cs_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_cgst1">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_cgst" id="row_cgst1" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_cs_gst" style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_sgst1">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_sgst" id="row_sgst1" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="row_i_gst" style="border:1px solid black;display: none;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="row_igst1">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control row_igst" id="row_igst1" name="row_igst[]" style="margin-top: 1%;" readonly>
                                     </div>
                                 </div>
                             </td>
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Price1">₹</label>
+                                        <label for="Amount1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control amount" value="{{credit_note.amount}}" onkeypress="return restrictAlphabets(event), float_value(event,'Amount1')" onkeyup="balnk_credit()" id="Amount1" name="Amount[]" style="margin-top:1%;">
+                                        <input type="text" class="form-control amount" onkeypress="return restrictAlphabets(event), float_value(event,'Amount1')" onkeyup="balnk_credit()" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
                                     </div>
-                                </div>
+                                </div>   
                             </td>
-                            <td style="border-top: none;"><span class="tbclose material-icons" id="clear_row" name="Clear_row" style="cursor: default;" onclick="clear_row()">delete_forever</span></td>
+                            <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col-1" style="padding-right: 0%;">
+                                        <label for="Amount_inc1">₹</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control amount_inc" id="Amount_inc1" name="Amount_inc[]" style="margin-top: 1%;" readonly>
+                                    </div>
+                                </div>  
+                            </td>
+                            <td>
+                                <span class="tbclose material-icons" id="1" name="1"  onclick=" return creditnote_removeRow('1')" style="cursor: default;">delete_forever</span>
+                            </td>
                           </tr>
-                        {% endif %}
+                         {% endif %}
                         </tbody>
                       </table>
                 <!-- </div> -->
                 <div class="container">
-                    {% if creditnote_item %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    {% if credit_note.is_blank_credit == 'off'  %}
+                        {% if creditnote_item %}
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                        {% else %}
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                        {% endif %}
                     {% else %}
-                    <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;">Add Row</button>
+                    {% if creditnote_item %}
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow({{item_count}})" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;display: none;">Add Row</button>
+                        {% else %}
+                        <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="creditnote_addRow(0)" style="border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;text-decoration: underline;display: none;">Add Row</button>
+                        {% endif %}
                     {% endif %}
                 </div>
 
@@ -1662,6 +1762,7 @@ optgroup{color :black; }
     $(document).ready(function(){
         csrf_token = '{{csrf_token}}';
         customer_gst_type()
+        // hide_table()
     });
 
 </script>

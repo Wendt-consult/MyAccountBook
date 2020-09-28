@@ -174,9 +174,17 @@ def add_purchase_order(request, slug):
         for i in range(0,acc_count):
             acc_group_name.append(acc_ledger_expense[i].group_name)
             acc_ids.append(acc_ledger_expense[i].id)
+        
+        # for tax option
+        tax = []
+        org_gst = len(gst)
+        for i in range(0,org_gst):
+            tax.append(gst[i].taxname_percent)
+
 
         # common dictionary
-        data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids} 
+        
+        data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids, 'gst':tax} 
         return JsonResponse(data)
     elif(int(slug) == 0):
         # for product details
@@ -608,7 +616,7 @@ def save_purchase_order(request):
         product_quantity = request.POST.getlist('Quantity[]',None)
         product_discount = request.POST.getlist('Discount[]',None)
         product_discount_type = request.POST.getlist('Dis[]',None)
-        product_tax = request.POST.getlist('tax[]')
+        product_tax = request.POST.getlist('tax[]',None)
         product_cgst = request.POST.getlist('row_cgst[]',None)
         product_sgst = request.POST.getlist('row_sgst[]',None)
         product_igst = request.POST.getlist('row_igst[]',None)
@@ -632,13 +640,17 @@ def save_purchase_order(request):
                     quantity=product_quantity[i],
                     discount_type = product_discount_type[i],
                     discount=product_discount[i],
-                    tax=product_tax[i],
+                    tax= product_tax[i],
                     cgst_amount = product_cgst[i],
                     sgst_amount = product_sgst[i],
                     igst_amount = product_igst[i],
                     amount=product_amount[i],
                     amount_inc = product_amount_inc[i],   
                 )
+                # if(len(product_tax) == 0):
+                #     purchase_item.tax=''
+                # else:
+                #    purchase_item.tax= product_tax[i]
                 purchase_item.save()  
 
 
@@ -969,14 +981,18 @@ class EditPurchaseOrder(View):
                     quantity=product_quantity[i],
                     discount_type = product_discount_type[i],
                     discount=product_discount[i],
-                    tax=product_tax[i],
+                    tax= product_tax[i],
                     cgst_amount = product_cgst[i],
                     sgst_amount = product_sgst[i],
                     igst_amount = product_igst[i],
                     amount=product_amount[i],
                     amount_inc = product_amount_inc[i],
                     )
-                purchase_item.save()   
+                # if(len(product_tax) == 0):
+                #     purchase_item.tax=''
+                # else:
+                #    purchase_item.tax= product_tax[i]
+                # purchase_item.save()   
             
             # for create make payment if some advance given
             if(hidden_order_make_payment == 'on' and advance != ''):

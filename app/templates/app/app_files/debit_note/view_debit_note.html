@@ -118,119 +118,155 @@ thead th{
                 <div class="table" id="customize_table">
                     <table class=" table-bordered" id="purchase_view" width="100%" cellspacing="0">
                         <thead  style="background-color: #EEEEEE; color:#000000; font-size:11px">
-                            {% if customize.purchase_number != 0 %}
-                            <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%">Purchase Order Number</th>
+                            {% if customize.debit_number != 0 %}
+                            <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%">Debit Note Number</th>
+                            {% else %}
+                            <th class="text-center customize_number" style="color:#000000; font-size:11px;width: 13%;display: none;">Debit Note Number</th>
                             {% endif %}
-                            {% if customize.purchase_reference != 0 %}
+                            {% if customize.debit_reference != 0 %}
                             <th class="text-center customize_reference" style="color:#000000; font-size:11px;width: 15%">Reference Number</th>
+                            {% else %}
+                            <th class="text-center customize_reference" style="color:#000000; font-size:11px;width: 15%;display: none;">Reference Number</th>
                             {% endif %}
-                            {% if customize.purchase_vendor != 0 %}
+                            {% if customize.debit_vendor != 0 %}
                             <th class="text-center customize_vendor" style="color:#000000; font-size:11px;width: 15%">Vendor</th>
+                            {% else %}
+                            <th class="text-center customize_vendor" style="color:#000000; font-size:11px;width: 15%;display: none;">Vendor</th>
                             {% endif %}
-                            {% if customize.purchase_status != 0 %}
-                            <th class="text-center customize_status" style="color:#000000; font-size:11px;width: 8%">Status</th>
-                            {% endif %}
-                            {% if customize.purchase_total != 0 %}
-                            <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%">Total Amount</th>  
-                            {% endif %}
-                            {% if customize.purchase_date != 0 %}
-                            <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 10%">Delivery Date</th>  
+                            {% if customize.debit_date != 0 %}
+                            <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 10%">Debit Note Date</th>  
+                            {% else %}
+                            <th class="text-center customize_date" style="color:#000000; font-size:11px;width: 10%;display: none;">Debit Note Date</th>  
                             {% endif %} 
+                            {% if customize.debit_total != 0 %}
+                            <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%">Total Amount</th>  
+                            {% else %}
+                            <th class="text-center customize_total" style="color:#000000; font-size:11px;width: 10%;display: none;">Total Amount</th> 
+                            {% endif %}
+                            
                             <th class="text-center" style="color:#000000; font-size:11px;width: 10%;">Action</th>    
 
                         </thead>
                         <tbody>
-                            {% for order in purchase_order %}
+                            {% for i in debit_note %}
                                 <tr>
-                                    {% if customize.purchase_number != 0 %}
-                                    <td align="center" class="customize_number">{{order.purchase_order_number}}</td>
+                                    {% if customize.debit_number != 0 %}
+                                    <td align="center" class="customize_number">{{i.debit_note_number}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_number" style="display: none;">{{i.debit_note_number}}</td>
                                     {% endif %}
-                                    {% if customize.purchase_reference != 0 %}
+                                    {% if customize.debit_reference != 0 %}
                                     <td align="center" class="customize_reference">
-                                        {% if order.purchase_refrence %}
-                                        {{order.purchase_refrence}}
+                                        {% if i.debit_note_refrence %}
+                                        {{i.debit_note_refrence}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_reference" style="display: none;">
+                                        {% if i.debit_note_refrence %}
+                                        {{i.debit_note_refrence}}
                                         {% else %}
                                         None
                                         {% endif %}
                                     </td>
                                     {% endif %}
-                                    {% if customize.purchase_vendor != 0 %}
+                                    {% if customize.debit_vendor != 0 %}
                                     <td align="center" class="customize_vendor">
-                                        {% if order.save_type == 3 %}
+                                        {% if i.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="contact_name" id="hover" href="{% url 'edit_purchase_order' order.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{order.vendor}}
+                                        <a class="contact_name" id="hover" href="" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.vendor|truncatechars:20}}
+                                        </a>
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_vendor" style="display: none;">
+                                        {% if i.save_type == 3 %}
+                                        <i class="fa fa-tags" style="color: gray;"></i>
+                                        {% endif %}
+                                        <a class="contact_name" id="hover" href="" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.vendor|truncatechars:20}}
                                         </a>
                                     </td>
                                     {% endif %}
-                                    {% if customize.purchase_status != 0 %}
-                                    <td align="center" class="customize_status" id="status_{{order.id}}">{{order.get_purchase_status_display}}</td>
-                                    {% endif %}
-                                    {% if customize.purchase_total != 0 %}
-                                    <td align="center" class="customize_total">₹{{order.total_amount}}</td>
-                                    {% endif %}
-                                    {% if customize.purchase_date != 0 %}
+                                    
+                                    {% if customize.debit_date != 0 %}
                                     <td align="center" class="customize_date">
-                                        {% if order.purchase_delivery_date %}
-                                        {{order.purchase_delivery_date|date:"d-m-Y"}}
+                                        {% if i.debit_note_date %}
+                                        {{i.debit_note_date|date:"d-m-Y"}}
+                                        {% else %}
+                                        None
+                                        {% endif %}
+                                    </td>
+                                    {% else %}
+                                    <td align="center" class="customize_date" style="display: none;">
+                                        {% if i.debit_note_date %}
+                                        {{i.debit_note_date|date:"d-m-Y"}}
                                         {% else %}
                                         None
                                         {% endif %}
                                     </td>
                                     {% endif %}
+                                    {% if customize.debit_total != 0 %}
+                                    <td align="center" class="customize_total">₹{{i.total}}</td>
+                                    {% else %}
+                                    <td align="center" class="customize_total" style="display: none;">₹{{i.total}}</td>
+                                    {% endif %}
+                                    
+                                    
                                     <td class="text-center" align="center" > 
 
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                                {% if order.order_advance_make_pay == 'off' %}
-                                                <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_purchase_order' order.id %}" style="padding: 5px 5px;">
+                                                
+                                                <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_debit_note' i.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
-                                                {% endif %}
 
-                                                <a class="dropdown-item" title="Void Purchase Order" data-toggle="modal" data-target="#void{{order.id}}"href="#" style="padding: 5px 5px;">
+                                                <!-- <a class="dropdown-item" title="Void Purchase Order" data-toggle="modal" data-target="#void{{order.id}}"href="#" style="padding: 5px 5px;">
                                                    Void
-                                                </a>    
+                                                </a>     -->
 
-                                                <a class="dropdown-item" title="Print Purchase Order" href="{% url 'print_purchase_order' order.id %}" target="_black" style="padding: 5px 5px;">
+                                                <a class="dropdown-item" title="Print Purchase Order" href="#" target="_black" style="padding: 5px 5px;">
                                                     Print
                                                 </a> 
 
-                                                <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_purchase_order' order.id %}" style="padding: 5px 5px;">
+                                                <a class="dropdown-item" title="Make a Copy" href="#" style="padding: 5px 5px;">
                                                    Make a Copy
                                                 </a>
-                                                {% if order.vendor.is_active == True %} 
+                                                <!-- {% if order.vendor.is_active == True %} 
                                                 <a class="dropdown-item" title="Make Purchase Entry" href="{% url 'add_purchase_entry' 0 order.id %}" style="padding: 5px 5px;">
                                                     Make Purchase Entry
                                                 </a> 
-                                                {% endif %}
-                                                <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{order.id}}" style="padding: 5px 5px;">
+                                                {% endif %} -->
+                                                <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{i.id}}" style="padding: 5px 5px;">
                                                     Delete
                                                 </a>   
                                             </div> 
-
-                                            <div class="modal " tabindex="-1" role="dialog" id="del{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                            <!-- for delete debit note -->
+                                            <div class="modal " tabindex="-1" role="dialog" id="del{{i.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="border-top: none;background:white;position:bottom">
                                                         <div class="modal-header" style="border-bottom: none;padding:5px;">
                                                             
                                                         </div>
                                                         <div class="modal-body" style="border-top: none;position: bottom;">
-                                                            <h4><b><font color="black">Are you sure you want to delete {{order.purchase_order_number |truncatechars:10 }}. Deleting purchase order will not affect reports or historical transactions.</font></b></h4>
+                                                            <h4><b><font color="black">Are you sure you want to delete {{i.debit_note_number |truncatechars:10 }}. Deleting debit note will not affect reports or historical transactions.</font></b></h4>
                                                         </div>
                                                         
                                                         <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                                                            <center><a class="btn  mr-2" href="{% url 'delete_purchase_order' order.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                                                            <center><a class="btn  mr-2" href="{% url 'delete_debit_note' i.id %}" style="align-content: left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
                                                             <a class="btn " data-dismiss="modal" aria-label="Close"><font color="white" >No</font></a>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!-- void status -->
-                                            <div class="modal " tabindex="-1" role="dialog" id="void{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
+                                            <!-- <div class="modal " tabindex="-1" role="dialog" id="void{{order.id}}" style="border-top: none;left: 20%;top:200px;width: 500">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="border-top: none;background:white;position:bottom">
                                                         <div class="modal-header" style="border-bottom: none;padding:5px;">
@@ -246,7 +282,7 @@ thead th{
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>       
                                     </td>                   
                                 </tr>
@@ -274,53 +310,48 @@ thead th{
                     <h5 style="color: black;text-align: center;margin-bottom: 1%;">Drag and drop be column name you want to show or hide</h5>
                     <ol data-draggable="target" id="first">
                         <h4 style="text-decoration: underline;">Show Column</h4>
-                        {% if customize.purchase_number != 0 %}
-                        <li data-draggable="item" id="customize_order_number">Purchase Order Number</li>
+                        {% if customize.debit_number != 0 %}
+                        <li data-draggable="item" id="customize_debit_number">Debit Note Number</li>
                         {% endif %}
-                        {% if customize.purchase_reference != 0 %}
-                        <li data-draggable="item" id="customize_order_reference">Reference No.</li>
+                        {% if customize.debit_reference != 0 %}
+                        <li data-draggable="item" id="customize_debit_reference">Reference No.</li>
                         {% endif %}
-                        {% if customize.purchase_vendor != 0 %}
-                        <li data-draggable="item" id="customize_order_vendor">Vendor</li>
+                        {% if customize.debit_vendor != 0 %}
+                        <li data-draggable="item" id="customize_debit_vendor">Vendor</li>
                         {% endif %}
-                        {% if customize.purchase_status != 0 %}
-                        <li data-draggable="item" id="customize_order_status">Status</li>
+                        {% if customize.debit_date != 0 %}
+                        <li data-draggable="item" id="customize_debit_date">Debit Note Date</li>
                         {% endif %}
-                        {% if customize.purchase_total != 0 %}
-                        <li data-draggable="item" id="customize_order_total">Total Amount</li>
+                        {% if customize.debit_total != 0 %}
+                        <li data-draggable="item" id="customize_debit_total">Total Amount</li>
                         {% endif %}
-                        {% if customize.purchase_date != 0 %}
-                        <li data-draggable="item" id="customize_order_date">Delivery Date</li>
-                        {% endif %}
+                        
                       </ol>
                       
                       <ol data-draggable="target" id="seconde">
                         <h4 style="text-decoration: underline;">Hide Column</h4>
-                          {% if customize.purchase_number == 0 %}
-                          <li data-draggable="item" id="customize_order_number">Purchase Order Number</li>
-                          {% endif %}
-                          {% if customize.purchase_reference == 0 %}
-                          <li data-draggable="item" id="customize_order_reference">Reference No.</li>
-                          {% endif %}
-                          {% if customize.purchase_vendor == 0 %}
-                          <li data-draggable="item" id="customize_order_vendor">Vendor</li>
-                          {% endif %}
-                          {% if customize.purchase_status == 0 %}
-                          <li data-draggable="item" id="customize_order_status">Status</li>
-                          {% endif %}
-                          {% if customize.purchase_total == 0 %}
-                          <li data-draggable="item" id="customize_order_total">Total Amount</li>
-                          {% endif %}
-                          {% if customize.purchase_date == 0 %}
-                          <li data-draggable="item" id="customize_order_date">Delivery Date</li>
-                          {% endif %}
+                        {% if customize.debit_number == 0 %}
+                        <li data-draggable="item" id="customize_debit_number">Debit Note Number</li>
+                        {% endif %}
+                        {% if customize.debit_reference == 0 %}
+                        <li data-draggable="item" id="customize_debit_reference">Reference No.</li>
+                        {% endif %}
+                        {% if customize.debit_vendor == 0 %}
+                        <li data-draggable="item" id="customize_debit_vendor">Vendor</li>
+                        {% endif %}
+                        {% if customize.debit_date == 0 %}
+                        <li data-draggable="item" id="customize_debit_date">Debit Note Date</li>
+                        {% endif %}
+                        {% if customize.debit_total == 0 %}
+                        <li data-draggable="item" id="customize_debit_total">Total Amount</li>
+                        {% endif %}
                       </ol>
                       
                       
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm " type="button" onclick="customize_view(4)" style="background-color: #598ebb;">apply</button>
-                    <a class="btn btn-sm " href="{% url 'purchase_order'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
+                    <button class="btn btn-sm " type="button" onclick="customize_view(8)" style="background-color: #598ebb;">apply</button>
+                    <a class="btn btn-sm " href="{% url 'view_debit_note'  %}" type="reset" style="background-color: #9095a2;" >Cancel</a>
                 </div>
             </form>
         </div>

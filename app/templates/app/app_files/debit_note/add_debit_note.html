@@ -203,35 +203,54 @@ optgroup{color :black; }
 }
 </style>
 
-<form method="post" action="{% url 'save_purchase_order' %}" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'save_debit_note' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row" style="margin: 0% 5% 6% 7%">
         <div class="col-lg-12" style="padding:0px">
             <div class="card">
                 <div class="card-header card-header-primary">
-                    <h4 class="card-title ">Add Purchase Order</h4>
+                    <h4 class="card-title ">Add Debit Note</h4>
                 </div>
                 <div style="border-top: 1px solid black;margin-left: 16px;margin-right: 16px;background-color:black;margin-top: 5px;">
                     {% if is_gst != 'no' %}
                         {% if is_signle_gst == 'yes' %}
+                            {% if entry_gst == 'active' %}
+                            <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{purchase_entry.purchase_org_gst_num}}.</h6>
+                            {% else %}
                             <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
+                            {% endif %}
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this purchase order with another GST number</h6>&nbsp;
+                            {% if entry_gst == 'active' %}
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{purchase_entry.purchase_org_gst_num}}.</h6>&nbsp;
+                            {% else %}
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this debit note with another GST number</h6>&nbsp;
+                            {% endif %}
                             <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
                     {% else %}
-                    <div class="row" style="margin-left: 0px;" id="change_update_gst">
+                    <!-- <div class="row" style="margin-left: 0px;" id="change_update_gst">
+
                         <h6 style="color: white;font-size: x-small;">Your organisation is not gst register. Do you want to register GST number.&nbsp;
                         <a href="#" id="common_gst" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;" data-toggle="modal"data-target="#add_gst_number">YES</a></h6>
-                    </div>
-                    <div style="display: none;" id="replace_change_update">
+                    </div> -->
+                    <!-- <div style="display: none;" id="replace_change_update">
                         <h6 style="color: white;font-size: x-small;"></h6>
-                    </div>
+                    </div> -->
                     {% endif %}
                 </div>  
             <div style="margin-top: 4%;">
+                {% if entry_gst == 'active' %}
+                <input class="form-control" type="hidden"  value="{{purchase_entry.purchase_org_gst_num|default_if_none:''}}" name="org_gst_number" id="org_gst_number">
+                <input class="form-cntrol" type="hidden" value="{{purchase_entry.purchase_org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
+                <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
+                    <option value="">---------</option>
+                    {% for i in gst_code %}
+                    <option value="{{i.0}}" {% if purchase_entry.purchase_org_gst_state == i.0 %} selected {% endif %}>{{i.1}}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
                 <input class="form-control" type="hidden" {% if is_gst != 'no' %} value="{{is_gst|default_if_none:''}}" {% endif %} name="org_gst_number" id="org_gst_number">
                 <input class="form-cntrol" type="hidden" value="{{org_gst_type|default_if_none:''}}" id="org_gst_reg_type" name="org_gst_reg_type">
                 <select class="form-control" name="single_gst_code" id="single_gst_code" style="display: none;">
@@ -240,6 +259,7 @@ optgroup{color :black; }
                     <option value="{{i.0}}" {% if is_gst != 'no'%}{% if is_gst|slice:':2' == i.0 %} selected {% endif %}{% endif %}>{{i.1}}</option>
                     {% endfor %}
                 </select>
+                {% endif %}
                 <div class="container" >
                     <div class="row">
                         <!-- left -->
@@ -247,15 +267,15 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="purchse_order">Purchase Order Number</label>
+                                    <label for="purchse_order">Debit Note Number</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input class="form-control" id="purchse_order" name="purchse_order" required>
+                                    <input class="form-control" id="debit_number" name="debit_number" maxlength="10" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" id="auto_purchase_number" name="auto_purchase_number">
-                                                Auto-Generate Purchase Order Number
+                                                <input class="form-check-input" type="checkbox" id="auto_debit_number" name="auto_debit_number">
+                                                Auto-Generate Debit Note Number
                                                 <span class="form-check-sign">
                                                     <span class="check"></span>
                                                 </span>
@@ -267,15 +287,15 @@ optgroup{color :black; }
                             
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="purchase_vendor">Vendor</label>
+                                    <label for="debit_vendor">Vendor</label>
                                 </div>
                                 <div class="col-7">
-                                    <select class="form-control purchase_vendor" id="purchase_vendor" name="purchase_vendor" required onchange="state_compare(),vendor_info()">
-                                        <option value="">None</option>
+                                    <select class="form-control debit_vendor" id="debit_vendor" name="debit_vendor" required onchange="state_compare(),vendor_info()">
+                                        <!-- <option value="">None</option> -->
         
-                                        {% for contact in contacts %}
-                                        {% if contact.customer_type == 2 or contact.customer_type == 4 %}
-                                        <option value="{{contact.id}}">{{contact}}</option>
+                                        {% for contact in intcontacts %}
+                                        {% if purchase_entry.vendor == contact %}
+                                        <option value="{{contact.id}}" selected >{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
                                     </select>
@@ -348,10 +368,10 @@ optgroup{color :black; }
 
                             <div class="row" style="margin-top: 10px;">
                                 <div class="col-4">
-                                    <label for="">Reference#</label>
+                                    <label for="debit_reference">Reference#</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" id="purchase_reference" maxlength="10" name="purchase_reference">
+                                    <input type="text" class="form-control" id="debit_reference" maxlength="50" name="debit_reference" value="{{purchase_entry.purchase_entry_number}}" readonly>
                                 </div>
                             </div>
         
@@ -390,27 +410,27 @@ optgroup{color :black; }
 
                             <div class="row" style="margin-top: 10%;">
                                 <div class="col-4">
-                                    <label for="purchase_date">Purchase Order Date</label>
+                                    <label for="debit_date">Debit Note Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_date" id="purchase_date" class="form-control" required >
+                                    <input type="text" class="form-control" name="debit_date" id="debit_date" class="form-control" required >
                                 </div>
                                 <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
                                     <i class="fa fa-calendar" id="purchase_date_icon"></i>
                                 </div> -->
                             </div>
         
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="purchase_delivary_date">Order Delivery Date</label>
-                                </div>
-                                <div class="col-7 input">
-                                    <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control">
-                                </div>
-                                <!-- <div class="col" style="color: #AAAAAA;padding-left: 0%;">
-                                    <i class="fa fa-calendar" id="delivary_date_icon"></i>
+                                <!-- <div class="row">
+                                    <div class="col-4">
+                                        <label for="purchase_delivary_date">Order Delivery Date</label>
+                                    </div>
+                                    <div class="col-7 input">
+                                        <input type="text" class="form-control" name="purchase_delivary_date" id="purchase_delivary_date" class="form-control">
+                                    </div>
+                                    <div class="col" style="color: #AAAAAA;padding-left: 0%;">
+                                        <i class="fa fa-calendar" id="delivary_date_icon"></i>
+                                    </div>
                                 </div> -->
-                            </div>
 
                         </div>
                     </div> 
@@ -424,14 +444,14 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="pruchase_delivary_address">Delivery Address</label>
+                                    <label for="debit_delivary_address">Delivery Address</label>
                                 </div>
                                 <div class="col-8 input">
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" onclick="ajax_org_address()">
+                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" {% if purchase_entry.purchase_order.is_organisation_delivary == 'on' %} checked {% else %} disabled {% endif %}>
                                                     Organization
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -442,7 +462,7 @@ optgroup{color :black; }
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" >
+                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" {% if purchase_entry.purchase_order.is_customer_delivary == 'on' %} checked {% else %} disabled {% endif %}>
                                                     Customer
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -453,23 +473,24 @@ optgroup{color :black; }
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row" id="cust_address" style="margin-top: 2%;display: none;">
+                            {% if purchase_entry.purchase_order.is_customer_delivary == 'on' %}
+                            <div class="row" id="cust_address" style="margin-top: 2%;">
                                 <div class="col-4">
                                     <label for="choose_customer_address"></label>
                                 </div>
                                 <div class="col-8">
-                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="purchase_cont_address()" style="width: 100%;">
-                                        <option value="">None</option>
+                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" style="width: 100%;">
+                                        <!-- <option value="">None</option> -->
 
-                                        {% for contact in contacts %}
-                                        {% if contact.customer_type == 1 or contact.customer_type == 3 or contact.customer_type == 4 %}
-                                        <option value="{{contact.id}}">{{contact}}</option>
+                                        {% for contact in intcontacts %}
+                                        {% if purchase_entry.purchase_order.customer == contact.id %}
+                                        <option value="{{contact.id}}" selected>{{contact}}</option>
                                         {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
+                            {% endif %}
                             <!-- hidden delivary state -->
                             <!-- <div class="row" style="display: none;">
                                 <div class="col-4">
@@ -485,7 +506,7 @@ optgroup{color :black; }
                                     
                                 </div>
                                 <div class="col-8 input">
-                                    <textarea id="purchase_address" name="purchase_address" placeholder="Delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly></textarea>
+                                    <textarea id="debit_address" name="debit_address" placeholder="Delivery address" rows="4" maxlength="400" style="width: 100%;" required readonly>{{purchase_entry.purchase_order.delivery_address}}</textarea>
                                 </div>
                             </div>
 
@@ -499,7 +520,7 @@ optgroup{color :black; }
                                     <label for="">Attention</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="purchase_attention" maxlength="10" name="purchase_attention">
+                                    <input type="text" class="form-control" id="debit_attention" maxlength="10" name="debit_attention" value="{{purchase_entry.purchase_order.attention}}" readonly>
                                 </div>
 
                             </div>
@@ -507,18 +528,20 @@ optgroup{color :black; }
                             <div class="row">
 
                                 <div class="col-4">
-                                    <label for="purchase_contact">Contact Number</label>
+                                    <label for="debit_contact">Contact Number</label>
                                 </div>
                                 <div class="col-sm-2 input">
-                                    <select class="form-control" id="country_code" name="country_code" >
-                                        <option value="">None</option>
-                                        {% for code in country_code%}
-                                        <option value="{{code.1}}" {% if code.1 == '+91' %} selected {% endif %}>{{code.1}}</option>
+                                    <select class="form-control" id="debit_contact_code" name="debit_contact_code">
+                                        <!-- <option value="">None</option> -->
+                                        {% for code in country_code %}
+                                            {% if purchase_entry.purchase_order.country_code == code.1 %}
+                                            <option value="{{code.1}}" selected >{{code.1}}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-md-5 input" style="padding-left: 0px;">
-                                    <input type="number" class="form-control" id="purchase_contact" name="purchase_contact"  onfocusout="valid_Phone($(this))"  >
+                                    <input type="number" class="form-control" id="debit_contact" name="debit_contact" onfocusout="valid_Phone($(this))" value="{{purchase_entry.purchase_order}}" readonly>
                                 </div>
 
                             </div>
@@ -526,7 +549,7 @@ optgroup{color :black; }
                                 <div class="col-4">
 
                                 </div>
-                                <div class="col-8" id="c_error_field" style="color:black;">
+                                <div class="col-8" id="c_error_field" style="color:red;">
                                     
                                 </div>
                             </div>
@@ -535,9 +558,11 @@ optgroup{color :black; }
                     </div>
                 </div>
 
-                    <table class="table" id="purchase_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
+                    <table class="table" id="debit_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
+                            {% if purchase_entry.is_cs_gst == True %}
+                        
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
@@ -550,162 +575,215 @@ optgroup{color :black; }
                             <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;display: none;">IGST</th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
                             <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
-                          
+                            {% elif purchase_entry.is_cs_gst == False %} 
+                            <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
+                            <th class="price_header" scope="col" style="border:1px solid black;width: 8%;">Price</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 6%;">Quantity</th>
+                            <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th>
+                            <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
+                            <th class="tax_header" scope="col" style="border:1px solid black;width: 8%;">Tax(in %)</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">CGST</th>
+                            <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">SGST</th>
+                            <th class="row_i_gst" scope="col" style="border:1px solid black;width: 10%;">IGST</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Exc.Tax)</font></th>
+                            <th scope="col" style="border:1px solid black;width: 10%;"><font>Amount(Inc.Tax)</font></th>
+                            {% endif %}
                         </thead>
                         <tbody>
-                          <tr id="purchase_row1">
-                            <td style="border:1px solid black;padding-bottom: 0%;">
-                                
-                                <select class="form-control select purchase_line_item" id="ItemName1" name="ItemName[]" onchange='product(1),validation()'  style="width: 174.6px;padding-left: 0px;">
-                                    
-                                    <option value="">None</option>
-                                    
-                                    {% for product in products %}
-                                        <option value="{{product.id}}">{{product}}</option>
+                            {% for items in entry_item %}
+                            <tr id="debit_row{{forloop.counter}}">
+                              <td style="border:1px solid black;padding-bottom: 0%;">
+                                  
+                                  <select class="form-control select debit_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="padding-left: 0px;">
+                                      
+                                      <!-- <option value="">None</option> -->
+                                      
+                                    {% for product in intproducts %}
+                                        {% if items.product_id|lower == product.id|lower %}
+                                            <option value="{{product.id}}" selected >{{product}}</option>
+                                        {% endif %}
                                     {% endfor %}
-                                </select>
-                                
-                                <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;"></textarea>
-                                
-                            </td>
-                            <td style="border:1px solid black;">
-                                <select class="form-control prodduct_purchase_account"  id="product_account1" name="product_account[]" onchange="validation()">
-                                    <option value="">None</option>
-                                    
-                                    {% for acc_group in acc_ledger_expense %}
-                                        <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>                  
-
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Price1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
-                                    </div>
-                                </div>
-                                
-                            </td>
-                            <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" maxlength="10" onkeyup='purchase_calculate(1),validation()' id="Quantity1" name="Quantity[]">
-                            </td>
-                            <td style="border:1px solid black;">
-                                <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
-                            </td>
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" maxlength="10" class="form-control all_discount" onkeyup='purchase_calculate(1)' id="Discount1" name="Discount[]">
-                                    </div>
-                                    <div class="col-5" style="padding-left:1px;">
-                                        <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
-                                            <option value="%">%</option>
-                                            <option value="₹">₹</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-8" style="padding-right: 3px;">
-                                        <input list="tax" class="form-control tax" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal(1)" onkeypress="return restrictAlphabets(event), float_value(event,'tax1')" id="tax1" style="margin-top: -1px;" readonly>
-                                        <datalist id="tax">
-                                            {% for i in gst %}
-                                            <option value="{{i.taxname_percent}}">
-                                            {% endfor %}
-                                        </datalist>  
-                                    </div>
-                                    <div class="col" style="padding-left: 0%;padding-right: 0%;">
-                                        <font style="color: black;">%</font>
-                                    </div>
-                                </div>  
-                            </td>
-                            <td class="row_cs_gst" style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_cgst1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control row_cgst" id="row_cgst1" name="row_cgst[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="row_cs_gst" style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_sgst1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control row_sgst" id="row_sgst1" name="row_sgst[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="row_i_gst" style="border:1px solid black;display: none;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="row_igst1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control row_igst" id="row_igst1" name="row_igst[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Amount1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control amount" id="Amount1" name="Amount[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div> 
-                            </td>
-                            <td style="border:1px solid black;">
-                                <div class="row">
-                                    <div class="col-1" style="padding-right: 0%;">
-                                        <label for="Amount_inc1">₹</label>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" class="form-control amount_inc" id="Amount_inc1" name="Amount_inc[]" style="margin-top: 1%;" readonly>
-                                    </div>
-                                </div>   
-                            </td>
-                            <td><span class="tbclose material-icons" id="1" name="1" onclick="creditnote_removeRow(1)" style="cursor: default;">delete_forever</span></td>
-                          </tr>
-                          
+                                  </select>
+                                  
+                                  <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;" readonly>{{items.description|default_if_none:""}}</textarea>
+                                  
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <select class="form-control prodduct_debit_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()" required>
+                                      <!-- <option value="">None</option> -->
+                                      
+                                      {% for acc_group in acc_ledger_expense %}
+                                      {% if items.account_id == acc_group.id %} 
+                                          <option value="{{acc_group.id}}" selected>{{acc_group.group_name}}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                  </select>
+                              </td>                  
+  
+                              <td style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="Price{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control" value="{{items.price}}" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>  
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <input type="text" class="form-control quantity_dic" value="{{items.quantity}}" onkeypress onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" >
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-7" style="padding-right: 3px;">
+                                          <input type="text" value="{{items.discount}}"  onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='debit_calculate(1)' id="Discount{{forloop.counter}}" name="Discount[]" readonly>
+                                      </div>
+                                      <div class="col-5" style="padding-left:1px;">
+                                          <select class="form-control" align="right"  id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
+                                              {% if items.discount_type == '%' %}
+                                              <option value="%" selected>%</option>
+                                              {% else %}
+                                              <option value="₹" selected >₹</option>
+                                              {% endif %}
+                                          </select>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-8" style="padding-right: 3px;">
+                                          <input list="tax" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{forloop.counter}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{forloop.counter}}')" id="tax{{forloop.counter}}" style="margin-top: -1px;" readonly>
+                                          <datalist id="tax">
+                                              <!-- {% for i in gst %}
+                                              <option value="{{i.taxname_percent}}">
+                                              {% endfor %} -->
+                                          </datalist>  
+                                      </div>
+                                      <div class="col" style="padding-left: 0%;padding-right: 0%;">
+                                          <font style="color: black;">%</font>
+                                      </div>
+                                  </div>  
+                              </td>
+                              {% if purchase_entry.is_cs_gst == True %}
+                              <td class="row_cs_gst" style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_cgst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_cgst" value="{{items.cgst_amount}}"  id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="row_cs_gst" style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_sgst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_sgst" value="{{items.sgst_amount}}" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="row_i_gst" style="border:1px solid black;display: none;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_igst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_igst" id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              {% elif purchase_entry.is_cs_gst == False %}
+                              <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_cgst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_cgst" id="row_cgst{{forloop.counter}}" name="row_cgst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="row_cs_gst" style="border:1px solid black;display: none;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_sgst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_sgst" id="row_sgst{{forloop.counter}}" name="row_sgst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="row_i_gst" style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="row_igst{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" class="form-control row_igst" value="{{items.igst_amount}}"  id="row_igst{{forloop.counter}}" name="row_igst[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              {% endif %}
+                              <td style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="Amount{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" value="{{items.amount}}" class="form-control amount" id="Amount{{forloop.counter}}" name="Amount[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td style="border:1px solid black;">
+                                  <div class="row">
+                                      <div class="col-1" style="padding-right: 0%;">
+                                          <label for="Amount_inc{{forloop.counter}}">₹</label>
+                                      </div>
+                                      <div class="col">
+                                          <input type="text" value="{{items.amount_inc}}" class="form-control amount_inc" id="Amount_inc{{forloop.counter}}" name="Amount_inc[]" style="margin-top: 1%;" readonly>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td><span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}"  onclick=" return creditnote_removeRow('{{forloop.counter}}')" style="cursor: default;">delete_forever</span></td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                
             <div class="container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col">
                         <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row(1)" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
 
                     <div class="col-7">
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col">
-                                <label for="purchase_MessageOnStatement">Terms and Conditions</label>
+                                <label for="debit_MessageOnStatement">Terms and Conditions</label>
                             </div> 
                         </div>
 
                         <div class="row">
                             <div class="col">
-                                <textarea  id="purchase_MessageOnStatement" name="purchase_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
+                                <textarea  id="debit_MessageOnStatement" name="debit_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{purchase_entry.|default_if_none:""}}</textarea>
                             </div>
-                        </div>
+                        </div> -->
                         {% if term_msg is None %}
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="purchase_t&c" name="purchase_t&c">
+                                        <input class="form-check-input" type="checkbox" id="debit_t&c" name="debit_t&c">
                                         Use this as default terms and conditions
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -713,26 +791,26 @@ optgroup{color :black; }
                                     </label>
                                 </div>   
                             </div>
-                        </div>
+                        </div> -->
                         {% endif %}
 
                         <div class="row" style="margin-top: 1%;">
                             <div class="col">
-                                <label for="purchase_notes">Notes</label>
+                                <label for="debit_notes">Notes</label>
                             </div> 
                         </div>
     
                         <div class="row">
                             <div class="col">
-                                <textarea  id="purchase_notes" name="purchase_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{pur_notes|default_if_none:""}}</textarea>
+                                <textarea  id="debit_notes" name="debit_notes" rows="4" maxlength="400" size="400" style="width: 55%;"></textarea>
                             </div>
                         </div>
                         {% if pur_notes is None %}
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="purchase_default_notes" name="purchase_default_notes">
+                                        <input class="form-check-input" type="checkbox" id="debit_default_notes" name="debit_default_notes">
                                         Use this as default notes
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -740,7 +818,7 @@ optgroup{color :black; }
                                     </label>
                                 </div>   
                             </div>
-                        </div>
+                        </div> -->
                         {% endif %}
                     </div>
 
@@ -754,23 +832,49 @@ optgroup{color :black; }
                                 <label style="color:black;">₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" readonly>
+                                <input type="text" class="form-control" id="SubTotal" name="SubTotal" value="{{purchase_entry.sub_total}}" readonly>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-4">
-                                <label for="purchase_Discountotal">Total Discount:</label>
+                                <label for="debit_Discountotal">Total Discount:</label>
                             </div>
                             <div class="col-1" style="padding-right: 0%;">
                                 <label style="color:black;">₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" readonly>
+                                <input type="text" class="form-control" id="debit_Discountotal" name="debit_Discountotal" value="{{purchase_entry.total_discount}}" readonly>
                             </div>
                         </div>
 
                         <!-- 5% GST -->
+                        {% if purchase_entry.cgst and purchase_entry.sgst %}
+                        <div id="cs_gst">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="CGST">CGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{purchase_entry.cgst}}" class="form-control" id="CGST" name="CGST" readonly>
+                                </div> 
+                            </div> 
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="SGST">SGST</label>
+                                </div>
+                                <div class="col-1" style="padding-right: 0%;">
+                                    <label>₹</label>
+                                </div>
+                                <div class="col-6 input" style="padding-left: 0%;">
+                                    <input type="text" value="{{purchase_entry.sgst}}" class="form-control" id="SGST" name="SGST" readonly>
+                                </div> 
+                            </div> 
+                        </div>
+                        {% else %}
                         <div id="cs_gst" style="display: none;">
                             <div class="row">
                                 <div class="col-4">
@@ -795,6 +899,20 @@ optgroup{color :black; }
                                 </div> 
                             </div> 
                         </div>
+                        {% endif %}
+                        {% if purchase_entry.igst %}
+                        <div class="row" id="i_gst">
+                            <div class="col-4">
+                                <label for="IGST">IGST</label>
+                            </div>
+                            <div class="col-1" style="padding-right: 0%;">
+                                <label>₹</label>
+                            </div>
+                            <div class="col-6 input" style="padding-left: 0%;">
+                                <input type="text" value="{{purchase_entry.igst}}" class="form-control" id="IGST" name="IGST" readonly>
+                            </div> 
+                        </div>
+                        {% else %}
                         <div class="row" id="i_gst" style="display: none;">
                             <div class="col-4">
                                 <label for="IGST">IGST</label>
@@ -806,6 +924,7 @@ optgroup{color :black; }
                                 <input type="text" class="form-control" id="IGST" name="IGST" readonly>
                             </div> 
                         </div>
+                        {% endif %}
                         <!-- end 5% gst -->
 
                         <div class="row">
@@ -816,11 +935,11 @@ optgroup{color :black; }
                                 <label style="color: black;">₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="Total" name="Total" readonly>
+                                <input type="text" class="form-control" id="Total" name="Total" value="{{purchase_entry.total}}" readonly>
                             </div> 
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4">
                                 <label for="Freight_Charges">Freight Charges:</label>
                             </div>
@@ -830,9 +949,9 @@ optgroup{color :black; }
                             <div class="col-6 input" style="padding-left: 0%;">
                                 <input type="text" class="form-control" id="Freight_Charges" name="Freight_Charges" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'Freight_Charges')">
                             </div> 
-                        </div> 
+                        </div>  -->
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4">
                                 <label for="advance">Advance:</label>
                             </div>
@@ -845,9 +964,9 @@ optgroup{color :black; }
                             <div class="col-1" style="padding-left: 2px;padding-right: 0%;">
                                 <span class="material-icons note_add" style="color: black;cursor: default;" onclick="show_advance_info()">add_box</a>
                             </div>
-                        </div> 
+                        </div>  -->
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4">
                                 <label for="total_balance">Total Balance:</label>
                             </div>
@@ -857,9 +976,9 @@ optgroup{color :black; }
                             <div class="col-6 input" style="padding-left: 0%;">
                                 <input type="text" class="form-control" id="total_balance" name="total_balance" readonly>
                             </div> 
-                        </div>
+                        </div> -->
 
-                        <div class="row" style="display: none;">
+                        <!-- <div class="row" style="display: none;">
                             <div class="col-4">
                                 <label for="hidden_advance_date">Payment Date</label>
                             </div>
@@ -869,9 +988,9 @@ optgroup{color :black; }
                             <div class="col-6 input" style="padding-left: 0%;">
                                 <input class="form-control" type="date" id="hidden_advance_date" name="hidden_advance_date"> 
                             </div> 
-                        </div>
+                        </div> -->
 
-                        <div class="form-check" style="margin-top: 3px;display: none;">
+                        <!-- <div class="form-check" style="margin-top: 3px;display: none;">
                             <label class="form-check-label">
                                 <input class="form-check-input" type="checkbox" id="hidden_order_make_payment" name="hidden_order_make_payment">
                                 Do you want make advance payment
@@ -879,8 +998,8 @@ optgroup{color :black; }
                                     <span class="check"></span>
                                 </span>
                             </label>
-                        </div>
-                        <div class="row" style="display: none;">
+                        </div> -->
+                        <!-- <div class="row" style="display: none;">
                             <div class="col-4">
                                 <label for="hidden_advance_method">Payment Method</label>
                             </div>
@@ -897,8 +1016,8 @@ optgroup{color :black; }
                                     <option value="5">Net Banking</option>
                                 </select>
                             </div> 
-                        </div>
-                        <div class="row" style="display: none;">
+                        </div> -->
+                        <!-- <div class="row" style="display: none;">
                             <div class="col-4">
                                 <label for="hidden_advance_notes">Note</label>
                             </div>
@@ -908,15 +1027,17 @@ optgroup{color :black; }
                             <div class="col-6 input" style="padding-left: 0%;">
                                 <textarea id="hidden_advance_notes" name="hidden_advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
                             </div> 
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
             </div>
+
+            <input type="hidden" class="form-contol" value="{{purchase_entry.id}}" name="purchase_entry_id"> 
                       
             <div class="card-footer text-center" id="order_buuton" style="justify-content: center;">
                 <div class="btn-group dropup order_button" role="group">
-                    <button class="dropdown-item btn " name="save_close" id="save" style="padding: 0px 5px 0px 5px;background-color:#598ebb" onclick="return order_check()">
+                    <button class="dropdown-item btn " name="save_close" id="save" style="padding: 0px 5px 0px 5px;background-color:#598ebb" onclick="return debit_check()">
                         Save and Close
                     </button>
                     <button type="button" class="btn  dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
@@ -931,15 +1052,15 @@ optgroup{color :black; }
                       <!-- <button class="dropdown-item btn btn-success" name="save_close" id="save" style="margin: 0% 0% 4% 4%;width: 93%;">
                         <i class="material-icons" style="margin: 0px 12px 0px -20px;font-size: 23px;">save</i>Save and Close 
                     </button> -->
-                    <button class="dropdown-item btn " name="save_draft" id="draft" onclick="return order_check()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                    <button class="dropdown-item btn " name="save_draft" id="draft" onclick="return debit_check()" style="margin: 0% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">how_to_vote</i>Save as Draft 
                     </button>
-                    <button class="dropdown-item btn " name="save_print" id="print" onclick="return order_check()" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                    <button class="dropdown-item btn " name="save_print" id="print" onclick="return debit_check()" style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">print</i>Save and Print
                     </button>
                     </div>
                 </div>
-                  <a class="btn " href="{% url 'purchase_order'  %}" type="reset">Cancel</a>
+                  <a class="btn " href="{% url 'view_debit_note'  %}" type="reset">Cancel</a>
                 </div>
             </div>
 
@@ -1273,7 +1394,7 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return purchase_product_form(0)" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return debit_product_form(0)" style="background-color:#598ebb;">Save</button>
                     <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close">Cancel</button>
                 </div>
             </form>
@@ -1762,124 +1883,11 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
-<!-- Advance info -->
-<div class="modal fade" id="advance_info" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color:#202940;width: 81%;margin-left: 20%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Advance Option</h5>
-                </div>
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <div class="container">
-                        
-                        <!-- <div class="row">
-                            <div class="col-2">
-                                <label for="advance_payment">Payment Amount</label>
-                            </div>
-                            <div class="col-8 input">
-                                <input type="text" class="form-control" id="advance_payment" name="advance_payment"  readonly>
-                            </div>
-                        </div> -->
 
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_name">Vendor Name</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_name" name="advance_vendor_name" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_mail">Vendor Email </label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_mail" name="advance_vendor_mail" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_vendor_contact">Vendor Contact</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input class="form-control" type="text" id="advance_vendor_contact" name="advance_vendor_contact" readonly> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_value">Advance</label>
-                            </div>
-                            <div class="col-7 input">
-                                <input type="text" class="form-control" name="advance_value" id="advance_value" maxlength="10" onkeyup="freight_advance_totalamount()" onkeypress="return restrictAlphabets(event), float_value(event,'advance_value')">
-                                <div>
-                                    <div class="form-check" style="margin-top: 3px;">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" id="order_make_payment" name="order_make_payment">
-                                            Do you want make advance payment
-                                            <span class="form-check-sign">
-                                                <span class="check"></span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_date">Payment Date</label>
-                            </div>
-                            <div class="col-7 input">
-                                <!-- <input type="text" class="form-control" name="advance_date" id="advance_date" class="form-control"> -->
-                                <input class="form-control" type="date" id="advance_date" name="advance_date"> 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_method">Payment Method</label>
-                            </div>
-                            <div class="col-7 input">
-                                <select class="form-control" type="date" id="advance_method" name="advance_method">
-                                    <option value="">---------</option>
-                                    <option value="1">Cash</option>
-                                    <option value="2">Card</option>
-                                    <option value="3">Cheque</option>
-                                    <option value="4">Demand Draft</option>
-                                    <option value="5">Net Banking</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="advance_notes">Note</label>
-                            </div>
-                            <div class="col-7 input">
-                                <textarea id="advance_notes" rows="2" size="400" maxlength="400" placeholder="Max Character 400" style="width: 50%;"></textarea>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-sm "  type='button' onclick="add_advance_info()" style="background-color:#598ebb;">Save</button>
-                    <button class="btn btn-sm " type="button" onclick="clear_advance_info()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- chosse address model popup -->
 
-<div class="modal fade" id="Purchase_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="debit_order_AddressModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 85%;margin-left: 15%;">
             <form method="post" style="margin:0px" enctype="multipart/form-data">
@@ -1892,7 +1900,7 @@ optgroup{color :black; }
                 <div class="modal-body">
                     {% csrf_token %}
 
-                    <table class="table" id="purchase_delivery_address">
+                    <table class="table" id="debit_delivery_address">
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 15%;">Choose</th>
@@ -2194,8 +2202,6 @@ optgroup{color :black; }
     </div>
 </div>
 
-
-
 <!-- modal account_ledger -->
 
 <div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -2242,7 +2248,7 @@ optgroup{color :black; }
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return purchase_accoun_ledger_form()" style="background-color:#598ebb;">Save</button>
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return debit_accoun_ledger_form()" style="background-color:#598ebb;">Save</button>
                     <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close">Cancel</button>
                 </div>
             </form>

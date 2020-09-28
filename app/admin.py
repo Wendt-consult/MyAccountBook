@@ -11,6 +11,7 @@ from app.models.expense_model import *
 from app.models.purchasentry_model import *
 from app.models.payment_made_model import *
 from app.models.journalentry_model import *
+from app.models.debit_note_model import *
 from app.models import *
 
 #
@@ -151,3 +152,11 @@ class JournalEntry(admin.ModelAdmin):
 @admin.register(PurchasePayment)
 class PurchasePayment(admin.ModelAdmin):
     model = PurchasePayment
+
+@admin.register(DebitNote)
+class DebitNote(admin.ModelAdmin):
+    model = DebitNote
+
+@admin.register(DebitNoteItems)
+class DebitNoteItems(admin.ModelAdmin):
+    model = DebitNote

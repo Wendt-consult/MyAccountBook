@@ -290,7 +290,7 @@ def unique_entry_number(request, ins, number):
         return JsonResponse(data)
     elif (ins == 1):
         # check purchase entry number is unique
-        entry = PurchaseEntry.objects.filter(Q(user = request.user) & Q(purchase_entry_number = number))
+        entry = purchasentry_model.PurchaseEntry.objects.filter(Q(user = request.user) & Q(purchase_entry_number = number))
         count = len(entry)
         if(count == 0):
             data['unique'] = 0
@@ -396,6 +396,7 @@ def save_purchase_entry(request):
             entry.freight_charges = request.POST.get("Freight_Charges")
             entry.advance = request.POST.get("entry_advance")
             entry.connect_purchase_order = 'YES'
+            PurchaseOrder.objects.filter(pk = int(request.POST.get("purchase_order_id"))).update(is_purchase_entry_maked = True)
             purchase_order = PurchaseOrder.objects.get(pk = int(request.POST.get("purchase_order_id")))
             entry.purchase_order = purchase_order
             advance = request.POST.get("entry_advance")

@@ -128,8 +128,7 @@ def create_gstlegder_invoice(sender, instance, created, **kwargs):
     
 
         invoice = invoice_model.InvoiceModel.objects.get(pk = instance.pk)
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        print(invoice.igst)
+
         igst_amount = float(invoice.igst) if invoice.igst !="" and invoice.igst != None else 0
         cgst_amount = float(invoice.cgst) if invoice.cgst !="" and invoice.cgst != None else 0
         sgst_amount = float(invoice.sgst) if invoice.sgst !="" and invoice.sgst != None else 0
@@ -163,16 +162,22 @@ def create_gstlegder_creditnote(sender, instance, created, **kwargs):
         
         ins = creditnote_model.CreditNode.objects.get(pk = instance.pk)
 
-        igst_amount = list(filter(None, [ins.igst_5, ins.igst_12, ins.igst_18, ins.igst_28, ins.igst_other]))
-        cgst_amount = list(filter(None, [ins.cgst_5, ins.cgst_12, ins.cgst_18, ins.cgst_28, ins.cgst_other]))
-        sgst_amount = list(filter(None, [ins.sgst_5, ins.sgst_12, ins.sgst_18, ins.sgst_28, ins.sgst_other]))
+        # igst_amount = list(filter(None, [ins.igst_5, ins.igst_12, ins.igst_18, ins.igst_28, ins.igst_other]))
+        # cgst_amount = list(filter(None, [ins.cgst_5, ins.cgst_12, ins.cgst_18, ins.cgst_28, ins.cgst_other]))
+        # sgst_amount = list(filter(None, [ins.sgst_5, ins.sgst_12, ins.sgst_18, ins.sgst_28, ins.sgst_other]))
         #print(igst, cgst, sgst)
+        igst_amount = float(ins.igst) if ins.igst !="" and ins.igst != None else 0
+        cgst_amount = float(ins.cgst) if ins.cgst !="" and ins.cgst != None else 0
+        sgst_amount = float(ins.sgst) if ins.sgst !="" and ins.sgst != None else 0
 
 
         gst_ledger.gst_number = ins.creditnote_org_gst_num
-        gst_ledger.cgst_amount = sum([float(i) for i in cgst_amount]) if len(cgst_amount) > 0  else 0
-        gst_ledger.sgst_amount = sum([float(i) for i in sgst_amount]) if len(sgst_amount) > 0  else 0
-        gst_ledger.igst_amount = sum([float(i) for i in igst_amount]) if len(igst_amount) > 0  else 0
+        # gst_ledger.cgst_amount = sum([float(i) for i in cgst_amount]) if len(cgst_amount) > 0  else 0
+        # gst_ledger.sgst_amount = sum([float(i) for i in sgst_amount]) if len(sgst_amount) > 0  else 0
+        # gst_ledger.igst_amount = sum([float(i) for i in igst_amount]) if len(igst_amount) > 0  else 0
+        gst_ledger.cgst_amount = cgst_amount
+        gst_ledger.sgst_amount = sgst_amount
+        gst_ledger.igst_amount = igst_amount
         gst_ledger.is_creditnote = True
         gst_ledger.input_tab = True
         gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount

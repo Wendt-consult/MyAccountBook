@@ -263,6 +263,9 @@ def customize_view_list(request, ins):
         elif(ins == 7):
             CustomizePurchaseEntryView.objects.filter(customize_view_name = customize_name[0].id).update(entry_number = data['number'],entry_reference = data['reference'],entry_vendor = data['vendor'],
                                                 entry_date = data['date'], entry_due_date = data['due_date'], entry_advance = data['advance'], entry_total = data['amount'])
+        elif(ins == 8):
+            CustomizeDebitNoteView.objects.filter(customize_view_name = customize_name[0].id).update(debit_number = data['number'],debit_reference = data['reference'],debit_vendor = data['vendor'],
+                                                debit_date = data['date'], debit_total = data['amount'])
     elif(len(customize_name) == 0):
         customize_module_name = CustomizeModuleName(user = request.user, customize_name = int(ins))
         customize_module_name.save()
@@ -294,6 +297,10 @@ def customize_view_list(request, ins):
             view_purchase_entry = CustomizePurchaseEntryView(customize_view_name = customize_module_name,entry_number = data['number'],entry_reference = data['reference'],entry_vendor = data['vendor'],
                                                 entry_date = data['date'], entry_due_date = data['due_date'], entry_advance = data['advance'], entry_total = data['amount'])
             view_purchase_entry.save()
+        elif(ins == 8):
+            view_debit_note = CustomizeDebitNoteView(customize_view_name = customize_module_name,debit_number = data['number'],debit_reference = data['reference'],debit_vendor = data['vendor'],
+                                                debit_date = data['date'], debit_total = data['amount'])
+            view_debit_note.save()
     return JsonResponse(data)
 
 #**********************************************************************************************

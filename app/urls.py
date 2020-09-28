@@ -289,7 +289,12 @@ urlpatterns += [
 #
 urlpatterns += [
     path('debitnote/', never_cache(login_required(debit_note.DebitNoteView.as_view())), name = 'view_debit_note'),
-    path('debitnote/add_debit_note/', never_cache(login_required(debit_note.add_debit_note)), name = 'add_debit_note'),
+    path('debitnote/add_debit_note/<int:ins>/<slug:slug>/', never_cache(login_required(debit_note.add_debit_note)), name = 'add_debit_note'),
+    path('debitnote/save_debit/', never_cache(login_required(debit_note.save_debit_note)), name = 'save_debit_note'),
+    path('debitnote/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(debit_note.unique_debit_number)), name = 'unique_debit_number'),
+    path('debitnote/delete/<int:ins>/', never_cache(login_required(debit_note.delete_debit_note)), name = 'delete_debit_note'),
+    path('debitnote/edit_debit_note/<int:ins>/', never_cache(login_required(debit_note.EditDebitNote.as_view())), name = 'edit_debit_note'),
+
 ]
 
 if settings.DEBUG:

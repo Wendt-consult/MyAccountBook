@@ -457,3 +457,55 @@ class CustomizePurchaseEntryView(models.Model):
         null = True,
         blank = True,
     )
+#=========================================================================================
+# customize debit note names
+#=========================================================================================
+#
+class CustomizeDebitNoteView(models.Model):
+
+    customize_view_name = models.ForeignKey(
+        CustomizeModuleName,
+        on_delete=models.CASCADE,
+        null = False,
+        blank = False,
+    )
+
+    debit_number = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    debit_reference = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    debit_vendor = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    debit_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    debit_total = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )

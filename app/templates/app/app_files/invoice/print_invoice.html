@@ -28,7 +28,7 @@ a {
 
 body {
   position: relative;
-  width: 85%;  
+  width: 90%;  
   height: 29.7cm; 
   margin: 0 auto; 
   color: #555555;
@@ -140,6 +140,7 @@ table .desc {
 
 table .unit {
   background: #DDDDDD;
+  text-align: left;
 }
 
 table .qty {
@@ -216,7 +217,7 @@ footer {
 }
 
 
-    </style>
+</style>
   </head>
   <body>
     {% load static %}
@@ -323,24 +324,24 @@ footer {
           <tr style="background-color: #4682b4;color: black;">
             {% if invoice.is_cs_gst == True %}
             <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
-            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
-            <th style="text-align: left;border: 1px solid black;">PRICE</th>
-            <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
-            <th style="text-align: left;border: 1px solid black;">UNIT</th>
-            <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">QUANTITY</th>
+            <th style="text-align: left;border: 1px solid black;width: 9%;">UNIT</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">DISCOUNT</th>
             <th style="text-align: left;border: 1px solid black;width: 7%;">TAX(In %)</th>
-            <th style="text-align: left;border: 1px solid black;">CGST</th>
-            <th style="text-align: left;border: 1px solid black;">SGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">CGST</th>
+            <th style="text-align: left;border: 1px solid black;width:8%">SGST</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
             {% elif invoice.is_cs_gst == False %} 
-            <th style="text-align: left;width: 20%;border: 1px solid black;">PRODUCT/SERVICE</th>
-            <th style="text-align: left;border: 1px solid black;">PRICE</th>
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
             <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
             <th style="text-align: left;border: 1px solid black;">UNIT</th>
             <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
             <th style="text-align: left;border: 1px solid black;">TAX(in %)</th>
-            <th style="text-align: left;border: 1px solid black;">IGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">IGST</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
             <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
             {% endif %}
@@ -370,6 +371,7 @@ footer {
             <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.cgst_amount}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.sgst_amount}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
+            <!-- <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td> -->
             <td class="unit" style="text-align: left;border: 1px solid black;">
               {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
             </td>

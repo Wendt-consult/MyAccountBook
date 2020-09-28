@@ -200,12 +200,12 @@ function product_row_creator(invoice_number){
     html +='<textarea id="desc'+invoice_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><select class="form-control product_invoice_account" id="product_account'+invoice_number+'" name="product_account[]" required><option value="">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-    html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Price'+invoice_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
+    html +='<div class="col"><input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Price'+invoice_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+invoice_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" name="Quantity[]" required></td>'
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+invoice_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+invoice_number+'\')" onkeyup="purchase_calculate('+invoice_number+'),header_subtotal('+invoice_number+')" id="Discount'+invoice_number+'" name="Discount[]"></div>'
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+invoice_number+'" name="Dis[]" onchange="dicount_type('+invoice_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax_list'+invoice_number+'" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+invoice_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+invoice_number+'\')" name="tax[]" id="tax'+invoice_number+'" style="margin-top:-1px" readonly><datalist id="tax_list'+invoice_number+'"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
     if(org_state != '' || state != '' || org_state.toLowerCase() == state.toLowerCase() || $('#org_gst_reg_type').val() == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+invoice_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+invoice_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
@@ -247,8 +247,17 @@ function get_func(next_id, value,product_quantity,product_price,product_unit, ac
                 }
             }
 
+            if(data.gst.length > 0){
+                var tax_option = data.gst
+                var tax_htm
+                for(var k = 0; k < tax_option.length; k++){ 
+                    tax_htm += '<option value="'+tax_option[k]+'">'; 
+                }
+            }
+
             $("#ItemName"+next_id).empty().append(products_htm);
             $("#product_account"+next_id).empty().append(acc_group_name_htm);
+            $('#tax_list'+next_id).empty().append(tax_htm);
 
             $(document).on('click','#select2-ItemName'+invoice_number+'-container',function(){
 
@@ -303,6 +312,7 @@ function get_func(next_id, value,product_quantity,product_price,product_unit, ac
 function run_others(counter,type){
     acc_group_name_htm = '<option value="">None</option>';
     products_htm = '<option value="">None</option>';
+    // tax_htm = '<option value="">---------</option>';
     if(type == 'single'){
         invoice_number += 1
         value = 'NA'

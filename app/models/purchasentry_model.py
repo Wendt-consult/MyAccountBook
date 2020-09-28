@@ -239,6 +239,12 @@ class PurchaseEntry(models.Model):
         blank=True,
         null=True,
     )
+    debit_note =  models.IntegerField(
+        db_index=True,
+        default=0,
+        blank=True,
+        null=True,
+    )
     def __str__(self):
         return "{} - {}".format(self.vendor,self.id) 
 

@@ -11518,7 +11518,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Showing _START_ to _END_ of _TOTAL_",
+			"sInfo": "Showing _START_ to _END_ of _TOTAL_ Records",
 	
 	
 			/**

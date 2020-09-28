@@ -201,7 +201,7 @@ thead th{
                                             <i class="fa fa-tags" style="color: gray;"></i>
                                             {% endif %}
                                             <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                                {{i.vendor|truncatechars:15}}
+                                                {{i.vendor|truncatechars:20}}
                                             </a>
                                         </td>
                                         {% else %}
@@ -210,7 +210,7 @@ thead th{
                                             <i class="fa fa-tags" style="color: gray;"></i>
                                             {% endif %}
                                             <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                                {{i.vendor|truncatechars:15}}
+                                                {{i.vendor|truncatechars:20}}
                                             </a>
                                         </td>
                                         {% endif %}
@@ -322,6 +322,11 @@ thead th{
                                                     Make Payment
                                                 </a> 
                                                 {% endif %}
+                                                {% if i.debit_note == 0 %}
+                                                <a class="dropdown-item" title="Make Debit Note" href="{% url 'add_debit_note' 0 i.id %}" style="padding: 5px 5px;cursor: pointer;">
+                                                    Make Debit Note
+                                                </a> 
+                                                {% endif %}
                                                 <a class="dropdown-item" title="Delete" data-toggle="modal" data-target="#del{{i.id}}" style="padding: 5px 5px;">
                                                     Delete
                                                 </a>   
@@ -349,7 +354,7 @@ thead th{
                                             <div class="modal " tabindex="-1" role="dialog" id="paymentModel-{{i.id}}" style="border-top: none;top:100px;">
                                                 <div class="modal-dialog" role="document" style="border-top: none;">
                                                     <div class="modal-content" style="background-color:#202940;width: 143%;">
-                                                        <form method="post" action="{% url 'make_payment' 'purchase_entry' %}" style="margin:0px" enctype="multipart/form-data" id="makePayment-{{i.id}}">
+                                                        <form method="post" action="{% url 'make_payment' 'purchase_entry' %}" style="margin:0px" autocomplete="off" enctype="multipart/form-data" id="makePayment-{{i.id}}">
                                                             <div class="modal-header bg-warning">
                                                                 <h5 class="modal-title" style="color:#000000; font-weight:bold;">Make Payment</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -367,20 +372,20 @@ thead th{
                                                                         <div class="col" style="padding-left: 0px;">
                                                                             <table class="table-responsive" >
                                                                                 <tbody style=" width: 100%; display: inline-table;">
-                                                                                    <tr style="float: left;">
-                                                                                        <td style="border:0px; vertical-align: bottom;padding-right: 27px;">
+                                                                                    <tr style="float: left;background-color: aliceblue;">
+                                                                                        <td style="border:0px; vertical-align: bottom;">
                                                                                             Payment Amount
                                                                                         </td>
                                                                                         <td style="border:0px;">
-                                                                                            <input class="form-control" type="text"{% if i.balance_due != none%} value="{{i.balance_due}}" {% else %} value="0.00" {% endif %} name="pay_amount" id="pay_amount-{{i.id}}" onkeypress="return restrictAlphabets(event), float_value(event,$(this))" required>
+                                                                                            <input class="form-control" type="text"{% if i.balance_due != none%} value="{{i.balance_due}}" {% else %} value="0.00" {% endif %} name="pay_amount" id="pay_amount-{{i.id}}" onkeypress="return restrictAlphabets(event), float_value(event,$(this))" style="margin-left: 10%;width: 92%;" required>
                                                                                         </td>                                    
                                                                                     </tr>
-                                                                                    <tr style="float: left;">
+                                                                                    <tr style="float: left;background-color: aliceblue;">
                                                                                         <td style="border:0px; vertical-align: bottom;padding-right: 44px;">
                                                                                             Payment Type
                                                                                         </td>
                                                                                         <td style="border:0px;">
-                                                                                            <select class="form-control" name="payment_type" id="payment_type-{{i.id}}" style="width:200%;" required>
+                                                                                            <select class="form-control" name="payment_type" id="payment_type-{{i.id}}" style="width:185%;" required>
                                                                                                 <option value="">None</option>
                                                                                                 {% for type in payment_type %}
                                                                                                 <option value="{{type.0}}">{{type.1}}</option>
@@ -388,12 +393,12 @@ thead th{
                                                                                             </select>
                                                                                         </td>                                    
                                                                                     </tr>
-                                                                                    <tr style="float: left;">
+                                                                                    <tr style="float: left;background-color: aliceblue">
                                                                                         <td style="border:0px; vertical-align: bottom;padding-right: 61px;">
                                                                                             Reference#
                                                                                         </td>
                                                                                         <td style="border:0px;">
-                                                                                            <input class="form-control" value="{{i.purchase_entry_refrence}}" type="text" id="pay_reference-{{i.id}}" name="pay_reference">
+                                                                                            <input class="form-control" value="{{i.purchase_entry_refrence}}" type="text" id="pay_reference-{{i.id}}" name="pay_reference" readonly>
                                                                                         </td>                                    
                                                                                     </tr>
                                                                                 </tbody>
@@ -403,7 +408,7 @@ thead th{
                                                                         <div class="col" style="padding-left: 0px;">
                                                                             <table class="table-responsive" >
                                                                                 <tbody style=" width: 100%; display: inline-table;">
-                                                                                    <tr style="float: left;">
+                                                                                    <tr style="float: left;background-color: aliceblue;">
                                                                                         <td style="border:0px; vertical-align: bottom;padding-right: 27px;">
                                                                                             Payment Date
                                                                                         </td>
@@ -411,7 +416,7 @@ thead th{
                                                                                             <input class="form-control pay_date" type="text" name="pay_date" id="pay_date-{{i.id}}" required>
                                                                                         </td>                                    
                                                                                     </tr>
-                                                                                    <tr style="float: left;">
+                                                                                    <tr style="float: left;background-color: aliceblue;">
                                                                                         <td style="border:0px; vertical-align: bottom;padding-right: 66px;">
                                                                                             Account
                                                                                         </td>
@@ -447,7 +452,7 @@ thead th{
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <div style="float: right;">
-                                                                    <button class="btn mr-2 btn-sm" type="submit" onclick="return check_amount({{i.id}})" style="align-content: left;margin-left:150px;background-color:#598ebb">Pay</button>
+                                                                    <button class="btn mr-2 btn-sm" type="submit" onclick="return check_amount_purchase_entry({{i.id}})" style="align-content: left;margin-left:150px;background-color:#598ebb">Pay</button>
                                                                     <button type="button" class="btn btn-sm" data-dismiss="modal" aria-label="Close">Cancel</button>
                                                                 </div>
                                                             </div>

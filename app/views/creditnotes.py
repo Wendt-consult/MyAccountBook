@@ -29,6 +29,7 @@ from app.helpers import email_helper
 from datetime import datetime
 
 from django.conf import settings
+import datetime
 #=====================================================================================
 #   CREDIT_NOTE VIEW
 #=====================================================================================
@@ -151,7 +152,15 @@ def add_creditnote(request, slug ):
             else:
                 name.append(products[i].product_name)
             ids.append(products[i].id)
-        data = {'products': name, 'ids': ids ,} 
+        
+        # for tax option
+        tax = []
+        org_gst = len(gst)
+        for i in range(0,org_gst):
+            tax.append(gst[i].taxname_percent)
+
+        # common dictionary
+        data = {'products': name, 'ids': ids,'gst':tax} 
         return JsonResponse(data)
     elif(int(slug) == 0):
         products = ProductsModel.objects.filter(user = request.user, is_active = True, product_delete_status = 0)
@@ -273,7 +282,7 @@ def unique_credit_number(request, ins, number):
     elif (ins == 1):
         # check credit note number is unquie
         credit_note = CreditNode.objects.filter(Q(user = request.user) & Q(credit_number = number))
-        count = len(purchase_order)
+        count = len(credit_note)
         if(count == 0):
             data['unique'] = 0
         else:
@@ -292,6 +301,8 @@ def save_credit_note(request):
         cc_email = request.POST.get("CC_Email_Address")
         address = request.POST.get("BillingAddress")
         creditnote_date = request.POST.get("CreditNoteDate")
+        # change credit note date formate
+        creditnote_date = datetime.strptime(str(creditnote_date), '%d-%m-%Y').strftime('%Y-%m-%d')
         supply = request.POST.get("supplyPlace")
         invoice_reference = request.POST.get("Reference",'None')
         credit_number = request.POST.get("CreditNoteNumber",'None')
@@ -331,6 +342,7 @@ def save_credit_note(request):
         org_gst_number = request.POST.get("org_gst_number")
         org_gst_reg_type = request.POST.get("org_gst_reg_type")
         single_gst_code = request.POST.get("single_gst_code")
+        is_blank_credit = request.POST.get("blank_credit_toggle",'off')
         if(default == 'on'):
             org = Organisations.objects.get(user = request.user)
             if(org.terms_and_condition is None):
@@ -381,6 +393,7 @@ def save_credit_note(request):
             creditnote_org_gst_num = org_gst_number,
             creditnote_org_gst_type = org_gst_reg_type,
             creditnote_org_gst_state = single_gst_code,
+            is_blank_credit = is_blank_credit,
         )
         if(cgst != '' or sgst != ''):
             credit.is_cs_gst = True
@@ -394,55 +407,64 @@ def save_credit_note(request):
         # cgst = list(filter(None, [cgst_5, cgst_12, cgst_18, cgst_28,cgst_other]))
         # sgst = list(filter(None, [sgst_5, sgst_12, sgst_18, sgst_28, sgst_other]))
         # print(igst, cgst, sgst)
+        
+        if(is_blank_credit == 'on'):
+            blank_desc = request.POST.get("blank_desc")
+            blank_amount = request.POST.get("blank_amount")
+            creditnote_item = creditnote_Items(
+                user = request.user,
+                credit_inventory = credit,
+                description = blank_desc,
+                amount = blank_amount,
+            )
+            creditnote_item.save() 
+        else:
+            product_name = request.POST.getlist('ItemName[]',None)
+            product_desc = request.POST.getlist('desc[]',None)
+            product_type = request.POST.getlist('type[]',None)
+            # product_currency = request.POST.getlist('currency[]',None)
+            product_price = request.POST.getlist('Price[]',None)
+            product_unit = request.POST.getlist('Unit[]',None)
+            product_quantity = request.POST.getlist('Quantity[]',None)
+            product_discount = request.POST.getlist('Discount[]',None)
+            product_discount_type = request.POST.getlist('Dis[]',None)
+            product_tax = request.POST.getlist('tax[]',None)
+            product_cgst = request.POST.getlist('row_cgst[]',None)
+            product_sgst = request.POST.getlist('row_sgst[]',None)
+            product_igst = request.POST.getlist('row_igst[]',None)
+            product_amount = request.POST.getlist('Amount[]',None)
+            product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
-
-        product_name = request.POST.getlist('ItemName[]',None)
-        product_desc = request.POST.getlist('desc[]',None)
-        product_type = request.POST.getlist('type[]',None)
-        # product_currency = request.POST.getlist('currency[]',None)
-        product_price = request.POST.getlist('Price[]',None)
-        product_unit = request.POST.getlist('Unit[]',None)
-        product_quantity = request.POST.getlist('Quantity[]',None)
-        product_discount = request.POST.getlist('Discount[]',None)
-        product_discount_type = request.POST.getlist('Dis[]',None)
-        product_tax = request.POST.getlist('tax[]',None)
-        product_cgst = request.POST.getlist('row_cgst[]',None)
-        product_sgst = request.POST.getlist('row_sgst[]',None)
-        product_igst = request.POST.getlist('row_igst[]',None)
-        product_amount = request.POST.getlist('Amount[]',None)
-        product_amount_inc = request.POST.getlist('Amount_inc[]',None)
-
-        count = len(product_name)
-        for i in range(0,count):
-            if(product_name[i] == '-------' ):
-                products = None
-                if(len(product_desc[i]) > 0 or len(product_amount[i]) > 0):
-                    credit.amount = product_amount[i]
-                    credit.description = product_desc[i]
-                    credit.save()
-            else:
-                
-                products = ProductsModel.objects.get(pk = int(product_name[i]))
-                creditnote_item = creditnote_Items(
-                    user = request.user,
-                    credit_inventory = credit,
-                    product = products,
-                    description = product_desc[i],
-                    product_type = product_type[i],
-                    price = product_price[i],
-                    unit = product_unit[i],
-                    quantity = product_quantity[i],
-                    discount_type = product_discount_type[i],
-                    discount = product_discount[i],
-                    tax = product_tax[i],
-                    cgst_amount = product_cgst[i],
-                    sgst_amount = product_sgst[i],
-                    igst_amount = product_igst[i],
-                    amount = product_amount[i],
-                    amount_inc = product_amount_inc[i],
-                )
-
-                creditnote_item.save() 
+            count = len(product_name)
+            for i in range(0,count):
+                if(product_name[i] != '-------' ):
+                #     products = None
+                #     if(len(product_desc[i]) > 0 or len(product_amount[i]) > 0):
+                #         credit.amount = product_amount[i]
+                #         credit.description = product_desc[i]
+                #         credit.save()
+                # else:
+                    
+                    products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    creditnote_item = creditnote_Items(
+                        user = request.user,
+                        credit_inventory = credit,
+                        product = products,
+                        description = product_desc[i],
+                        product_type = product_type[i],
+                        price = product_price[i],
+                        unit = product_unit[i],
+                        quantity = product_quantity[i],
+                        discount_type = product_discount_type[i],
+                        discount = product_discount[i],
+                        tax = product_tax[i],
+                        cgst_amount = product_cgst[i],
+                        sgst_amount = product_sgst[i],
+                        igst_amount = product_igst[i],
+                        amount = product_amount[i],
+                        amount_inc = product_amount_inc[i],
+                    )
+                    creditnote_item.save() 
         
         #
         # PDF CODE
@@ -451,13 +473,13 @@ def save_credit_note(request):
         #
         # EMAIL SENDING FUNCTION
         #
-        """
+        
         if(save_type == 1):        
             if attach_check:
                 credit_note_mailer(request, credit, contact, send_attachments = True)
             else:
                 credit_note_mailer(request, credit, contact, send_attachments = False)
-        """    
+
         
         return redirect('/creditnotes/', permanent = False)
     return redirect('/creditnotes/', permanent = False)
@@ -598,6 +620,8 @@ class EditCreditnote(View):
             cc_email = request.POST.get("CC_Email_Address")
             address = request.POST.get("BillingAddress")
             creditnote_date = request.POST.get("CreditNoteDate")
+            # change credit note date formate
+            creditnote_date = datetime.strptime(str(creditnote_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             supply = request.POST.get("supplyPlace")
             invoice_reference = request.POST.get("Reference",'None')
             credit_number = request.POST.get("CreditNoteNumber",'None')
@@ -631,6 +655,7 @@ class EditCreditnote(View):
             org_gst_number = request.POST.get("org_gst_number")
             org_gst_reg_type = request.POST.get("org_gst_reg_type")
             single_gst_code = request.POST.get("single_gst_code")
+            is_blank_credit = request.POST.get("blank_credit_toggle",'off')
             if(default == 'on'):
                 org = Organisations.objects.get(user = request.user)
                 if(org.terms_and_condition is None):
@@ -677,62 +702,74 @@ class EditCreditnote(View):
                 creditnote_org_gst_num = org_gst_number,
                 creditnote_org_gst_type = org_gst_reg_type,
                 creditnote_org_gst_state = single_gst_code,
+                is_blank_credit = is_blank_credit,
                 )
             if(cgst != '' or sgst != ''):
                 CreditNode.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
             else:
                 CreditNode.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = False)
 
-            product_name = request.POST.getlist('ItemName[]',None)
-            product_desc = request.POST.getlist('desc[]',None)
-            product_type = request.POST.getlist('type[]',None)
-            # product_currency = request.POST.getlist('currency[]',None)
-            product_price = request.POST.getlist('Price[]',None)
-            product_unit = request.POST.getlist('Unit[]',None)
-            product_quantity = request.POST.getlist('Quantity[]',None)
-            product_discount = request.POST.getlist('Discount[]',None)
-            product_discount_type = request.POST.getlist('Dis[]',None)
-            product_tax = request.POST.getlist('tax[]',None)
-            product_cgst = request.POST.getlist('row_cgst[]',None)
-            product_sgst = request.POST.getlist('row_sgst[]',None)
-            product_igst = request.POST.getlist('row_igst[]',None)
-            product_amount = request.POST.getlist('Amount[]',None)
-            product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
             creditnote_Items.objects.filter(Q(user= request.user) & Q(credit_inventory = creditnote)).delete()
 
-            count = len(product_name)
-            for i in range(0,count):
+            if(is_blank_credit == 'on'):
+                blank_desc = request.POST.get("blank_desc")
+                blank_amount = request.POST.get("blank_amount")
+                creditnote_item = creditnote_Items(
+                    user = request.user,
+                    credit_inventory = creditnote,
+                    description = blank_desc,
+                    amount = blank_amount,
+                )
+                creditnote_item.save()   
+            else:
+                product_name = request.POST.getlist('ItemName[]',None)
+                product_desc = request.POST.getlist('desc[]',None)
+                product_type = request.POST.getlist('type[]',None)
+                # product_currency = request.POST.getlist('currency[]',None)
+                product_price = request.POST.getlist('Price[]',None)
+                product_unit = request.POST.getlist('Unit[]',None)
+                product_quantity = request.POST.getlist('Quantity[]',None)
+                product_discount = request.POST.getlist('Discount[]',None)
+                product_discount_type = request.POST.getlist('Dis[]',None)
+                product_tax = request.POST.getlist('tax[]',None)
+                product_cgst = request.POST.getlist('row_cgst[]',None)
+                product_sgst = request.POST.getlist('row_sgst[]',None)
+                product_igst = request.POST.getlist('row_igst[]',None)
+                product_amount = request.POST.getlist('Amount[]',None)
+                product_amount_inc = request.POST.getlist('Amount_inc[]',None)
 
-                if(product_name[i] == '-------' ):
-                    products = None
-                    if(len(product_desc[i]) > 0 or len(product_amount[i]) > 0):
-                        CreditNode.objects.filter(pk = int(kwargs["ins"])).update(amount = product_amount[i], description = product_desc[i])
-                    # credit.amount = product_amount[i]
-                    # credit.description = product_desc[i]
-                    # credit.save()
-                    
-                else:
-                    products = ProductsModel.objects.get(pk = int(product_name[i]))
-                    creditnote_item = creditnote_Items(
-                        user = request.user,
-                        credit_inventory = creditnote,
-                        product = products,
-                        description = product_desc[i],
-                        product_type = product_type[i],
-                        price = product_price[i],
-                        unit = product_unit[i],
-                        quantity = product_quantity[i],
-                        discount_type = product_discount_type[i],
-                        discount = product_discount[i],
-                        tax = product_tax[i],
-                        cgst_amount = product_cgst[i],
-                        sgst_amount = product_sgst[i],
-                        igst_amount = product_igst[i],
-                        amount = product_amount[i],
-                        amount_inc = product_amount_inc[i],
-                    )
-                    creditnote_item.save()   
+                count = len(product_name)
+                for i in range(0,count):
+
+                    if(product_name[i] != '-------' ):
+                        # products = None
+                        # if(len(product_desc[i]) > 0 or len(product_amount[i]) > 0):
+                            # CreditNode.objects.filter(pk = int(kwargs["ins"])).update(amount = product_amount[i], description = product_desc[i])
+                        # credit.amount = product_amount[i]
+                        # credit.description = product_desc[i]
+                        # credit.save()   
+                    # else:
+                        products = ProductsModel.objects.get(pk = int(product_name[i]))
+                        creditnote_item = creditnote_Items(
+                            user = request.user,
+                            credit_inventory = creditnote,
+                            product = products,
+                            description = product_desc[i],
+                            product_type = product_type[i],
+                            price = product_price[i],
+                            unit = product_unit[i],
+                            quantity = product_quantity[i],
+                            discount_type = product_discount_type[i],
+                            discount = product_discount[i],
+                            tax = product_tax[i],
+                            cgst_amount = product_cgst[i],
+                            sgst_amount = product_sgst[i],
+                            igst_amount = product_igst[i],
+                            amount = product_amount[i],
+                            amount_inc = product_amount_inc[i],
+                        )
+                        creditnote_item.save()   
 
 
             #******************************************************************************
@@ -856,16 +893,19 @@ class CloneCreditnote(View):
         elif(contact_result == True):
             self.data['creditnote_contact_status2'] = 'YES'
 
-        a = []
-        for i in range(0,len(creditnote_item)):
-            strg3 = str(creditnote_item[i].product)
-            strg4 = strg3.split(' -')
-            result = products.filter(product_name__iexact = strg4[0]).exists()
-            if(result == True):
-                a.append(creditnote_item[i])
+        if(creditnote.is_blank_credit == 'off'):
+            a = []
+            for i in range(0,len(creditnote_item)):
+                strg3 = str(creditnote_item[i].product)
+                strg4 = strg3.split(' -')
+                result = products.filter(product_name__iexact = strg4[0]).exists()
+                if(result == True):
+                    a.append(creditnote_item[i])
 
-        if(len(creditnote_item) != len(a)):
-            self.data['creditnote_product_status2'] = 'NO'
+            if(len(creditnote_item) != len(a)):
+                self.data['creditnote_product_status2'] = 'NO'
+            else:
+                self.data['creditnote_product_status2'] = 'YES'
         else:
             self.data['creditnote_product_status2'] = 'YES'
         

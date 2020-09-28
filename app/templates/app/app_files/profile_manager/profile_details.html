@@ -34,7 +34,7 @@ table{
 }
 textarea{
     background-color: #fff;
-    color: white;
+    color: black;
 }
 select.form-control{padding:0px 0px;}
 select.form-control option{color : #000000; }
@@ -72,7 +72,7 @@ td{padding:5px;}
     margin-right: 25px;
 }
 </style>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" autocomplete="off">
     <div class="card">
         <!-- <div class="card-header card-header-primary" style="margin-left:1px">
             <h5 class="card-title ">Organisation Details </h5>
@@ -648,7 +648,7 @@ td{padding:5px;}
                                 <td style="border:0px;">
                                     {{bank_account_form.ifsc_code}}
                                 </td>  
-								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+								<td style="border:0px;color:red;width: 35%;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
@@ -1119,7 +1119,7 @@ td{padding:5px;}
                                 <td style="border:0px;">
                                     {{i.ifsc_code}}
                                 </td>  
-								<!-- <td style="border:0px;color:black;" class="error_field"></td> -->
+								<td style="border:0px;color:red;width: 35%;" class="error_field"></td>
                             </tr>
                             <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:black">
@@ -1266,7 +1266,7 @@ $(document).ready( function () {
         sStripeEven: '', 
         sStripeOdd: '',
         bSort: false,
-        "lengthMenu": [[10, 20, 50, 100], ["10 Records", "20 Records", "50 Records", "100 Records"]]
+        "lengthMenu": [[5, 10, 20, 50], ["5 Records", "10 Records", "20 Records", "50 Records"]]
     });
     //add margin to the right and reset clear
 $(".dataTables_length").css('clear', 'none');

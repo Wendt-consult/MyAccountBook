@@ -122,6 +122,9 @@ def SaveJournalEntry(request):
         name = request.POST.get("journalnumber")
         reference = request.POST.get("Reference")
         Journal_date = request.POST.get("Journalentrydate")
+        # change order date formate
+        Journal_date = datetime.strptime(str(Journal_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+
         journalentry_number_check  = request.POST.get("journal_checkbox","off")
         Message  = request.POST.get("Message")
         attachement = request.FILES.get("Attachment")
@@ -228,6 +231,8 @@ class EditJournal(View):
             name = request.POST.get("journalnumber")
             reference = request.POST.get("Reference")
             Journal_date = request.POST.get("Journalentrydate")
+            # change order date formate
+            Journal_date = datetime.strptime(str(Journal_date), '%d-%m-%Y').strftime('%Y-%m-%d')
             journalentry_number_check  = request.POST.get("journal_checkbox","off")
             Message  = request.POST.get("Message")
             attachement = request.FILES.get("Attachment")

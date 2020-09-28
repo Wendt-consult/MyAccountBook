@@ -362,9 +362,9 @@ def edit_organisation_bank_account(request, ins):
             return redirect("/unauthorized/",permanent=False)
 
         bank_form = contact_forms.OrgAccountDetailsForm(request.POST, prefix='form_'+prefix, instance = obj)
-
-        if(request.POST['edit_default_bank_switch'] == 'yes'):
-            users_model.User_Account_Details.objects.filter(is_user = True,is_organisation = True,organisation = org_ins).update(default_bank = False)
+        bank_switch = request.POST['edit_default_bank_switch']
+        if(bank_switch == 'yes'):
+            users_model.User_Account_Details.objects.filter(is_user = True,is_organisation = True,organisation = obj.organisation).update(default_bank = False)
         
         if bank_form.is_valid():        
             ins = bank_form.save(commit = False)

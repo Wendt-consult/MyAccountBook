@@ -141,7 +141,7 @@ thead th{
                                     {% endif %}
                                     {% if customize.credit_reference != 0 %}
                                         {% if note.invoice_refrence %}
-                                        <td align="center" class="customize_reference">{{note.invoice_refrence|default_if_none:""}}</td>
+                                        <td align="center" class="customize_reference">{{note.invoice_refrence|truncatechars:20|default_if_none:""}}</td>
                                         {% else %}
                                         <td align="center" class="customize_reference">None</td>
                                         {% endif %}

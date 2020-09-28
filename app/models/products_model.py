@@ -141,7 +141,7 @@ class ProductsModel(models.Model):
     )
 
     hsn_code = models.CharField(
-        max_length = 250,
+        max_length = 10,
         db_index = True,
         blank = True,
         null = True,

@@ -148,7 +148,7 @@ thead th{
                                     {% if customize.purchase_reference != 0 %}
                                     <td align="center" class="customize_reference">
                                         {% if order.purchase_refrence %}
-                                        {{order.purchase_refrence}}
+                                        {{order.purchase_refrence|truncatechars:20}}
                                         {% else %}
                                         None
                                         {% endif %}
@@ -160,7 +160,7 @@ thead th{
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
                                         <a class="contact_name" id="hover" href="{% url 'edit_purchase_order' order.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{order.vendor}}
+                                            {{order.vendor|truncatechars:20}}
                                         </a>
                                     </td>
                                     {% endif %}
@@ -185,10 +185,12 @@ thead th{
                                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color:black;">Action</button>
 
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                {% if order.is_purchase_entry_maked == False %}
                                                 {% if order.order_advance_make_pay == 'off' %}
                                                 <a class="dropdown-item" title="Edit Purchase Order" href="{% url 'edit_purchase_order' order.id %}" style="padding: 5px 5px;">
                                                     Edit
                                                 </a>
+                                                {% endif %}
                                                 {% endif %}
 
                                                 <a class="dropdown-item" title="Void Purchase Order" data-toggle="modal" data-target="#void{{order.id}}"href="#" style="padding: 5px 5px;">
@@ -202,7 +204,7 @@ thead th{
                                                 <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_purchase_order' order.id %}" style="padding: 5px 5px;">
                                                    Make a Copy
                                                 </a>
-                                                {% if order.vendor.is_active == True %} 
+                                                {% if order.vendor.is_active == True and order.is_purchase_entry_maked == False %} 
                                                 <a class="dropdown-item" title="Make Purchase Entry" href="{% url 'add_purchase_entry' 0 order.id %}" style="padding: 5px 5px;">
                                                     Make Purchase Entry
                                                 </a> 

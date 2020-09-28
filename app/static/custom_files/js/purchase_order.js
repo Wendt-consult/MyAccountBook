@@ -105,11 +105,11 @@ function add_single_row(a){
 function run_others(){
     acc_group_name_htm = '<option value="">None</option>';
     products_htm = '<option value="">None</option>';
-
+    tax_htm = '<option value="">---------</option>';
     next_id = purchase_number;       
     html = product_row_creator(next_id);
     $('#purchase_table').append(html);
-    ret = get_func(next_id,acc_group_name_htm, products_htm);
+    ret = get_func(next_id,acc_group_name_htm, products_htm,tax_htm);
 
 }
 function product_row_creator(purchase_number){
@@ -129,7 +129,7 @@ function product_row_creator(purchase_number){
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+purchase_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+purchase_number+'\')" onkeyup="purchase_calculate('+purchase_number+')" id="Discount'+purchase_number+'" name="Discount[]"></div>'
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control" id="Dis'+purchase_number+'" name="Dis[]" onchange="dicount_type('+purchase_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
-    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+purchase_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" readonly><datalist id="tax"><option value="0"><option value="5"><option value="12"><option value="18"><option value="28"></datalist></div>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax_list'+purchase_number+'" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+purchase_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+purchase_number+'\')" name="tax[]" id="tax'+purchase_number+'" style="margin-top:-1px" readonly><datalist id="tax_list'+purchase_number+'"></datalist></div>'
     html += '<div class="col" style="padding-left:0%;padding-right:0%;"><font style="color: black;">%</font></div></div></td>'
     if(org_state != '' || vendor_g != '' || org_state == vendor_g || $('#org_gst_reg_type').val() == ''){
         html += '<td class="row_cs_gst" style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right: 0%;"><label for="row_cgst'+purchase_number+'">₹</label></div><div class="col"><input type="text" class="form-control row_cgst" id="row_cgst'+purchase_number+'" name="row_cgst[]" style="margin-top: 1%;" readonly></div></div></td>'
@@ -148,7 +148,7 @@ function product_row_creator(purchase_number){
     return html;
 }
 
-function get_func(next_id, acc_group_name_htm, products_htm){
+function get_func(next_id, acc_group_name_htm, products_htm,tax_htm){
 
     $.get("/purchase_order/add_purchase_order/"+1+"/", function(data){
         if(data){
@@ -171,8 +171,17 @@ function get_func(next_id, acc_group_name_htm, products_htm){
                 }
             }
 
+            if(data.gst.length > 0){
+                var tax_option = data.gst
+                var tax_htm 
+                for(var k = 0; k < tax_option.length; k++){ 
+                    tax_htm += '<option value="'+tax_option[k]+'">'; 
+                }
+            }
+
             $("#ItemName"+next_id).empty().append(products_htm);
             $("#product_account"+next_id).empty().append(acc_group_name_htm);
+            $('#tax_list'+next_id).empty().append(tax_htm)
 
 
             check_gst_status('vendor_side')
@@ -213,8 +222,6 @@ function get_func(next_id, acc_group_name_htm, products_htm){
 
 // REMOVE JS TABLE
 function creditnote_removeRow(a) {
-    console.log('aaaaaaaaaa')
-    console.log(a)
     var first_row = $('#purchase_table tbody tr:first').attr('id')
     if(first_row == 'purchase_row'+a+''){
         var last_row = $('#purchase_table tbody tr:last').attr('id')
@@ -851,11 +858,12 @@ function check_gst_status(cat){
             sub_total()
             if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
                 alert('Organization not register GST')
-            }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5'){
+            }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5' || $('#gst_type').val() == ''){
                 alert('Vendor not register GST')
-            }else if($('#gst_type').val() == ''){
-                alert('Vendor not selected')
             }
+            // else if($('#gst_type').val() == ''){
+            //     alert('Vendor not selected')
+            // }
         }else{
             $('#purchase_table').find('.tax').attr('readonly', false)
             sub_total()
@@ -892,7 +900,6 @@ function purchase_tax_cacultion(){
     }
     var csgst = 0
     var igst = 0
-
     if(org_state == vendor_g){
         $(".tax").each(function(){
             var tax_id = $(this).attr('id');
@@ -970,8 +977,8 @@ function change_state(){
     if(vendor_gstin != ''){
         vendor_g = vendor_gstin.substring(0,2)
     }
-    if(org_state != '' & vendor_g != ''){
-        if(org_state == vendor_g || $('#org_gst_reg_type').val() == ''){
+    // if(org_state != '' & vendor_g != ''){
+        if(org_state == vendor_g || $('#org_gst_reg_type').val() == '' || vendor_g == ''){
             $('#purchase_table').find('.row_i_gst').hide()
             $('#purchase_table').find('.row_igst').val('')
             $('#purchase_table').find('.row_cs_gst').show()
@@ -988,7 +995,7 @@ function change_state(){
             $('#purchase_table').find('.quantity_header').css('width','6%')
             $('#purchase_table').find('.tax_header').css('width','8%')
         }
-    }
+    // }
     $(".purchase_line_item").each(function(){
 
         var ids = $(this).attr('id');

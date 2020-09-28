@@ -247,7 +247,7 @@ function product_row_creator(p_entry_number){
     html +='<textarea id="desc'+p_entry_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><select class="form-control purchase_entry_account" id="product_account'+p_entry_number+'" name="product_account[]" onchange="validation()" required><option value="">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-1" style="padding-right:0%"><label for="Price1">₹</label></div>'
-    html +='<div class="col"><input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+p_entry_number+'\')" onkeyup="purchase_calculate('+p_entry_number+'),validation()" id="Price'+p_entry_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
+    html +='<div class="col"><input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+p_entry_number+'\')" onkeyup="purchase_calculate('+p_entry_number+'),validation()" id="Price'+p_entry_number+'" name="Price[]" style="margin-top:1%" required></div></div></td>'
     html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+p_entry_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+p_entry_number+'\')" onkeyup="purchase_calculate('+p_entry_number+'),validation()" name="Quantity[]" required></td>'
     html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+p_entry_number+'" name="Unit[]" style="padding-left:0px;" readonly></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+p_entry_number+'\')" onkeyup="purchase_calculate('+p_entry_number+')" id="Discount'+p_entry_number+'" name="Discount[]"></div>'
@@ -910,11 +910,12 @@ function check_gst_status(cat){
             sub_total()
             if($('#org_gst_reg_type').val() == '0' || $('#org_gst_reg_type').val()  =='3' || $('#org_gst_reg_type').val()  == '5' || $('#org_gst_reg_type').val()  == ''){
                 alert('Organization not register GST')
-            }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5'){
+            }else if($('#gst_type').val() == '0' ||  $('#gst_type').val() == '3' ||  $('#gst_type').val() == '5' || $('#gst_type').val() == ''){
                 alert('Vendor not register GST')
-            }else if($('#gst_type').val() == ''){
-                alert('Vendor not selected')
             }
+            // else if($('#gst_type').val() == ''){
+            //     alert('Vendor not selected')
+            // }
         }else{
             $('#p_entry_table').find('.tax').attr('readonly', false)
             sub_total()
@@ -1462,13 +1463,11 @@ $('.quantity_dic').each(function(){
 
 $('.quantity_dic').keyup(function(){
     var quant = $(this).attr('id')
-    if(parseFloat($(this).val()) > parseFloat(dataDic[quant]) || parseFloat($(this).val()) == 0.00){
+    if(parseFloat($(this).val()) > parseFloat(dataDic[quant])){
         alert('You can not increase quantity or make quantity zero')
         $('#'+quant).val(dataDic[quant])
-        // var ids = $(this).attr('id');
         quant = quant.match(/\d+/);
         quant = quant[0]
         purchase_calculate(quant)
-
     }
 });

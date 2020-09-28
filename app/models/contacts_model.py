@@ -190,6 +190,13 @@ class Contacts(models.Model):
         null = True,
     )
     
+    unused_credit = models.CharField(
+        default='0.00',
+        blank=True,
+        null=True,
+        db_index= True,
+        max_length=20,
+    )
     def __str__(self):
         if(self.organization_name is None):
             if not self.is_active:
