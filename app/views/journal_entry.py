@@ -388,8 +388,8 @@ def print_jounal_entry(request, ins):
             data['org_address'] = org_address[0]
             data['state'] = org_address[0].get_state_display()
             data['country'] = org_address[0].get_country_display()
-
-    data['organisation_contact'] = organisation_contact[0]
+    if(len(organisation_contact) != 0):
+        data['organisation_contact'] = organisation_contact[0]
     # data['contact'] = contact
     
     

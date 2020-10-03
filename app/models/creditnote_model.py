@@ -91,6 +91,7 @@ class CreditNode(models.Model):
         blank = True,
         null=True
     )
+    
     credit_number = models.CharField(
         max_length = 100,
         db_index = True,
@@ -363,12 +364,20 @@ class creditnote_Items(models.Model):
         null=True
     )
 
-    product_type = models.CharField(
-        max_length = 10,
+    account = models.ForeignKey(
+        AccGroups,
+        on_delete = models.SET_NULL,
         db_index = True,
         blank = True,
         null = True,
     )
+
+    # product_type = models.CharField(
+    #     max_length = 10,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
     # currency =  models.CharField(
     #     max_length=10,

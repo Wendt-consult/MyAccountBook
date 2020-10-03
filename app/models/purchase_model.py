@@ -185,6 +185,13 @@ class PurchaseOrder(models.Model):
         null = True,
     )
 
+    total = models.CharField(
+        max_length=20,
+        db_index = True,
+        blank = True,
+        null = True,
+    )
+
     freight_charges = models.CharField(
         max_length=20,
         db_index = True,

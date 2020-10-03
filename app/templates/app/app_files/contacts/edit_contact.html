@@ -31,7 +31,7 @@ input[type=number]::-webkit-inner-spin-button,
 }
 </style>
 
-<div class="row" style="margin: 0% 4% 6% 4%;">
+<div class="row" style="margin: 0% 5% 6% 7%;">
     <div class="col-lg-12" style="padding:0px">
         <div class="card">
             <div class="card-header card-header-primary">
@@ -59,7 +59,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     Contact Type
                                 </td>
                                 <td style="border:0px;">
-                                    {{ contact_details.get_customer_type_display|default_if_none:"" }}
+                                    {{ contact_details.get_customer_type_display|title|default_if_none:"" }}
                                 </td>                                    
                             </tr>
                             <!-- <tr class="disabled-tr" style="display: none;">
@@ -75,7 +75,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     Contact Name
                                 </td>
                                 <td style="border:0px;">
-                                    {{ contact_details.get_salutation_display|default_if_none:"" }}  {{ contact_details.contact_name|default_if_none:"" | truncatechars:25 }}
+                                    {{ contact_details.get_salutation_display|default_if_none:"" }}  {{ contact_details.contact_name|title|default_if_none:"" | truncatechars:25 }}
                                 </td>                                    
                             </tr>
                             <!-- <tr class="disabled-tr">
@@ -91,7 +91,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     Contact Display Name
                                 </td>
                                 <td style="border:0px;">
-                                    {{ contact_details.display_name|default_if_none:""| truncatechars:25 }}
+                                    {{ contact_details.display_name|title|default_if_none:""| truncatechars:25 }}
                                 </td>                                    
                             </tr>  
                             <tr class="disabled-tr">
@@ -107,7 +107,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     Organisation Name
                                 </td>
                                 <td style="border:0px;">
-                                    {{ contact_details.organization_name|default_if_none:"" | truncatechars:25}}
+                                    {{ contact_details.organization_name|title|default_if_none:"" | truncatechars:25}}
                                 </td>                                    
                             </tr>
                             <tr class="disabled-tr">
@@ -131,14 +131,14 @@ input[type=number]::-webkit-inner-spin-button,
                                     Phone/Mobile
                                 </td>
                                 <td style="border:0px;">
-                                    {{ contact_details.phone_country_code|default_if_none:"" }} {{ contact_details.phone|default_if_none:"" }}
+                                   {% if contact_details.phone %} {{ contact_details.get_phone_country_code_display|default_if_none:"" }} {{ contact_details.phone|default_if_none:"" }} {% endif %}
                                 </td>                                    
                             </tr> 
                             <!----------------- Tax & Payment ---------------->
                             <tr>
                                 <tr style="background-color: #4682B4;color:white;">
                                     <td classstyle="padding-top: 15px;color:white;">
-                                        <font color="white">Tax & Payment</font>
+                                        <font color="white">Taxation</font>
                                     </td>
                                     <td style="padding-bottom: 0px;padding-top: 8px;">
                                         <button class="btn btn-link coll" type="button" data-toggle="collapse" data-target="#tax" aria-expanded="false" aria-controls="collapseExample" style="float: right;margin-top: -2px;" > 
@@ -200,40 +200,61 @@ input[type=number]::-webkit-inner-spin-button,
                                             <tr style="width:100%; background-color: #c3c3c3; color:#000000; font-size:11px; font-weight:bold;">
                                                                                                        
                                                 <td class="text-center" style="width: 15%;border: 1px solid black;">Contact Person</td>
-                                                <td class="text-center" style="width: 9%;border: 1px solid black;">Flat/Building No.</td>
+                                                <th class="text-center" style="width: 40%;border: 1px solid black;">Address</th>
+                                                <!-- <td class="text-center" style="width: 9%;border: 1px solid black;">Flat/Building No.</td>
                                                 <td class="text-center" style="width: 10%;border: 1px solid black;">Street</td>
                                                 <td class="text-center" style="width: 11%;border: 1px solid black;">City</td>
                                                 <td class="text-center" style="width: 1%;border: 1px solid black;">Pincode</td>               
                                                 <td class="text-center" style="width:17%;border: 1px solid black;">State</td>               
-                                                <td class="text-center" style="width:11%;border: 1px solid black;">Country</td>  
-                                                <td class="text-center" style="border: 1px solid black;">Is Shipping</td>
-                                                <td class="text-center" style="border: 1px solid black;">Is Billing</td>             
-                                                <td class="text-center" style="border: 1px solid black;">Action</td>                
+                                                <td class="text-center" style="width:11%;border: 1px solid black;">Country</td>   -->
+                                                <td class="text-center" style="border: 1px solid black;width: 6%;">Is Shipping</td>
+                                                <td class="text-center" style="border: 1px solid black;width: 6%;">Is Billing</td>             
+                                                <td class="text-center" style="border: 1px solid black;width: 5%;">Action</td>                
                                             </tr>                                                
                                             {% for i in contact_addresses %}
                                                 <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                                    
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
-                                                        {{ i.contact_person|default_if_none:""|truncatechars:15 }}
-                                                    </td>                  
-                                                    <td style="vertical-align: bottom;border: 1px solid black;">
+                                                        {{ i.contact_person|title|default_if_none:""|truncatechars:15 }}
+                                                    </td>       
+                                                    <td style="vertical-align: bottom;border: 1px solid black;color: black;">
+                                                        {% if i.flat_no %}
+                                                        {{ i.flat_no|title|truncatechars:15 }},
+                                                        {% endif %}
+                                                        {% if i.street %}
+                                                        {{ i.street|title|truncatechars:15 }},
+                                                        {% endif %}
+                                                        {% if i.city %}
+                                                        {{ i.city|title|truncatechars:15 }},
+                                                        {% endif %}
+                                                        {% if i.pincode %}
+                                                        {{ i.pincode|default_if_none:"" }},
+                                                        {% endif %}
+                                                        {% if i.state %}
+                                                        {{ i.get_state_display|default_if_none:""|truncatechars:20 }},
+                                                        {% endif %}
+                                                        {% if i.country %}
+                                                        {{ i.get_country_display|default_if_none:""|truncatechars:20 }}
+                                                        {% endif %}
+                                                    </td>               
+                                                    <!-- <td style="vertical-align: bottom;border: 1px solid black;">
                                                         {{ i.flat_no|default_if_none:""|truncatechars:10 }}
                                                     </td>  
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
-                                                        {{ i.street|default_if_none:""|truncatechars:10 }}
+                                                        {{ i.street|title|default_if_none:""|truncatechars:10 }}
                                                     </td>               
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
-                                                        {{ i.city|default_if_none:""|truncatechars:15 }}
+                                                        {{ i.city|title|default_if_none:""|truncatechars:15 }}
                                                     </td>   
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
                                                         {{ i.pincode|default_if_none:"" }}
                                                     </td>      
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
-                                                        {{ i.state|default_if_none:""|truncatechars:15 }}
+                                                        {{ i.get_state_display|default_if_none:""|truncatechars:15 }}
                                                     </td>  
                                                     <td style="vertical-align: bottom;border: 1px solid black;">
-                                                        {{ i.country|default_if_none:""|truncatechars:15 }}
-                                                    </td> 
+                                                        {{ i.get_country_display|default_if_none:""|truncatechars:15 }}
+                                                    </td>  -->
                                                     <td style="vertical-align: bottom; text-align:center;border: 1px solid black;">                                                                    
                                                         {{ i.get_is_shipping_address_display  }}
                                                     </td>
@@ -281,7 +302,7 @@ input[type=number]::-webkit-inner-spin-button,
                                             <i class="fa fa-plus-circle fa-10x" id="account1" onclick="acount()"style="color: black;margin-top: -199%;"></i>
                                         </button> 
                                         <button data-toggle="modal" data-target="#newAccountsModal" class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right; margin-left:10px;" type="button">
-                                            <i class="material-icons" >add_box</i> Add New
+                                            <i class="material-icons">add_box</i> Add New
                                         </button>
                                     </div>
                                 </div>
@@ -301,7 +322,7 @@ input[type=number]::-webkit-inner-spin-button,
                                             <tr>
                                                 
                                                 <td style="border:0px;border: 1px solid black;" class="account_holder_name">
-                                                    {{ i.account_holder_name|default_if_none:""|truncatechars:20}}
+                                                    {{ i.account_holder_name|title|default_if_none:""|truncatechars:20}}
                                                 </td> 
                                                 <td style="border:0px;border: 1px solid black;">
                                                     {{ i.account_number|default_if_none:""|truncatechars:20}}
@@ -310,10 +331,10 @@ input[type=number]::-webkit-inner-spin-button,
                                                     {{ i.ifsc_code|default_if_none:""}}
                                                 </td>
                                                 <td style="border:0px;border: 1px solid black;">
-                                                    {{ i.bank_name|default_if_none:""|truncatechars:20 }}
+                                                    {{ i.bank_name|title|default_if_none:""|truncatechars:20 }}
                                                 </td>
                                                 <td style="border:0px;border: 1px solid black;">
-                                                    {{ i.bank_branch_name|default_if_none:""|truncatechars:20 }}
+                                                    {{ i.bank_branch_name|title|default_if_none:""|truncatechars:20 }}
                                                 </td>
                                                 <td style="vertical-align: bottom;border: 1px solid black;" class="text-center">                                                                
                                                     <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="openAccountsModal({{forloop.counter}})">create</i>
@@ -365,7 +386,7 @@ input[type=number]::-webkit-inner-spin-button,
                                             <td class="text-center" style="width:20%;border: 1px solid black;">Preferred Currency</td>
                                             <td class="text-center" style="width: 16%;border: 1px solid black;">Opening Balance</td>
                                             <td class="text-center" style="width: 18%;border: 1px solid black;">Payment Method</td>
-                                            <td class="text-center" style="width: 15%;border: 1px solid black;">Preferred Delivery</td>
+                                            <!-- <td class="text-center" style="width: 15%;border: 1px solid black;">Preferred Delivery</td> -->
                                             <td class="text-center" style="width: 15%;border: 1px solid black;">Invoice Terms</td>              
                                             <td class="text-center" style="width:16%;border: 1px solid black;">Billing Terms</td>   
 
@@ -381,9 +402,9 @@ input[type=number]::-webkit-inner-spin-button,
                                                 <td style="border:0px;border: 1px solid black;">
                                                     {{ tax_form_details.get_preferred_payment_method_display}}
                                                 </td>
-                                                <td style="border:0px;border: 1px solid black;">
+                                                <!-- <td style="border:0px;border: 1px solid black;">
                                                     {{ tax_form_details.get_preferred_delivery_display}}
-                                                </td>
+                                                </td> -->
                                                 <td style="border:0px;border: 1px solid black;">
                                                     {{ tax_form_details.get_invoice_terms_display}}
                                                 </td>
@@ -1109,14 +1130,14 @@ input[type=number]::-webkit-inner-spin-button,
                                     {{ other_details_form.preferred_payment_method }}
                                 </td>                                    
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#000">
                                     Preferred Delivery
                                 </td>
                                 <td style="border:0px;">
                                     {{ other_details_form.preferred_delivery }}
                                 </td>                                    
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td style="padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: bottom; color:#000">
                                     Invoice Terms

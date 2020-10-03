@@ -30,7 +30,7 @@ class AccLedgerForm(ModelForm):
         
         widgets = {
             'acc_group' : Select(attrs = {'class':'form-control input-sm select', 'onchange':'openNewGroupModal($(this)),check()'}),
-            'accounts_name' : TextInput(attrs = {'class':'form-control input-sm','onclick':'check()',}),
+            'accounts_name' : TextInput(attrs = {'class':'form-control input-sm','onclick':'check()','style':'text-transform: capitalize;',}),
             'major_heads' : Select(attrs = {'class':'form-control input-sm', 'onchange':'get_predefined_groups($(this)),check()'},),
             'info_message' : Textarea(attrs={'class':'form-control input-sm'}),
             'description' : Textarea(attrs={'class':'form-control input-sm'}),

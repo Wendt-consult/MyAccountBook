@@ -75,7 +75,7 @@ urlpatterns += [
 
     # codded by roshan
     path('invoice/', never_cache(login_required(invoice.Invoice.as_view())), name = 'invoice'),
-    path('invoice/add/<slug:slug>/', never_cache(login_required(invoice.add_invoice)), name = 'add_invoice'),
+    path('invoice/add/<int:ins>/<slug:slug>/', never_cache(login_required(invoice.add_invoice)), name = 'add_invoice'),
     path('invoice/org_address_state/', never_cache(login_required(invoice.org_address_state)), name = 'org_address_state'),
     path('invoice/save_invoice/', never_cache(login_required(invoice.save_invoice)), name = 'save_invoice'),
     path('invoice/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(invoice.unique_invoice_number)), name = 'unique_invoice_number'),
@@ -161,7 +161,7 @@ urlpatterns += [
 # Credit Notes
 urlpatterns += [
     path('creditnotes/', never_cache(login_required(creditnotes.CreditView.as_view())), name = 'credit_note'),
-    path('creditnotes/add/<slug:slug>', never_cache(login_required(creditnotes.add_creditnote)), name = 'add_credit_note'),
+    path('creditnotes/add/<int:ins>/<slug:slug>/', never_cache(login_required(creditnotes.add_creditnote)), name = 'add_credit_note'),
     path('creditnote/contact/<slug:slug>', never_cache(login_required(creditnotes.fetch_contact)), name = 'creditnote_contact'),
     path('creditnote/product/<slug:slug>', never_cache(login_required(creditnotes.fetch_product)), name = 'creditnote_product'),
     path('creditnote/save/', never_cache(login_required(creditnotes.save_credit_note)), name = 'save_credit_note'),
@@ -212,7 +212,7 @@ urlpatterns += [
 # Purchase Order
 urlpatterns += [
     path('view_purchase_order/', never_cache(login_required(purchase_order.PurchaseOrderView.as_view())), name = 'purchase_order'),
-    path('purchase_order/add_purchase_order/<slug:slug>/', never_cache(login_required(purchase_order.add_purchase_order)), name = 'add_purchase_order'),
+    path('purchase_order/add_purchase_order/<int:ins>/<slug:slug>/', never_cache(login_required(purchase_order.add_purchase_order)), name = 'add_purchase_order'),
     path('purchase/product/<slug:slug>', never_cache(login_required(purchase_order.fetch_purchase_product)), name = 'purchase_order_product'),
     path('purchase_order/address/<slug:slug>/', never_cache(login_required(purchase_order.org_contact_address)), name = 'org_contact_address'),
     path('purchase_order/last_address/', never_cache(login_required(purchase_order.last_address_fetch)), name = 'last_address_fetch'),
@@ -260,6 +260,7 @@ urlpatterns += [
     path('purchase_entry/save_purchase_entry/', never_cache(login_required(purchasentry.save_purchase_entry)), name = 'save_purchase_entry'),
     path('purchase_entry/delete/<int:ins>/', never_cache(login_required(purchasentry.delete_purchase_entry)), name = 'delete_purchase_entry'),
     path('purchase_entry/edit_purchase_entry/<int:ins>/', never_cache(login_required(purchasentry.EditPurchaseEntry.as_view())), name = 'edit_purchase_entry'),
+    path('purchase_entry/get_data/', never_cache(login_required(purchasentry.edit_order_quantity)), name = 'edit_order_quantity'),
 ]
 
 # Journal_entry
@@ -280,7 +281,8 @@ urlpatterns += [
 urlpatterns += [
     path('paymentmade/', never_cache(login_required(payment_made.PaymentMade.as_view())), name = 'payment_made'),
     path('paymentmade/make_payment/<slug:slug>/', never_cache(login_required(payment_made.makePayment)), name = 'make_payment'),
-    path('paymentmade/add_make_payment/', never_cache(login_required(payment_made.addMakePayment.as_view())), name = 'add_make_payment'),
+    path('paymentmade/add_make_payment/<slug:slug>/', never_cache(login_required(payment_made.add_make_payment)), name = 'add_make_payment'),
+    path('paymentmade/save_make_payment/', never_cache(login_required(payment_made.save_make_payment)), name = 'save_make_payment'),
     path('paymentmade/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(payment_made.unique_payment_number)), name = 'unique_payment_number'),
 ]
 
@@ -294,7 +296,8 @@ urlpatterns += [
     path('debitnote/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(debit_note.unique_debit_number)), name = 'unique_debit_number'),
     path('debitnote/delete/<int:ins>/', never_cache(login_required(debit_note.delete_debit_note)), name = 'delete_debit_note'),
     path('debitnote/edit_debit_note/<int:ins>/', never_cache(login_required(debit_note.EditDebitNote.as_view())), name = 'edit_debit_note'),
-
+    path('debitnote/get_data/', never_cache(login_required(debit_note.edit_debit_quantity)), name = 'edit_debit_quantity'),
+    path('debitnote/print/<int:ins>/', never_cache(login_required(debit_note.print_debit_note)), name = 'print_debit_note'),
 ]
 
 if settings.DEBUG:

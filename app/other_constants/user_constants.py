@@ -32,6 +32,16 @@ IS_NUM_CHOICE = ((1, 'YES'), (0, 'NO'))
 #****************************************************************************
 #   ORGANIZATION TYPE
 #****************************************************************************
+# ORGANIZATION_TYPE = (
+#     (1, 'Individual'),
+#     (2, 'Proprietorship'),
+#     (4, 'Partnership'),
+#     (5, 'Trust'),
+#     (6, 'Private Limited'),
+#     (7, 'Public Limited'),
+#     (8, 'Overseas Organisation'),
+#     (9, 'Government Organisation'),
+# )
 ORGANIZATION_TYPE = (
     (1, 'Individual'),
     (2, 'Proprietorship'),
@@ -41,8 +51,8 @@ ORGANIZATION_TYPE = (
     (7, 'Public Limited'),
     (8, 'Overseas Organisation'),
     (9, 'Government Organisation'),
+    (10, 'Others'),
 )
-
 #****************************************************************************
 #   
 #****************************************************************************
@@ -87,10 +97,10 @@ SALUTATIONS = (
 #============================================================================
 
 CUSTOMER_TYPE = (
-    (1, 'CUSTOMER'),
-    (2, 'VENDOR'),
-    (3, 'EMPLOYEE'),  
-    (4, 'CUSTOMER AND VENDOR')
+    (1, 'Customer'),
+    (2, 'Vendor'),
+    (3, 'Employee'),  
+    (4, 'Customer and Vendor')
 )
 
 #============================================================================

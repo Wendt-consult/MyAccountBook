@@ -9,8 +9,8 @@ class TaxForm(ModelForm):
         fields = ('pan', 'gstin', 'gst_reg_type')
 
         widgets = {
-            'pan' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. ABCDE1234D','style':'padding-left: 9px;','onkeyup':'setMessage($(this))', 'onfocusout':'valid_PAN($(this))'}), 
-            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'padding-left: 9px;', 'onkeyup':'setMessage($(this))', 'onfocusout':'valid_GST($(this))'}), 
+            'pan' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. ABCDE1234D','onkeyup':'setMessage($(this))', 'onfocusout':'valid_PAN($(this))'}), 
+            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','onkeyup':'setMessage($(this))', 'onfocusout':'valid_GST($(this))'}), 
             'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))',}, choices = user_constants.GST_REG_TYPE), 
         }
 
@@ -20,14 +20,14 @@ class OtherDetailsForm(ModelForm):
         model = User_Tax_Details
         fields = (
             'preferred_currency', 'opening_balance', 'preferred_payment_method', 
-            'preferred_delivery', 'invoice_terms', 'bills_terms',
+            'invoice_terms', 'bills_terms',
         )
 
         widgets = {
             'preferred_currency' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = currency_list.CURRENCY_CHOICES), 
-            'opening_balance' : TextInput(attrs = {'class':'form-control input-sm','style':'width:50%;padding-left:9px;','onkeypress':'return restrictAlphabets(event)',}),
+            'opening_balance' : TextInput(attrs = {'class':'form-control input-sm','style':'width:50%;','onkeypress':'return restrictAlphabets(event)',}),
             'preferred_payment_method' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = payment_constants.PREFERRED_PAYMENT_TYPE), 
-            'preferred_delivery' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = payment_constants.PREFERRED_DELIVERY), 
+            # 'preferred_delivery' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = payment_constants.PREFERRED_DELIVERY), 
             'invoice_terms' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = payment_constants.PAYMENT_DAYS), 
             'bills_terms' : Select(attrs = {'class':'form-control input-sm','style':'width:50%;',}, choices = payment_constants.PAYMENT_DAYS), 
         }
@@ -41,8 +41,8 @@ class OrganisationTaxForm(ModelForm):
         fields = ('gstin', 'gst_reg_type')
 
         widgets = {
-            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'padding-left: 9px; width:70%;', 'onkeyup':'setMessage($(this))', 'onfocusout':'valid_GST($(this))','required':True}), 
-            'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))','style':'padding-left: 9px;width:70%;','required':True}, choices = user_constants.GST_REG_TYPE), 
+            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'width:70%;', 'onkeyup':'setMessage($(this))', 'onfocusout':'valid_GST($(this))','required':True}), 
+            'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))','style':'width:70%;','required':True}, choices = user_constants.GST_REG_TYPE), 
         }        
 
 
@@ -55,8 +55,8 @@ class OrganisationCompositTaxForm(ModelForm):
         fields = ('gstin', 'gst_reg_type')
 
         widgets = {
-            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'padding-left: 9px; width:110%;', 'onkeyup':'setMessage($(this)),valid_GST($(this)),multiple_state_code($(this))','required':True}), 
-            'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))','style':'padding-left: 9px;width:70%;','required':True}, choices = user_constants.GST_REG_TYPE), 
+            'gstin' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. 36ARVPS3698F1ZF','style':'width:110%;', 'onkeyup':'setMessage($(this)),valid_GST($(this)),multiple_state_code($(this))','required':True}), 
+            'gst_reg_type' : Select(attrs = {'class':'form-control input-sm','id':'gst_reg','onchange':'hide_gst($(this))','style':'width:70%;','required':True}, choices = user_constants.GST_REG_TYPE), 
         }        
 
 #

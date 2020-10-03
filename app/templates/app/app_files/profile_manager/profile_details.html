@@ -183,17 +183,17 @@ td{padding:5px;}
                         <tr class="" id="table-{{forloop.counter}}" style="font-size:12px">
                                                    
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                {{ i.contact_person|default_if_none:""|truncatechars:15 }}
+                                {{ i.contact_person|title|default_if_none:""|truncatechars:15 }}
                             </td>  
                             <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                 {% if i.flat_no %}
                                 {{ i.flat_no|truncatechars:15 }},
                                 {% endif %}
                                 {% if i.street %}
-                                {{ i.street|truncatechars:15 }},
+                                {{ i.street|title|truncatechars:15 }},
                                 {% endif %}
                                 {% if i.city %}
-                                {{ i.city|truncatechars:15 }},
+                                {{ i.city|title|truncatechars:15 }},
                                 {% endif %}
                                 {% if i.pincode %}
                                 {{ i.pincode|default_if_none:"" }},
@@ -277,26 +277,26 @@ td{padding:5px;}
                          <tr class="" id="table_inactive-{{forloop.counter}}" style="font-size:12px;">
                                                     
                              <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                 {{ i.contact_person|default_if_none:""|truncatechars:15 }}
+                                 {{ i.contact_person|title|default_if_none:""|truncatechars:15 }}
                              </td>  
                              <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                  {% if i.flat_no %}
-                                 {{ i.flat_no|truncatechars:15 }},
+                                 {{ i.flat_no|title|truncatechars:15 }},
                                  {% endif %}
                                  {% if i.street %}
-                                 {{ i.street|truncatechars:15 }},
+                                 {{ i.street|title|truncatechars:15 }},
                                  {% endif %}
                                  {% if i.city %}
-                                 {{ i.city|truncatechars:15 }},
+                                 {{ i.city|title|truncatechars:15 }},
                                  {% endif %}
                                  {% if i.pincode %}
                                  {{ i.pincode|default_if_none:"" }},
                                  {% endif %}
                                  {% if i.state %}
-                                 {{ i.get_state_display|default_if_none:""|truncatechars:20 }},
+                                 {{ i.get_state_display|title|default_if_none:""|truncatechars:20 }},
                                  {% endif %}
                                  {% if i.country %}
-                                 {{ i.get_country_display|default_if_none:""|truncatechars:20 }}
+                                 {{ i.get_country_display|title|default_if_none:""|truncatechars:20 }}
                                  {% endif %}
                              </td>                
                              <td style="vertical-align: bottom; text-align:center;border: 1px solid black;color: black;">                                                                    
@@ -490,7 +490,7 @@ td{padding:5px;}
                             <tr id="table-{{forloop.counter}}" style="font-size:12px">
                                 
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.account_holder_name|default_if_none:""|safe|truncatechars:20}}
+                                    {{ i.account_holder_name|title|default_if_none:""|safe|truncatechars:20}}
                                 </td>                  
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
                                     {{ i.account_number|default_if_none:""}}
@@ -499,10 +499,10 @@ td{padding:5px;}
                                     {{ i.ifsc_code|default_if_none:""|safe|truncatechars:20 }}
                                 </td>               
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.bank_branch_name|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.bank_branch_name|title|default_if_none:""|safe|truncatechars:20 }}
                                 </td>   
                                 <td style="vertical-align: bottom;border: 1px solid black;color: black;">
-                                    {{ i.bank_name|default_if_none:""|safe|truncatechars:20 }}
+                                    {{ i.bank_name|title|default_if_none:""|safe|truncatechars:20 }}
                                 </td>      
                                  
                                 <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                

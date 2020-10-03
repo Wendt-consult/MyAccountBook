@@ -1,6 +1,10 @@
 {% if products.count > 0 %}
     {% for product in products %}
+    {% if product.unit %}
     <li style="color: black;margin-left: -10%;cursor: default;" onclick="ul_remove({{product.id}},{{product.selling_price}},'{{product.get_unit_display}}','{{product}}')" id="{{product.id}}">{{product}}</li>
+    {% else %}
+    <li style="color: black;margin-left: -10%;cursor: default;" onclick="ul_remove({{product.id}},{{product.selling_price}},'','{{product}}')" id="{{product.id}}">{{product}}</li>
+    {% endif %}
     {% endfor %}
 {% else %}
     {% if search != '' %}

@@ -114,6 +114,14 @@ class ProductsModel(models.Model):
         null = True,
     )
 
+    product_category = models.IntegerField(
+        db_index = True,
+        default=0,
+        choices = products_constant.PRODUCT_CATEGORY,
+        blank = True,
+        null = True,
+    )
+
     product_delete_status = models.IntegerField(
         db_index = True,
         default=0,

@@ -27,7 +27,7 @@ PAYMENT_TYPE = (
 #   INVOICE/BILLING TERMS
 #****************************************************************************
 PAYMENT_DAYS = (
-    (1, 'On Due Date'),
+    (1, 'Due Immediately'),
     (2, '10 Days'),
     (3, '20 Days'),
     (4, '30 Days'),
@@ -77,7 +77,7 @@ PAYMENT_STATUS = (
     (0, 'Due'),
     (1, 'Over Due By'),
     (2, 'Paid'),
-    (3, 'Send Mail'),
+    # (3, 'Send Mail'),
 )
 
 purchse_status = (

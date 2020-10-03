@@ -9,11 +9,13 @@ from app.models.users_model import *
 from app.models.products_model import *
 from app.models.creditnote_model import *
 from app.models.customize_model import *
+from app.models.accounts_model import *
 
 from app.forms.products_form import * 
 from app.forms.contact_forms import * 
 from app.forms.tax_form import *
 from app.forms.inc_fomsets import *
+from app.forms.accounts_ledger_forms import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import string
@@ -30,6 +32,7 @@ from datetime import datetime
 
 from django.conf import settings
 import datetime
+from datetime import datetime
 #=====================================================================================
 #   CREDIT_NOTE VIEW
 #=====================================================================================
@@ -59,17 +62,33 @@ class CreditView(View):
     def get(self, request):        
 
         credit_note = CreditNode.objects.filter(user = request.user, creditnote_delete_status = 0)
-        # credit_paginator = Paginator(credit_note, 10)
-        # credit_page = request.GET.get('page')     
-        # try:
-        #     credit_posts = credit_paginator.page(credit_page)
-        # except PageNotAnInteger:
-        #     credit_posts = credit_paginator.page(1)
-        # except EmptyPage:
-        #     credit_posts = credit_paginator.page(credit_paginator.num_pages)
         self.data["credit_note"] = credit_note
-        # self.data["credit_page"] = credit_page
-        # self.data['credit_note'] = credit_note
+
+        # logic for view journal entry view and query
+        default_list = []
+        credit_note = credit_note.exclude(save_type = 3)
+        credit_count = len(credit_note)
+        for i in range(0,credit_count):
+            credit_item = creditnote_Items.objects.filter(credit_inventory = credit_note[i])
+            item_count = len(credit_item)
+            # revser_track = 0
+            check_list = []
+            for j in range(0,item_count):
+                if credit_item[j].account.group_name not in check_list :
+                    check_list.append(credit_item[j].account.group_name)
+                    acc = credit_item.filter(account = credit_item[j].account)
+                    acc_count = len(acc)
+                    default_dic = {}
+                    default_dic['ids'] = credit_note[i].id
+                    default_dic['account_name'] = credit_item[j].account.group_name
+                    calculate = 0.00
+                    for k in range(0,acc_count):
+                        calculate += float(acc[k].amount)
+                    default_dic['value'] = '%.2f' % calculate
+                    default_list.append(default_dic)
+                    # default_dic.clear()
+
+        self.data['default_list'] = default_list
 
         # CUSTOMIZE VIEW CODE
         customize_credit = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 3))
@@ -88,7 +107,7 @@ class CreditView(View):
 #   ADD CREDITNOTE
 #=====================================================================================
 #
-def add_creditnote(request, slug ):
+def add_creditnote(request, ins, slug ):
 
     # Initialize 
     data = defaultdict()
@@ -120,6 +139,9 @@ def add_creditnote(request, slug ):
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
 
+    # ACCOUNT_LEDGER FORMS
+    data["groups_form"] = AccGroupsForm()
+
     # constant
     data['gst_code'] = country_list.GST_STATE_CODE
     # list contact name
@@ -140,7 +162,7 @@ def add_creditnote(request, slug ):
     gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     data['gst'] = gst 
     # list product name
-    if( int(slug) == 1):
+    if( int(ins) == 1):
         products = ProductsModel.objects.filter(user = request.user, is_active = True, product_delete_status = 0)
         name = []
         ids =[]
@@ -152,7 +174,17 @@ def add_creditnote(request, slug ):
             else:
                 name.append(products[i].product_name)
             ids.append(products[i].id)
-        
+        # 
+        # for account_ledger details
+        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Income')
+        acc_ledger_income = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+        acc_group_name = []
+        acc_ids =[]
+        acc_count = len(acc_ledger_income)
+        for i in range(0,acc_count):
+            acc_group_name.append(acc_ledger_income[i].group_name)
+            acc_ids.append(acc_ledger_income[i].id)
+
         # for tax option
         tax = []
         org_gst = len(gst)
@@ -160,9 +192,9 @@ def add_creditnote(request, slug ):
             tax.append(gst[i].taxname_percent)
 
         # common dictionary
-        data = {'products': name, 'ids': ids,'gst':tax} 
+        data = {'products': name, 'ids': ids, 'acc_group_name':acc_group_name,'acc_ids':acc_ids, 'gst':tax} 
         return JsonResponse(data)
-    elif(int(slug) == 0):
+    elif(int(ins) == 0):
         products = ProductsModel.objects.filter(user = request.user, is_active = True, product_delete_status = 0)
         data["products"] = products
 
@@ -176,6 +208,12 @@ def add_creditnote(request, slug ):
         acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_expense'] = acc_ledger_expense
 
+        # for coming to direct contact module
+        data['direct_con'] = 'NA'
+        if(slug != 'NA'):
+            contacts = contacts.get(pk = int(slug))
+            data['direct_con'] = contacts.id
+            
         # org gst number
         data['is_gst'] = 'no'
         data['is_signle_gst']  = 'no'
@@ -421,7 +459,8 @@ def save_credit_note(request):
         else:
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
-            product_type = request.POST.getlist('type[]',None)
+            account_ids = request.POST.getlist('product_account[]',None)
+            # product_type = request.POST.getlist('type[]',None)
             # product_currency = request.POST.getlist('currency[]',None)
             product_price = request.POST.getlist('Price[]',None)
             product_unit = request.POST.getlist('Unit[]',None)
@@ -446,12 +485,14 @@ def save_credit_note(request):
                 # else:
                     
                     products = ProductsModel.objects.get(pk = int(product_name[i]))
+                    account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
                     creditnote_item = creditnote_Items(
                         user = request.user,
                         credit_inventory = credit,
                         product = products,
                         description = product_desc[i],
-                        product_type = product_type[i],
+                        account=account,
+                        # product_type = product_type[i],
                         price = product_price[i],
                         unit = product_unit[i],
                         quantity = product_quantity[i],
@@ -546,6 +587,9 @@ class EditCreditnote(View):
     # FORMSETS    
     data["address_formset"] = AddressFormset
     data["accounts_formset"] = AccountsFormset
+
+    # ACCOUNT_LEDGER FORMS
+    data["groups_form"] = AccGroupsForm()
 
     # constant
     data['gst_code'] = country_list.GST_STATE_CODE
@@ -725,7 +769,8 @@ class EditCreditnote(View):
             else:
                 product_name = request.POST.getlist('ItemName[]',None)
                 product_desc = request.POST.getlist('desc[]',None)
-                product_type = request.POST.getlist('type[]',None)
+                account_ids = request.POST.getlist('product_account[]',None)
+                # product_type = request.POST.getlist('type[]',None)
                 # product_currency = request.POST.getlist('currency[]',None)
                 product_price = request.POST.getlist('Price[]',None)
                 product_unit = request.POST.getlist('Unit[]',None)
@@ -751,12 +796,14 @@ class EditCreditnote(View):
                         # credit.save()   
                     # else:
                         products = ProductsModel.objects.get(pk = int(product_name[i]))
+                        account = accounts_model.AccGroups.objects.get(pk = int(account_ids[i]))
                         creditnote_item = creditnote_Items(
                             user = request.user,
                             credit_inventory = creditnote,
                             product = products,
                             description = product_desc[i],
-                            product_type = product_type[i],
+                            account=account,
+                            # product_type = product_type[i],
                             price = product_price[i],
                             unit = product_unit[i],
                             quantity = product_quantity[i],
@@ -776,29 +823,29 @@ class EditCreditnote(View):
             #  Added By Lawrence : Execute On Credit Note Edit
             #******************************************************************************
             #
-            # credit_note = CreditNode.objects.get(pk = int(kwargs["ins"]))
+            credit_note = CreditNode.objects.get(pk = int(kwargs["ins"]))
 
-            # igst_amount = list(filter(None, [credit_note.igst_5, credit_note.igst_12, credit_note.igst_18, credit_note.igst_28, credit_note.igst_other]))
-            # cgst_amount = list(filter(None, [credit_note.cgst_5, credit_note.cgst_12, credit_note.cgst_18, credit_note.cgst_28, credit_note.cgst_other]))
-            # sgst_amount = list(filter(None, [credit_note.sgst_5, credit_note.sgst_12, credit_note.sgst_18, credit_note.sgst_28, credit_note.sgst_other]))
+            igst_amount = list(filter(None, [credit_note.igst_5, credit_note.igst_12, credit_note.igst_18, credit_note.igst_28, credit_note.igst_other]))
+            cgst_amount = list(filter(None, [credit_note.cgst_5, credit_note.cgst_12, credit_note.cgst_18, credit_note.cgst_28, credit_note.cgst_other]))
+            sgst_amount = list(filter(None, [credit_note.sgst_5, credit_note.sgst_12, credit_note.sgst_18, credit_note.sgst_28, credit_note.sgst_other]))
             
-            # igst_amount = [ float(i) for i in igst_amount]
-            # cgst_amount = [ float(i) for i in cgst_amount]
-            # sgst_amount = [ float(i) for i in sgst_amount]
+            igst_amount = [ float(i) for i in igst_amount]
+            cgst_amount = [ float(i) for i in cgst_amount]
+            sgst_amount = [ float(i) for i in sgst_amount]
 
 
-            # gst_ledger = gst_ledger_model.GST_Ledger.objects.get(creditnote=credit_note)
+            gst_ledger = gst_ledger_model.GST_Ledger.objects.get(creditnote=credit_note)
 
-            # gst_ledger.gst_number = credit_note.creditnote_org_gst_num
-            # gst_ledger.cgst_amount = sum(cgst_amount)
-            # gst_ledger.sgst_amount = sum(sgst_amount)
-            # gst_ledger.igst_amount = sum(igst_amount)
-            # gst_ledger.is_creditnote = True
-            # gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
+            gst_ledger.gst_number = credit_note.creditnote_org_gst_num
+            gst_ledger.cgst_amount = sum(cgst_amount)
+            gst_ledger.sgst_amount = sum(sgst_amount)
+            gst_ledger.igst_amount = sum(igst_amount)
+            gst_ledger.is_creditnote = True
+            gst_ledger.total_tax = gst_ledger.cgst_amount + gst_ledger.sgst_amount + gst_ledger.igst_amount
 
-            # gst_ledger.user = credit_note.user
+            gst_ledger.user = credit_note.user
 
-            # gst_ledger.save()
+            gst_ledger.save()
 
             #******************************************************************************
             # Code End
@@ -857,6 +904,9 @@ class CloneCreditnote(View):
 
     # constant
     data['gst_code'] = country_list.GST_STATE_CODE
+
+    # ACCOUNT_LEDGER FORMS
+    data["groups_form"] = AccGroupsForm()
 
     def get(self, request, *args, **kwargs):
             

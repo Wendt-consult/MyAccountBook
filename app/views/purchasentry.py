@@ -67,6 +67,32 @@ class PurchaseEntry(View):
 
         self.data["entry"] = entry
 
+        # logic for view journal entry view and query
+        default_list = []
+        entry = entry.exclude(save_type = 2)
+        entry_count = len(entry)
+        for i in range(0,entry_count):
+            entry_item = PurchaseEntryItems.objects.filter(purchase_entry_list = entry[i])
+            item_count = len(entry_item)
+            # revser_track = 0
+            check_list = []
+            for j in range(0,item_count):
+                if entry_item[j].account.group_name not in check_list :
+                    check_list.append(entry_item[j].account.group_name)
+                    acc = entry_item.filter(account = entry_item[j].account)
+                    acc_count = len(acc)
+                    default_dic = {}
+                    default_dic['ids'] = entry[i].id
+                    default_dic['account_name'] = entry_item[j].account.group_name
+                    calculate = 0.00
+                    for k in range(0,acc_count):
+                        calculate += float(acc[k].amount)
+                    default_dic['value'] = '%.2f' % calculate
+                    default_list.append(default_dic)
+                    # default_dic.clear()
+
+        self.data['default_list'] = default_list
+
         # for make payment
         self.data['payment_type'] = payment_constants.PAYMENT_TYPE
 
@@ -733,3 +759,25 @@ class EditPurchaseEntry(View):
                     entry_item.save()
 
         return redirect('/view_purchase_entry/', permanent = False)
+
+#=====================================================================================
+#  get quantity data for edit purchase entry for product line item validation
+#=====================================================================================
+#
+def edit_order_quantity(request):
+
+    if request.method == 'POST':
+        # Initialize 
+        data = defaultdict()
+        purchase_entry = purchasentry_model.PurchaseEntry.objects.get(pk = int(request.POST.get('entry_id')))
+        purchase_order = PurchaseOrder.objects.get(pk = int(purchase_entry.purchase_order_id))
+        order_item = Purchase_Items.objects.filter(purchase_item_list = purchase_order).values('quantity')
+        order_dic = {}
+        if(len(order_item) != 0):
+            val = 1
+            for i in range(0,len(order_item)):
+                a = order_item[i]
+                order_dic['Quantity'+ str(val)] = a['quantity']
+                val += 1
+        data['order_dic'] = order_dic
+        return JsonResponse(data)

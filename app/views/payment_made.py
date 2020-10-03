@@ -183,7 +183,7 @@ def unique_payment_number(request, ins, number):
 #=====================================================================================
 #
 
-class addMakePayment(View):
+def add_make_payment(request, slug):
     # Template 
     template_name = 'app/app_files/payment_made/add_new_payment.html'
     
@@ -212,50 +212,61 @@ class addMakePayment(View):
     # ACCOUNT_LEDGER FORMS
     data["groups_form"] = AccGroupsForm()
 
-    def get(self, request):
 
-        contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
-        self.data["contacts"] = contacts
-        # 
-        # for account_ledger details
-        major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Assets')
-        acc_ledger_assets = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
-        self.data['acc_ledger_assets'] = acc_ledger_assets
-        # for make payment
-        self.data['payment_type'] = payment_constants.PAYMENT_TYPE
-        return render(request, self.template_name, self.data)
+    contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
+    data["contacts"] = contacts
+    # 
+    # for account_ledger details
+    major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Assets')
+    acc_ledger_assets = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
+    data['acc_ledger_assets'] = acc_ledger_assets
+    # for make payment
+    data['payment_type'] = payment_constants.PAYMENT_TYPE
 
-    def post(self,request):
-        if request.POST:
+    # for coming to direct contact module
+    data['direct_con'] = 'NA'
+    if(slug != 'NA'):
+        contacts = contacts.get(pk = int(slug))
+        data['direct_con'] = contacts.id
 
-            unique_number = request.POST.get("make_pyament_number")
-            is_check = request.POST.get("make_pyament_number",'off')
-            pay_date = request.POST.get("make_payment_date")
-            # change order date formate
-            pay_date = datetime.strptime(str(pay_date), '%d-%m-%Y').strftime('%Y-%m-%d')
+    return render(request, template_name, data)
 
-            vendor = request.POST.get("make_payment_vendor")
-            reference = request.POST.get("make_pyament_reference")
-            pay_type = request.POST.get("make_payment_type")
-            amount = request.POST.get("make_pyament_amount")
-            account_ids = request.POST.get("make_payment_account")
-            notes = request.POST.get("make_payment_notes")
+#=====================================================================================
+#   ADD MAKE PAYMENT
+#=====================================================================================
+#
 
-            contact = Contacts.objects.get(user = request.user, pk = int(vendor))
-            account = accounts_model.AccGroups.objects.get(pk = int(account_ids))
-            payment = PurchasePayment(
-            user = request.user,
-            vendor = contact,
-            account = account,
-            payment_number = unique_number,
-            payment_number_check = is_check,
-            payment_date = pay_date,
-            payment_reference = reference,
-            payment_mode = pay_type,
-            Note = notes,
-            Amount = amount,
-            )
+def save_make_payment(request):
+    if request.POST:
 
-            payment.save()
+        unique_number = request.POST.get("make_pyament_number")
+        is_check = request.POST.get("make_pyament_number",'off')
+        pay_date = request.POST.get("make_payment_date")
+        # change order date formate
+        pay_date = datetime.strptime(str(pay_date), '%d-%m-%Y').strftime('%Y-%m-%d')
 
-            return redirect('/paymentmade/', permanent = False)
+        vendor = request.POST.get("make_payment_vendor")
+        reference = request.POST.get("make_pyament_reference")
+        pay_type = request.POST.get("make_payment_type")
+        amount = request.POST.get("make_pyament_amount")
+        account_ids = request.POST.get("make_payment_account")
+        notes = request.POST.get("make_payment_notes")
+
+        contact = Contacts.objects.get(user = request.user, pk = int(vendor))
+        account = accounts_model.AccGroups.objects.get(pk = int(account_ids))
+        payment = PurchasePayment(
+        user = request.user,
+        vendor = contact,
+        account = account,
+        payment_number = unique_number,
+        payment_number_check = is_check,
+        payment_date = pay_date,
+        payment_reference = reference,
+        payment_mode = pay_type,
+        Note = notes,
+        Amount = amount,
+        )
+
+        payment.save()
+
+        return redirect('/paymentmade/', permanent = False)

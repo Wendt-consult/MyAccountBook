@@ -243,7 +243,8 @@ thead th{
                                     <td align="center" class="customize_type">{{ product.get_product_type_display }}</td>
                                     {% endif %}
                                     {% if customize.product_name != 0 %}
-                                    <td align="center" class="customize_name"><a class="product_name" href="{% url 'edit_product' product.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                    <td align="center" class="customize_name">
+                                        <a class="product_name" title="{{product.product_name}}" href="{% url 'edit_product' product.id %}" style="color: #8b92a9;text-decoration: underline;">
                                             {{ product.product_name|truncatechars:15 }}
                                         </a>
                                     </td>

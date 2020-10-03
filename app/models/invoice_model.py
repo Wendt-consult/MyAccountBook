@@ -14,6 +14,14 @@ from app.other_constants.user_constants import *
 from uuid import uuid4
 import os
 
+#==========================================================================
+#   CHANGE PRODUCT FILE NAMES
+#==========================================================================
+#
+def attachments_rename(instance, filename):
+    print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+    upload_path = 'invoice'
+    return  os.path.join(upload_path,'{}/{}'.format(uuid4().hex, filename))
 
 #**************************************************************************
 #   PURCHASE_ORDER DATA

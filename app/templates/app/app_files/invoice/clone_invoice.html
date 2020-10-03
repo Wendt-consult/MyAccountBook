@@ -243,6 +243,76 @@ textarea{
 #common_gst:hover{
     color:white!important;
 }
+/*== start of code for tooltips ==*/
+.tool {
+    cursor: help;
+    position: absolute;
+}
+
+
+/*== common styles for both parts of tool tip ==*/
+.tool::before,
+.tool::after {
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    z-index: -100;
+}
+
+.tool:hover::before,
+.tool:focus::before,
+.tool:hover::after,
+.tool:focus::after {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    z-index: 100; 
+}
+
+
+/*== pointer tip ==*/
+.tool::before {
+    border-style: solid;
+    border-width: 1em 0.75em 0 0.75em;
+    border-color: #3E474F transparent transparent transparent;
+    bottom: 100%;
+    content: "";
+    margin-left: -0.5em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
+    transform:  scale(.6) translateY(-90%);
+} 
+
+.tool:hover::before,
+.tool:focus::before {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+}
+
+
+/*== speech bubble ==*/
+.tool::after {
+    background: #3E474F;
+    border-radius: .25em;
+    bottom: 180%;
+    color: #EDEFF0;
+    content: attr(data-tip);
+    margin-left: -8.75em;
+    padding: 1em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+    transform:  scale(.6) translateY(50%);  
+    width: 17.5em;
+}
+
+.tool:hover::after,
+.tool:focus::after  {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+}
+
+@media (max-width: 760px) {
+  .tool::after { 
+        font-size: .75em;
+        margin-left: -5em;
+        width: 10em; 
+  }
+}
 </style>
 
 <form method="post" action="{% url 'save_invoice' %}" autocomplete="off" enctype="multipart/form-data">
@@ -312,7 +382,7 @@ textarea{
                                     <label for="invoice_customer">Customer Name</label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="customer_gst_type()">
+                                    <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="data($(this)),customer_gst_type()">
                                         <option value="">None</option>
 
                                         {% for contact in intcontacts %}
@@ -1262,6 +1332,15 @@ textarea{
 
                                 <div class="row">
                                     <div class="col-3 left2">
+                                        <label for="">Product Category</label>
+                                    </div>
+                                    <div class="col">
+                                        {{add_product_form.product_category}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
                                         <label for="">SKU/Product ID</label>
                                     </div>
                                     <div class="col" style="padding-top:2%;">
@@ -1363,8 +1442,13 @@ textarea{
                                             <div class="col-1" style="padding-right: 0%;">
                                                 <label>₹</label>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-9">
                                                 {{add_product_form.selling_price}}
+                                            </div>
+                                            <div class="col">
+                                                <span class="tool" tabindex="1" data-tip="Sales Price can be Changed while making invoice.">
+                                                    <span class="material-icons" style="color:black;">info</span>
+                                                </span>
                                             </div>
                                         </div>  
                                     </div>
@@ -1467,8 +1551,13 @@ textarea{
                                             <div class="col-1" style="padding-right: 0%;">
                                                 <label>₹</label>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-9">
                                                 {{add_product_form.purchase_price}}
+                                            </div>
+                                            <div class="col">
+                                                <span class="tool" tabindex="1" data-tip="Purchase Price can be Changed while making Purchase Order.">
+                                                    <span class="material-icons" style="color:black;">info</span>
+                                                </span>
                                             </div>
                                         </div>  
                                     </div>
@@ -1705,7 +1794,7 @@ textarea{
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
-                                                aria-selected="false">Tax & Payments</a>
+                                                aria-selected="false">Taxation</a>
                                             </li>                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
@@ -1781,14 +1870,14 @@ textarea{
                                                                 {{ other_details_form.preferred_payment_method }}
                                                             </td>                                    
                                                         </tr>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Preferred Delivery
                                                             </td>
                                                             <td style="border:0px;padding-top: 2%;">
                                                                 {{ other_details_form.preferred_delivery }}
                                                             </td>                                    
-                                                        </tr>
+                                                        </tr> -->
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Invoice Terms
@@ -1821,7 +1910,7 @@ textarea{
                                                                 <tbody style=" width: 100%; display: inline-table;border-top-style: hidden;">    
                                                                     <tr>
                                                                         <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: inherit;color: white;">
-                                                                            Shipping Is Different
+                                                                            Shipping Address is different
                                                                             {{ form.is_shipping_address }}
                                                                             {{ form.is_shipping_address_diff }}
                                                                             {{ form.is_billing_address }}

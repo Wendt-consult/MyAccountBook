@@ -12,7 +12,7 @@ function send_invoice(id){
 	$.get("/send_invoice/"+id+"/", function(data){
 		if(data=='1'){
             alert("Invoice Sent");
-            $("#status_"+id+"").text('Send Mail')
+            // $("#status_"+id+"").text('Send Mail')
         }else{
             alert('Email address not mentioned');
         } 

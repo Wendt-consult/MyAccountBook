@@ -96,7 +96,7 @@ function set_min_date(){
 //  ON CHANGE TO SET NEW INVOICE DUE DATE
 function invoice_pay_date(){
     var pay_terms = $('#entry_pay_terms').val()
-    if(pay_terms == 'On Due Date'){
+    if(pay_terms == 'Due Immediately'){
         var endDate = $('#purchase_entry_date,#edit_purchase_entry_date').datepicker('getDate', '+0d'); 
         endDate.setDate(endDate.getDate()+0); 
         $("#purchase_entry_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
@@ -138,7 +138,7 @@ $('#purchase_entry_due_date').change(function() {
 
     // $('#hasil').val(days);
     if(days == 0){
-        $('#entry_pay_terms').val('On Due Date').change();
+        $('#entry_pay_terms').val('Due Immediately').change();
     }else if(days == 9){
         $('#entry_pay_terms').val('10 Days').change();
     }else if(days == 19){
@@ -513,6 +513,10 @@ function entry_product_form(save_type){
         alert('Product type is requried')
         $('#id_product_type').focus()
         return false
+    }else if($('#id_product_category').val() == ''){
+        alert('product category is requried')
+        $('#id_product_category').focus()
+        return false
     }else if($('#id_sku').val() == ''){
         alert('sku/product id is requried')
         $('#id_sku').focus()
@@ -678,7 +682,7 @@ function purchase_calculate(a){
     var discount = $("#Discount"+a+"").val();
     var dis_type = $("#Dis"+a+"").val();
     var tax = $("#tax"+a+"").val();
-    if(quantity != '' & quantity != '0'){
+    if(quantity != ''){
         var val = parseFloat(price) * parseFloat(quantity)
         if(dis_type == '%'){
             if(discount == '' || discount == '0' || discount == '0.0'){
@@ -763,7 +767,7 @@ function sub_total(){
     //     freight_advance_totalamount()
     // }
     // else{
-        if(parseFloat(sub_total) != 0.00){
+        if(sub_total.toString() != 'NaN'){
             $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
         }
         change_state()
@@ -1315,7 +1319,7 @@ function validation(){
             }else if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
                 global_save_message = 'Table row '+i+' product price required'
                 break; 
-            }else if($('#Quantity'+row_last_str).val() == '' || parseFloat($('#Quantity'+row_last_str).val()).toFixed(2) == 0){
+            }else if($('#Quantity'+row_last_str).val() == ''){
                 global_save_message = 'Table row '+i+' product qunatity required'
                 break; 
             }else{
@@ -1453,7 +1457,7 @@ function vendor_info(){
 }
 
 /*********************************************************************** */
-// CACHE DATA FOR QUANTITY VALIDATION
+// CACHE DATA FOR QUANTITY VALIDATION FOR ADD DEBIT NOTE
 /*********************************************************************** */
 
 var dataDic = {}

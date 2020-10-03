@@ -180,8 +180,13 @@ thead th{
                                                 </a>  
 
                                                 <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_credit_note' note.id %}" style="padding: 5px 5px;">
-                                                        Make a Copy
+                                                    Make a Copy
                                                 </a>
+                                                {% if note.save_type != 3 %}
+                                                <a class="dropdown-item" title="View Journal Entry" href="#" data-toggle="modal" data-target="#JournalView-{{forloop.counter}}" style="padding: 5px 5px;">
+                                                    View Journal Entry
+                                                </a>
+                                                {% endif %}
                                                 <a class="dropdown-item" title="Delete" href="#" data-toggle="modal" data-target="#del{{note.id}}" style="padding: 5px 5px;">
                                                     Delete
                                                 </a> 
@@ -233,6 +238,89 @@ thead th{
         </div>    
     </div>     
 </div>
+<!-- View journal Entry Modal -->
+{% for note in credit_note %}
+{% if note.save_type != 3 %}
+<div class="modal" id="JournalView-{{forloop.counter}}" style="border-top: none;left: 20%;top:138px;width: 500">
+    <div class="modal-dialog" role="document" style="border-top: none;">
+        <div class="modal-content" style="border-top: none;background:white;position:bottom">
+            <div class="modal-header" style="border-bottom: none;padding:5px;background-color:#598ebb">
+                <h5 class="modal-title" style="color:#000000; font-weight:bold;">Journal Entry Credit Note {{note.credit_number}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="border-top: none;position: bottom;">
+                <table class="table">
+                    <thead class=" text-primary" style="background-color: black;">
+                        <th scope="col" style="border:1px solid black;width: 20%;">Ledger Account</th>
+                        <th scope="col" style="border:1px solid black;width: 10%;">Debit</th>
+                        <th scope="col" style="border:1px solid black;width: 10%;">Credit</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border:1px solid black;">Accounts Receivable</td>
+                            <td style="border:1px solid black;">{{note.total}}</td>
+                            <td style="border:1px solid black;">0.00</td>
+                        </tr>
+                        {% if note.is_cs_gst == True %}
+                        <tr>
+                            <td style="border:1px solid black;">Output CGST</td>
+                            <td style="border:1px solid black;">0.00</td>
+                            {% if note.cgst %}
+                                <td style="border:1px solid black;">{{note.cgst}}</td>
+                            {% else %}
+                                <td style="border:1px solid black;">0.00</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black;">Output CGST</td>
+                            <td style="border:1px solid black;">0.00</td>
+                            {% if note.cgst %}
+                                <td style="border:1px solid black;">{{note.cgst}}</td>
+                            {% else %}
+                                <td style="border:1px solid black;">0.00</td>
+                            {% endif %}
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td style="border:1px solid black;">Output IGST</td>
+                            <td style="border:1px solid black;">0.00</td>
+                            {% if note.igst %}
+                                <td style="border:1px solid black;">{{note.igst}}</td>
+                            {% else %}
+                                <td style="border:1px solid black;">0.00</td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+
+                        {% for j in default_list%}
+                        {% if note.id == j.ids %}
+                        <tr>
+                            <td style="border:1px solid black;">{{j.account_name|title}}</td>
+                            <td style="border:1px solid black;">0.00</td>
+                            <td style="border:1px solid black;">{{j.value}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td style="border:1px solid black;">Total</td>
+                            <td style="border:1px solid black;">{{note.total}}</td>
+                            <td style="border:1px solid black;">{{note.total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
+                <center><a class="btn mr-2" onclick="paid_status_invoice({{i.id}})" data-dismiss="modal" aria-label="Close" style="align-content:left;margin-left:150px;background-color:#598ebb"><font color="white">Yes</font> </a></center>
+                <a class="btn " data-dismiss="modal" aria-label="Close"  style=""><font color="white">No</font> </a>
+            </div> -->
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 <!-- customize view -->
 <div class="modal fade" id="CustomizeViewModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">

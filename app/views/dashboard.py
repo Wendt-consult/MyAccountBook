@@ -15,6 +15,8 @@ class Dashboard(View):
     data["css_files"] = []
     data["js_files"] = []
     data["active_link"] = 'Dashboard'
+    # data["breadcrumb_title"] = 'DASHBOARD'
+    # data['type'] = 'view'
 
     def get(self, request):
         return render(request, self.template_name, self.data)

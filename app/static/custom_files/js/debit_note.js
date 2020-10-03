@@ -477,6 +477,10 @@ function debit_product_form(save_type){
         alert('Product type is requried')
         $('#id_product_type').focus()
         return false
+    }else if($('#id_product_category').val() == ''){
+        alert('product category is requried')
+        $('#id_product_category').focus()
+        return false
     }else if($('#id_sku').val() == ''){
         alert('sku/product id is requried')
         $('#id_sku').focus()
@@ -651,7 +655,7 @@ function debit_calculate(a){
     var discount = $("#Discount"+a+"").val();
     var dis_type = $("#Dis"+a+"").val();
     var tax = $("#tax"+a+"").val();
-    if(quantity != '' & quantity != '0'){
+    if(quantity != ''){
         var val = parseFloat(price) * parseFloat(quantity)
         if(dis_type == '%'){
             if(discount == '' || discount == '0' || discount == '0.0'){
@@ -736,7 +740,9 @@ function sub_total(){
     //     freight_advance_totalamount()
     // }
     // else{
-        $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        if(sub_total.toString() != 'NaN'){
+            $("#SubTotal").val(parseFloat(sub_total).toFixed(2))
+        }
         change_state()
         debit_tax_cacultion()
         total_discount()
@@ -1567,7 +1573,7 @@ function validation(){
             }else if($('#product_account'+row_last_str).val() == ''){
                 global_save_message = 'Table row '+i+' product account required'
                 break;
-            }else if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
+            }else if($('#Price'+row_last_str).val() == ''){
                 global_save_message = 'Table row '+i+' product price required'
                 break; 
             }else if($('#Quantity'+row_last_str).val() == '' || parseFloat($('#Quantity'+row_last_str).val()).toFixed(2) == 0){

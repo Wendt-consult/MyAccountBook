@@ -751,7 +751,7 @@ optgroup{color :black; }
                                       </div>
                                   </div>
                               </td>
-                              <td><span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}"  onclick=" return creditnote_removeRow('{{forloop.counter}}')" style="cursor: default;">delete_forever</span></td>
+                              <!-- <td><span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}"  onclick=" return creditnote_removeRow('{{forloop.counter}}')" style="cursor: default;">delete_forever</span></td> -->
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -1106,6 +1106,15 @@ optgroup{color :black; }
                                             <!-- <option value="2">BUNDLE</option> -->
                                           
                                           </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Product Category</label>
+                                    </div>
+                                    <div class="col">
+                                        {{add_product_form.product_category}}
                                     </div>
                                 </div>
 
@@ -1554,7 +1563,7 @@ optgroup{color :black; }
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
-                                                aria-selected="false">Tax & Payments</a>
+                                                aria-selected="false">Taxation</a>
                                             </li>                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
@@ -1630,14 +1639,14 @@ optgroup{color :black; }
                                                                 {{ other_details_form.preferred_payment_method }}
                                                             </td>                                    
                                                         </tr>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Preferred Delivery
                                                             </td>
                                                             <td style="border:0px;padding-top: 2%;">
                                                                 {{ other_details_form.preferred_delivery }}
                                                             </td>                                    
-                                                        </tr>
+                                                        </tr> -->
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Invoice Terms
@@ -1670,7 +1679,7 @@ optgroup{color :black; }
                                                                 <tbody style=" width: 100%; display: inline-table;border-top-style: hidden;">    
                                                                     <tr>
                                                                         <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: inherit;color: white;">
-                                                                            Shipping Is Different
+                                                                            Shipping Address is different
                                                                             {{ form.is_shipping_address }}
                                                                             {{ form.is_shipping_address_diff }}
                                                                             {{ form.is_billing_address }}

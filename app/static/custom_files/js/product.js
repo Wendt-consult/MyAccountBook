@@ -40,6 +40,7 @@ if($('#id_is_sales').prop("checked") === true){
 }
     
 $('#id_product_type').prop('required', true)
+$('#id_product_category').prop('required', true)
 
 // Purchase Information
 if($('#id_is_purchase').prop("checked") === true){
@@ -326,7 +327,7 @@ function addRow(b) {
     }
     number += 1
     htm = '<tr id="row_'+number+'"></th>';
-    htm += '<td style="border: 1px solid black;padding-bottom:2%;"> <select class="form-control bundle_product_type" name="prod_type[]" onchange="bundle($(this),\'#product_name_'+number+'\', [\'#quantity_'+number+'\'])" style="margin-top: 7%;" required><option value="">------</option><option value="0">GOODS</option><option value="1">SERVICES</option></td>';
+    htm += '<td style="border: 1px solid black;padding-bottom:2%;"> <select class="form-control bundle_product_type" name="prod_type[]" onchange="bundle($(this),\'#product_name_'+number+'\', [\'#quantity_'+number+'\'])" style="margin-top: 7%;" required><option value="">------</option><option value="0">Goods</option><option value="1">Services</option></td>';
     htm += '<td style="border: 1px solid black;padding-bottom:2%;"><select class="form-control bundle_product_name" id="product_name_'+number+'" name="prod_name[]" style="margin-top: 3%;" requried><option value="">------</option></td>';
     htm += '<td style="border: 1px solid black;padding-bottom:2%;"><input id="quantity_'+number+'" type="text" onkeypress="return restrictAlphabets(event), float_value(event,\'quantity_'+number+'\')"  class="form-control bundle_product_qunatity" name="qty[]" style="margin-top: 7%;" requried></td>';
     htm += '<td style=""><span class="tbclose material-icons" onclick="removeRow('+number+')" id="'+number+'" name="'+number+'" >delete_forever</span></td></tr>';
@@ -440,7 +441,7 @@ function show_bundle(elem){
     }
 }
 var a = $('#id_product_type :selected').text();
-if(a == "BUNDLE"){
+if(a == "Bundle"){
     $(".bundle_dont_show").hide();
     $(".bundle_show").show();
     $('#hsn_code').hide();
@@ -452,7 +453,7 @@ if(a == "BUNDLE"){
     $('.bundle_product_name').prop('required',true)
     $('.bundle_product_qunatity').prop('required',true)
 }
-else if(a == 'GOODS' || a == 'SERVICES'){
+else if(a == 'Goods' || a == 'Services'){
     $('#id_tds').prop("disabled", true);
     $(".bundle_dont_show").show();
     $(".bundle_show").hide();

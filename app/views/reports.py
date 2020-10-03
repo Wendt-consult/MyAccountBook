@@ -43,6 +43,7 @@ class GSTLedgerReportsView(View):
     data = defaultdict()
     data["active_link"] = 'GST Report'
     data["breadcrumb_title"] = 'GST Ledger Reports'
+    data['type'] = 'view'
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []

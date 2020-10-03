@@ -14,7 +14,14 @@
         <div class="col-md-3 offset-md-3 nav_btns">
             {% if type != 'view'%}
             <div class="navbar-wrapper">
-                <a class="navbar-brand" href="javascript:void(0)" style="margin-top: 26px;"><strong >{{breadcrumb_title}}</strong></a>
+                <a class="navbar-brand" href="javascript:void(0)" style="margin-top: 26px;">
+                    <strong >
+                        {% if breadcrumb_title == 'CONTACTS' and type == 'edit' %}
+                        {% else %}
+                        {{breadcrumb_title}}
+                        {% endif %}
+                    </strong>
+                </a>  
             </div>
             {% endif %}
         </div>
@@ -55,7 +62,9 @@
         </div>
         <div class="col-md-3 offset-md-3 nav_btns">
             <div class="navbar-wrapper">
+                
                 <a class="navbar-brand" href="javascript:void(0)"><strong style="color: white;">{{breadcrumb_title}}</strong></a>
+
             </div>
         </div>
             <div class="col-md-4">
@@ -86,13 +95,13 @@
                     {% elif breadcrumb_title == 'PRODUCTS' and type == 'view' %}
                         <a href="{% url 'add_products' %}" class="btn btn-success-sm btn-sm" style="">NEW</a>
                     {% elif breadcrumb_title == 'INVOICE' and type == 'view' %}
-                    <a href="{% url 'add_invoice' 0 %}" class="btn btn-success-sm btn-sm" style="">NEW</a>
+                    <a href="{% url 'add_invoice' 0 'NA' %}" class="btn btn-success-sm btn-sm">NEW</a>
                     {% elif breadcrumb_title == 'CREDIT NOTE' and type == 'view' %}
-                    <a href="{% url 'add_credit_note' 0 %}" class="btn btn-success-sm btn-sm" style="">NEW
+                    <a href="{% url 'add_credit_note' 0 'NA' %}" class="btn btn-success-sm btn-sm">NEW
         <!--                <i class="material-icons">add_to_queue</i>-->
                     </a>
                     {% elif breadcrumb_title == 'PURCHASE ORDER' and type == 'view' %}
-                    <a href="{% url 'add_purchase_order' 0  %}" class="btn btn-success-sm btn-sm" style="" >NEW
+                    <a href="{% url 'add_purchase_order' 0 'NA' %}" class="btn btn-success-sm btn-sm">NEW
         <!--                <i class="material-icons">add_to_queue</i>-->
                     </a>
                     {% elif breadcrumb_title == 'EXPENSES' and type == 'view' %}
@@ -101,12 +110,12 @@
                    </a>
                    {% elif breadcrumb_title == 'PURCHASE ENTRY' and type == 'view' %}
                     <!-- <a href="{% url 'add_purchase_entry' 0 'NA' %}" class="btn btn-success-sm btn-sm">NEW -->
-                    </a>
+                    <!-- </a> -->
                    {% elif breadcrumb_title == 'JOURNAL ENTRY' and type == 'view' %}
                    <a href="{% url 'add_journalentry' 0 %}" class="btn btn-success-sm btn-sm">NEW
                    </a>
                    {% elif breadcrumb_title == 'MAKE PAYMENT' and type == 'view' %}
-                   <a href="{% url 'add_make_payment' %}" class="btn btn-success-sm btn-sm">NEW</a>
+                   <a href="{% url 'add_make_payment' 'NA' %}" class="btn btn-success-sm btn-sm">NEW</a>
                    {% endif %}
                 </div>
             </div>

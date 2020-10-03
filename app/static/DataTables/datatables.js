@@ -11504,7 +11504,7 @@
 			 * * `\_PAGES\_` - Total number of pages of data in the table
 			 *
 			 *  @type string
-			 *  @default Showing _START_ to _END_ of _TOTAL_ entries
+			 *  @default Showing _START_ to _END_ of _TOTAL_ Records
 			 *
 			 *  @dtopt Language
 			 *  @name DataTable.defaults.language.info
@@ -11525,7 +11525,7 @@
 			 * Display information string for when the table is empty. Typically the
 			 * format of this string should match `info`.
 			 *  @type string
-			 *  @default Showing 0 to 0 of 0 entries
+			 *  @default Showing 0 to 0 of 0 Records
 			 *
 			 *  @dtopt Language
 			 *  @name DataTable.defaults.language.infoEmpty
@@ -11539,7 +11539,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
+			"sInfoEmpty": "Showing 0 to 0 of 0 Records",
 	
 	
 			/**

@@ -737,10 +737,9 @@ class EditDebitNote(View):
 
             default_term_condition = Organisations.objects.filter(user = request.user)
             gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
-    
         except:
             return redirect('/unauthorized/', permanent=False)
-
+        
         if(len(default_term_condition) > 0):
             msg = default_term_condition[0].debit_terms_and_condition
             debit_msg = default_term_condition[0].debit_note
@@ -1153,3 +1152,78 @@ def delete_debit_note(request, ins):
 
         return redirect('/debitnote/', permanent=False)
     return redirect('/unauthorized/', permanent=False)
+
+#=====================================================================================
+#  get quantity data for edit debit note for product line item validation
+#=====================================================================================
+#
+def edit_debit_quantity(request):
+
+    if request.method == 'POST':
+        # Initialize 
+        data = defaultdict()
+        debit_note = debit_note_model.DebitNote.objects.get(pk = int(request.POST.get('debit_note_id')))
+        purchase_entry = PurchaseEntry.objects.get(pk = int(debit_note.purchase_entry_id))
+        entry_item = PurchaseEntryItems.objects.filter(purchase_entry_list = purchase_entry).values('quantity')
+        entry_dic = {}
+        if(len(entry_item) != 0):
+            val = 1
+            for i in range(0,len(entry_item)):
+                a = entry_item[i]
+                entry_dic['Quantity'+ str(val)] = a['quantity']
+                val += 1
+        data['entry_dic'] = entry_dic
+        return JsonResponse(data)
+
+#=====================================================================================
+#   PRINT DEBIT_NOTE VOUCHER
+#=====================================================================================
+#
+def print_debit_note(request, ins):
+
+    template_name = 'app/app_files/debit_note/print_debit_note.html'
+    # Initialize 
+    data = defaultdict()
+    try:
+        debit_note = debit_note_model.DebitNote.objects.get(pk = int(ins))
+        organisation = Organisations.objects.get(user = request.user)
+        organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
+        
+        # journal_entry_item = journalentry_model.JournalEntry_Items.objects.filter(Q(user= request.user) & Q(journalentry = journal_entry))
+        # contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
+        address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
+        # org_bank_details = users_model.User_Account_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_bank = True)) 
+
+        # customer_gst = User_Tax_Details.objects.get(contact = invoice.invoice_customer_id)
+        # customer_address = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id) & Q(default_address = True))
+
+            
+    except:
+        return redirect('/unauthorized/', permanent=False)
+
+    
+
+    # data["contact_name"] = invoice.invoice_customer
+        
+    data["debit_note"] = debit_note
+    
+    # data["journal_entry_item"] = journal_entry_item
+    data['organisation'] = organisation
+
+    # for org address
+    if(len(address) == 1):
+        data['org_address'] = address[0]
+        data['state'] = address[0].get_state_display()
+        data['country'] = address[0].get_country_display()
+    elif(len(address) == 0):
+        org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
+        if(len(org_address) != 0):
+            data['org_address'] = org_address[0]
+            data['state'] = org_address[0].get_state_display()
+            data['country'] = org_address[0].get_country_display()
+    if(len(organisation_contact) != 0):
+        data['organisation_contact'] = organisation_contact[0]
+    # data['contact'] = contact
+    
+    
+    return render(request,template_name,data)

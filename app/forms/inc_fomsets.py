@@ -11,18 +11,18 @@ from django.forms import *
 AddressFormset = inlineformset_factory(contacts_model.Contacts, users_model.User_Address_Details, extra = 2,
     fields = ('default_address', 'address_tag','contact_person', 'flat_no', 'street', 'city', 'state', 'country', 'pincode', 'is_shipping_address_diff', 'is_shipping_address', 'is_billing_address'),
     widgets = {
-        'contact_person' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;',}),
-        'flat_no' : TextInput(attrs={'class':'form-control input-sm','maxlength':'200','style':'width:65%;padding-left:9px;'}),
-        'street' : TextInput(attrs={'class':'form-control input-sm','maxlength':'100','style':'width:65%;padding-left:9px;'}),
-        'city' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;'}),
+        'contact_person' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;text-transform: capitalize;',}),
+        'flat_no' : TextInput(attrs={'class':'form-control input-sm','maxlength':'200','style':'width:65%;'}),
+        'street' : TextInput(attrs={'class':'form-control input-sm','maxlength':'100','style':'width:65%;'}),
+        'city' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;text-transform: capitalize;'}),
         'state' : Select(attrs={'class':'form-control input-sm','style':'width:65%;'}, choices = country_list.STATE_LIST_CHOICES),
         'country' : Select(attrs={'class':'form-control input-sm','style':'width:65%;'}, choices = country_list.COUNTRIES_LIST_CHOICES),
-        'pincode' : TextInput(attrs={'class':'form-control input-sm','type':'number','maxlength':'10','style':'width:65%;padding-left:9px;'}),
+        'pincode' : TextInput(attrs={'class':'form-control input-sm','type':'number','maxlength':'10','style':'width:65%;'}),
         'is_shipping_address_diff' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'is_shipping_address' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'is_billing_address' : Select(attrs={'class':'form-control input-sm hide','style':'width:40%;display:none;', 'required':'false'}),
         'default_address' : Select(attrs={'class':'form-control input-sm default_address','style':'width:40%;','hidden':'true'}, choices = user_constants.IS_TRUE),
-        'address_tag' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;padding-left:9px;'}),
+        'address_tag' : TextInput(attrs={'class':'form-control input-sm','maxlength':'50','style':'width:65%;text-transform: capitalize;'}),
     }
 )
 
@@ -36,11 +36,11 @@ class AccountDetailsForm(ModelForm):
         fields = ('account_number', 'account_holder_name', 'ifsc_code', 'bank_name', 'bank_branch_name')
 
         widgets = {
-            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]', 'style':'padding-left:9px;'}),
-            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','style':'padding-left:9px;'}),
-            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','placeholder':'EX. ABCD1234567','style':'padding-left:9px;','onkeyup':'valid_IFSC($(this))', 'onfocusout':'valid_IFSC($(this))'}),
-            'bank_name' : TextInput(attrs={'class':'form-control input-sm','style':'padding-left:9px;',}),
-            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'padding-left:9px;',}),
+            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]',}),
+            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;'}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','placeholder':'EX. ABCD1234567','onkeyup':'valid_IFSC($(this))', 'onfocusout':'valid_IFSC($(this))'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
         }
 
 AccountsFormset = formset_factory(AccountDetailsForm, extra = 1)

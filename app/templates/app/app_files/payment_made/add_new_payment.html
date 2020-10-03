@@ -166,7 +166,7 @@ textarea.form-control{
 }
 </style>
 
-<form method="post" action="{% url 'add_make_payment' %}" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'save_make_payment' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row" style="margin: 0% 5% 6% 5%">
         <div class="col-lg-12" style="padding:0px">
@@ -207,12 +207,19 @@ textarea.form-control{
                                 <div class="col-7" style="margin-top: -2px;">
                                     <select class="form-control payment_vendor" id="make_payment_vendor" name="make_payment_vendor" onchange="vendor_info()" required>
                                         <option value="">None</option>
-        
+                                        {% if direct_con == 'NA' %}
+                                            {% for contact in contacts %}
+                                            {% if contact.customer_type == 2 or contact.customer_type == 4 %}
+                                            <option value="{{contact.id}}">{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        {% else %}
                                         {% for contact in contacts %}
-                                        {% if contact.customer_type == 2%}
-                                        <option value="{{contact.id}}">{{contact}}</option>
+                                            {% if contact.customer_type == 2 or contact.customer_type == 4 %}
+                                            <option value="{{contact.id}}" {% if direct_con == contact.id %} selected {% endif %}>{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
                                         {% endif %}
-                                        {% endfor %}
                                     </select>
                                     
                                 </div>

@@ -38,8 +38,8 @@ class OrganisationForm(ModelForm):
             'terms_and_condition', 'logo')
 
         widgets = {
-            'organisation_name' : TextInput(attrs={'class':'form-control input-sm', 'required':'true'}),
-            'organisation_legal_name' : TextInput(attrs={'class':'form-control input-sm', 'required':'true'}),
+            'organisation_name' : TextInput(attrs={'class':'form-control input-sm', 'required':'true', 'style':'text-transform: capitalize;',}),
+            'organisation_legal_name' : TextInput(attrs={'class':'form-control input-sm', 'required':'true', 'style':'text-transform: capitalize;'}),
             'organisation_description' : Textarea(attrs={"rows":"4",'style':'line-height: 21px !important; width:100%'}),
             'terms_and_condition' : Textarea(attrs={"rows":"1",'style':'line-height: 21px !important; width:100%'}),
             'line_of_business' : Select(attrs={'class':'form-control input-sm',}, choices = user_constants.LINE_OF_ORGANISATION),

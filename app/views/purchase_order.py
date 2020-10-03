@@ -62,17 +62,33 @@ class PurchaseOrderView(View):
     #
     def get(self, request):       
         purchase_order = purchase_model.PurchaseOrder.objects.filter(user = request.user,purchase_delete_status = 0)
-        # purchase_paginator = Paginator(purchase_order, 1)
-        # purchase_page = request.GET.get('page')     
-        # try:
-        #     purchase_posts = purchase_paginator.page(purchase_page)
-        # except PageNotAnInteger:
-        #     purchase_posts = purchase_paginator.page(1)
-        # except EmptyPage:
-        #     purchase_posts = purchase_paginator.page(purchase_paginator.num_pages)
-        # self.data["purchase_order"] = purchase_posts
-        # self.data["purchase_page"] = purchase_page
         self.data['purchase_order'] = purchase_order
+
+         # logic for view journal entry view and query
+        default_list = []
+        purchase_order = purchase_order.exclude(save_type = 3)
+        order_count = len(purchase_order)
+        for i in range(0,order_count):
+            order_item = Purchase_Items.objects.filter(purchase_item_list = purchase_order[i])
+            item_count = len(order_item)
+            # revser_track = 0
+            check_list = []
+            for j in range(0,item_count):
+                if order_item[j].account.group_name not in check_list :
+                    check_list.append(order_item[j].account.group_name)
+                    acc = order_item.filter(account = order_item[j].account)
+                    acc_count = len(acc)
+                    default_dic = {}
+                    default_dic['ids'] = purchase_order[i].id
+                    default_dic['account_name'] = order_item[j].account.group_name
+                    calculate = 0.00
+                    for k in range(0,acc_count):
+                        calculate += float(acc[k].amount)
+                    default_dic['value'] = '%.2f' % calculate
+                    default_list.append(default_dic)
+                    # default_dic.clear()
+
+        self.data['default_list'] = default_list
 
         # CUSTOMIZE VIEW CODE
         customize_purchase = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 4))
@@ -91,7 +107,7 @@ class PurchaseOrderView(View):
 #   ADD purchase_order
 #=====================================================================================
 #
-def add_purchase_order(request, slug):
+def add_purchase_order(request, ins, slug):
 
     # Initialize 
     data = defaultdict()
@@ -151,7 +167,7 @@ def add_purchase_order(request, slug):
 
     # list product name
 
-    if( int(slug) == 1):
+    if( int(ins) == 1):
         # for product details
         products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0) & Q(product_type__in = [0,1] ))
         name = []
@@ -186,7 +202,7 @@ def add_purchase_order(request, slug):
         
         data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids, 'gst':tax} 
         return JsonResponse(data)
-    elif(int(slug) == 0):
+    elif(int(ins) == 0):
         # for product details
         products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0) & Q(product_type__in = [0,1] ))
         data["products"] = products
@@ -202,6 +218,12 @@ def add_purchase_order(request, slug):
         acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_expense'] = acc_ledger_expense
 
+        # for coming to direct contact module
+        data['direct_con'] = 'NA'
+        if(slug != 'NA'):
+            contacts = contacts.get(pk = int(slug))
+            data['direct_con'] = contacts.id
+            
         # org gst number
         data['is_gst'] = 'no'
         data['is_signle_gst']  = 'no'
@@ -579,7 +601,6 @@ def save_purchase_order(request):
             sgst = sgst,
             igst = igst,
             total_amount = total_amount,
-            freight_charges=freight_charges,
             advance=advance,
             total_balance=total_balance,
             advacne_payment_method = hidden_advance_method,
@@ -601,7 +622,16 @@ def save_purchase_order(request):
             purchase_order.purchase_status=1
         if(save_type == 2 or save_type == 4):
             purchase_order.purchase_status = 0
-            
+        # for use to saw view journal entry
+        if(freight_charges != ''):
+            total = float(total_amount) + float(freight_charges)
+            purchase_order.total = '%.2f' % total
+            purchase_order.freight_charges = '%.2f' % float(freight_charges)
+        else:
+            total = float(total_amount)
+            purchase_order.total = '%.2f' % total
+            purchase_order.freight_charges = freight_charges
+
         purchase_order.save()               
 
         # igst = list(filter(None, [igst_5, igst_12, igst_18, igst_28, igst_other]))
@@ -923,7 +953,6 @@ class EditPurchaseOrder(View):
                 sgst = sgst,
                 igst = igst,
                 total_amount = total_amount,
-                freight_charges=freight_charges,
                 advance=advance,
                 total_balance=total_balance,
                 advacne_payment_method=hidden_advance_method,
@@ -947,6 +976,14 @@ class EditPurchaseOrder(View):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=2) 
             elif(save_type == 2 or save_type == 4):
                 PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(purchase_status=0) 
+            
+            # for use to saw view journal entry
+            if(freight_charges != ''):
+                total = float(total_amount) + float(freight_charges)
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(total = '%.2f' % total,freight_charges = '%.2f' % float(freight_charges))
+            else:
+                total = float(total_amount)
+                PurchaseOrder.objects.filter(pk = int(kwargs["ins"])).update(total = '%.2f' % total, freight_charges = freight_charges)
 
             product_name = request.POST.getlist('ItemName[]',None)
             product_desc = request.POST.getlist('desc[]',None)
@@ -992,7 +1029,7 @@ class EditPurchaseOrder(View):
                 #     purchase_item.tax=''
                 # else:
                 #    purchase_item.tax= product_tax[i]
-                # purchase_item.save()   
+                purchase_item.save()   
             
             # for create make payment if some advance given
             if(hidden_order_make_payment == 'on' and advance != ''):

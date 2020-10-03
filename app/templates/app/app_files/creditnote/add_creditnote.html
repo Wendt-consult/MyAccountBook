@@ -140,6 +140,76 @@ optgroup{color :black; }
 #common_gst:hover{
     color:white!important;
 }
+/*== start of code for tooltips ==*/
+.tool {
+    cursor: help;
+    position: absolute;
+}
+
+
+/*== common styles for both parts of tool tip ==*/
+.tool::before,
+.tool::after {
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    z-index: -100;
+}
+
+.tool:hover::before,
+.tool:focus::before,
+.tool:hover::after,
+.tool:focus::after {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    z-index: 100; 
+}
+
+
+/*== pointer tip ==*/
+.tool::before {
+    border-style: solid;
+    border-width: 1em 0.75em 0 0.75em;
+    border-color: #3E474F transparent transparent transparent;
+    bottom: 100%;
+    content: "";
+    margin-left: -0.5em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
+    transform:  scale(.6) translateY(-90%);
+} 
+
+.tool:hover::before,
+.tool:focus::before {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+}
+
+
+/*== speech bubble ==*/
+.tool::after {
+    background: #3E474F;
+    border-radius: .25em;
+    bottom: 180%;
+    color: #EDEFF0;
+    content: attr(data-tip);
+    margin-left: -8.75em;
+    padding: 1em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+    transform:  scale(.6) translateY(50%);  
+    width: 17.5em;
+}
+
+.tool:hover::after,
+.tool:focus::after  {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+}
+
+@media (max-width: 760px) {
+  .tool::after { 
+        font-size: .75em;
+        margin-left: -5em;
+        width: 10em; 
+  }
+}
 </style>
 
 <form method="post" action="{% url 'save_credit_note' %}" autocomplete="off" enctype="multipart/form-data">
@@ -194,7 +264,7 @@ optgroup{color :black; }
                                         <div class="form-check">
                                             <label class="form-check-label">
                                                 <input class="form-check-input" type="checkbox" id="creditnote_number_default" name="creditnote_number_default">
-                                                Do you want to use default credit note number
+                                                Auto-Generate Credit Note Number
                                                 <span class="form-check-sign">
                                                     <span class="check"></span>
                                                 </span>
@@ -212,9 +282,19 @@ optgroup{color :black; }
                                 <div class="col-8">
                                     <select class="form-control select1" id="customerName" name="customerName" onchange="data($(this)),customer_gst_type()" required> 
                                         <option value="">None</option>
-                                        {% for contact in contacts %}
-                                        <option value="{{contact.id}}">{{contact}}</option>
-                                        {% endfor %}
+                                        {% if direct_con == 'NA' %}
+                                            {% for contact in contacts %}
+                                            {% if contact.customer_type == 1 or contact.customer_type == 4 %}
+                                            <option value="{{contact.id}}">{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for contact in contacts %}
+                                            {% if contact.customer_type == 1 or contact.customer_type == 4 %}
+                                            <option value="{{contact.id}}" {% if direct_con == contact.id %} selected {% endif %}>{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                     </select>
                                 </div>
                             </div>
@@ -330,7 +410,7 @@ optgroup{color :black; }
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
-                            <th scope="col" style="border:1px solid black;width: 10%;">Type</th>
+                            <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
                             <th class="quantity_header" scope="col" style="border:1px solid black;width: 5%;">Quantity</th>
                             <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th>
@@ -360,29 +440,34 @@ optgroup{color :black; }
                                 <textarea id="desc1" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 158px;margin-top: 1px;"></textarea>
                                 
                             </td>
-                            <td style="border:1px solid black;"><input type="text" class="form-control" id="type1" name="type[]" readonly></td>                  
-                            <!-- <td style="border-bottom:1px solid white; padding-left: 3px;padding-right: 0%;width: 4%;">
-                                <input type="text" class="form-control" id="currency1" name="currency[]" readonly>
-                            </td> -->
                             <td style="border:1px solid black;">
-                                <div class="row" style="padding-top: 9px;">
+                                <select class="form-control product_credit_account"  id="product_account1" name="product_account[]" required>
+                                    <option value="-------">None</option>
+                                    
+                                    {% for acc_group in acc_ledger_income %}
+                                        <option value="{{acc_group.id}}">{{acc_group.group_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td> 
+                            <td style="border:1px solid black;">
+                                <div class="row">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='creditnote_calculate(1), validation()' id="Price1" name="Price[]" style="margin-top: 1%;">
+                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='creditnote_calculate(1), validation()' id="Price1" name="Price[]">
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]">
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]" style="margin-top: -8px;">
                             </td>
                             <td style="border:1px solid black;">
-                                <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;" readonly>
+                                <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;margin-top: -8px;" readonly>
                             </td>
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="margin-top: -8px;">
                                     <div class="col-7" style="padding-right: 3px;">
                                         <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control " onkeyup='creditnote_calculate(1)' id="Discount1" name="Discount[]">
                                     </div>
@@ -410,7 +495,7 @@ optgroup{color :black; }
                                 </div>  
                             </td>
                             <td class="row_cs_gst" style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="margin-top: 4px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="row_cgst1">₹</label>
                                     </div>
@@ -420,7 +505,7 @@ optgroup{color :black; }
                                 </div>
                             </td>
                             <td class="row_cs_gst" style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="margin-top: 4px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="row_sgst1">₹</label>
                                     </div>
@@ -430,7 +515,7 @@ optgroup{color :black; }
                                 </div>
                             </td>
                             <td class="row_i_gst" style="border:1px solid black;display: none;">
-                                <div class="row">
+                                <div class="row" style="margin-top: 4px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="row_igst1">₹</label>
                                     </div>
@@ -440,7 +525,7 @@ optgroup{color :black; }
                                 </div>
                             </td>
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="margin-top: 4px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Amount1">₹</label>
                                     </div>
@@ -450,7 +535,7 @@ optgroup{color :black; }
                                 </div>   
                             </td>
                             <td style="border:1px solid black;">
-                                <div class="row">
+                                <div class="row" style="margin-top: 4px;">
                                     <div class="col-1" style="padding-right: 0%;">
                                         <label for="Amount_inc1">₹</label>
                                     </div>
@@ -679,6 +764,15 @@ optgroup{color :black; }
 
                                 <div class="row">
                                     <div class="col-3 left2">
+                                        <label for="">Product Category</label>
+                                    </div>
+                                    <div class="col">
+                                        {{add_product_form.product_category}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
                                         <label for="">SKU/Product ID</label>
                                     </div>
                                     <div class="col" style="padding-top:1%;">
@@ -826,8 +920,13 @@ optgroup{color :black; }
                                             <div class="col-1" style="padding-right: 0%;">
                                                 <label>₹</label>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-9">
                                                 {{add_product_form.selling_price}}
+                                            </div>
+                                            <div class="col">
+                                                <span class="tool" tabindex="1" data-tip="Sales Price can be Changed while making invoice.">
+                                                    <span class="material-icons" style="color:black;">info</span>
+                                                </span>
                                             </div>
                                         </div>  
                                     </div>
@@ -923,15 +1022,20 @@ optgroup{color :black; }
 
                                 <div class="row">
                                     <div class="col-4">
-                                        <label for="">Purchase  Price</label>
+                                        <label for="">Purchase Price</label>
                                     </div>
                                     <div class="col">
                                         <div class="row">
                                             <div class="col-1" style="padding-right: 0%;">
                                                 <label>₹</label>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-9">
                                                 {{add_product_form.purchase_price}}
+                                            </div>
+                                            <div class="col">
+                                                <span class="tool" tabindex="1" data-tip="Purchase Price can be Changed while making Purchase Order.">
+                                                    <span class="material-icons" style="color:black;">info</span>
+                                                </span>
                                             </div>
                                         </div>  
                                     </div>
@@ -1159,7 +1263,7 @@ optgroup{color :black; }
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
-                                                aria-selected="false">Tax & Payments</a>
+                                                aria-selected="false">Taxation</a>
                                             </li>                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
@@ -1235,14 +1339,14 @@ optgroup{color :black; }
                                                                 {{ other_details_form.preferred_payment_method }}
                                                             </td>                                    
                                                         </tr>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Preferred Delivery
                                                             </td>
                                                             <td style="border:0px;padding-top: 2%;">
                                                                 {{ other_details_form.preferred_delivery }}
                                                             </td>                                    
-                                                        </tr>
+                                                        </tr> -->
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Invoice Terms
@@ -1275,7 +1379,7 @@ optgroup{color :black; }
                                                                 <tbody style=" width: 100%; display: inline-table;border-top-style: hidden;">    
                                                                     <tr>
                                                                         <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: inherit;color: white;">
-                                                                            Shipping Is Different
+                                                                            Shipping Address is different
                                                                             {{ form.is_shipping_address }}
                                                                             {{ form.is_shipping_address_diff }}
                                                                             {{ form.is_billing_address }}
@@ -1488,6 +1592,60 @@ optgroup{color :black; }
         </div>
     </div>
 </div>
+
+<!-- modal account_ledger -->
+
+<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color:#202940;margin-left: 11%;margin-top: 25%;">
+            <form method="post" style="margin:0px" id="add_group_form">
+                {% csrf_token %}
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add New Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="1" name="ids" id="major_head_ins">
+                    <table class="table-responsive">
+                        <tbody style=" width: 100%; display: inline-table;">
+							<tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Major Head</label> 
+                                </td>
+                                <td style="border:0px;color:black;">Income</td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                   <label>Group Name</label> 
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_name }}
+                                </td>
+                                <td style="border:0px;" >
+                                    <font id="error_name" style="color: red;"></font>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border:0px; width:150px;">
+                                    <label>Group Info</label>
+                                </td>
+                                <td style="border:0px;width: 50%;">
+                                    {{ groups_form.group_info }}                                
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return credit_account_ledger_form()" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" style="background-color: #9095a2;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- chosse GST model popup -->
 {% include 'app/app_files/gst_changing_modal/choose_gst_modal.html' %}
 
@@ -1503,6 +1661,11 @@ optgroup{color :black; }
     // document.getElementById("add_more_accounts").disabled = true;
     
     csrf_token = '{{csrf_token}}';
+    $(document).ready(function(){
+        if('{{direct_con}}' != "NA"){
+            data()
+        }
+    });
 </script>
 
 

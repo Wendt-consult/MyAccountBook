@@ -57,7 +57,7 @@ class AccLedger(View):
 
     data["active_link"] = 'Accounts'
     data['from_expense'] = False ### changes for expense
-    
+    data['type'] = 'view'
     #
     #
     def get(self, request):

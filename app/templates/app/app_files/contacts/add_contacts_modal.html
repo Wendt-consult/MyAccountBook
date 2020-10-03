@@ -18,7 +18,7 @@ input[type=number]::-webkit-inner-spin-button,
 
 <form method="post" enctype="multipart/form-data" action="{% url 'add-contacts' %}" autocomplete="off">
     {% csrf_token %}
-    <div class="row" style="margin: 0% 4% 6% 4%;">
+    <div class="row" style="margin: 0% 5% 6% 7%;">
         <div class="col-lg-12" style="padding:0px;">
             <div class="card" >
                 <div class="card-header card-header-primary">
@@ -158,7 +158,7 @@ input[type=number]::-webkit-inner-spin-button,
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link " id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
-                                                aria-selected="false">Tax & Payments</a>
+                                                aria-selected="false">Taxation</a>
                                             </li>                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
@@ -266,14 +266,14 @@ input[type=number]::-webkit-inner-spin-button,
                                                                 {{ other_details_form.preferred_payment_method }}
                                                             </td>                                    
                                                         </tr>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Preferred Delivery
                                                             </td>
                                                             <td style="border:0px;">
                                                                 {{ other_details_form.preferred_delivery }}
                                                             </td>                                    
-                                                        </tr>
+                                                        </tr> -->
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Invoice Terms
@@ -306,7 +306,7 @@ input[type=number]::-webkit-inner-spin-button,
                                                                 <tbody style=" width: 100%; display: inline-table;">    
                                                                     <tr>
                                                                         <td style="text-align:left; padding:0px 0px 0px 10px; width:150px; border:0px; vertical-align: inherit;color: white;">
-                                                                            Shipping Is Different
+                                                                            Shipping Address is different
                                                                             {{ form.is_shipping_address }}
                                                                             {{ form.is_shipping_address_diff }}
                                                                             {{ form.is_billing_address }}                                                                            

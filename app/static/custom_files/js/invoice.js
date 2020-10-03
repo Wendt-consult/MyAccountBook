@@ -226,7 +226,7 @@ function product_row_creator(invoice_number){
 
 function get_func(next_id, value,product_quantity,product_price,product_unit, acc_group_name_htm, products_htm){
 
-    $.get("/invoice/add/"+1+"/", function(data){
+    $.get("/invoice/add/"+1+"/NA/", function(data){
         if(data){
             if(data.acc_group_name.length > 0){  
                 // for account_ledger details
@@ -491,8 +491,8 @@ function add_contact(){
 
         $('#id_customer_type').remove()
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="1">CUSTOMER</option>'
-        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
+        html +='<option value="1">Customer</option>'
+        html +='<option value="4">Customer and Vendor</option></select>'
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
@@ -588,7 +588,8 @@ function product(a) {
                 $("#desc"+a+"").val(data.desc)
 
                 $("#Price"+a+"").val(parseFloat(data.selling).toFixed(2))
-    
+                console.log('aaaaaaaaaaaaaaaaaaaaaaaa')
+                console.log(data.unit)
                 $("#Unit"+a+"").val(data.unit)
                 // $('#product_account'+a+'').val(4).change();
 
@@ -635,6 +636,10 @@ function invoice_product_form(save_type){
     if($('#id_product_type').val() == ''){
         alert('Product type is requried')
         $('#id_product_type').focus()
+        return false
+    }else if($('#id_product_category').val() == ''){
+        alert('product category is requried')
+        $('#id_product_category').focus()
         return false
     }else if($('#id_sku').val() == ''){
         alert('sku/product id is requried')
@@ -1299,7 +1304,7 @@ function dateValidation(element){
 //  ON CHANGE TO SET NEW INVOICE DUE DATE
 function invoice_pay_date(){
     var pay_terms = $('#invoice_pay_terms').val()
-    if(pay_terms == 'On Due Date'){
+    if(pay_terms == 'Due Immediately'){
         var endDate = $('#Invoice_date').datepicker('getDate', '+0d'); 
         endDate.setDate(endDate.getDate()+0); 
         $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", endDate );
@@ -1337,7 +1342,7 @@ $('#Invoice_one_due_date').change(function() {
     var days = (end - start)/1000/60/60/24;
     // $('#hasil').val(days);
     if(days == 0){
-        $('#invoice_pay_terms').val('On Due Date').change();
+        $('#invoice_pay_terms').val('Due Immediately').change();
     }else if(days == 9){
         $('#invoice_pay_terms').val('10 Days').change();
     }else if(days == 19){
@@ -1750,3 +1755,23 @@ $('#Invoice_date,#Invoice_one_due_date,#Invoice_recurring_start').keypress(funct
     event.preventDefault();
 });
 
+/************************************************************ */
+// GET CONTACT DETAILS
+/************************************************************ */
+
+function data() {
+    var contact = $('#invoice_customer option').filter(':selected').val()
+    if(contact !=''){
+        $.ajax({
+            type:"GET",
+            url: "/creditnote/contact/"+contact+"",
+            dataType: "json",
+            success: function(data){
+                $("#email").val(data.contacts)
+            },
+        });
+    }
+    else{
+        $("#email").val('')
+    }
+};

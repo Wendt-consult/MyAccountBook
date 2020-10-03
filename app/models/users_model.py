@@ -572,13 +572,13 @@ class User_Tax_Details(models.Model):
         default = 0
     )
 
-    preferred_delivery = models.IntegerField(
-        default = 0,
-        db_index = True,
-        choices = payment_constants.PREFERRED_DELIVERY,
-        null = True,
-        blank = True,
-    )
+    # preferred_delivery = models.IntegerField(
+    #     default = 0,
+    #     db_index = True,
+    #     choices = payment_constants.PREFERRED_DELIVERY,
+    #     null = True,
+    #     blank = True,
+    # )
 
     invoice_terms = models.IntegerField(
         null = True,

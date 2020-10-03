@@ -260,19 +260,11 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-7">
                                     <select class="form-control debit_vendor" id="debit_vendor" name="debit_vendor" required onchange="state_compare(),vendor_info()">
-                                        <option value="">None</option>
+                                        <!-- <option value="">None</option> -->
         
                                         {% for contact in intcontacts %}
                                             {% if debit_note.vendor_id|lower == contact.id|lower %}
                                             <option value="{{contact.id}}" {% if debit_note.vendor|lower == contact|lower %} selected {% endif %}>{{contact}}</option>
-                                            {% endif %}
-                                        {% endfor %}
-        
-                                        {% for contact in contacts %}
-                                            {% if contact.customer_type == 2 or contact.customer_type == 4 %}
-                                            {% if debit_note.vendor_id|lower != contact.id|lower %}
-                                            <option value="{{contact.id}}">{{contact}}</option>
-                                            {% endif %}
                                             {% endif %}
                                         {% endfor %}
                                     </select>
@@ -348,7 +340,7 @@ optgroup{color :black; }
                                     <label for="debit_reference">Reference#</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input type="text" class="form-control" id="debit_reference" maxlength="50" name="debit_reference" value="{{debit_note.debit_note_refrence}}">
+                                    <input type="text" class="form-control" id="debit_reference" maxlength="50" name="debit_reference" value="{{debit_note.debit_note_refrence}}" readonly>
                                 </div>
                             </div>
         
@@ -416,7 +408,7 @@ optgroup{color :black; }
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" onclick="ajax_org_address()" {% if debit_note.is_organisation_delivary == 'on' %} checked {% endif %}>
+                                                    <input class="form-check-input" type="radio" name="org_radio" id="org_radio" value="on" onclick="ajax_org_address()" {% if debit_note.is_organisation_delivary == 'on' %} checked {% else %} disabled {% endif %}>
                                                     Organization
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -427,7 +419,7 @@ optgroup{color :black; }
                                         <div class="col-6">
                                             <div class="form-check form-check-radio">
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" {% if debit_note.is_customer_delivary == 'on' %} checked {% endif %}>
+                                                    <input class="form-check-input" type="radio" name="customer_radio" id="customer_radio" value="on" {% if debit_note.is_customer_delivary == 'on' %} checked {% else %} disabled {% endif %}>
                                                     Customer
                                                     <span class="circle">
                                                         <span class="check"></span>
@@ -446,37 +438,11 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-8">
                                      <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="debit_cont_address()" style="width: 100%;">
-                                        <option value="">None</option>
-
+                                        <!-- <option value="">None</option> -->
                                         {% for contact in intcontacts %}
                                             {% if debit_note.customer|lower == contact.id|lower %}
                                             <option value="{{contact.id}}" selected>{{contact}}</option>
                                             {% endif %}
-                                        {% endfor %}
-
-                                        {% for contact in contacts %}
-                                            {% if contact.customer_type == 1 or contact.customer_type == 3 %}
-                                            {% if debit_note.customer|lower != contact.id|lower %}
-                                            <option value="{{contact.id}}">{{contact}}</option>
-                                            {% endif %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            {% else %}
-                            <div class="row" id="cust_address" style="margin-top: 2%;display: none;">
-                                <div class="col-4">
-                                    <label for="choose_customer_address"></label>
-                                </div>
-                                <div class="col-8">
-                                     <select class="form-control" id="choose_customer_address" name="choose_customer_address" onchange="debit_cont_address()" style="width: 100%;">
-                                        <option value="">None</option>
-
-                                        {% for contact in contacts %}
-                                        {% if contact.customer_type == 1 or contact.customer_type == 3 or contact.customer_type == 4 %}
-                                        <option value="{{contact.id}}">{{contact}}</option>
-                                        {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -499,10 +465,10 @@ optgroup{color :black; }
                             <div class="row">
 
                                 <div class="col-4">
-                                    <label for="">Attention</label>
+                                    <label for="debit_attention">Attention</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" id="debit_attention" maxlength="10" name="debit_attention" value="{{debit_note.attention}}">
+                                    <input type="text" class="form-control" id="debit_attention" maxlength="10" name="debit_attention" value="{{debit_note.attention}}" readonly>
                                 </div>
 
                             </div>
@@ -514,14 +480,16 @@ optgroup{color :black; }
                                 </div>
                                 <div class="col-sm-2 input">
                                     <select class="form-control" id="debit_contact_code" name="debit_contact_code" >
-                                        <option value="">None</option>
-                                        {% for code in country_code%}
-                                        <option value="{{code.1}}" {% if debit_note.country_code == code.1 %} selected {% endif %}>{{code.1}}</option>
+                                        <!-- <option value="">None</option> -->
+                                        {% for code in country_code %}
+                                            {% if debit_note.country_code == code.1 %}
+                                                <option value="{{code.1}}" selected >{{code.1}}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-md-5 input" style="padding-left: 0px;">
-                                    <input type="number" class="form-control" id="debit_contact" name="debit_contact" onfocusout="valid_Phone($(this))" value="{{debit_note.contact_number}}">
+                                    <input type="number" class="form-control" id="debit_contact" name="debit_contact" onfocusout="valid_Phone($(this))" value="{{debit_note.contact_number}}" readonly>
                                 </div>
 
                             </div>
@@ -529,7 +497,7 @@ optgroup{color :black; }
                                 <div class="col-4">
 
                                 </div>
-                                <div class="col-8" id="c_error_field" style="color:black;">
+                                <div class="col-8" id="c_error_field" style="color:red;">
                                     
                                 </div>
                             </div>
@@ -538,7 +506,7 @@ optgroup{color :black; }
                     </div>
                 </div>
 
-                    <table class="table" id="debit_table" style="width: 97%;margin-left: 3%;margin-top: 2%;">
+                    <table class="table" id="debit_table" style="width: 95%;margin-left: 3%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
                         {% if debit_note.is_cs_gst == True %}
@@ -577,7 +545,7 @@ optgroup{color :black; }
                                   
                                   <select class="form-control select debit_line_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
                                       
-                                      <option value="">None</option>
+                                      <!-- <option value="">None</option> -->
                                       
                                       {% for product in intproducts %}
                                           {% if items.product_id|lower == product.id|lower %}
@@ -585,23 +553,19 @@ optgroup{color :black; }
                                           {% endif %}
                                       {% endfor %}
                                       
-                                      {% for product in products %}
-  
-                                          {% if items.product_id|lower != product.id|lower %}
-                                          <option value="{{product.id}}">{{product}}</option>
-                                          {% endif %}
-                                      {% endfor %}
                                   </select>
                                   
-                                  <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                  <textarea id="desc{{forloop.counter}}" name="desc[]" rows="2" maxlength="200"  size="200" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;" readonly>{{items.description|default_if_none:""}}</textarea>
                                   
                               </td>
                               <td style="border:1px solid black;">
                                   <select class="form-control prodduct_debit_account"  id="product_account{{forloop.counter}}" name="product_account[]" onchange="validation()">
-                                      <option value="">None</option>
+                                      <!-- <option value="">None</option> -->
                                       
                                       {% for acc_group in acc_ledger_expense %}
-                                          <option value="{{acc_group.id}}" {% if items.account_id == acc_group.id %} selected {% endif %}>{{acc_group.group_name}}</option>
+                                        {% if items.account_id == acc_group.id %} 
+                                          <option value="{{acc_group.id}}" selected>{{acc_group.group_name}}</option>
+                                        {% endif %}
                                       {% endfor %}
                                   </select>
                               </td>                  
@@ -612,13 +576,12 @@ optgroup{color :black; }
                                           <label for="Price{{forloop.counter}}">₹</label>
                                       </div>
                                       <div class="col">
-                                          <input type="text" class="form-control" value="{{items.price}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;">
+                                          <input type="text" class="form-control" value="{{items.price}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Price{{forloop.counter}}" name="Price[]" style="margin-top: 1%;" readonly>
                                       </div>
-                                  </div>
-                                  
+                                  </div>   
                               </td>
                               <td style="border:1px solid black;">
-                                  <input type="text" class="form-control" value="{{items.quantity}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]">
+                                  <input type="text" class="form-control edit_quantity_dic" value="{{items.quantity}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" onkeyup='debit_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]">
                               </td>
                               <td style="border:1px solid black;">
                                   <input class="form-control" id="Unit{{forloop.counter}}" value="{{items.unit}}" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -626,12 +589,15 @@ optgroup{color :black; }
                               <td style="border:1px solid black;">
                                   <div class="row">
                                       <div class="col-7" style="padding-right: 3px;">
-                                          <input type="text" value="{{items.discount}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='debit_calculate({{forloop.counter}})' id="Discount{{forloop.counter}}" name="Discount[]">
+                                          <input type="text" value="{{items.discount}}" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Discount{{forloop.counter}}')" class="form-control all_discount" onkeyup='debit_calculate({{forloop.counter}})' id="Discount{{forloop.counter}}" name="Discount[]" readonly>
                                       </div>
                                       <div class="col-5" style="padding-left:1px;">
-                                          <select class="form-control" align="right"  id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type({{forloop.counter}})" style="background-color: white;color: black;padding-left: 0%;">
-                                              <option value="%" {% if items.discount_type == '%' %} selected {% endif %}>%</option>
-                                              <option value="₹" {% if items.discount_type == '₹' %} selected {% endif %}>₹</option>
+                                          <select class="form-control" align="right" id="Dis{{forloop.counter}}" name="Dis[]" onchange="dicount_type({{forloop.counter}})" style="background-color: white;color: black;padding-left: 0%;">
+                                            {% if items.discount_type == '%' %}
+                                            <option value="%" selected>%</option>
+                                            {% else %}
+                                            <option value="₹" selected >₹</option>
+                                            {% endif %}
                                           </select>
                                       </div>
                                   </div>
@@ -734,9 +700,9 @@ optgroup{color :black; }
                                       </div>
                                   </div>
                               </td>
-                              <td style="border-style: none;">
+                              <!-- <td style="border-style: none;">
                                   <span class="tbclose material-icons" id="{{forloop.counter}}" name="{{forloop.counter}}" onclick="creditnote_removeRow({{forloop.counter}})" style="cursor: default;">delete_forever</span>
-                              </td>
+                              </td> -->
                             </tr>
                             {% endfor %}
                           
@@ -744,44 +710,17 @@ optgroup{color :black; }
                     </table>
                
             <div class="container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col">
                         <div class="col">
                             <button class="btn btn-link btn-sm addrow" id="addrow" type="button" onclick="add_single_row({{item_count}})" style="text-decoration: underline;border: 1px solid black;color: black;margin-top: -4px;margin-bottom: 8px;">Add Row</button>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
 
                     <div class="col-7">
-
-                        <div class="row">
-                            <div class="col">
-                                <label for="debit_MessageOnStatement">Terms and Conditions</label>
-                            </div> 
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                <textarea  id="debit_MessageOnStatement" name="debit_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{contact_number.terms_and_condition|default_if_none:""}}</textarea>
-                            </div>
-                        </div>
-                        {% if term_msg is None %}
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="debit_t&c" name="debit_t&c">
-                                        Use this as default terms and conditions
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>   
-                            </div>
-                        </div>
-                        {% endif %}
-
+                        
                         <div class="row" style="margin-top: 1%;">
                             <div class="col">
                                 <label for="debit_notes">Notes</label>
@@ -793,21 +732,6 @@ optgroup{color :black; }
                                 <textarea  id="debit_notes" name="debit_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{debit_note.Note|default_if_none:""}}</textarea>
                             </div>
                         </div>
-                        {% if debit_msg is None %}
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="debit_default_notes" name="debit_default_notes">
-                                        Use this as default notes
-                                        <span class="form-check-sign">
-                                            <span class="check"></span>
-                                        </span>
-                                    </label>
-                                </div>   
-                            </div>
-                        </div>
-                        {% endif %}
                     </div>
 
                     <div class="col">
@@ -1092,6 +1016,15 @@ optgroup{color :black; }
                                             <!-- <option value="2">BUNDLE</option> -->
                                           
                                           </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-3 left2">
+                                        <label for="">Product Category</label>
+                                    </div>
+                                    <div class="col">
+                                        {{add_product_form.product_category}}
                                     </div>
                                 </div>
 
@@ -1540,7 +1473,7 @@ optgroup{color :black; }
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" id="tax-tab" data-toggle="tab" href="#tax-form" role="tab" aria-controls="tax"
-                                                aria-selected="false">Tax & Payments</a>
+                                                aria-selected="false">Taxation</a>
                                             </li>                                            
                                             <li class="nav-item">
                                                 <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts-form" role="tab" aria-controls="accounts"
@@ -1616,14 +1549,14 @@ optgroup{color :black; }
                                                                 {{ other_details_form.preferred_payment_method }}
                                                             </td>                                    
                                                         </tr>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Preferred Delivery
                                                             </td>
                                                             <td style="border:0px;padding-top: 2%;">
                                                                 {{ other_details_form.preferred_delivery }}
                                                             </td>                                    
-                                                        </tr>
+                                                        </tr> -->
                                                         <tr>
                                                             <td style=" width:150px; border:0px; vertical-align: bottom">
                                                                 Invoice Terms
@@ -1656,7 +1589,7 @@ optgroup{color :black; }
                                                                 <tbody style=" width: 100%; display: inline-table;border-top-style: hidden;">    
                                                                     <tr>
                                                                         <td style="text-align:left; padding:0px 0px 0px 10px; width:153px; border:0px; vertical-align: inherit;color: white;">
-                                                                            Shipping Is Different
+                                                                            Shipping Address is different
                                                                             {{ form.is_shipping_address }}
                                                                             {{ form.is_shipping_address_diff }}
                                                                             {{ form.is_billing_address }}
@@ -2305,11 +2238,29 @@ optgroup{color :black; }
     //document.getElementById("cancelBtn").style.display = 'none';
     document.getElementById("add_more_addresses").readonly = true;
     // document.getElementById("add_more_accounts").readonly = true;
-
+    
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
         state_compare()
         // validation()
+        debit_note_id = '{{debit_note.id}}'
+        var edit_dic = {}
+        $.post("/debitnote/get_data/",{'debit_note_id':debit_note_id,'csrfmiddlewaretoken':csrf_token}, function(data){
+            if(data != 0){
+                edit_dic = data.entry_dic
+            }
+        });
+
+        $('.edit_quantity_dic').keyup(function(){
+            var quant = $(this).attr('id')
+            if(parseFloat($(this).val()) > parseFloat(edit_dic[quant])){
+                alert('You can not increase quantity')
+                $('#'+quant).val(edit_dic[quant])
+                quant = quant.match(/\d+/);
+                quant = quant[0]
+                debit_calculate(quant)
+            }
+        });
     });
     
 </script>

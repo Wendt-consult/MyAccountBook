@@ -18,7 +18,7 @@ class ProductForm(ModelForm):
         model = ProductsModel
 
         fields = (
-            'product_type', 'sku', 'product_name', 'product_description', 
+            'product_type','product_category', 'sku', 'product_name', 'product_description', 
             'purchase_price','selling_price', 'discount', 'tds', 'selling_tax', 'purchase_account',
             'hsn_code', 'abatement', 'unit', 'sales_account', 'inclusive_tax','hidden_img',
             'purchase_tax','inclusive_purchase_tax','reverse_charges','purchase_account','is_sales','is_purchase',
@@ -27,8 +27,9 @@ class ProductForm(ModelForm):
         widgets = {
             
             'product_type' : Select(attrs = {'class':'form-control input-sm', 'onchange':'show_bundle($(this))'}, choices = products_constant.PRODUCT_TYPE),
+            'product_category' : Select(attrs = {'class':'form-control input-sm',}, choices = products_constant.PRODUCT_CATEGORY),
             'sku' : TextInput(attrs = {'class':'form-control input-sm',}),
-            'product_name' : TextInput(attrs = {'class':'form-control input-sm','maxlenght':'50', 'onfocusout':'check_product_name($(this), true)'}),            
+            'product_name' : TextInput(attrs = {'class':'form-control input-sm','maxlenght':'50', 'onfocusout':'check_product_name($(this), true)','style':'text-transform: capitalize;',}),            
             'hsn_code' : TextInput(attrs = {'class':'form-control input-sm',}),
             'product_description' : Textarea(attrs = {'class':' input-sm', 'rows':'2', 'style':'width:100%;background-color: #fff;border-style: double;color: black;'}), 
             'tds' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_tds")',}),      
@@ -72,7 +73,7 @@ class EditProductForm(ModelForm):
         model = ProductsModel
 
         fields = (
-            'product_type', 'sku', 'product_name', 'product_description', 
+            'product_type', 'product_category', 'sku', 'product_name', 'product_description', 
             'purchase_price','selling_price', 'discount', 'tds', 'selling_tax', 'purchase_account',
             'hsn_code', 'abatement', 'unit', 'sales_account', 'inclusive_tax','hidden_img',
             'purchase_tax','inclusive_purchase_tax','reverse_charges','purchase_account','is_sales','is_purchase',
@@ -80,8 +81,9 @@ class EditProductForm(ModelForm):
 
         widgets = {
             'product_type' : Select(attrs = {'class':'form-control input-sm', 'onchange':'show_bundle($(this))'}, choices = products_constant.PRODUCT_TYPE),
+            'product_category' : Select(attrs = {'class':'form-control input-sm',}, choices = products_constant.PRODUCT_CATEGORY),
             'sku' : TextInput(attrs = {'class':'form-control input-sm',}),
-            'product_name' : TextInput(attrs = {'class':'form-control input-sm', 'onfocusout':'check_product_name($(this), true)'}),            
+            'product_name' : TextInput(attrs = {'class':'form-control input-sm', 'onfocusout':'check_product_name($(this), true)','style':'text-transform: capitalize;,'}),            
             'hsn_code' : TextInput(attrs = {'class':'form-control input-sm','onkeypress':'return restrictAlphabets(event), float_value(event,"id_tds")'}),
             'product_description' : Textarea(attrs = {'class':'input-sm','rows':'2', 'style':'width:100%;background-color: #fff;border-style: double;color: black;'}), 
             'tds' : TextInput(attrs = {'class':'form-control input-sm',}),      

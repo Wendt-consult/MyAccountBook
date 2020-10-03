@@ -1,110 +1,6 @@
 {% load static %}
 
-{% if breadcrumb_title == 'INVOICE' and type != 'view' %}
-<style>
-.sidebar .sidebar-wrapper {
-    position: relative;
-    height: calc(100vh - 75px);
-    overflow: auto;
-    width: 75px;
-    z-index: 4;
-    padding-bottom: 30px;
-    scrollbar-color: rebeccapurple white;
-    scrollbar-width: none;
-}
-
-.sidebar .sidebar-wrapper::-webkit-scrollbar {
-    width: 0px;
-    background: transparent; /* make scrollbar transparent */
-}
-.sidebar{
-    width: 85px!important;
-}
-.main-panel {
-    float: left!important;
-    margin-left: 2%!important;
-    width: 100%!important;
-}
-</style>
-{% elif breadcrumb_title == 'PURCHASE ENTRY' and type != 'view' %}
-<style>
-    .sidebar .sidebar-wrapper {
-        position: relative;
-        height: calc(100vh - 75px);
-        overflow: auto;
-        width: 75px;
-        z-index: 4;
-        padding-bottom: 30px;
-        scrollbar-color: rebeccapurple white;
-        scrollbar-width: none;
-    }
-    
-    .sidebar .sidebar-wrapper::-webkit-scrollbar {
-        width: 0px;
-        background: transparent; /* make scrollbar transparent */
-    }
-    .sidebar{
-        width: 85px!important;
-    }
-    .main-panel {
-        float: left!important;
-        margin-left: 2%!important;
-        width: 100%!important;
-    }
-    </style>
-{% elif breadcrumb_title == 'PURCHASE ORDER' and type != 'view' %}
-<style>
-    .sidebar .sidebar-wrapper {
-        position: relative;
-        height: calc(100vh - 75px);
-        overflow: auto;
-        width: 75px;
-        z-index: 4;
-        padding-bottom: 30px;
-        scrollbar-color: rebeccapurple white;
-        scrollbar-width: none;
-    }
-    
-    .sidebar .sidebar-wrapper::-webkit-scrollbar {
-        width: 0px;
-        background: transparent; /* make scrollbar transparent */
-    }
-    .sidebar{
-        width: 85px!important;
-    }
-    .main-panel {
-        float: left!important;
-        margin-left: 2%!important;
-        width: 100%!important;
-    }
-    </style>
-{% elif breadcrumb_title == 'CREDIT NOTE' and type != 'view' %}
-<style>
-    .sidebar .sidebar-wrapper {
-        position: relative;
-        height: calc(100vh - 75px);
-        overflow: auto;
-        width: 75px;
-        z-index: 4;
-        padding-bottom: 30px;
-        scrollbar-color: rebeccapurple white;
-        scrollbar-width: none;
-    }
-    
-    .sidebar .sidebar-wrapper::-webkit-scrollbar {
-        width: 0px;
-        background: transparent; /* make scrollbar transparent */
-    }
-    .sidebar{
-        width: 85px!important;
-    }
-    .main-panel {
-        float: left!important;
-        margin-left: 2%!important;
-        width: 100%!important;
-    }
-    </style>
-{% else %}
+{% if type == 'view' or active_link == 'Dashboard' or type == 'profile' %}
 <style>
     .sidebar .sidebar-wrapper {
         position: relative;
@@ -122,6 +18,32 @@
         background: transparent; /* make scrollbar transparent */
     }
 </style>
+{% elif type != 'view' %}
+<style>
+    .sidebar .sidebar-wrapper {
+        position: relative;
+        height: calc(100vh - 75px);
+        overflow: auto;
+        width: 75px;
+        z-index: 4;
+        padding-bottom: 30px;
+        scrollbar-color: rebeccapurple white;
+        scrollbar-width: none;
+    }
+    
+    .sidebar .sidebar-wrapper::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    .sidebar{
+        width: 85px!important;
+    }
+    .main-panel {
+        float: left!important;
+        margin-left: 2%!important;
+        width: 100%!important;
+    }
+    </style>
 {% endif %}
 
 <div class="sidebar-wrapper ps-theme-default" style="background-image: url({% static 'all_page/img/sidebar-2.jpg' %}) ">

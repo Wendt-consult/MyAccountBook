@@ -150,7 +150,7 @@ function product_row_creator(purchase_number){
 
 function get_func(next_id, acc_group_name_htm, products_htm,tax_htm){
 
-    $.get("/purchase_order/add_purchase_order/"+1+"/", function(data){
+    $.get("/purchase_order/add_purchase_order/"+1+"/NA/", function(data){
         if(data){
             if(data.acc_group_name.length > 0){  
                 // for account_ledger details
@@ -334,8 +334,8 @@ function add_contact(){
 
         $('#id_customer_type').remove()
         var html='<select name="customer_type" class="form-control input-sm" required="" id="id_customer_type">'
-        html +='<option value="2" selected>VENDOR</option>'
-        html +='<option value="4">CUSTOMER AND VENDOR</option></select>'
+        html +='<option value="2" selected>Vendor</option>'
+        html +='<option value="4">Customer and Vendor</option></select>'
        $('#con_type').append(html)
 
        $('#add_contact_type').remove()
@@ -450,6 +450,10 @@ function purchase_product_form(save_type){
     if($('#id_product_type').val() == ''){
         alert('Product type is requried')
         $('#id_product_type').focus()
+        return false
+    }else if($('#id_product_category').val() == ''){
+        alert('product category is requried')
+        $('#id_product_category').focus()
         return false
     }else if($('#id_sku').val() == ''){
         alert('sku/product id is requried')

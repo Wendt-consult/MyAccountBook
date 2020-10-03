@@ -21,6 +21,7 @@ class Profile(View):
     data["contacts"] = {}
     data["active_link"] = 'Profile'
     data["breadcrumb_title"] = 'PROFILE'
+    data['type'] = 'profile'
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []

@@ -35,6 +35,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from app.views.scheduler import test_fun
 from django.conf import settings
 
+from email.mime.base import MIMEBase
+
 #=====================================================================================
 #   BACKGROUND RUNNING
 #=====================================================================================
@@ -73,17 +75,34 @@ class Invoice(View):
     def get(self, request):        
         
         invoice = invoice_model.InvoiceModel.objects.filter(user = request.user,invoice_delete_status=0)
-        # invoice_paginator = Paginator(invoice, 10)
-        # invoice_page = request.GET.get('page')     
-        # try:
-        #     invoice_posts = invoice_paginator.page(invoice_page)
-        # except PageNotAnInteger:
-        #     invoice_posts = invoice_paginator.page(1)
-        # except EmptyPage:
-        #     invoice_posts = invoice_paginator.page(invoice_paginator.num_pages)
         self.data["invoice"] = invoice
-        # self.data["invoice_page"] = invoice_page
-    
+        
+        # logic for view journal entry view and query
+        default_list = []
+        invoice = invoice.exclude(save_type = 3)
+        invoice_count = len(invoice)
+        for i in range(0,invoice_count):
+            invoice_item = Invoice_Line_Items.objects.filter(invoice_item_list = invoice[i],is_header = False)
+            item_count = len(invoice_item)
+            # revser_track = 0
+            check_list = []
+            for j in range(0,item_count):
+                if invoice_item[j].account.group_name not in check_list :
+                    check_list.append(invoice_item[j].account.group_name)
+                    acc = invoice_item.filter(account = invoice_item[j].account)
+                    acc_count = len(acc)
+                    default_dic = {}
+                    default_dic['ids'] = invoice[i].id
+                    default_dic['account_name'] = invoice_item[j].account.group_name
+                    calculate = 0.00
+                    for k in range(0,acc_count):
+                        calculate += float(acc[k].amount)
+                    default_dic['value'] = '%.2f' % calculate
+                    default_list.append(default_dic)
+                    # default_dic.clear()
+
+        self.data['default_list'] = default_list
+                        
         # CUSTOMIZE VIEW CODE
         customize_invoice = CustomizeModuleName.objects.filter(Q(user = request.user) & Q(customize_name = 5))
         if(len(customize_invoice) != 0):
@@ -101,7 +120,7 @@ class Invoice(View):
 #   ADD INVOCE
 #=====================================================================================
 #
-def add_invoice(request, slug):
+def add_invoice(request, ins, slug):
 
     # Initialize 
     data = defaultdict()
@@ -143,6 +162,7 @@ def add_invoice(request, slug):
     data['gst_code'] = country_list.GST_STATE_CODE
      # list contact name
     contacts = Contacts.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(contact_delete_status = 0))
+
     gst = users_model.OrganisationGSTSettings.objects.filter(user = request.user)
     
     default_term_condition = Organisations.objects.filter(user = request.user)
@@ -162,7 +182,7 @@ def add_invoice(request, slug):
 
     # list product name
 
-    if( int(slug) == 1):
+    if( int(ins) == 1):
         # for product details
         products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0) & Q(product_type__in = [0,1] ))
         name = []
@@ -195,7 +215,7 @@ def add_invoice(request, slug):
         # common dictionary
         data = {'products': name, 'ids': ids , 'acc_group_name':acc_group_name, 'acc_ids':acc_ids, 'gst':tax} 
         return JsonResponse(data)
-    elif(int(slug) == 0):
+    elif(int(ins) == 0):
         # for product details
         products = ProductsModel.objects.filter(Q(user = request.user) & Q(is_active = True) & Q(product_delete_status = 0) & Q(product_type__in = [0,1] ))
         data["products"] = products
@@ -210,6 +230,12 @@ def add_invoice(request, slug):
         major_heads = accounts_model.MajorHeads.objects.get(major_head_name = 'Expense')
         acc_ledger_expense = accounts_model.AccGroups.objects.filter(Q(user = request.user) & Q(major_head = major_heads))
         data['acc_ledger_expense'] = acc_ledger_expense
+
+        # for coming to direct contact module
+        data['direct_con'] = 'NA'
+        if(slug != 'NA'):
+            contacts = contacts.get(pk = int(slug))
+            data['direct_con'] = contacts.id
 
         # org gst number
         data['is_gst'] = 'no'
@@ -500,7 +526,7 @@ def save_invoice(request):
             invoice_mailer(request, invoice, contact)
         
         if(save_type == 5):
-            ins = '/invoice/add/0/'
+            ins = '/invoice/add/0/NA/'
             return redirect(ins, permanent = False)
 
         return redirect('/invoice/', permanent = False)
@@ -741,10 +767,12 @@ class EditInvoice(View):
             InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(user= request.user, invoice_customer = contact, email=email,cc_email=cc_email, purchase_order_number = invoice_purchae_number,
                         invoice_number = invoice_number,invoice_check = check_invocie_number,save_type=save_type,invoice_date = in_date,invoice_type_new = invoice_new,
                         invoice_type_recurring = invoice_recurring, invoice_salesperson = invoice_employee,invoice_state_supply = invoice_state_supply,
-                        terms_and_condition = term_condition, Note=message,attachements=attachement,sub_total=subtotal,total_discount=distotal,
+                        terms_and_condition = term_condition, Note=message,sub_total=subtotal,total_discount=distotal,
                         cgst = cgst,sgst = sgst,igst = igst,total_amount = total_amount,shipping_charges=shipping_charges,
                         invoice_org_gst_num = org_gst_number,invoice_org_gst_type = org_gst_reg_type,invoice_org_gst_state = single_gst_code,)
-            
+            if(attachement != ''):
+                InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(attachements = attachement)
+
             if(cgst != '' or sgst != ''):
                 InvoiceModel.objects.filter(pk = int(kwargs["ins"])).update(is_cs_gst = True)
             else:
@@ -888,7 +916,7 @@ class EditInvoice(View):
                 invoice_mailer(request, invoice, contact)
 
             if(save_type == 5):
-                ins = '/invoice/add/0/'
+                ins = '/invoice/add/0/NA/'
                 return redirect(ins, permanent = False)
             
         return redirect('/invoice/', permanent = False)
@@ -1069,7 +1097,7 @@ def invoice_mailer(request, invoice = None, contact = None):
     if invoice is not None and contact is not None: 
 
         if invoice.email !="":
-            InvoiceModel.objects.filter(pk = int(invoice.id)).update(invoice_status = 3)
+            # InvoiceModel.objects.filter(pk = int(invoice.id)).update(invoice_status = 3)
             organisation = None
 
             try:
@@ -1093,7 +1121,7 @@ def invoice_mailer(request, invoice = None, contact = None):
             msg_body.append("Please feel free to contact us if you have any questions.")
             msg_body.append("Regards,")
             if organisation.organisation_name:
-                msg_body.append("Company Name{}".format(organisation.organisation_name))
+                msg_body.append("Company Name:- {}".format(organisation.organisation_name))
 
             if organisation is not None:
                 msg_body.append(organisation.organisation_name)
@@ -1102,14 +1130,22 @@ def invoice_mailer(request, invoice = None, contact = None):
 
             msg_html = "<html><body>"+msg_body+"</body></html>"
 
-            to_list = [email_id for email_id in invoice.email.split(",")]
-            cc_list = [cc_email_id for cc_email_id in invoice.cc_email.split(",")]
+            if(invoice.email.find(',') != -1):
+                to_list = [invoice.email]
+            else:
+                to_list = [email_id for email_id in invoice.email.split(",")]
+            
+            if(invoice.cc_email.find(',') != -1):
+                cc_list = [invoice.cc_email]
+            else:
+                cc_list = [cc_email_id for cc_email_id in invoice.cc_email.split(",")]
         
-            # attachements = []
-            # if str(creditnote.attachements) !="" and send_attachments:
-            #     attachements = [os.path.join(settings.MEDIA_ROOT,str(creditnote.attachements))]   
-        
-            msg = email_helper.Email_Helper(to=to_list, cc=cc_list, subject=subject, message=msg_html)
+            attachements = []
+            if str(invoice.attachements) !="":
+                attachements = [os.path.join(settings.MEDIA_ROOT,str(invoice.attachements))] 
+                msg = email_helper.Email_Helper(to=to_list, cc=cc_list, subject=subject, message=msg_html,attachment=attachements)  
+            else:
+                msg = email_helper.Email_Helper(to=to_list, cc=cc_list, subject=subject, message=msg_html)
             msg.mail_send()
             
             #
