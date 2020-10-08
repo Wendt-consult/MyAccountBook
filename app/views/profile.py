@@ -132,7 +132,7 @@ class Profile(View):
         self.data["org_bank_form"] = []
         
         for i in range(bank_count):
-            self.data["org_bank_form"].append(contact_forms.OrgAccountDetailsForm(instance = org_bank_form[i], prefix = 'form_{}'.format(org_bank_form[i].id)))
+            self.data["org_bank_form"].append(contact_forms.OrgEditAccountDetailsForm(instance = org_bank_form[i], prefix = 'form_{}'.format(org_bank_form[i].id)))
 
         #   edit org account
         org_account = users_model.Organisation_Contact.objects.filter(organisation = organisation_form)
@@ -520,6 +520,7 @@ class GSTSettingsView(View):
     data["contacts"] = {}
     data["active_link"] = 'Profile'
     data["breadcrumb_title"] = 'GST Settings'
+    data['type'] = 'profile'
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []
@@ -650,6 +651,7 @@ class GSTConfigurationView(View):
     data["contacts"] = {}
     data["active_link"] = 'Profile'
     data["breadcrumb_title"] = 'GST Configuration'
+    data['type'] = 'profile'
 
     # Custom CSS/JS Files For Inclusion into template
     data["css_files"] = []

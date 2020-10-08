@@ -126,8 +126,8 @@
                                         <!-- <td>CT-0000{{contact.id}}</td> -->
                                         {% if customize.contact_name != 0 %}
                                         <td align="center" class="customize_name">
-                                            <a class="contact_name" href="{% url 'edit-contact' contact.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{contact.contact_name|default_if_none:""|upper |truncatechars:25}}
+                                            <a class="contact_name" title="{{contact.contact_name}}" href="{% url 'edit-contact' contact.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{contact.contact_name|default_if_none:""|truncatechars:20 | title}}
                                             </a>
                                         </td>
                                         {% endif %}
@@ -137,9 +137,9 @@
                                         
                                         <!-- <td>{{contact.get_organization_type_display|upper}}</td> -->
                                         {% if customize.contact_org_name != 0 %}
-                                        <td align="center" class="customize_org">
+                                        <td align="center"  title="{{contact.organization_name}}" class="customize_org" title="{{contact.organization_name}}">
                                             {% if contact.organization_name %}
-                                            {{contact.organization_name|upper | truncatechars:25}}
+                                            {{contact.organization_name|truncatechars:20 | title}}
                                             {% else %}
                                             None
                                             {% endif %}

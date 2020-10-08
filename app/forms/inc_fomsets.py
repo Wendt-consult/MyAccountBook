@@ -38,10 +38,25 @@ class AccountDetailsForm(ModelForm):
         widgets = {
             'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]',}),
             'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;'}),
-            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','placeholder':'EX. ABCD1234567','onkeyup':'valid_IFSC($(this))', 'onfocusout':'valid_IFSC($(this))'}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','placeholder':'EX. ABCD1234567','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this))'}),
             'bank_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
             'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
         }
 
-AccountsFormset = formset_factory(AccountDetailsForm, extra = 1)
+# AccountsFormset = formset_factory(AccountDetailsForm, extra = 1)
+
+class EditAccountDetailsForm(ModelForm):
+    class Meta:
+        model = users_model.User_Account_Details
+        fields = ('account_number', 'account_holder_name', 'ifsc_code', 'bank_name', 'bank_branch_name')
+
+        widgets = {
+            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]',}),
+            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;'}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','placeholder':'EX. ABCD1234567','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this)),bank_details($(this))'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
+        }
+
+# AccountsFormset = formset_factory(EditAccountDetailsForm, extra = 1)
 

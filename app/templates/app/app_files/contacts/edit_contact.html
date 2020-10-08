@@ -29,6 +29,12 @@ input[type=number]::-webkit-inner-spin-button,
 #files{
     width: 100%;
 }
+.buttom_color:hover{
+    color: black!important;
+}
+.buttom_color{
+    color: black!important;
+}
 </style>
 
 <div class="row" style="margin: 0% 5% 6% 7%;">
@@ -43,7 +49,7 @@ input[type=number]::-webkit-inner-spin-button,
                         <tbody style="width: 100%; display: inline-table;">
                             <tr>
                                 <td colspan="6">
-                                    <button class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editContactModal">Edit Contact Details</button>
+                                    <button class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editContactModal">Edit Contact Details</button>
                                 </td>
                             </tr>
                             <tr class="disabled-tr">
@@ -148,7 +154,7 @@ input[type=number]::-webkit-inner-spin-button,
                                     
                                     <td colspan="3" style="padding-bottom: 0px;padding-top: 8px;width: 13.5%;">
                                         
-                                        <button class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editTaxModal">Edit Tax Details</button>
+                                        <button class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editTaxModal">Edit Tax Details</button>
                                     </td>
                                 </tr>
                                 
@@ -188,7 +194,7 @@ input[type=number]::-webkit-inner-spin-button,
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#address" aria-expanded="false" aria-controls="collapseExample" style="margin-left: -14%;"> 
                                             <i class="fa fa-plus-circle fa-10x" id="address1" onclick="addres()" style="color: black;margin-top: -199%;"></i>
                                         </button> 
-                                        <button data-toggle="modal" data-target="#newAddressModal" class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right; margin-left:10px;" type="button">
+                                        <button data-toggle="modal" data-target="#newAddressModal" class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right; margin-left:10px;" type="button">
                                             <i class="material-icons">add_box</i> Add New
                                         </button> 
                                     </div>
@@ -301,7 +307,7 @@ input[type=number]::-webkit-inner-spin-button,
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#account" aria-expanded="false" aria-controls="collapseExample" style="margin-left: -14%;"> 
                                             <i class="fa fa-plus-circle fa-10x" id="account1" onclick="acount()"style="color: black;margin-top: -199%;"></i>
                                         </button> 
-                                        <button data-toggle="modal" data-target="#newAccountsModal" class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right; margin-left:10px;" type="button">
+                                        <button data-toggle="modal" data-target="#newAccountsModal" class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right; margin-left:10px;" type="button">
                                             <i class="material-icons">add_box</i> Add New
                                         </button>
                                     </div>
@@ -375,7 +381,7 @@ input[type=number]::-webkit-inner-spin-button,
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#other" aria-expanded="false" aria-controls="collapseExample"> 
                                             <i class="fa fa-plus-circle fa-10x" id="other1" onclick="othe()" style="color: black;margin-top: -290%;margin-right: -4px;"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editOrganisationModal">Edit Other Details</button>
+                                        <button class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editOrganisationModal">Edit Other Details</button>
                                     </div>
                                 </div>
 
@@ -428,7 +434,7 @@ input[type=number]::-webkit-inner-spin-button,
                                         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#social" aria-expanded="false" aria-controls="collapseExample"> 
                                             <i class="fa fa-plus-circle fa-10x" id="social1" onclick="soc()" style="color: black;margin-top: -290%;margin-right: -4px;"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-primary pull-right" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editSocialModal">Edit Social Details</button>
+                                        <button class="btn btn-sm btn-primary pull-right buttom_color" style="margin-bottom:15px; float:right" type="button" data-toggle="modal" data-target="#editSocialModal">Edit Social Details</button>
                                     </div>
                                 </div>
 
@@ -1242,7 +1248,7 @@ input[type=number]::-webkit-inner-spin-button,
     </div>
 </div>
 <script>
-
+    csrf_token = '{{csrf_token}}';
     var contact_ins = '{{contact_ins}}';
 
 </script>

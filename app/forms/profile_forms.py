@@ -24,7 +24,7 @@ class ProfileForm(ModelForm):
             'twitter' : TextInput(attrs={'class':'form-control input-sm', 'max_length':'200', 'onkeyup':'valid_URL($(this))', 'onfocusout':'valid_URL($(this))'}),
             'skype' :TextInput(attrs={'class':'form-control input-sm',}), 
             'linkedin' : TextInput(attrs={'class':'form-control input-sm', 'onkeyup':'valid_URL($(this))', 'onfocusout':'valid_URL($(this))'}),
-            'pan' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. ABCDE1234D','style':'padding-left: 9px;','onkeyup':'valid_PAN($(this))', 'onfocusout':'valid_PAN($(this))'}), 
+            'pan' : TextInput(attrs = {'class':'form-control input-sm','placeholder':'Eg. ABCDE1234D','autocomplete':'off','style':'padding-left: 9px;','onkeyup':'valid_PAN($(this))', 'onfocusout':'valid_PAN($(this))'}), 
         }
 
 #

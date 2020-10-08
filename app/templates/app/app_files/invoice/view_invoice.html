@@ -153,8 +153,8 @@ thead th{
                                         {% if i.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="customer_name" id="hover" href="{% url 'edit_invoice' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.invoice_customer|truncatechars:20}}
+                                        <a class="customer_name" title="{{i.invoice_customer}}" id="hover" href="{% url 'edit_invoice' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.invoice_customer|truncatechars:20 |title }}
                                         </a>
                                     </td>
                                     {% else %}
@@ -223,9 +223,9 @@ thead th{
                                                     Print
                                                 </a>    
 
-                                                <a class="dropdown-item" title="Void invoice" href="#" style="padding: 5px 5px;">
+                                                <!-- <a class="dropdown-item" title="Void invoice" href="#" style="padding: 5px 5px;">
                                                    Void
-                                                </a>    
+                                                </a>     -->
 
                                                 <a class="dropdown-item" title="Print invoice" onclick="send_invoice({{i.id}})" style="padding: 5px 5px;">
                                                     Send mail

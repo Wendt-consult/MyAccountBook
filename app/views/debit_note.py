@@ -1189,7 +1189,7 @@ def print_debit_note(request, ins):
         organisation = Organisations.objects.get(user = request.user)
         organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
         
-        # journal_entry_item = journalentry_model.JournalEntry_Items.objects.filter(Q(user= request.user) & Q(journalentry = journal_entry))
+        debit_item = debit_note_model.DebitNoteItems.objects.filter(Q(user= request.user) & Q(debit_note_list = debit_note))
         # contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
         address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
         # org_bank_details = users_model.User_Account_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_bank = True)) 
@@ -1207,7 +1207,7 @@ def print_debit_note(request, ins):
         
     data["debit_note"] = debit_note
     
-    # data["journal_entry_item"] = journal_entry_item
+    data["debit_item"] = debit_item
     data['organisation'] = organisation
 
     # for org address

@@ -177,8 +177,8 @@ thead th{
                                         {% if i.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="contact_name" id="hover" href="" style="color: #8b92a9;text-decoration: underline;">
-                                            {{i.vendor|truncatechars:20}}
+                                        <a class="contact_name" title="{{i.vendor}}" id="hover" href="" style="color: #8b92a9;text-decoration: underline;">
+                                            {{i.vendor|truncatechars:20 |title}}
                                         </a>
                                     </td>
                                     {% else %}
@@ -235,9 +235,9 @@ thead th{
                                                     Print
                                                 </a> 
 
-                                                <a class="dropdown-item" title="Make a Copy" href="#" style="padding: 5px 5px;">
+                                                <!-- <a class="dropdown-item" title="Make a Copy" href="#" style="padding: 5px 5px;">
                                                    Make a Copy
-                                                </a>
+                                                </a> -->
                                                 <!-- {% if order.vendor.is_active == True %} 
                                                 <a class="dropdown-item" title="Make Purchase Entry" href="{% url 'add_purchase_entry' 0 order.id %}" style="padding: 5px 5px;">
                                                     Make Purchase Entry

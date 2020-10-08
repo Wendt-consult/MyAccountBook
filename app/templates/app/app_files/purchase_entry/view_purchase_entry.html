@@ -200,8 +200,8 @@ thead th{
                                             {% if i.save_type == 2 %}
                                             <i class="fa fa-tags" style="color: gray;"></i>
                                             {% endif %}
-                                            <a class="contact_name" id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                                {{i.vendor|truncatechars:20}}
+                                            <a class="contact_name"  title="{{i.vendor}}"id="hover" href="{% url 'edit_purchase_entry' i.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                                {{i.vendor|truncatechars:20 | title }}
                                             </a>
                                         </td>
                                         {% else %}

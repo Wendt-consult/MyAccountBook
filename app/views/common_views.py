@@ -25,7 +25,7 @@ from app.other_constants import country_list
 
 import json
 
-
+import requests
 #**********************************************************************************************
 # FETCH CONTACT BILLING/SHIPPING ADDRESSES 
 #**********************************************************************************************
@@ -319,3 +319,16 @@ def get_gst_number(request):
         data['gst_number'].append(org_gst_num[i].gstin)
         data['gst_type'].append(org_gst_num[i].gst_reg_type)
     return JsonResponse(data)
+
+#**********************************************************************************************
+# ifcs code to find the bank detials
+#**********************************************************************************************
+#
+def bankDeatials(request):
+    if request.POST:
+        data = defaultdict()
+        ifsc_code = request.POST.get('ifsc_code','')
+        if(ifsc_code != ''):
+            URL = "https://ifsc.razorpay.com/"
+            data['ifsc_code'] = requests.get(URL+ifsc_code).json()
+        return JsonResponse(data)

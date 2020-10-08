@@ -112,7 +112,7 @@ thead th{
 <!--    </ul>-->
 
     <div class="col-md-5">                   
-        <!-- <a href="{% url 'add_invoice' 0 %}" class="btn1">Add</a> -->
+        <!-- <a href="{% url 'add_invoice' 0 'NA' %}" class="btn1">Add</a> -->
     </div>
     
     <!-- <div class="col-md-5">                
@@ -320,8 +320,8 @@ thead th{
                                     {% endif %}
                                     {% if customize.expense_vendor != 0 %}
                                     <td class="text-center customize_vendor">
-                                        <a class="vendor_name" id="expense_hover" href="{% url 'edit_expense' expense.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{ expense.vendor }}
+                                        <a class="vendor_name" title="{{expense.vendor}}" id="expense_hover" href="{% url 'edit_expense' expense.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{ expense.vendor |truncatechars:20 |title}}
                                         </a>
                                     </td>
                                     {% endif %}

@@ -152,7 +152,8 @@ urlpatterns += [
     path('check_gst_existing/', never_cache(login_required(profile.check_gst_existing)), name = 'check_gst_existing'),
     path('get_gst/', never_cache(login_required(profile.get_gst)), name = 'get_gst'),
     path('get_state_gst/', never_cache(login_required(profile.get_state_gst)), name = 'get_state_gst'), 
-    path('org/gst_state_code/', never_cache(login_required(profile.gst_state_code)), name = 'gst_state_code'), 
+    path('org/gst_state_code/', never_cache(login_required(profile.gst_state_code)), name = 'gst_state_code'),
+    path('bank_details/', never_cache(login_required(common_views.bankDeatials)), name = 'bankDeatials'), 
     # CUSTOMIZE VIEW  
     path('customize_view/<int:ins>/', never_cache(login_required(common_views.customize_view_list)), name = 'customize_view_list'),  
     path('gst_number/', never_cache(login_required(common_views.get_gst_number)), name = 'get_gst_number'),

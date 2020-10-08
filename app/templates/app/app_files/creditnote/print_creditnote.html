@@ -323,10 +323,10 @@ footer {
             </td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
             {% if credit_note.is_cs_gst == True %}
-            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.cgst_amount}}</td>
-            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.sgst_amount}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% item.cgst_amount %}₹. {{item.cgst_amount}} {% endif %}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% item.sgst_amount %}₹. {{item.sgst_amount}}{% endif %}</td>
             {% elif credit_note.is_cs_gst == False %}
-            <td class="qty" style="text-align: left;border: 1px solid black;">₹. {{item.igst_amount}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% item.sgst_amount %}₹. {{item.igst_amount}}{% endif %}</td>
             {% endif %}
             <td class="unit" style="text-align: left;border: 1px solid black;">
               ₹.{{item.amount}} 
@@ -363,13 +363,13 @@ footer {
             {% if credit_note.terms_and_condition %}
             <div class="col" style="padding-left: 0%;">
               <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important;word-break: break-all;border: 1px solid black;">
-                <label id="td1"><h5>{{credit_note.terms_and_condition}}</h5>
+                <label id="td1"><h5>{{credit_note.terms_and_condition|default_if_none:""}}</h5>
               </div>
             </div>
             {% else %}
             <div class="col" style="padding-left: 0%;">
               <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important;word-break: break-all;">
-                <label id="td1"><h5>{{credit_note.terms_and_condition}}</h5>
+                <label id="td1"><h5>{{credit_note.terms_and_condition|default_if_none:""}}</h5>
               </div>
             </div>
             {% endif %}
@@ -385,7 +385,7 @@ footer {
             <div class="col" style="padding-left: 0%;margin-left: -3%;">
               <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important; word-break: break-all;border: 1px solid black;">
                 <label id="td1" >
-                  <h5>{{credit_note.Note}}</h5>
+                  <h5>{{credit_note.Note|default_if_none:""}}</h5>
                 </label>
               </div>
             </div>
@@ -393,7 +393,7 @@ footer {
             <div class="col" style="padding-left: 0%;margin-left: -3%;">
               <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important; word-break: break-all;">
                 <label id="td1" >
-                  <h5>{{credit_note.Note}}</h5>
+                  <h5>{{credit_note.Note|default_if_none:""}}</h5>
                 </label>
               </div>
             </div>
@@ -403,11 +403,11 @@ footer {
         </div>
         <div class="col right" style="padding-left: 5%;">
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>Sub Total:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
@@ -416,9 +416,9 @@ footer {
           </div>
 
           {% if credit_note.cgst and credit_note.sgst %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>CGST</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less CGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -428,9 +428,9 @@ footer {
             </div>
           </div>
 
-          <div class="row" style="margin-left: 38%;">
+          <div class="row" style="margin-left: 23%;">
             <div class="col">
-              <h5><b>SGST</b></h5>
+              <h5><b>Less SGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -440,9 +440,9 @@ footer {
             </div>
           </div>
           {% elif credit_note.igst %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>IGST</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less IGST</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -452,11 +452,11 @@ footer {
             </div>
           </div>
           {% endif %}
-          <div class="row" style="margin-left: 38%;">
+          <div class="row" style="margin-left: 30%;">
             <div class="col">
               <h5><b>Total:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">

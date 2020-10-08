@@ -13,7 +13,7 @@ PRODUCT_TYPE_DICT = {
 PRODUCT_CATEGORY = (
     (1,'Raw Material'),
     (2,'Finished Goods'),
-    (3,'Consumable  & Stores” '),
+    (3,'Consumable & Stores'),
 )
     
 Currency = (

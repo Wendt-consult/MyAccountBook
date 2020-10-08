@@ -134,8 +134,8 @@ thead th{
                                         {% if note.save_type == 3 %}
                                         <i class="fa fa-tags" style="color: gray;"></i>
                                         {% endif %}
-                                        <a class="creditnote_name" href="{% url 'edit_credit_note' note.id %}" style="color: #8b92a9;text-decoration: underline;">
-                                            {{note.contact_name|default_if_none:""|upper|truncatechars:20 }}
+                                        <a class="creditnote_name" title="{{note.contact_name}}" href="{% url 'edit_credit_note' note.id %}" style="color: #8b92a9;text-decoration: underline;">
+                                            {{note.contact_name|default_if_none:""|title|truncatechars:20 }}
                                         </a>
                                     </td>
                                     {% endif %}
@@ -182,7 +182,7 @@ thead th{
                                                 <a class="dropdown-item" title="Make a Copy" href="{% url 'clone_credit_note' note.id %}" style="padding: 5px 5px;">
                                                     Make a Copy
                                                 </a>
-                                                {% if note.save_type != 3 %}
+                                                {% if note.save_type != 3 and note.is_blank_credit != 'on' %}
                                                 <a class="dropdown-item" title="View Journal Entry" href="#" data-toggle="modal" data-target="#JournalView-{{forloop.counter}}" style="padding: 5px 5px;">
                                                     View Journal Entry
                                                 </a>
@@ -240,7 +240,7 @@ thead th{
 </div>
 <!-- View journal Entry Modal -->
 {% for note in credit_note %}
-{% if note.save_type != 3 %}
+{% if note.save_type != 3 and note.is_blank_credit != 'on' %}
 <div class="modal" id="JournalView-{{forloop.counter}}" style="border-top: none;left: 20%;top:138px;width: 500">
     <div class="modal-dialog" role="document" style="border-top: none;">
         <div class="modal-content" style="border-top: none;background:white;position:bottom">

@@ -1749,3 +1749,4 @@ $('.quantity_dic').keyup(function(){
 
     }
 });
+

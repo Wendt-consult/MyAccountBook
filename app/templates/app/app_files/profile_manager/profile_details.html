@@ -153,7 +153,7 @@ td{padding:5px;}
                         <button class="btn btn-sm mr-2" id="inactive_row" onclick="show_table_row('show_inactive')" style="font-size:10px; color: #000000; background: #EEEEEE;margin-top: 0%;">Show inactive address</button>
                         <button class="btn btn-sm mr-2" id="active_row" onclick="show_table_row('show_active')" style="display: none;font-size:10px; color: #000000; background: #EEEEEE;margin-top: 0%;">Show active address</button>
                         <span data-toggle="modal" data-target="#accounts_add_modal" title="Add New" style="margin-right:65px; cursor:pointer">
-                            <button class="btn  mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 1px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
+                            <button class="btn btn-sm mr-2" style="font-size:10px; color: #000000; background: #EEEEEE; line-height: 22px; padding: 4px 3px; border-radius: 8%; margin-top: -1px; position: absolute; float:right;width:60px;" >Add</button>
                         </span>
                     </div>
                     
@@ -506,7 +506,7 @@ td{padding:5px;}
                                 </td>      
                                  
                                 <td class="text-center" style="vertical-align: bottom; border: 1px solid black; width:80px;">                                                                
-                                    <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="set_bankaccount_switch('{{forloop.counter}}','{{i.default_bank}}')">create</i>
+                                <i title="Edit" class="material-icons" style="cursor:pointer; font-size:18px; color:#74ff63; position:relative; vertical-align:middle;" onclick="set_bankaccount_switch('{{forloop.counter}}','{{i.default_bank}}','{{i.id}}')">create</i>
                                     <!-- data-toggle="modal"  data-target="#editBankModal-{{forloop.counter}}" -->
                                     <i title="Delete" class="material-icons" data-toggle="modal" data-target="#bank_account_del{{i.id}}" style="cursor:pointer; font-size:18px; color:#ff1f1f; margin-left:5px; position:relative; vertical-align:middle;">delete_forever</i>
                                 </td>      
@@ -672,7 +672,7 @@ td{padding:5px;}
                     </table>
                 </div>
                 <div class="modal-footer" style="justify-content: flex-start; border-top: none;padding:6px;">
-                    <button type="submit" class="btn mr-2 save_button" style="align-content: left;margin-left:260px;background-color:#598ebb;" disabled>Submit</button>
+                    <button type="submit" class="btn mr-2 save_button" style="align-content: left;margin-left:260px;background-color:#598ebb;">Submit</button>
                     <button aria-label="Close" data-dismiss="modal" class="btn " style="background-color: #9095a2;margin-left: 5px;">Cancel</button>
                 </div>
             </div>

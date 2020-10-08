@@ -424,7 +424,7 @@ function set_bank_default(bank_type){
 	}
 }
 
-function set_bankaccount_switch(model_number,is_deafult){
+function set_bankaccount_switch(model_number,is_deafult,ifc_id){
 	if(is_deafult == 'True'){
 		$('#editBankModal-'+model_number).find('#edit_bank_switch'+model_number).prop('checked', true)
 		$('#editBankModal-'+model_number).find('#default_bank_switch'+model_number).val('yes');
@@ -434,3 +434,4 @@ function set_bankaccount_switch(model_number,is_deafult){
 	}
 	$('#editBankModal-'+model_number).modal('show')
 }
+

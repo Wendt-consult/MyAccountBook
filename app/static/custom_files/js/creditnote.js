@@ -62,7 +62,7 @@ function creditnote_addRow(a) {
     var state = $("#supplyPlace1").val()
     var org_state = $('#single_gst_code option:selected').text()
     var html = '<tr id="creditnote_row'+creditnote_number+'">'
-    html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+')" style="padding-left:0px" required><option value="">None</option></select>'
+    html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+')" style="padding-left:0px" required><option value="-------">None</option></select>'
     html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><select class="form-control product_credit_account" id="product_account'+creditnote_number+'" name="product_account[]" required><option value="-------">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row" style="margin-top:-5px"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'" style="margin-top:5px">₹</label></div>'
@@ -833,10 +833,10 @@ function validation(){
             }
             number_of_row_blank +=1
         }else{
-            if($('#ItemName'+row_last_str).val() == ''){
+            if($('#ItemName'+row_last_str).val() == '-------'){
                 message = 'Table row '+i+' product/service required'
                 break;
-            }else if($('#product_account'+row_last_str).val() == ''){
+            }else if($('#product_account'+row_last_str).val() == '-------'){
                 message = 'Table row '+i+' product account required'
                 break;
             }else if($('#Price'+row_last_str).val() == '' || parseFloat($('#Price'+row_last_str).val()).toFixed(2) == 0){
@@ -887,11 +887,12 @@ function  sendbtn(){
         alert('Contact name required')
         return false
     }
-    else if(message != ''){
-        alert(message)
-        return false
-    }
-    else if(a == ''){
+    else if($('#creditnote_table').is(":visible")){
+        if(message != ''){
+            alert(message)
+            return false
+        }
+    }else if(a == ''){
         alert('Please fill email')
         return false
     }
@@ -907,9 +908,11 @@ function savebtn(){
         alert('Contact name required')
         return false
     }
-    else if(message != ''){
-        alert(message)
-        return false
+    else if($('#creditnote_table').is(":visible")){
+        if(message != ''){
+            alert(message)
+            return false
+        }
     }
     else{
         
@@ -923,9 +926,11 @@ function draftbtn(){
         alert('Contact name required')
         return false
     }
-    else if(message != ''){
-        alert(message)
-        return false
+    else if($('creditnote_table').is(":visible")){
+        if(message != ''){
+            alert(message)
+            return false
+        }
     }
     else{
         
@@ -1420,3 +1425,4 @@ function hide_table() {
         }
      }
    }
+

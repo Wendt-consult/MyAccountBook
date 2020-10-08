@@ -128,10 +128,11 @@ class AccountDetailsForm(ModelForm):
         widgets = {
             'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]'}),
             'account_holder_name' : TextInput(attrs={'class':'form-control input-sm', 'style':'text-transform: capitalize;',}),
-            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this))'}),
-            'bank_name' : TextInput(attrs={'class':'form-control input-sm', 'style':'text-transform: capitalize;',}),
-            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm contact_account_ifsc','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this)), bank($(this))'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm contact_account_name', 'style':'text-transform: capitalize;',}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm contact_account_branch_name','style':'text-transform: capitalize;',}),
         }
+AccountsFormset = formset_factory(AccountDetailsForm, extra = 1)
 
 class OrgAccountDetailsForm(ModelForm):
     class Meta:
@@ -139,11 +140,24 @@ class OrgAccountDetailsForm(ModelForm):
         fields = ('account_number', 'account_holder_name', 'ifsc_code', 'bank_name', 'bank_branch_name')
 
         widgets = {
-            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]',}),
-            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;',}),
-            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this))','style':'text-transform: capitalize;'}),
-            'bank_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;'}),
-            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','style':'text-transform: capitalize;'}),
+            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]','required': True,}),
+            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;',}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','required': True,'onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this))','style':'text-transform: capitalize;'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;'}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;'}),
+        }
+    
+class OrgEditAccountDetailsForm(ModelForm):
+    class Meta:
+        model = users_model.User_Account_Details
+        fields = ('account_number', 'account_holder_name', 'ifsc_code', 'bank_name', 'bank_branch_name')
+
+        widgets = {
+            'account_number' : NumberInput(attrs={'class':'form-control input-sm', 'pattern':'[0-9]','required': True,}),
+            'account_holder_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;',}),
+            'ifsc_code' : TextInput(attrs={'class':'form-control input-sm','required': True,'onkeyup':'setMessage($(this))', 'onfocusout':'valid_IFSC($(this)),bank_details($(this))','style':'text-transform: capitalize;'}),
+            'bank_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;'}),
+            'bank_branch_name' : TextInput(attrs={'class':'form-control input-sm','required': True,'style':'text-transform: capitalize;'}),
         }
 
 class ContactsExtraForm(ModelForm):

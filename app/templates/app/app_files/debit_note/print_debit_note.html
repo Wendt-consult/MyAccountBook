@@ -98,13 +98,11 @@ h2.name {
 }
 
 table {
-  width: 70%;
+  width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   margin-bottom: 20px;
   align-content: center;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 table th,
@@ -288,32 +286,73 @@ footer {
       <table style="table-layout:fixed;">
         <thead>
           <tr style="background-color: #0087C3;color: black;">
-            <!-- <th style="width: 10%;text-align: left;border: 1px solid black;">#</th> -->
-            <th style="width: 60%;text-align: left;border: 1px solid black;">Particulars</th>
-            <th style="text-align: left;border: 1px solid black;">Amount</th>
-            <!-- <th style="text-align: left;border: 1px solid black;">Credit</th> -->
-            <!-- <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
+            {% if debit_note.is_cs_gst == True %}
+            <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">QUANTITY</th>
+            <th style="text-align: left;border: 1px solid black;width: 9%;">UNIT</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">DISCOUNT</th>
+            <th style="text-align: left;border: 1px solid black;width: 7%;">TAX(In %)</th>
+            <th style="text-align: left;border: 1px solid black;width: 8%;">CGST</th>
+            <th style="text-align: left;border: 1px solid black;width:8%">SGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
+            {% elif debit_note.is_cs_gst == False %} 
+            <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">PRICE</th>
+            <th style="text-align: left;border: 1px solid black;">QUANTITY</th>
             <th style="text-align: left;border: 1px solid black;">UNIT</th>
             <th style="text-align: left;border: 1px solid black;">DISCOUNT</th>
-            <th style="text-align: left;border: 1px solid black;">TAX</th>
-            <th style="text-align: left;border: 1px solid black;">AMOUNT</th> -->
-            <!-- <th class="total" style="">TOTAL</th> -->
+            <th style="text-align: left;border: 1px solid black;">TAX(in %)</th>
+            <th style="text-align: left;border: 1px solid black;width: 10%;">IGST</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Exc.Tax)</th>
+            <th style="text-align: left;border: 1px solid black;width: 13%;">AMOUNT(Inc.Tax)</th>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
-          
+          {% for item in debit_item %}
           <tr>
-            <td class="desc" style="word-break: break-all;text-align: left;border: 1px solid black;" ><h3 style="color: #555555;" id="amount_in_word"></h3></td>
-            <td id="final_total" style="border: 1px solid black;text-align: left;">{{debit_note.total}}</td>
+            <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
+            <td class="desc" style="word-break: break-all;text-align: left;border: 1px solid black;" ><h3 style="color: #555555;">{{item.product|capfirst}}</h3>{{item.description|capfirst}}</td>
+            <!-- <td class="type" style="text-align: left;border: 1px solid black;">{{item.product_type}}</td> -->
+            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.unit}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">
+              {% if item.discount %}
+                {%  if item.discount_type == '₹' %}
+                  {{item.discount_type}}. {{item.discount}}  
+                {% else %}
+                  {{item.discount}}{{item.discount_type}} 
+                {% endif %}
+              {% endif %}
+            </td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
+            {% if debit_note.is_cs_gst == True %}
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.cgst_amount %}₹. {{item.cgst_amount}} {% endif %}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.sgst_amount %}₹. {{item.sgst_amount}} {% endif %}</td>
+            {% elif debit_note.is_cs_gst == False %}
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.igst_amount %}₹. {{item.igst_amount}} {% endif %}</td>
+            {% endif %}
+            <td class="unit" style="text-align: left;border: 1px solid black;">
+              ₹.{{item.amount}} 
+            </td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">
+              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+            </td>
+            <!-- <td class="total">$1,200.00</td> -->
           </tr>
+          {% endfor %}
         </tbody>
       </table>
       <div class="row" style="margin-top: 4%;">
-         <div class="col-5 left">
-           <!-- <div class="row">
-             <div class="col-4" style="padding-right: 5px;">
+        <div class="col left">
+           <div class="row">
+             <div class="col-3" style="padding-right: 5px;">
                 <label id="td1" >
-                  <h5>Total Credit In Words:</h5>
+                  <h5>Total In Words:</h5>
                 </label>
              </div>
               <div class="col" style="padding-left: 0%;overflow-wrap: break-word!important;">
@@ -321,43 +360,116 @@ footer {
                   <h5 id="amount_in_word"></h5>
                 </label>
               </div>
-           </div> -->
+           </div>
 
            <!-- <div class="row" style="margin-top: 2%;">
-            <div class="col-4">
+            <div class="col">
                <label id="td1" >
                  <h5>Terms and Condition:</h5>
                </label>
             </div>
-            {% if credit_note.terms_and_condition %}
-            <div class="col" style="padding-left: 0%;">
-              <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important;word-break: break-all;border: 1px solid black;">
-                <label id="td1"><h5>{{credit_note.terms_and_condition}}</h5>
+          </div>
+          <div class="row" style="margin-top: 2%;">
+            <div class="col-8">
+              <div style="box-sizing: content-box;overflow-wrap: break-word!important;word-break: break-all;">
+                <label id="td1"><h5>{{debit_note.terms_and_condition}}</h5>
               </div>
             </div>
-            {% else %}
-            <div class="col" style="padding-left: 0%;">
-              <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important;word-break: break-all;">
-                <label id="td1"><h5>{{credit_note.terms_and_condition}}</h5>
-              </div>
-            </div>
-            {% endif %}
           </div> -->
 
           <div class="row" style="margin-top: 2%;">
-            <div class="col-2" style="padding-right: 3px;">
+            <div class="col">
                <label id="td1" >
                  <h5>Notes:</h5>
                </label>
             </div>
           </div>
           <div class="row" style="margin-top: 2%;">
-            <div class="col">
-              <div style="box-sizing: content-box; width: 79%px;overflow-wrap: break-word!important; word-break: break-all;">
+            <div class="col-8">
+              <div style="box-sizing: content-box;overflow-wrap: break-word!important; word-break: break-all;">
                 <label id="td1" >
-                  <h5>{{debit_note.Note}}</h5>
+                  <h5>{{debit_note.Note|default_if_none:""}}</h5>
                 </label>
               </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col right" style="padding-left: 5%;">
+
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
+              <h5><b>Sub Total:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;margin-left: -5%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{debit_note.sub_total}}</b></h5>
+            </div>
+          </div>
+
+          {% if debit_note.total_discount %}
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Total Discount:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{debit_note.total_discount}}</b></h5>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if debit_note.cgst and debit_note.sgst %}
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less CGST:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{debit_note.cgst}}</b></h5>
+            </div>
+          </div>
+
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less SGST:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{debit_note.sgst}}</b></h5>
+            </div>
+          </div>
+          {% elif debit_note.igst %}
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less IGST:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b>{{debit_note.igst}}</b></h5>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
+              <h5><b>Total Balance:-</b></h5>
+            </div>
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
+              <label><h5><b>₹</b></h5></label>
+            </div>
+            <div class="col" style="text-decoration: underline;padding-left: 0%;">
+              <h5><b id="final_total">{{debit_note.total}}</b></h5>
             </div>
           </div>
 

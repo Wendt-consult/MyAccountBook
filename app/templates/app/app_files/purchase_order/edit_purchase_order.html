@@ -1142,9 +1142,9 @@ optgroup{color :black; }
                     <a class="dropdown-item btn " name="delete" id="delete" data-toggle="modal" data-target="#del_order{{purchase_order.id}}" style="color: aliceblue;;margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">delete_forever</i>delete
                     </a>
-                    <button class="dropdown-item btn " type="submit" name="void" id="void" onclick="return order_check()"  style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
+                    <!-- <button class="dropdown-item btn " type="submit" name="void" id="void" onclick="return order_check()"  style="margin: 4% 4% 1% 4%;width: 93%;background-color:#598ebb">
                         <i class="material-icons" style="margin: 0px 9px 0px -19px;font-size: 23px;">credit_card</i>void
-                    </button>
+                    </button> -->
                     </div>
                 </div>
                   <a class="btn " href="{% url 'purchase_order'  %}" type="reset">Cancel</a>
@@ -1219,7 +1219,7 @@ optgroup{color :black; }
                                     <div class="col-3 left2">
                                         <label for="">Product Category</label>
                                     </div>
-                                    <div class="col">
+                                    <div class="col" style="padding-top:2%;">
                                         {{add_product_form.product_category}}
                                     </div>
                                 </div>

@@ -264,6 +264,7 @@ $("#id_is_imported_user").on("click", function(){
 /****************************************************************/
 
 $("#add_more_accounts").on("click", function(){
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     inc = $("#id_form-TOTAL_FORMS").val();
 
     htm_all = '<tr class="tr-set-'+inc+'">';
@@ -271,8 +272,11 @@ $("#add_more_accounts").on("click", function(){
     htm_all += '<i class="material-icons pull-right" style="cursor:pointer;" onclick="delete_account_block($(this),'+(parseInt(inc)-1)+')">delete_forever</i></td></tr>';
 
     $("#accounts-form tr.accounts_formset ").each(function(index, tr){
-
+        console.log($(tr).html())
         xx = $(tr).html().replace("form-0", "form-"+inc)
+        xx = xx.replace("id_form-0","id_form-"+inc);
+        // console.log(xx)
+        // yy = $(tr).html().replace("id_form-0","id_form-"+inc)
 
         htm = '<tr class="tr-set-'+inc+'">'+xx+'</tr>';
         htm_all += htm;
@@ -842,4 +846,46 @@ function set_default_address(elem){
 	}
 	
 	
+}
+
+/******************************************************************/
+// BANK IFSC CODE TO GET BANK DETAILS
+/******************************************************************/
+
+$('#id_ifsc_code').focusout(function(){
+	var ifsc_code = $(this).val()
+	$.post("/bank_details/",{'ifsc_code':ifsc_code,'csrfmiddlewaretoken':csrf_token},function(data){
+		if(data != 0){
+			$('#id_bank_branch_name').val(data.ifsc_code['BRANCH'])
+			$('#id_bank_name').val(data.ifsc_code['BANK'])
+		}
+		// console.log(data.ifsc_code)
+	});
+});
+
+// for edit bank account details
+function bank_details(elem){
+    var ifs_ids = $(elem).attr('id')
+	ifs_ids = ifs_ids.match(/\d+/);
+    ifs_ids = ifs_ids[0]
+	var ifsc_code = $(elem).val()
+	$.post("/bank_details/",{'ifsc_code':ifsc_code,'csrfmiddlewaretoken':csrf_token},function(data){
+		if(data != 0){
+			$('#id_form_'+ifs_ids+'-bank_branch_name').val(data.ifsc_code['BRANCH'])
+			$('#id_form_'+ifs_ids+'-bank_name').val(data.ifsc_code['BANK'])
+		}
+	});
+}
+// for add contact module add multiple contact
+function bank(elem){
+    var ifs_ids = $(elem).attr('id')
+	ifs_ids = ifs_ids.match(/\d+/);
+    ifs_ids = ifs_ids[0]
+	var ifsc_code = $(elem).val()
+	$.post("/bank_details/",{'ifsc_code':ifsc_code,'csrfmiddlewaretoken':csrf_token},function(data){
+		if(data != 0){
+			$('#id_form-'+ifs_ids+'-bank_branch_name').val(data.ifsc_code['BRANCH'])
+			$('#id_form-'+ifs_ids+'-bank_name').val(data.ifsc_code['BANK'])
+		}
+	});
 }

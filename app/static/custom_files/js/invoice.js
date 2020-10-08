@@ -1271,7 +1271,7 @@ function row_gst_cal(ids){
 // Date Picker
 /********************************************************************/
 //  NEW INVOICE FOR FIRST TIME 
-$("#Invoice_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
+$("#Invoice_date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date(),dateFormat = "dd-mm-yy");
 $("#Invoice_one_due_date").datepicker({dateFormat: 'dd-mm-yy', minDate: new Date()})
 //  REVERSE TRACKING
 $('#Invoice_date').change(function() {
@@ -1775,3 +1775,5 @@ function data() {
         $("#email").val('')
     }
 };
+
+

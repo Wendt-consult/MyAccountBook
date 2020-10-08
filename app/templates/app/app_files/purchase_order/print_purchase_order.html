@@ -307,7 +307,7 @@ footer {
           <h6>Address:-{{gst_0}}</h6>
           <h6>Gst Number:-{{gst_1}}</h6>
           {% elif check == '2'%}
-          <h6>Address:-{{purchase_order.delivery_address}}</h6>
+          <!-- <h6>Address:-{{purchase_order.delivery_address}}</h6> -->
           {% endif %}
           <h6>Attention:-{{purchase_order.attention}}</h6>
         </div>
@@ -422,7 +422,7 @@ footer {
           <div class="row" style="margin-top: 2%;">
             <div class="col-8">
               <div style="box-sizing: content-box;overflow-wrap: break-word!important;word-break: break-all;">
-                <label id="td1"><h5>{{purchase_order.terms_and_condition}}</h5>
+                <label id="td1"><h5>{{purchase_order.terms_and_condition|default_if_none:""}}</h5>
               </div>
             </div>
           </div>
@@ -438,7 +438,7 @@ footer {
             <div class="col-8">
               <div style="box-sizing: content-box;overflow-wrap: break-word!important; word-break: break-all;">
                 <label id="td1" >
-                  <h5>{{purchase_order.Note}}</h5>
+                  <h5>{{purchase_order.Note|default_if_none:""}}</h5>
                 </label>
               </div>
             </div>
@@ -447,11 +447,11 @@ footer {
         </div>
         <div class="col right" style="padding-left: 5%;">
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>Sub Total:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
@@ -460,9 +460,9 @@ footer {
           </div>
 
           {% if purchase_order.total_discount %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>Total Discount:-</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less Total Discount:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -474,9 +474,9 @@ footer {
           {% endif %}
 
           {% if purchase_order.cgst and purchase_order.sgst %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>CGST</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less CGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -486,9 +486,9 @@ footer {
             </div>
           </div>
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>SGST</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less SGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -498,9 +498,9 @@ footer {
             </div>
           </div>
           {% elif purchase_order.igst %}
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
-              <h5><b>IGST</b></h5>
+          <div class="row" style="margin-left: 23%;">
+            <div class="col-6">
+              <h5><b>Less IGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
               <label><h5><b>₹</b></h5></label>
@@ -511,11 +511,11 @@ footer {
           </div>
           {% endif %}
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>Total:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
@@ -523,11 +523,11 @@ footer {
             </div>
           </div>
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>Freight Charges:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
@@ -535,11 +535,11 @@ footer {
             </div>
           </div>
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>advance:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
@@ -547,11 +547,11 @@ footer {
             </div>
           </div>
 
-          <div class="row" style="margin-left: 38%;">
-            <div class="col">
+          <div class="row" style="margin-left: 30%;">
+            <div class="col-6">
               <h5><b>Total Balance:-</b></h5>
             </div>
-            <div class="col-1" style="padding-right: 0%;">
+            <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
               <label><h5><b>₹</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
