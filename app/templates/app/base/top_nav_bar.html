@@ -116,6 +116,8 @@
                    </a>
                    {% elif breadcrumb_title == 'MAKE PAYMENT' and type == 'view' %}
                    <a href="{% url 'add_make_payment' 'NA' %}" class="btn btn-success-sm btn-sm">NEW</a>
+                   {% elif breadcrumb_title == 'QUOTATION' and type == 'view' %}
+                   <a href="{% url 'add_quotation' 0 'NA' %}" class="btn btn-success-sm btn-sm">NEW</a>
                    {% endif %}
                 </div>
             </div>

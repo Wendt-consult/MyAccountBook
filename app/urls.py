@@ -10,7 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from app.views import dashboard, contacts, base, invoice, collections, \
     products, inventory, common_views, creditnotes, accounts_ledger, system_settings, \
     profile, purchase_order, expense, reports, purchasentry, journal_entry,scheduler, \
-    payment_made,debit_note
+    payment_made,debit_note,quotation
 
 
 
@@ -95,6 +95,12 @@ urlpatterns += [
 #     path('invoice/get_pdf/<int:ins>/', never_cache(login_required(invoice.get_pdf)), name = 'get_pdf'),
     
 # ] 
+
+# Quotation
+urlpatterns += [
+    path('quotation/', never_cache(login_required(quotation.viewQuotation.as_view())), name = 'view_quotation'),
+    path('quotation/add/<int:ins>/<slug:slug>/', never_cache(login_required(quotation.add_quotation)), name = 'add_quotation'),
+]
 
 # Collections
 urlpatterns += [

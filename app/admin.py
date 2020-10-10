@@ -12,6 +12,7 @@ from app.models.purchasentry_model import *
 from app.models.payment_made_model import *
 from app.models.journalentry_model import *
 from app.models.debit_note_model import *
+from app.models.quotation_model import *
 from app.models import *
 
 #
@@ -160,3 +161,11 @@ class DebitNote(admin.ModelAdmin):
 @admin.register(DebitNoteItems)
 class DebitNoteItems(admin.ModelAdmin):
     model = DebitNote
+
+@admin.register(QuotationModel)
+class QuotationModel(admin.ModelAdmin):
+    model = QuotationModel
+
+@admin.register(Quotation_Items)
+class Quotation_Items(admin.ModelAdmin):
+    model = Quotation_Items

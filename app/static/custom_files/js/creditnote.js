@@ -63,12 +63,12 @@ function creditnote_addRow(a) {
     var org_state = $('#single_gst_code option:selected').text()
     var html = '<tr id="creditnote_row'+creditnote_number+'">'
     html +='<td style="border:1px solid black;padding-bottom:0%"><select class="form-control select credit_note_item" id="ItemName'+creditnote_number+'" name="ItemName[]" onchange="product('+creditnote_number+')" style="padding-left:0px" required><option value="-------">None</option></select>'
-    html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 158px;margin-top:1px;"></textarea></td>'
+    html +='<textarea id="desc'+creditnote_number+'" name="desc[]" rows="2" maxlength="200" size="200" placeholder="Product Description" style="width: 190.6px;margin-top:1px;"></textarea></td>'
     html +='<td style="border:1px solid black;"><select class="form-control product_credit_account" id="product_account'+creditnote_number+'" name="product_account[]" required><option value="-------">None</option></select></td>'
     html +='<td style="border:1px solid black;"><div class="row" style="margin-top:-5px"><div class="col-1" style="padding-right:0%"><label for="Price'+creditnote_number+'" style="margin-top:5px">₹</label></div>'
     html +='<div class="col"><input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,\'Price'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Price'+creditnote_number+'" name="Price[]" style="margin-top:8%" required></div></div></td>'
-    html +='<td style="border:1px solid black;"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" name="Quantity[]" style="margin-top:-5px" required></td>'
-    html +='<td style="border:1px solid black;"><input class="form-control" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;margin-top:-4px" readonly></td>'
+    html +='<td style="border:1px solid black;"><div class="row"><div class="col" style="padding-right:0px"><input type="text" class="form-control" id="Quantity'+creditnote_number+'" onkeypress="return restrictAlphabets(event), float_value(event,\'Quantity'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" name="Quantity[]" style="margin-top:-5px" required></div>'
+    html +='<div class="col" style="padding-left:0px"><input class="form-control" id="Unit'+creditnote_number+'" name="Unit[]" style="padding-left:0px;margin-top:-4px" readonly></div></div></td>'
     html +='<td style="border:1px solid black;"><div class="row" style="margin-top:-5px"><div class="col-7" style="padding-right:3px;"><input type="text" class="form-control all_discount" onkeypress="return restrictAlphabets(event), float_value(event,\'Discount'+creditnote_number+'\')" onkeyup="creditnote_calculate('+creditnote_number+')" id="Discount'+creditnote_number+'" name="Discount[]"></div>'
     html += '<div class="col-5" style="padding-left:1px;"><select class="form-control"  id="Dis'+creditnote_number+'" name="Dis[]" onchange="dicount_type('+creditnote_number+')" style="background-color: white;color: black;padding-left:0%;"><option value="%">%</option><option value="₹">₹</option></select></div></div></td>'
     html +='<td style="border:1px solid black;"><div class="row"><div class="col-8" style="padding-right:3px"><input list="tax_list'+creditnote_number+'" class="form-control tax" maxlength="5" size="5" onkeyup="row_gst_cal('+creditnote_number+')" onkeypress="return restrictAlphabets(event), float_value(event,\'tax'+creditnote_number+'\')" name="tax[]" id="tax'+creditnote_number+'" style="margin-top:-1px" readonly><datalist id="tax_list'+creditnote_number+'"></datalist></div>'
@@ -736,16 +736,16 @@ function change_state(){
             $('#creditnote_table').find('.row_igst').val('')
             $('#creditnote_table').find('.row_cs_gst').show()
             $('#creditnote_table').find('.price_header').css('width','7%')
-            $('#creditnote_table').find('.unit_header').css('width','11%')
-            $('#creditnote_table').find('.quantity_header').css('width','5%')
+            // $('#creditnote_table').find('.unit_header').css('width','11%')
+            $('#creditnote_table').find('.quantity_header').css('width','13%')
             $('#creditnote_table').find('.tax_header').css('width','7%')
         }else if(org_state.toLowerCase() != state.toLowerCase()){
             $('#creditnote_table').find('.row_cs_gst').hide()
             $('#creditnote_table').find('.row_cgst, .row_sgst').val('')
             $('#creditnote_table').find('.row_i_gst').show()
             $('#creditnote_table').find('.price_header').css('width','8%')
-            $('#creditnote_table').find('.unit_header').css('width','12%')
-            $('#creditnote_table').find('.quantity_header').css('width','6%')
+            // $('#creditnote_table').find('.unit_header').css('width','12%')
+            $('#creditnote_table').find('.quantity_header').css('width','13%')
             $('#creditnote_table').find('.tax_header').css('width','8%')
         }
     }

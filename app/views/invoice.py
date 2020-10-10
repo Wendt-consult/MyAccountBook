@@ -37,6 +37,15 @@ from django.conf import settings
 
 from email.mime.base import MIMEBase
 
+# 
+#=====================================================================================
+#   THIS IMPORT USED FOR CREATE INVOICE PDF AND SAVE IN MEDIA FOLDER
+#=====================================================================================
+# 
+# from io import BytesIO
+# from django.core.files import File
+# from .utils import render_to_pdf
+
 #=====================================================================================
 #   BACKGROUND RUNNING
 #=====================================================================================
@@ -515,6 +524,8 @@ def save_invoice(request):
 
             invoice_item.save()  
 
+        # a = generate_obj_pdf(request,invoice.id)
+        # print(a)
 
         if(save_type == 4):  
             invoice = InvoiceModel.objects.latest('pk')
@@ -1347,3 +1358,76 @@ def delete_invoice(request, ins):
 
         return redirect('/invoice/', permanent=False)
     return redirect('/unauthorized/', permanent=False)
+
+#=====================================================================================
+#   GENERATE PDF
+#=====================================================================================
+#
+
+# def generate_obj_pdf(request,instance_id):
+#     #  obj = YouModel.objects.get(id=instance_id)
+#     #  context = {'instance': obj}
+#     ###################################################################################################
+
+#     template_name = 'app/app_files/invoice/print_invoice.html'
+#     # Initialize 
+#     data = defaultdict()
+#     try:
+#         invoice = InvoiceModel.objects.get(pk = int(instance_id))
+#         organisation = Organisations.objects.get(user = request.user)
+#         organisation_contact = Organisation_Contact.objects.filter(organisation = organisation)
+        
+#         invoice_item = Invoice_Line_Items.objects.filter(Q(user= request.user) & Q(invoice_item_list = invoice))
+#         contact = Contacts.objects.get(pk = int(invoice.invoice_customer_id))
+#         address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_address = True))
+#         org_bank_details = users_model.User_Account_Details.objects.filter(Q(organisation = organisation) & Q(is_organisation = True) & Q(is_user = True) & Q(default_bank = True)) 
+
+#         customer_gst = User_Tax_Details.objects.get(contact = invoice.invoice_customer_id)
+#         customer_address = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id) & Q(default_address = True))
+            
+#     except:
+#         return redirect('/unauthorized/', permanent=False)
+
+#     data["contact_name"] = invoice.invoice_customer
+        
+#     data["invoice"] = invoice
+    
+#     data["invoice_item"] = invoice_item
+#     data['organisation'] = organisation
+
+#     # for org bank details 
+#     if(len(org_bank_details) == 1):
+#         data['org_bank'] = org_bank_details[0]
+#     elif(len(org_bank_details) == 0):
+#         org_bank = users_model.User_Account_Details.objects.filter(Q(organisation = organisation))
+#         if(len(org_bank) != 0):
+#             data['org_bank'] = org_bank[0]
+
+#     # for org address
+#     if(len(address) == 1):
+#         data['org_address'] = address[0]
+#         data['state'] = address[0].get_state_display()
+#         data['country'] = address[0].get_country_display()
+#     elif(len(address) == 0):
+#         org_address = users_model.User_Address_Details.objects.filter(Q(organisation = organisation))
+#         if(len(org_address) != 0):
+#             data['org_address'] = org_address[0]
+#             data['state'] = org_address[0].get_state_display()
+#             data['country'] = org_address[0].get_country_display()
+
+#     data['organisation_contact'] = organisation_contact
+#     data['contact'] = contact
+    
+
+#     data['gst'] = customer_gst.gstin
+#     if(len(customer_address) == 1):
+#         data['customer_address'] = customer_address[0]
+#     elif(len(customer_address) == 0):
+#         address_first = users_model.User_Address_Details.objects.filter(Q(contact = invoice.invoice_customer_id))
+#         if(len(address_first) != 0):
+#             data['customer_address'] = address_first[0]
+#     pdf = render_to_pdf(template_name, data)
+#     filename = "invoice - {}.pdf".format(invoice.invoice_number)
+#     # 
+#     invoice.attachements.save(filename, File(BytesIO(pdf.content)))
+#     return 'done'

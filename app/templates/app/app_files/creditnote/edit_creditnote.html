@@ -11,7 +11,7 @@
 <style>
 @import url(https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css);
 .select{
-    width: 174.6px;
+    width: 190.6px;
 }
 select.form-control{padding:0px 10px;}
 select.form-control option{color : #000000; }
@@ -439,8 +439,8 @@ optgroup{color :black; }
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 7%;">Price</th>
-                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 5%;">Quantity</th>
-                            <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 13%;">Quantity</th>
+                            <!-- <th class="unit_header" scope="col" style="border:1px solid black;width: 11%;">Unit</th> -->
                             <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
                             <th class="tax_header" scope="col" style="border:1px solid black;width: 7%;">Tax(in %)</th>
                             <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;">CGST</th>
@@ -452,8 +452,8 @@ optgroup{color :black; }
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
                             <th scope="col" style="border:1px solid black;width: 10%;">Account</th>
                             <th class="price_header" scope="col" style="border:1px solid black;width: 8%;">Price</th>
-                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 6%;">Quantity</th>
-                            <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th>
+                            <th class="quantity_header" scope="col" style="border:1px solid black;width: 14%;">Quantity</th>
+                            <!-- <th class="unit_header" scope="col" style="border:1px solid black;width: 12%;">Unit</th> -->
                             <th scope="col" style="border:1px solid black;width: 8%;">Discount</th>
                             <th class="tax_header" scope="col" style="border:1px solid black;width: 8%;">Tax(in %)</th>
                             <th class="row_cs_gst" scope="col" style="border:1px solid black;width: 7%;display: none;">CGST</th>
@@ -471,7 +471,7 @@ optgroup{color :black; }
                             
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 174.6px;padding-left: 0px;">
+                                <select class="form-control select credit_note_item" id="ItemName{{forloop.counter}}" name="ItemName[]" onchange='product({{forloop.counter}}),validation()'  style="width: 190.6px;padding-left: 0px;">
                                     
                                     <option value="-------">None</option>
                                     
@@ -490,11 +490,11 @@ optgroup{color :black; }
 
                                 </select>
                                 
-                                <textarea id="desc{{forloop.counter}}" name="desc[]" placeholder="Product Description" style="width: 174.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
+                                <textarea id="desc{{forloop.counter}}" name="desc[]" placeholder="Product Description" style="width: 190.6px;margin-top: 1px;">{{items.description|default_if_none:""}}</textarea>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <select class="form-control product_credit_account" id="product_account{{forloop.counter}}" name="product_account[]" required>
+                                <select class="form-control product_credit_account" id="product_account{{forloop.counter}}" name="product_account[]" style="width: 116.2px;" required>
                                     <option value="-------">None</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
@@ -512,12 +512,21 @@ optgroup{color :black; }
                                     </div>
                                 </div>
                             </td>
-                            <td style="border:1px solid black;"><input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" value="{{items.quantity}}" class="form-control" onkeyup='creditnote_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" style="margin-top: -8px;"></td>
                             <td style="border:1px solid black;">
+                                <div class="row">
+                                    <div class="col" style="padding-right: 0px;">
+                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity{{forloop.counter}}')" value="{{items.quantity}}" class="form-control" onkeyup='creditnote_calculate({{forloop.counter}}),validation()' id="Quantity{{forloop.counter}}" name="Quantity[]" style="margin-top: -8px;">
+                                    </div>
+                                    <div class="col" style="padding-left: 0px;">
+                                        <input class="form-control" id="Unit{{forloop.counter}}" name="Unit[]" value="{{items.unit}}" style="padding-left: 0px;margin-top: -8px;" readonly>
+                                    </div>
+                                </div>
+                            </td>
+                            <!-- <td style="border:1px solid black;">
 
                                 <input class="form-control" id="Unit{{forloop.counter}}" name="Unit[]" value="{{items.unit}}" onchange='validation()' style="padding-left: 0px;margin-top: -8px;" readonly>
                                     
-                            </td>
+                            </td> -->
                             <td style="border:1px solid black;">
                                 <div class="row" style="margin-top: -8px;">
                                     <div class="col-7" style="padding-right: 3px;">
@@ -673,11 +682,18 @@ optgroup{color :black; }
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]" style="margin-top: -8px;">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='creditnote_calculate(1),validation()' id="Quantity1" name="Quantity[]" style="margin-top: -8px;">
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;margin-top: -8px;" readonly>
+                                    </div>
+                                </div> 
                             </td>
-                            <td style="border:1px solid black;">
-                                <input class="form-control" id="Unit1" name="Unit[]" onchange='validation()' style="padding-left: 0px;margin-top: -8px;" readonly>
-                            </td>
+                            <!-- <td style="border:1px solid black;">
+                                
+                            </td> -->
                             <td style="border:1px solid black;">
                                 <div class="row" style="margin-top: -8px;">
                                     <div class="col-7" style="padding-right: 3px;">

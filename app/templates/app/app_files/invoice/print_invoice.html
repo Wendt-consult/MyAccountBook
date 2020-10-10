@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -22,7 +23,7 @@
 }
 
 a {
-  color: #0087C3;
+  color: rgb(154, 159, 161);
   text-decoration: none;
 }
 
@@ -31,11 +32,12 @@ body {
   width: 90%;  
   height: 29.7cm; 
   margin: 0 auto; 
-  color: #555555;
-  background: #FFFFFF; 
+  color: rgb(85, 85, 85);
+  background: white; 
   font-family: Arial, sans-serif; 
   font-size: 14px; 
-  font-family: SourceSansPro;
+  /* font-family: SourceSansPro; */
+  /* -pdf-keep-in-frame-mode: shrink; */
 }
 
 header {
@@ -65,12 +67,12 @@ header {
 
 #client {
   padding-left: 6px;
-  border-left: 6px solid #0087C3;
+  /* border-left: 6px solid rgb(0, 135, 195); */
   float: left;
 }
 
 #client .to {
-  color: #777777;
+  color: rgb(119, 119, 119);
 }
 
 h2.name {
@@ -85,7 +87,7 @@ h2.name {
 }
 
 #invoice h1 {
-  color: #0087C3;
+  color: rgb(0, 135, 195);
   font-size: 2.4em;
   line-height: 1em;
   font-weight: normal;
@@ -94,7 +96,7 @@ h2.name {
 
 #invoice .date {
   font-size: 1.1em;
-  color: #777777;
+  color: rgb(119, 119, 119);
 }
 
 table {
@@ -107,9 +109,8 @@ table {
 table th,
 table td {
   padding: 10px;
-  
   text-align: center;
-  border-bottom: 1px solid #FFFFFF;
+  border-bottom: 1px solid white;
 }
 
 table th {
@@ -122,16 +123,16 @@ table td {
 }
 
 table td h3{
-  color: #57B223;
+  color: rgb(87, 178, 35);
   font-size: 1.2em;
   font-weight: normal;
   margin: 0 0 0.2em 0;
 }
 
 table .no {
-  color: #FFFFFF;
+  color: white;
   font-size: 1.6em;
-  background: #236db2;
+  background: rgb(35, 109, 178);
 }
 
 table .desc {
@@ -139,7 +140,7 @@ table .desc {
 }
 
 table .unit {
-  background: #DDDDDD;
+  background: rgb(221, 221, 221);
   text-align: left;
 }
 
@@ -147,8 +148,8 @@ table .qty {
 }
 
 table .total {
-  background: #236db2;
-  color: #FFFFFF;
+  background: rgb(35, 109, 178);
+  color: white;
 }
 
 table td.unit,
@@ -163,7 +164,7 @@ table tbody tr:last-child td {
 
 table tfoot td {
   padding: 5px 10px;
-  background: #FFFFFF;
+  background: white;
   border-bottom: none;
   font-size: 1.2em;
   white-space: nowrap;
@@ -176,9 +177,9 @@ table tfoot tr:first-child td {
 }
 
 table tfoot tr:last-child td {
-  color: #57B223;
+  color: rgb(87, 178, 35);
   font-size: 1.4em;
-  border-top: 1px solid #57B223;
+  border-top: 1px solid rgb(87, 178, 35);
 
 }
 
@@ -193,7 +194,7 @@ table tfoot tr td:first-child {
 
 #notices{
   padding-left: 6px;
-  border-left: 6px solid #0087C3;  
+  border-left: 6px solid rgb(0, 135, 195);  
 }
 
 #notices .notice {
@@ -206,12 +207,12 @@ background: transparent;
 } */
 
 footer {
-  color: #777777;
+  color: rgb(119, 119, 119);
   width: 100%;
   height: 30px;
   position: absolute;
   bottom: 0;
-  border-top: 1px solid #AAAAAA;
+  border-top: 1px solid rgb(170, 170, 170);
   padding: 8px ;
   text-align: center;
 }
@@ -263,7 +264,8 @@ footer {
     
       <div id="details" class="clearfix row">
         <div id="client"  class="col">
-          <h5 class="to" style="color:#0087C3;">Service Recipient's Details</h5>
+          
+          <h5 class="to" style="color:rgb(0, 135, 195);">Service Recipient's Details</h5>
           <h2 class="name">{{contact_name|default_if_none:""}}</h2>
           <div class="address">
                           
@@ -310,7 +312,8 @@ footer {
         </div>
    
         <div id="invoice" class="col">
-          <h5 style="color:#0087C3;">Invoice# {{invoice.invoice_number|default_if_none:""}}</h5>
+          
+          <h5 style="color:rgb(0, 135, 195);">Invoice# {{invoice.invoice_number|default_if_none:""}}</h5>
           <h6>Invoice Date:- {{invoice.invoice_date|default_if_none:""}}</h6>
           <!-- {% if purchase_order.purchase_refrence %}
           <h6>Referncer Number:- {{purchase_order.purchase_refrence|default_if_none:""}}</h6>
@@ -321,7 +324,7 @@ footer {
       </div>
       <table style="table-layout:fixed;">
         <thead>
-          <tr style="background-color: #4682b4;color: black;">
+          <tr style="background-color: SteelBlue;color: black;">
             {% if invoice.is_cs_gst == True %}
             <!-- <th class="unit" style="text-align: left;width: 10%;border: 1px solid black;">#</th> -->
             <th style="text-align: left;width: 17%;border: 1px solid black;">PRODUCT/SERVICE</th>
@@ -353,9 +356,9 @@ footer {
           {% if item.is_header == False %}
           <tr>
             <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
-            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3 style="color: #555555;">{{item.product|capfirst }}</h3>{{item.description|capfirst }}</td>
+            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3 style="color:rgb(85, 85, 85);">{{item.product|capfirst }}</h3>{{item.description|capfirst }}</td>
             <!-- <td class="type" style="text-align: center;">{{item.product_type}}</td> -->
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">{{item.price}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.unit}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">
@@ -368,12 +371,12 @@ footer {
               {% endif %}
             </td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
-            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.cgst_amount %}₹. {{item.cgst_amount}}{% endif %}</td>
-            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.sgst_amount %}₹. {{item.sgst_amount}}{% endif %}</td>
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.cgst_amount %}&#x20B9; {{item.cgst_amount}}{% endif %}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.sgst_amount %}&#x20B9; {{item.sgst_amount}}{% endif %}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">&#x20B9; {{item.amount}}</td>
             <!-- <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td> -->
             <td class="unit" style="text-align: left;border: 1px solid black;">
-              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+              {% if item.amount_inc %}&#x20B9; {{item.amount_inc}} {% else %} &#x20B9; 0.00 {% endif %}
             </td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
@@ -391,9 +394,9 @@ footer {
           {% if item.is_header == False %}
           <tr>
             <!-- <td class="unit" style="text-align: left;border: 1px solid black;">{{forloop.counter}}</td> -->
-            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3 style="color: #555555;">{{item.product|capfirst }}</h3>{{item.description|capfirst }}</td>
+            <td class="desc" style="text-align: left;word-break: break-all;border: 1px solid black;" ><h3 style="color: rgb(85, 85, 85);">{{item.product|capfirst }}</h3>{{item.description|capfirst }}</td>
             <!-- <td class="type" style="text-align: center;">{{item.product_type}}</td> -->
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.price}}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">&#x20B9; {{item.price}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.quantity}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.unit}}</td>
             <td class="qty" style="text-align: left;border: 1px solid black;">
@@ -406,10 +409,10 @@ footer {
               {% endif %}
             </td>
             <td class="qty" style="text-align: left;border: 1px solid black;">{{item.tax}}</td>
-            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.igst_amount %}₹. {{item.igst_amount}}{% endif %}</td>
-            <td class="unit" style="text-align: left;border: 1px solid black;">₹. {{item.amount}}</td>
+            <td class="qty" style="text-align: left;border: 1px solid black;">{% if item.igst_amount %}&#x20B9; {{item.igst_amount}}{% endif %}</td>
+            <td class="unit" style="text-align: left;border: 1px solid black;">&#x20B9; {{item.amount}}</td>
             <td class="unit" style="text-align: left;border: 1px solid black;">
-              {% if item.amount_inc %}₹. {{item.amount_inc}} {% else %} ₹. 0.00 {% endif %}
+              {% if item.amount_inc %}&#x20B9; {{item.amount_inc}} {% else %} &#x20B9; 0.00 {% endif %}
             </td>
             <!-- <td class="total">$1,200.00</td> -->
           </tr>
@@ -520,7 +523,7 @@ footer {
               <h5><b>Sub Total:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;margin-left: -5%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b>{{invoice.sub_total}}</b></h5>
@@ -532,7 +535,7 @@ footer {
               <h5><b>Less Total Discount:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b>{{invoice.total_discount}}</b></h5>
@@ -545,7 +548,7 @@ footer {
               <h5><b>Less CGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b>{{invoice.cgst}}</b></h5>
@@ -557,7 +560,7 @@ footer {
               <h5><b>Less SGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b>{{invoice.sgst}}</b></h5>
@@ -569,7 +572,7 @@ footer {
               <h5><b>Less IGST:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b>{{invoice.igst}}</b></h5>
@@ -585,7 +588,7 @@ footer {
               <h5><b>Shipping Charges:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b id="final_total">{{invoice.shipping_charges}}</b></h5>
@@ -598,7 +601,7 @@ footer {
               <h5><b>Total:-</b></h5>
             </div>
             <div class="col-1" style="padding-right: 0%;margin-left: -4.5%;">
-              <label><h5><b>₹</b></h5></label>
+              <label><h5><b>&#x20B9;</b></h5></label>
             </div>
             <div class="col" style="text-decoration: underline;padding-left: 0%;">
               <h5><b id="final_total">{{invoice.total_amount}}</b></h5>

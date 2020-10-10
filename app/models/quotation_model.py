@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from app.models.users_model import *
 from app.models.products_model import *
 from app.models.contacts_model import *
-from app.models.purchase_model import *
+# from app.models.purchase_model import *
 from app.other_constants import payment_constants
 from app.other_constants.user_constants import *
 # from app.models.invoice_model import *
@@ -18,14 +18,14 @@ import os
 #   CHANGE PRODUCT FILE NAMES
 #==========================================================================
 #
-def attachments_rename(instance, filename):
-    upload_path = 'invoice'
-    return  os.path.join(upload_path,'{}/{}'.format(uuid4().hex, filename))
+# def attachments_rename(instance, filename):
+#     upload_path = 'invoice'
+#     return  os.path.join(upload_path,'{}/{}'.format(uuid4().hex, filename))
 
 #**************************************************************************
-#   PURCHASE_ORDER DATA
+#   SALES QUOTATION DATA
 #**************************************************************************
-class InvoiceModel(models.Model):
+class QuotationModel(models.Model):
     
     TYPE = (
         ('off', 'off'),
@@ -42,7 +42,7 @@ class InvoiceModel(models.Model):
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
 
-    invoice_customer = models.ForeignKey(
+    quotation_customer = models.ForeignKey(
         Contacts, 
         on_delete = models.SET_NULL, 
         db_index = True,
@@ -55,27 +55,28 @@ class InvoiceModel(models.Model):
         blank = True,
         null = True,
     )
+
     cc_email =  models.CharField(
         max_length = 500,
         blank = True,
         null = True,
     )
 
-    purchase_order_number = models.CharField(
+    quotation_referance = models.CharField(
         max_length = 100,
         db_index = True,
         blank=True,
         null=True,
     ) 
 
-    invoice_number = models.CharField(
+    quotation_number = models.CharField(
         max_length = 100,
         db_index = True,
         blank=True,
         null=True,
     ) 
 
-    invoice_check = models.CharField(
+    quotation_check = models.CharField(
         db_index = True,
         max_length=4,
         default = 'off',
@@ -90,7 +91,7 @@ class InvoiceModel(models.Model):
         choices = SAVE_TYPES,
     )
 
-    invoice_date = models.DateField(
+    quotation_date = models.DateField(
         auto_now=False,
         auto_now_add=False, 
         db_index = True,
@@ -98,91 +99,91 @@ class InvoiceModel(models.Model):
         null= False,
     )
 
-    invoice_type_new = models.CharField(
-        db_index = True,
-        max_length=4,
-        default = 'off',
-        choices = TYPE,
-    )
+    # invoice_type_new = models.CharField(
+    #     db_index = True,
+    #     max_length=4,
+    #     default = 'off',
+    #     choices = TYPE,
+    # )
 
-    invoice_type_recurring = models.CharField(
-        db_index = True,
-        max_length=4,
-        default = 'off',
-        choices = TYPE,
-    )
+    # invoice_type_recurring = models.CharField(
+    #     db_index = True,
+    #     max_length=4,
+    #     default = 'off',
+    #     choices = TYPE,
+    # )
 
-    invoice_new_pay_terms = models.CharField(
-        max_length = 100,
-        db_index = True,
-        blank=True,
-        null=True,
-    ) 
+    # invoice_new_pay_terms = models.CharField(
+    #     max_length = 100,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # ) 
 
-    invoice_new_due_date = models.DateField(
-        auto_now=False,
-        auto_now_add=False, 
-        db_index = True,
-        blank= True,
-        null= True,
-    )
+    # invoice_new_due_date = models.DateField(
+    #     auto_now=False,
+    #     auto_now_add=False, 
+    #     db_index = True,
+    #     blank= True,
+    #     null= True,
+    # )
 
-    invoice_recurring_start_date = models.DateField(
-        auto_now=False,
-        auto_now_add=False, 
-        db_index = True,
-        blank= True,
-        null= True,
-    )
+    # invoice_recurring_start_date = models.DateField(
+    #     auto_now=False,
+    #     auto_now_add=False, 
+    #     db_index = True,
+    #     blank= True,
+    #     null= True,
+    # )
 
-    invoice_recurring_count = models.IntegerField(
-        default=0,
-        db_index = True,
-        blank=True,
-        null=True,
-    )
+    # invoice_recurring_count = models.IntegerField(
+    #     default=0,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # )
 
-    invoice_recurring_end_date = models.DateField(
-        auto_now=False,
-        auto_now_add=False, 
-        db_index = True,
-        blank= True,
-        null= True,
-    )
+    # invoice_recurring_end_date = models.DateField(
+    #     auto_now=False,
+    #     auto_now_add=False, 
+    #     db_index = True,
+    #     blank= True,
+    #     null= True,
+    # )
 
-    invoice_recurring_repeat = models.IntegerField(
-        db_index = True,
-        blank=True,
-        null=True,
-    ) 
+    # invoice_recurring_repeat = models.IntegerField(
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # ) 
 
-    invoice_recurring_frequency = models.CharField(
-        max_length = 100,
-        db_index = True,
-        blank=True,
-        null=True,
-    ) 
+    # invoice_recurring_frequency = models.CharField(
+    #     max_length = 100,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # ) 
 
-    invoice_recurring_advance = models.CharField(
-        max_length=15,
-        db_index = True,
-        blank=True,
-        null=True,
-    )
+    # invoice_recurring_advance = models.CharField(
+    #     max_length=15,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # )
 
-    invoice_recurring_pay = models.CharField(
-        max_length=50,
-        db_index = True,
-        blank=True,
-        null=True,
-    )
+    # invoice_recurring_pay = models.CharField(
+    #     max_length=50,
+    #     db_index = True,
+    #     blank=True,
+    #     null=True,
+    # )
 
-    invoice_salesperson =  models.CharField(
-        max_length=10,
-        db_index = True,
-        null = True,
-        blank = True,
-    )
+    # invoice_salesperson =  models.CharField(
+    #     max_length=10,
+    #     db_index = True,
+    #     null = True,
+    #     blank = True,
+    # )
 
     invoice_state_supply = models.CharField(
         max_length=15,
@@ -191,19 +192,20 @@ class InvoiceModel(models.Model):
         blank = True,
     )
 
-    invoice_status =  models.IntegerField(
-        default = 0,
-        db_index = True,
-        blank = True,
-        null = True,
-        choices = payment_constants.PAYMENT_STATUS
-    )
-    inovice_over_due_count = models.IntegerField(
-        default = 0,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
+    # invoice_status =  models.IntegerField(
+    #     default = 0,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    #     choices = payment_constants.PAYMENT_STATUS
+    # )
+
+    # inovice_over_due_count = models.IntegerField(
+    #     default = 0,
+    #     db_index = True,
+    #     blank = True,
+    #     null = True,
+    # )
 
     terms_and_condition = models.CharField(
         max_length = 400,
@@ -220,7 +222,7 @@ class InvoiceModel(models.Model):
     )
 
     attachements = models.FileField(
-        upload_to = attachments_rename,
+        # upload_to = attachments_rename,
         db_index = True,
         blank = True,
         null = True,
@@ -249,111 +251,6 @@ class InvoiceModel(models.Model):
 
     total_amount = models.CharField(
         max_length=20,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_5 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_12 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_18 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_28 = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    cgst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    igst_other = models.CharField(
-        max_length=30,
-        db_index = True,
-        blank = True,
-        null = True,
-    )
-
-    sgst_other = models.CharField(
-        max_length=30,
         db_index = True,
         blank = True,
         null = True,
@@ -388,49 +285,49 @@ class InvoiceModel(models.Model):
         null = True,
     )
 
-    invoice_org_gst_num = models.CharField(
+    quotation_org_gst_num = models.CharField(
         max_length=30,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    invoice_org_gst_type =  models.CharField(
+    qutotation_org_gst_type =  models.CharField(
         max_length=2,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    invoice_org_gst_state =  models.CharField(
+    quotation_org_gst_state =  models.CharField(
         max_length=5,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    invoice_delete_status = models.IntegerField(
+    quotation_delete_status = models.IntegerField(
         db_index = True,
         default=0,
         blank = False,
         null = False,
     )    
     def __str__(self):
-        return "{} - {}".format(self.invoice_customer,self.id) 
+        return "{} - {}".format(self.quotation_customer,self.id) 
 
     class Meta:
-        verbose_name_plural = 'invoice_tbl'
+        verbose_name_plural = 'quotation_tbl'
 
 #**************************************************************************
 #   ADD INVOICE ITEM'S DATA
 #**************************************************************************
 
-class Invoice_Line_Items(models.Model):       
+class Quotation_Items(models.Model):       
 
     user = models.ForeignKey(User, on_delete = models.CASCADE, db_index = True, null = True,)
 
-    invoice_item_list = models.ForeignKey(
-        InvoiceModel,
+    quotation_item_list = models.ForeignKey(
+        QuotationModel,
         db_index = True,
         blank = True,
         null = True,
@@ -531,7 +428,6 @@ class Invoice_Line_Items(models.Model):
         null = True,
     )
 
-    
     tax_amount = models.CharField(
         max_length=11,
         db_index = True,
@@ -558,8 +454,7 @@ class Invoice_Line_Items(models.Model):
         db_index = True,
         blank = True,
         null = True,
-    )
-    
+    )    
 
     amount = models.CharField(
         max_length=11,
@@ -577,7 +472,7 @@ class Invoice_Line_Items(models.Model):
 
     
     def __str__(self):
-        return "{} ({})".format(self.invoice_item_list,self.product) 
+        return "{} ({})".format(self.quotation_item_list,self.product) 
 
     class Meta:
-        verbose_name_plural = 'invoice_items_tbl'
+        verbose_name_plural = 'quotation_items_tbl'
