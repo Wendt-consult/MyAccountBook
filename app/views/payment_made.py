@@ -140,8 +140,6 @@ def makePayment(request,slug):
                     Expense.objects.filter(pk = int(request.POST.get('entry_id'))).update(total_balance = '%.2f' % a)
             return redirect('/expense/', permanent = False)
 
-    
-
 #=====================================================================================
 #   CHECK MAKE PAYMENT UNIQUR AND SET DEFULT
 #=====================================================================================
@@ -270,3 +268,56 @@ def save_make_payment(request):
         payment.save()
 
         return redirect('/paymentmade/', permanent = False)
+
+#=====================================================================================
+#   GET REMANING PURCHASE ENTRY PAYMENT DETAILS
+#=====================================================================================
+#
+def get_pay_details(request):
+    # Initialize 
+    data = defaultdict()
+    ids = request.GET.get('ids')
+    purchase_entry = PurchaseEntry.objects.filter(vendor = int(ids))
+    entry_count = len(purchase_entry)
+    expense = Expense.objects.filter(vendor = int(ids))
+    expense_count = len(expense)
+    data_list = []
+    if(entry_count > 0):
+        for i in range(0,entry_count):
+            default_dic = {}
+            if(purchase_entry[i].entry_status != 3):
+                # cover date and due date
+                date = datetime.strptime(str(purchase_entry[i].purchase_entry_date), '%Y-%m-%d').strftime('%d-%m-%Y')
+                due_date = datetime.strptime(str(purchase_entry[i].purchase_entry_due_date), '%Y-%m-%d').strftime('%d-%m-%Y')
+                default_dic['date'] = date
+                default_dic['due_date'] = due_date 
+                default_dic['unique_number'] = purchase_entry[i].purchase_entry_number
+                default_dic['refernece'] = purchase_entry[i].purchase_entry_refrence
+                default_dic['total_amount'] = purchase_entry[i].total
+                default_dic['balance'] = purchase_entry[i].balance_due
+                default_dic['ids'] = purchase_entry[i].id
+                default_dic['name'] = 'purchase entry'
+                data_list.append(default_dic)
+    if(expense_count > 0):
+        for j in range(0,expense_count):
+            default_dic = {}
+            if(expense[j].status != 3):
+                # cover date and due date
+                date = datetime.strptime(str(expense[j].exp_date), '%Y-%m-%d').strftime('%d-%m-%Y')
+                due_date = datetime.strptime(str(expense[j].payment_date), '%Y-%m-%d').strftime('%d-%m-%Y')
+                default_dic['date'] = date
+                default_dic['due_date'] = due_date
+                default_dic['unique_number'] = expense[j].exp_number
+                default_dic['refernece'] = 'NA'
+                default_dic['total_amount'] = expense[j].exp_total
+                default_dic['balance'] = expense[j].total_balance
+                default_dic['ids'] = expense[j].id
+                default_dic['name'] = 'expense'
+                data_list.append(default_dic)
+  
+    if(len(data_list) > 0):
+        data['list'] = data_list
+        return JsonResponse(data)
+    else:
+        data['list']  =  0
+        return JsonResponse(data)

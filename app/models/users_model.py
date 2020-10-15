@@ -152,14 +152,14 @@ class Organisations(models.Model):
         null = True,
     )
 
-    debit_terms_and_condition = models.CharField(
+    quotation_terms_and_condition = models.CharField(
         max_length = 400,
         db_index = True,
         blank = True,
         null = True,
     )
 
-    debit_note = models.CharField(
+    quotation_note = models.CharField(
         max_length = 400,
         db_index = True,
         blank = True,

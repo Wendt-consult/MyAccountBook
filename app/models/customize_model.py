@@ -509,3 +509,57 @@ class CustomizeDebitNoteView(models.Model):
         null = True,
         blank = True,
     )
+
+#=========================================================================================
+# customize quotation names
+#=========================================================================================
+#
+
+class CustomizeQuotationView(models.Model):
+
+    customize_view_name = models.ForeignKey(
+        CustomizeModuleName,
+        on_delete=models.CASCADE,
+        null = False,
+        blank = False,
+    )
+
+    quotation_number = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    quotation_customer = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    quotation_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    quotation_expire_date = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )
+
+    quotation_amount = models.IntegerField(
+        db_index = True,
+        choices = user_constants.IS_NUM_CHOICE,
+        default = 0,
+        null = True,
+        blank = True,
+    )

@@ -126,6 +126,10 @@ class CustomizeExpenseView(admin.ModelAdmin):
 class CustomizeInvoiceView(admin.ModelAdmin):
     model = CustomizeInvoiceView
 
+@admin.register(CustomizeQuotationView)
+class CustomizeQuotationView(admin.ModelAdmin):
+    model = CustomizeQuotationView
+
 @admin.register(InvoiceModel)
 class InvoiceModel(admin.ModelAdmin):
     model = InvoiceModel

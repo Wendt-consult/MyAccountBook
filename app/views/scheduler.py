@@ -12,16 +12,16 @@ def test_fun():
             if(invoice[i].invoice_status == 0):
                 if(invoice_due_date < current_date):
                     delta = (current_date - invoice_due_date).days
-                    invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_status = 1,inovice_over_due_count = delta)
+                    invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_status = 1,invoice_over_due_count = delta)
             elif(invoice[i].invoice_status == 1):
                 delta = (current_date - invoice_due_date).days
-                invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(inovice_over_due_count = delta)
+                invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_over_due_count = delta)
                 # invoice for recurring type
         elif(invoice[i].invoice_type_recurring == 'on'):     
             invoice_recurr_date = invoice[i].invoice_date
             invoice_recurr_pay_temrs = invoice[i].invoice_recurring_pay
             check_date = None
-            if(invoice_recurr_pay_temrs == 'On Due Date'):
+            if(invoice_recurr_pay_temrs == 'Due Immediately'):
                 check_date = invoice_recurr_date
             elif(invoice_recurr_pay_temrs == '10 Days'):
                 check_date = invoice_recurr_date + datetime.timedelta(days=10)
@@ -37,10 +37,10 @@ def test_fun():
             if(invoice[i].invoice_status == 0):
                 if(check_date < current_date):
                     delta = (current_date - check_date).days
-                    invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_status = 1,inovice_over_due_count = delta)
+                    invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_status = 1,invoice_over_due_count = delta)
             elif(invoice[i].invoice_status == 1):
                 delta = (current_date - check_date).days
-                invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(inovice_over_due_count = delta)
+                invoice_model.InvoiceModel.objects.filter(pk = invoice[i].id).update(invoice_over_due_count = delta)
 
             # recurring invoice to create one new invoice
             frequency = invoice[i].invoice_recurring_frequency
@@ -227,5 +227,13 @@ def test_fun():
                     remaining_date = (expense_due_date - current_date).days
                     expense_model.Expense.objects.filter(pk = expense[k].id).update(status = 1,expense_date_count = remaining_date)
 
+    # for quotation check expire date
+    quotation = quotation_model.QuotationModel.objects.exclude(is_invoice_creted = True)
+    quotation_count = len(quotation)
+    if(quotation_count > 0):
+        for q in range(0,quotation_count):
+            if(quotation[q].quotation_expire_date < current_date):
+                quotation_model.QuotationModel.objects.filter(pk = quotation[q].id).update(is_quotation_expire = True)
+                
     data = "data"
     return data

@@ -10,7 +10,8 @@ customize_name = (
     (5, 'Invoice'),
     (6, 'Expense'),
     (7, 'Purchase Entry'),
-    (8, 'Debit Note')
+    (8, 'Debit Note'),
+    (9, 'quotation')
     # (7, 'Deemed Exports -EOU’s, STP’s , EHTP’s etc'),
     # (8, 'Composite GST')
 )

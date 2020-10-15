@@ -99,6 +99,14 @@ class QuotationModel(models.Model):
         null= False,
     )
 
+    quotation_expire_date = models.DateField(
+        auto_now=False,
+        auto_now_add=False, 
+        db_index = True,
+        blank= True,
+        null= True,
+    )
+
     # invoice_type_new = models.CharField(
     #     db_index = True,
     #     max_length=4,
@@ -113,12 +121,12 @@ class QuotationModel(models.Model):
     #     choices = TYPE,
     # )
 
-    # invoice_new_pay_terms = models.CharField(
-    #     max_length = 100,
-    #     db_index = True,
-    #     blank=True,
-    #     null=True,
-    # ) 
+    quotation_pay_terms = models.CharField(
+        max_length = 100,
+        db_index = True,
+        blank=True,
+        null=True,
+    ) 
 
     # invoice_new_due_date = models.DateField(
     #     auto_now=False,
@@ -178,14 +186,14 @@ class QuotationModel(models.Model):
     #     null=True,
     # )
 
-    # invoice_salesperson =  models.CharField(
-    #     max_length=10,
-    #     db_index = True,
-    #     null = True,
-    #     blank = True,
-    # )
+    quotation_salesperson =  models.CharField(
+        max_length=10,
+        db_index = True,
+        null = True,
+        blank = True,
+    )
 
-    invoice_state_supply = models.CharField(
+    quotation_state_supply = models.CharField(
         max_length=15,
         db_index = True,
         null = True,
@@ -292,7 +300,7 @@ class QuotationModel(models.Model):
         null = True,
     )
 
-    qutotation_org_gst_type =  models.CharField(
+    quotation_org_gst_type =  models.CharField(
         max_length=2,
         db_index = True,
         blank = True,
@@ -311,7 +319,22 @@ class QuotationModel(models.Model):
         default=0,
         blank = False,
         null = False,
-    )    
+    )  
+
+    is_invoice_creted = models.BooleanField(
+        db_index = True,
+        default=False,
+        blank = False,
+        null = False,
+    ) 
+
+    is_quotation_expire = models.BooleanField(
+        db_index = True,
+        default=False,
+        blank = False,
+        null = False,
+    ) 
+
     def __str__(self):
         return "{} - {}".format(self.quotation_customer,self.id) 
 

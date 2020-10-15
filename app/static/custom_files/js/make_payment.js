@@ -383,3 +383,55 @@ function vendor_info(){
         // attr('data-tip', '');
     }
 }
+
+/*********************************************************************** */
+//  FETCH VENDOR REAMINING PAYMENT DELATILS IN TABLE
+/*********************************************************************** */
+
+$('#make_payment_vendor').change(function(){
+    var ids = $(this).val()
+    if(ids != ''){
+        $.get("/paymentmade/get_remaning_pay/",{'ids':ids},function(data){
+            if(data.list != 0){
+                var data = data.list
+                var count = data.length
+                b = 1
+                for(var i = 0; i< count; i++){
+                    a = data[i]
+                    html = '<tr class="payment_row" style="border: 1px solid black"><td style="border: 1px solid black"><h5 style="margin-bottom:0px">'+a['date']+'</h5><h6 style="margin-bottom:-4px">Due Date:- '+a['due_date']+'</h6></td>'
+                    html +='<td style="border: 1px solid black"><input class="form-control" type="hidden" value="'+a['name']+'" name="module_name[]">'+a['unique_number']+'</td>'
+                    console.log(a['refernece'])
+                    if(a['name'] == 'purchase entry'){
+                        html +='<td style="border: 1px solid black">'+a['refernece']+'</td>'
+                    }else{
+                        html +='<td style="border: 1px solid black"></td>'
+                    }
+                    html += '<td style="border: 1px solid black">₹ '+a['total_amount']+'</td>'
+                    html += '<td style="border: 1px solid black"><input type="hidden" id="pay_check_amount'+b+'" value="'+a['balance']+'"> ₹ '+a['balance']+'</td>'
+                    html += '<td style="border: 1px solid black"><div class="row" style="padding-top:5px"><div class="col-1" style="padding-right: 0%;"><label for="">₹</label></div>'
+                    html += '<div class="col" style="padding-top:10px"><input class="form-control pay_amount_cal" type="text" maxlength="10" id="pay_table_amount'+b+'" name="pay_table_amount[]" onkeypress="return restrictAlphabets(event), float_value(event,\'pay_table_amount'+b+'\')"></div></div></td></tr>'
+                    $('#make_paymeny_table').append(html);
+                    b+=1
+                }
+                // onkeyup="payment_calcultation('+b+')" 
+                // $('#defualt_table_row').hide()
+                $('.is_vocher_available').show()
+                $('#item_make_caculate').show()
+                $('#is_table').val('on')
+            }else{
+                // $('#defualt_table_row').show()
+                $('.is_vocher_available').hide()
+                $('.payment_row').remove()
+                $('#item_make_caculate').hide()
+                $('#is_table').val('off')
+            }
+
+        });
+    }else{
+        // $('#defualt_table_row').show()
+        $('.is_vocher_available').hide()
+        $('.payment_row').remove()
+        $('#item_make_caculate').hide()
+        $('#is_table').val('off')
+    }
+});

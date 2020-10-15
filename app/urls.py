@@ -100,6 +100,13 @@ urlpatterns += [
 urlpatterns += [
     path('quotation/', never_cache(login_required(quotation.viewQuotation.as_view())), name = 'view_quotation'),
     path('quotation/add/<int:ins>/<slug:slug>/', never_cache(login_required(quotation.add_quotation)), name = 'add_quotation'),
+    path('quotation/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(quotation.unique_quotation_number)), name = 'unique_quotation_number'),
+    path('quotation/save_quotation/', never_cache(login_required(quotation.save_quotation)), name = 'save_quotation'),
+    path('quotation/edit_quotation/<int:ins>/', never_cache(login_required(quotation.EditQuotation.as_view())), name = 'edit_quotation'),
+    path('quotation/print/<int:ins>/', never_cache(login_required(quotation.print_quotation)), name = 'print_quotation'),
+    path('quotation/delete/<int:ins>/', never_cache(login_required(quotation.delete_quotation)), name = 'delete_quotation'),
+    path('send_quotation/<int:ins>/', never_cache(login_required(quotation.send_quotation)), name = 'send_quotation'),
+    path('quotation/quotation_to_invoice/<int:ins>/', never_cache(login_required(quotation.quotation_to_invoice)), name = 'quotation_to_invoice'),
 ]
 
 # Collections
@@ -291,6 +298,7 @@ urlpatterns += [
     path('paymentmade/add_make_payment/<slug:slug>/', never_cache(login_required(payment_made.add_make_payment)), name = 'add_make_payment'),
     path('paymentmade/save_make_payment/', never_cache(login_required(payment_made.save_make_payment)), name = 'save_make_payment'),
     path('paymentmade/unique_number/<int:ins>/<slug:number>/', never_cache(login_required(payment_made.unique_payment_number)), name = 'unique_payment_number'),
+    path('paymentmade/get_remaning_pay/',never_cache(login_required(payment_made.get_pay_details)), name = 'get_pay_details'),
 ]
 
 #

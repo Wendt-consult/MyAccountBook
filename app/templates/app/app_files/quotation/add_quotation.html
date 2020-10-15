@@ -220,7 +220,7 @@ optgroup{color :black; }
 #select2-invoice_seales_person-container{
     margin-top: -1%;
 }
-#select2-invoice_customer-container{
+#select2-quotation_customer-container{
     margin-top: -1%;
 }
 #select2-bulk_select_product-container{
@@ -319,7 +319,7 @@ optgroup{color :black; }
 }
 </style>
 
-<form method="post" action="" autocomplete="off" enctype="multipart/form-data">
+<form method="post" action="{% url 'save_quotation' %}" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row" style="margin: 0% 5% 6% 7%;">
         <div class="col-lg-12" style="padding:0px">
@@ -333,7 +333,7 @@ optgroup{color :black; }
                             <h6 style="color: white;font-size: x-small;">Your default Organization gst number:-{{is_gst}}.</h6>
                         {% else %}
                         <div class="row" style="margin-left: 0px;">
-                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this invoice with another GST number</h6>&nbsp;
+                            <h6 style="color: white;font-size: x-small;" class="multiple_gst" id="multiple_gst">Your default Organization gst number:-{{is_gst}}. Do you want to create this quotation with another GST number</h6>&nbsp;
                             <a class="multiple_gst" id="multiple_gst_link" href="#" style="text-decoration: underline;color: white;font-size: x-small;margin-top: -4px;">YES</a>
                         </div>
                         {% endif %}
@@ -363,15 +363,15 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="invoice_number">Invoice Number</label>
+                                    <label for="quotation_number">Quotation Number</label>
                                 </div>
                                 <div class="col-8 input">
-                                    <input class="form-control" id="invoice_number" maxlength="50" name="invoice_number" required>
+                                    <input class="form-control" id="quotation_number" maxlength="50" name="quotation_number" required>
                                     <div>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" id="auto_invoice_number" name="auto_invoice_number">
-                                                Auto-Generate Invoice Number
+                                                <input class="form-check-input" type="checkbox" id="auto_quotation_number" name="auto_quotation_number">
+                                                Auto-Generate Quotation Number
                                                 <span class="form-check-sign">
                                                     <span class="check"></span>
                                                 </span>
@@ -383,62 +383,66 @@ optgroup{color :black; }
                             
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="invoice_customer">Customer Name</label>
+                                    <label for="quotation_customer">Customer Name</label>
                                 </div>
                                 <div class="col-8">
-                                    <select class="form-control invoice_customer" id="invoice_customer" name="invoice_customer" required onchange="data($(this)),customer_gst_type()">
+                                    <select class="form-control quotation_customer" id="quotation_customer" name="quotation_customer" required onchange="data($(this)),customer_gst_type()">
                                         <option value="">None</option>
-                                        {% if direct_con == 'NA' %}
+                                        
                                             {% for contact in contacts %}
                                             {% if contact.customer_type == 1 or contact.customer_type == 4 %}
                                             <option value="{{contact.id}}">{{contact}}</option>
                                             {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            {% for contact in contacts %}
-                                            {% if contact.customer_type == 1 or contact.customer_type == 4 %}
-                                            <option value="{{contact.id}}" {% if direct_con == contact.id %} selected {% endif %}>{{contact}}</option>
-                                            {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
-                                            
-                                    </select>
-                                    
+                                            {% endfor %}    
+                                    </select>  
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="invoice_type">Invoice Type</label>
+                                    <label for="quotation_state_supply">State of Supply</label>
                                 </div>
-                                <div class="col-8">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="form-check form-check-radio">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="one_radio" id="one_radio" value="on" onclick="invoice_type('one_time')" checked>
-                                                    One Time
-                                                    <span class="circle">
-                                                        <span class="check"></span>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-check form-check-radio">
-                                                <label class="form-check-label">
-                                                    <input class="form-check-input" type="radio" name="recurring_radio" id="recurring_radio" value="on" onclick="invoice_type('recurring')">
-                                                    Recurring
-                                                    <span class="circle">
-                                                        <span class="check"></span>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="quotation_state_supply" name="quotation_state_supply" onchange="check_gst_status('vendor_side')" style="padding-left: 9px;" required>
+                                        <option value="">None</option>
+                                        {% for i in state %}
+                                        <option value="{{i.0}}">{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
-        
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="quotation_pay_terms">Payment Terms</label>
+                                </div>
+                                <div class="col-8 input">
+                                    <select class="form-control" id="quotation_pay_terms" name="quotation_pay_terms" style="padding-left: 9px;" required>
+                                        <option value="">None</option>
+                                        {% for i in payment_terms %}
+                                        <option value="{{i.1}}">{{i.1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="quotation_sales_person">Sales Person</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="quotation_sales_person" name="quotation_sales_person">
+                                        <option value="">None</option>
+            
+                                            {% for contact in contacts %}
+                                            {% if contact.customer_type == 3 %}
+                                            <option value="{{contact.id}}">{{contact}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
                             <!-- gst_type -->
                             <div class="row" style="display: none;">
                                 <div class="col-4">
@@ -456,191 +460,30 @@ optgroup{color :black; }
 
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="invoice_purchase_number">Reference#</label>
+                                    <label for="quotation_reference">Reference#</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input class="form-control" id="invoice_purchase_number" name="invoice_purchase_number" maxlength="50">
+                                    <input class="form-control" id="quotation_reference" name="quotation_reference" maxlength="50">
                                 </div>
                             </div>
 
                             <div class="row" style="margin-top: 5%;">
                                 <div class="col-4">
-                                    <label for="Invoice_date">Invoice Date</label>
+                                    <label for="Quotation_date">Quotation Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="Invoice_date" id="Invoice_date" required>
+                                    <input type="text" class="form-control" name="Quotation_date" id="Quotation_date" required>
                                 </div>
                             </div>
 
-                        </div>
-                    </div> 
-                </div>
-
-                <div class="container" id="one_invoice">
-                    <div class="row">
-                        <!-- left -->
-                        <div class="col">
-
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="">Payment Terms</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <select class="form-control" id="invoice_pay_terms" name="invoice_pay_terms" onchange="invoice_pay_date()" style="padding-left: 9px;" required>
-                                        <option value="">None</option>
-                                        {% for i in payment_terms %}
-                                        <option value="{{i.1}}">{{i.1}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- right -->
-                        <div class="col">
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="Invoice_one_due_date">Due Date</label>
+                                    <label for="Quotation_exprie_date">Quotation Expire Date</label>
                                 </div>
                                 <div class="col-7 input">
-                                    <input type="text" class="form-control" name="Invoice_one_due_date" id="Invoice_one_due_date" required>
+                                    <input type="text" class="form-control" name="Quotation_exprie_date" id="Quotation_exprie_date" required>
                                 </div>
                             </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container" id="recurring_invoice" style="display: none;">
-                    <div class="row">
-                        <!-- left -->
-                        <div class="col">
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="Invoice_recurring_start">Start Date</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <input type="text" class="form-control" name="Invoice_recurring_start" id="Invoice_recurring_start">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="invoice_recurring_Frequency">Frequency</label>
-                                </div>
-                                <div class="col-3 input" style="padding-right: 5px;">
-                                    <select class="form-control" id="invoice_recurring_Frequency" name="invoice_recurring_Frequency" onchange="invoice_recurring_end()" style="padding-left: 9px;">
-                                        <option value="">None</option>
-                                        {% for i in invoice_frequency %}
-                                        <option value="{{i.1}}">{{i.1}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-md-3" style="padding-right:2px;padding-left: 3px;">
-                                    <label for="Invoice_recurring_repeat">Repeat for</label>
-                                </div>
-                                <div class="col-lg-3 col-md-2 input" style="padding-left:2px;">
-                                    <input type="number" class="form-control" name="Invoice_recurring_repeat" id="Invoice_recurring_repeat" onkeyup="invoice_recurring_repeat()">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="Invoice_recurring_pay">Payment Terms</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <select class="form-control" name="Invoice_recurring_pay" id="Invoice_recurring_pay" style="padding-left: 9px;">
-                                        <option value="">None</option>
-                                        <option value="On Due Date">On Due Date</option>
-                                        <option value="10 Days">10 Days</option>
-                                        <option value="20 Days">20 Days</option>
-                                        <option value="30 Days">30 Days</option>
-                                        <option value="60 Days">60 Days</option>
-                                        <option value="90 Days">90 Days</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- right -->
-                        <div class="col">
-
-                            <!-- <div class="row">
-                                
-                            </div> -->
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="Invoice_recurring_end">End Date</label>
-                                </div>
-                                <div class="col-7 input">
-                                    <input type="text" class="form-control" name="Invoice_recurring_end" id="Invoice_recurring_end" readonly>
-                                </div>
-                            </div>
-                            <!-- hidden recurring end date -->
-                            <div class="row" style="display: none;">
-                                <div class="col-4">
-                                    <label>hidden end date</label>
-                                </div>
-                                <div class="col-7 input">
-                                    <input type="text" id="hidden_recurring_end">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="Invoice_recurring_advance">Days in Advance</label>
-                                </div>
-                                <div class="col-7 input">
-                                    <input type="number" class="form-control" name="Invoice_recurring_advance" id="Invoice_recurring_advance">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container">
-                    <div class="row">
-                        <!-- left -->
-                        <div class="col">
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="">Sales Person</label>
-                                </div>
-                                <div class="col-8">
-                                    <select class="form-control" id="invoice_seales_person" name="invoice_seales_person">
-                                        <option value="">None</option>
-            
-                                            {% for contact in contacts %}
-                                            {% if contact.customer_type == 3 %}
-                                            <option value="{{contact.id}}">{{contact}}</option>
-                                            {% endif %}
-                                            {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-4">
-                                    <label for="invoice_state_supply">State of Supply</label>
-                                </div>
-                                <div class="col-8 input">
-                                    <select class="form-control" id="invoice_state_supply" name="invoice_state_supply" onchange="check_gst_status('vendor_side')" style="padding-left: 9px;" required>
-                                        <option value="">None</option>
-                                        {% for i in state %}
-                                        <option value="{{i.0}}">{{i.1}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                           
-                        </div>
-                        <!-- right -->
-                        <div class="col">
 
                             <div class="row">
                                 <div class="col-4">
@@ -650,8 +493,7 @@ optgroup{color :black; }
                                     <input type="email" class="form-control" id="email" name="Email_Address" multiple >
                                     <div>
                                         <a class="btn btn-link" onclick="show_cc_mail()" id="show_cc" style="padding: 0%;color: black;">Add CC</a>
-                                    </div>
-                                    
+                                    </div> 
                                 </div>
                             </div>
 
@@ -672,10 +514,27 @@ optgroup{color :black; }
                             </div>
 
                         </div>
+                    </div> 
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <!-- left -->
+                        <div class="col">
+
+                            
+                            
+                        </div>
+                        <!-- right -->
+                        <div class="col">
+
+                            
+
+                        </div>
                     </div>
                 </div>
 
-                    <table class="table" id="invoice_table" style="width: 100%;margin-left: 1.5%;margin-top: 2%;">
+                    <table class="table" id="quotation_table" style="width: 100%;margin-left: 1.5%;margin-top: 2%;">
                         <thead class=" text-primary" style="background-color: black;">
                           
                             <th scope="col" style="border:1px solid black;width: 13%;">Product/Service</th>
@@ -693,10 +552,10 @@ optgroup{color :black; }
                           
                         </thead>
                         <tbody>
-                          <tr id="invoice_row1">
+                          <tr id="quotation_row1">
                             <td style="border:1px solid black;padding-bottom: 0%;">
                                 
-                                <select class="form-control select invoice_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
+                                <select class="form-control select quotation_line_item" id="ItemName1" name="ItemName[]" onchange='product(1)'  style="padding-left: 0px;" required>
                                     
                                     <option value="">None</option>
                                     
@@ -709,7 +568,7 @@ optgroup{color :black; }
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <select class="form-control product_invoice_account"  id="product_account1" name="product_account[]" required>
+                                <select class="form-control product_quotation_account"  id="product_account1" name="product_account[]" required>
                                     <option value="">None</option>
                                     
                                     {% for acc_group in acc_ledger_income %}
@@ -724,13 +583,13 @@ optgroup{color :black; }
                                         <label for="Price1">₹</label>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='purchase_calculate(1),header_subtotal(1)' id="Price1" name="Price[]" style="margin-top: 1%;" required>
+                                        <input type="text" class="form-control" maxlength="10" onkeypress="return restrictAlphabets(event), float_value(event,'Price1')" onkeyup='quotation_calculate(1),header_subtotal(1)' id="Price1" name="Price[]" style="margin-top: 1%;" required>
                                     </div>
                                 </div>
                                 
                             </td>
                             <td style="border:1px solid black;">
-                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='purchase_calculate(1),header_subtotal(1)' id="Quantity1" name="Quantity[]" required>
+                                <input type="text" class="form-control" onkeypress="return restrictAlphabets(event), float_value(event,'Quantity1')" onkeyup='quotation_calculate(1),header_subtotal(1)' id="Quantity1" name="Quantity[]" required>
                             </td>
                             <td style="border:1px solid black;">
                                 <input class="form-control" id="Unit1" name="Unit[]" style="padding-left: 0px;" readonly>
@@ -738,7 +597,7 @@ optgroup{color :black; }
                             <td style="border:1px solid black;">
                                 <div class="row">
                                     <div class="col-7" style="padding-right: 3px;">
-                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control all_discount" onkeyup='purchase_calculate(1),header_subtotal(1)' id="Discount1" name="Discount[]">
+                                        <input type="text" onkeypress="return restrictAlphabets(event), float_value(event,'Discount1')" class="form-control all_discount" onkeyup='quotation_calculate(1),header_subtotal(1)' id="Discount1" name="Discount[]">
                                     </div>
                                     <div class="col-5" style="padding-left:1px;">
                                         <select class="form-control" align="right"  id="Dis1" name="Dis[]" onchange="dicount_type(1)" style="background-color: white;color: black;padding-left: 0%;">
@@ -837,13 +696,13 @@ optgroup{color :black; }
 
                         <div class="row">
                             <div class="col">
-                                <label for="invoice_MessageOnStatement">Terms and Conditions</label>
+                                <label for="quotation_MessageOnStatement">Terms and Conditions</label>
                             </div> 
                         </div>
 
                         <div class="row">
                             <div class="col">
-                                <textarea  id="invoice_MessageOnStatement" name="invoice_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
+                                <textarea  id="quotation_MessageOnStatement" name="quotation_MessageOnStatement" rows="4" maxlength="400" size="400" style="width: 55%;">{{term_msg|default_if_none:""}}</textarea>
                             </div>
                         </div>
                         {% if term_msg is None %}
@@ -851,7 +710,7 @@ optgroup{color :black; }
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="invoice_t&c" name="invoice_t&c">
+                                        <input class="form-check-input" type="checkbox" id="quotation_t&c" name="quotation_t&c">
                                         Use this as default terms and condition
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -864,21 +723,21 @@ optgroup{color :black; }
 
                         <div class="row" style="margin-top: 1%;">
                             <div class="col">
-                                <label for="invoice_notes">Notes</label>
+                                <label for="quotation_notes">Notes</label>
                             </div> 
                         </div>
     
                         <div class="row">
                             <div class="col">
-                                <textarea  id="invoice_notes" name="invoice_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{pur_notes|default_if_none:""}}</textarea>
+                                <textarea  id="quotation_notes" name="quotation_notes" rows="4" maxlength="400" size="400" style="width: 55%;">{{notes|default_if_none:""}}</textarea>
                             </div>
                         </div>
-                        {% if pur_notes is None %}
+                        {% if notes is None %}
                         <div class="row">
                             <div class="col">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" id="invoice_default_notes" name="invoice_default_notes">
+                                        <input class="form-check-input" type="checkbox" id="quotation_default_notes" name="quotation_default_notes">
                                         Use this as default notes
                                         <span class="form-check-sign">
                                             <span class="check"></span>
@@ -917,13 +776,13 @@ optgroup{color :black; }
 
                         <div class="row">
                             <div class="col-4">
-                                <label for="purchase_Discountotal">Total Discount:</label>
+                                <label for="quotation_Discountotal">Total Discount:</label>
                             </div>
                             <div class="col-1" style="padding-right: 0%;">
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="purchase_Discountotal" name="purchase_Discountotal" readonly>
+                                <input type="text" class="form-control" id="quotation_Discountotal" name="quotation_Discountotal" readonly>
                             </div>
                         </div>
 
@@ -972,7 +831,7 @@ optgroup{color :black; }
                                 <label>₹</label>
                             </div>
                             <div class="col-6 input" style="padding-left: 0%;">
-                                <input type="text" class="form-control" id="shipping_charges" name="shipping_charges" onkeyup="invoice_shipping_charges()" onkeypress="return restrictAlphabets(event), float_value(event,'shipping_charges')">
+                                <input type="text" class="form-control" id="shipping_charges" name="shipping_charges" onkeyup="quotation_shipping_charges()" onkeypress="return restrictAlphabets(event), float_value(event,'shipping_charges')">
                             </div> 
                         </div> 
 
@@ -1020,7 +879,7 @@ optgroup{color :black; }
                     </button>
                     </div>
                 </div>
-                  <a class="btn " href="{% url 'invoice'  %}" type="reset">Cancel</a>
+                  <a class="btn " href="{% url 'view_quotation'  %}" type="reset">Cancel</a>
                 </div>
             </div>
 
@@ -1034,7 +893,7 @@ optgroup{color :black; }
 <div class="modal fade" id="ProductModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_product_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_quotation_product_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Product</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1185,7 +1044,7 @@ optgroup{color :black; }
                                                 {{add_product_form.selling_price}}
                                             </div>
                                             <div class="col">
-                                                <span class="tool" tabindex="1" data-tip="Sales Price can be Changed while making invoice.">
+                                                <span class="tool" tabindex="1" data-tip="Sales Price can be Changed while making quotation.">
                                                     <span class="material-icons" style="color:black;">info</span>
                                                 </span>
                                             </div>
@@ -1373,7 +1232,7 @@ optgroup{color :black; }
                     </div>
                 </div>
                 <div class="modal-footer" >
-                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return invoice_product_form(0)" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm  save_button" type="button" name="invoice_product" onclick="return quotation_product_form(0)" style="background-color:#598ebb">Save</button>
                     <button class="btn btn-sm " type="button" data-dismiss="modal" aria-label="Close" style="background-color: #9095a2;">Cancel</button>    
                 </div>
             </form>
@@ -1387,7 +1246,7 @@ optgroup{color :black; }
 <div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background-color:#202940;width: 118%;">
-            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_purchase_contact_form">
+            <form method="post" style="margin:0px" enctype="multipart/form-data" id="add_quotation_contact_form">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:#000000; font-weight:bold;">Add Contact</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1909,7 +1768,7 @@ optgroup{color :black; }
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return invoice_account_ledger_form()" style="background-color:#598ebb">Save</button>
+                    <button class="btn btn-sm " type="button" name="purchase_account_ledger" onclick="return quotation_account_ledger_form()" style="background-color:#598ebb">Save</button>
                     <button class="btn btn-sm " type="reset" data-dismiss="modal"aria-label="Close" style="background-color: #9095a2;">Cancel</button>
                 </div>
             </form>
@@ -1967,9 +1826,9 @@ optgroup{color :black; }
 
     csrf_token = '{{csrf_token}}';
     $(document).ready(function(){
-        if('{{direct_con}}' != "NA"){
-            data()
-        }
+        // if('{{direct_con}}' != "NA"){
+        //     data()
+        // }
     });
 </script>
 

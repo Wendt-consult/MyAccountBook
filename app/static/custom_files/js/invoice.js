@@ -357,6 +357,12 @@ function add_single_row(a){
     run_others(1,'single');
 }
 
+function edit_to_bulk(nus){
+    if(count == 0){
+        invoice_number +=nus
+        count +=1
+    }
+}
 
 function add_bulk_product_item(){
 
@@ -588,8 +594,6 @@ function product(a) {
                 $("#desc"+a+"").val(data.desc)
 
                 $("#Price"+a+"").val(parseFloat(data.selling).toFixed(2))
-                console.log('aaaaaaaaaaaaaaaaaaaaaaaa')
-                console.log(data.unit)
                 $("#Unit"+a+"").val(data.unit)
                 // $('#product_account'+a+'').val(4).change();
 

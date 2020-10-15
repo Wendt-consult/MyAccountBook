@@ -570,7 +570,7 @@ textarea{
                                 <div class="col-8 input">
                                     <select class="form-control" name="Invoice_recurring_pay" id="Invoice_recurring_pay" style="padding-left: 9px;" required>
                                         <option value="">None</option>
-                                        <option value="On Due Date" {% if invoice.invoice_recurring_pay == 'On Due Date' %} selected {% endif %}>On Due Date</option>
+                                        <option value="Due Immediately" {% if invoice.invoice_recurring_pay == 'Due Immediately' %} selected {% endif %}>On Due Date</option>
                                         <option value="10 Days" {% if invoice.invoice_recurring_pay == '10 Days' %} selected {% endif %}>10 Days</option>
                                         <option value="20 Days" {% if invoice.invoice_recurring_pay == '20 Days' %} selected {% endif %}>20 Days</option>
                                         <option value="30 Days" {% if invoice.invoice_recurring_pay == '30 Days' %} selected {% endif %}>30 Days</option>
@@ -659,7 +659,7 @@ textarea{
                                 <div class="col-8 input">
                                     <select class="form-control" name="Invoice_recurring_pay" id="Invoice_recurring_pay" style="padding-left: 9px;">
                                         <option value="">None</option>
-                                        <option value="On Due Date">On Due Date</option>
+                                        <option value="Due Immediately">Due Immediately</option>
                                         <option value="10 Days">10 Days</option>
                                         <option value="20 Days">20 Days</option>
                                         <option value="30 Days">30 Days</option>
@@ -903,7 +903,7 @@ textarea{
                                     <div class="row">
                                         <div class="col-8" style="padding-right: 3px;">
                                             <input list="tax_list{{items.header_number_count}}" class="form-control tax" value="{{items.tax}}" maxlength="5" size="5" name="tax[]" onkeyup="row_gst_cal({{items.header_number_count}})" onkeypress="return restrictAlphabets(event), float_value(event,'tax{{items.header_number_count}}')" id="tax{{items.header_number_count}}" style="margin-top: -1px;" readonly>
-                                            <datalist id="tax{{items.header_number_count}}">
+                                            <datalist id="tax_list{{items.header_number_count}}">
                                                 {% for i in gst %}
                                                 <option value="{{i.taxname_percent}}">
                                                 {% endfor %}
@@ -1041,7 +1041,7 @@ textarea{
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                             <button type="button" class="dropdown-item " id="addrow" onclick="return add_single_row({{item_count}})" style="padding:5px 5px;width: 94%;outline:none;">add row</button>
                             <button type="button" class="dropdown-item" id="add_row_header" onclick="add_header({{item_header_count}})" style="padding:5px 5px;width: 94%;outline:none;">add item header</button>
-                            <button type="button" class="dropdown-item" id="add_item_btn" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%;outline:none;">add item in bulk</button>
+                            <button type="button" class="dropdown-item" id="add_item_btn" onclick="edit_to_bulk({{item_count}})" data-toggle="modal" data-target="#add_item_bulk" style="padding:5px 5px;width: 94%;outline:none;">add item in bulk</button>
                         </div>
                     </div>
                 </div>

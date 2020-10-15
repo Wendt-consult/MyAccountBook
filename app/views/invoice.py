@@ -8,7 +8,7 @@ from app.models.contacts_model import Contacts
 from app.models.users_model import *
 from app.models.products_model import *
 from app.models.accounts_model import *
-# from app.models.purchase_model import *
+from app.models.purchase_model import *
 from app.models.customize_model import *
 from app.models.invoice_model import *
 
@@ -184,7 +184,7 @@ def add_invoice(request, ins, slug):
     data["contacts"] = contacts
     data['gst'] = gst 
     # data['country_code'] = user_constants.PHONE_COUNTRY_CODE
-    data['payment_terms'] = payment_constants.PAYMENT_DAYS
+    data['payment_terms'] = payment_constants.invoice_payment_days
     data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
     data["state"] = country_list.STATE_LIST_CHOICES
     data['gst_r_type'] = user_constants.org_GST_REG_TYPE
@@ -579,7 +579,7 @@ def unique_invoice_number(request, ins, number):
 
 
 #=====================================================================================
-#   EDIT CREDITNOTE 
+#   EDIT INVOICE
 #=====================================================================================
 #
 class EditInvoice(View):
@@ -673,7 +673,7 @@ class EditInvoice(View):
         self.data["item_count"] = len(invoice_row)-1
         self.data['item_header_count'] = len(invoice_row_header)
 
-        self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
+        self.data['payment_terms'] = payment_constants.invoice_payment_days
         self.data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
         self.data["state"] = country_list.STATE_LIST_CHOICES
 
@@ -1061,7 +1061,7 @@ class CloneInvoice(View):
         self.data["item_count"] = len(invoice_row)-1
         self.data['item_header_count'] = len(invoice_row_header)
 
-        self.data['payment_terms'] = payment_constants.PAYMENT_DAYS
+        self.data['payment_terms'] = payment_constants.invoice_payment_days
         self.data['invoice_frequency'] = payment_constants.INVOICE_FREQUENCY
         self.data["state"] = country_list.STATE_LIST_CHOICES
 
@@ -1191,7 +1191,7 @@ def send_invoice(request, ins=None):
 
 
 #=====================================================================================
-#   PRINT PURCHASE ORDER
+#   PRINT INVOICE
 #=====================================================================================
 #
 def print_invoice(request, ins):

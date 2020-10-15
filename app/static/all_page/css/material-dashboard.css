@@ -15337,7 +15337,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 
 .sidebar .nav li.active>a,
 .sidebar .nav li.active>a i {
-  te
   color: #fff!important;
 }
 
@@ -15362,6 +15361,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   margin: 0;
   line-height: 30px;
   font-size: 14px;
+  font-family: monospace;
   position: relative;
   display: block;
   height: auto;

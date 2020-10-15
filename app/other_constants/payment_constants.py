@@ -33,6 +33,16 @@ PAYMENT_DAYS = (
     (4, '30 Days'),
     (5, '60 Days'),
     (6, '90 Days'),
+    # (7, 'Custom'),
+)
+
+invoice_payment_days = (
+    (1, 'Due Immediately'),
+    (2, '10 Days'),
+    (3, '20 Days'),
+    (4, '30 Days'),
+    (5, '60 Days'),
+    (6, '90 Days'),
     (7, 'Custom'),
 )
 

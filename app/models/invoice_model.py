@@ -198,7 +198,8 @@ class InvoiceModel(models.Model):
         null = True,
         choices = payment_constants.PAYMENT_STATUS
     )
-    inovice_over_due_count = models.IntegerField(
+
+    invoice_over_due_count = models.IntegerField(
         default = 0,
         db_index = True,
         blank = True,

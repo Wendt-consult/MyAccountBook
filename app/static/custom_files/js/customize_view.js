@@ -18,6 +18,16 @@ function send_invoice(id){
         } 
 	});
 }
+function send_quotation(id){
+	$.get("/send_quotation/"+id+"/", function(data){
+		if(data=='1'){
+            alert("quotation Sent");
+            // $("#status_"+id+"").text('Send Mail')
+        }else{
+            alert('Email address not mentioned');
+        } 
+	});
+}
 function paid_status_invoice(id){
 	$.get("/invoice/paid/"+id+"/", function(data){
 		if(data=='1'){
@@ -39,7 +49,7 @@ function void_status_purchase(id){
 /*******************************************************************/
 // $(document).ready(function(){
  
-    function customize_view(ids){
+function customize_view(ids){
     $('#CustomizeViewModel').modal('hide')
     data = {}
     if(ids == 1){
@@ -280,9 +290,37 @@ function void_status_purchase(id){
         }else{
             data['amount'] = 0
         }
-    }
+    }else if(ids == 9){
 
-    
+        if($('#first #customize_quotation_number').length){
+            data['number'] = 1
+        }else{
+            data['number'] = 0
+        }
+        if($('#first #customize_quotation_customer').length){
+            data['customer'] = 1
+        }else{
+            data['customer'] = 0
+        }
+
+        if($('#first #customize_quotation_date').length){
+            data['date'] = 1
+        }else{
+            data['date'] = 0
+        }
+
+        if($('#first #customize_quotation_expire_date').length){
+            data['expire_date'] = 1
+        }else{
+            data['expire_date'] = 0
+        }
+
+        if($('#first #customize_quotation_amount').length){
+            data['amount'] = 1
+        }else{
+            data['amount'] = 0
+        }
+    }
      $.ajax({
       url: '/customize_view/'+ids+'/',
       type: 'POST',
@@ -532,6 +570,38 @@ function void_status_purchase(id){
                 $('.customize_date').show()
             }else{
                 $('.customize_date').hide()
+            }
+    
+            if(data['amount'] == 1){
+                $('.customize_total').show()
+            }else{
+                $('.customize_total').hide()
+            }
+    
+        }else if(ids == 9){
+    
+            if(data['number'] == 1){
+                $('.customize_number').show()
+            }else{
+                $('.customize_number').hide()
+            }
+
+            if(data['customer'] == 1){
+                $('.customize_customer').show()
+            }else{
+                $('.customize_customer').hide()
+            }
+    
+            if(data['date'] == 1){
+                $('.customize_date').show()
+            }else{
+                $('.customize_date').hide()
+            }
+
+            if(data['expire_date'] == 1){
+                $('.customize_expire_date').show()
+            }else{
+                $('.customize_expire_date').hide()
             }
     
             if(data['amount'] == 1){

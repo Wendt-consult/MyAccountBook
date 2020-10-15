@@ -266,6 +266,9 @@ def customize_view_list(request, ins):
         elif(ins == 8):
             CustomizeDebitNoteView.objects.filter(customize_view_name = customize_name[0].id).update(debit_number = data['number'],debit_reference = data['reference'],debit_vendor = data['vendor'],
                                                 debit_date = data['date'], debit_total = data['amount'])
+        elif(ins == 9):
+            CustomizeQuotationView.objects.filter(customize_view_name = customize_name[0].id).update(quotation_number = data['number'],quotation_customer = data['customer'],quotation_date = data['date'],
+                                                quotation_expire_date = data['expire_date'], quotation_amount = data['amount'])
     elif(len(customize_name) == 0):
         customize_module_name = CustomizeModuleName(user = request.user, customize_name = int(ins))
         customize_module_name.save()
@@ -301,6 +304,10 @@ def customize_view_list(request, ins):
             view_debit_note = CustomizeDebitNoteView(customize_view_name = customize_module_name,debit_number = data['number'],debit_reference = data['reference'],debit_vendor = data['vendor'],
                                                 debit_date = data['date'], debit_total = data['amount'])
             view_debit_note.save()
+        elif(ins == 9):
+            view_quotation = CustomizeQuotationView(customize_view_name = customize_module_name,quotation_number = data['number'],quotation_customer = data['customer'],quotation_date = data['date'],
+                                                quotation_expire_date = data['expire_date'], quotation_amount = data['amount'])
+            view_quotation.save()
     return JsonResponse(data)
 
 #**********************************************************************************************
